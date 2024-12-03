@@ -7,12 +7,13 @@
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search"
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listRoles()" name="search"
                     class="form-control form-control-solid w-250px ps-12" placeholder="Search Roles" />
             </div>
             <!--end::Search-->
         </div>
         <!--begin::Card title-->
+        <span class="spinner-border spinner-border-sm align-middle ms-2" *ngIf="isLoading$ | async"></span>
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
@@ -73,36 +74,48 @@
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
-                        <tr>
-                            <!-- <td>
-                                <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                    <input class="form-check-input" type="checkbox" value="1" />
-                                </div>
-                            </td> -->
-                            <td>
-                                Asesor comercial
-                            </td>
-
-                            <td>
-                                ['register_contract']
-                            </td>
-                            
-                            <td>
-                                14 Dec 2020, 8:43 pm
-                            </td>
-                            <td class="">
-                                <a href="#" onclick="return false" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                </a>
-                                <a href="#" onclick="return false" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                </a>
-                            </td>
-                        </tr>
+                        <ng-container *ngFor="let ROL of ROLES">
+                            <tr>
+                                <!-- <td>
+                                    <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                        <input class="form-check-input" type="checkbox" value="1" />
+                                    </div>
+                                </td> -->
+                                <td>
+                                    {{ ROL.name }}
+                                </td>
+    
+                                <td>
+                                    <!-- <span style="width: 550px !important; display: block;"> -->
+                                        {{ ROL.permission_pluck }}
+                                    <!-- </span> -->
+                                </td>
+                                
+                                <td>
+                                    {{ ROL.created_format_at }}
+                                </td>
+                                <td class="">
+                                    <a *ngIf="ROL.id" href="#" onclick="return false" (click)="editRole(ROL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </a>
+                                    <a *ngIf="ROL.id" href="#" onclick="return false" (click)="deleteRole(ROL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </ng-container>
                     </tbody>
                     <tfoot></tfoot>
                 </table>
             </div>
+            <ngb-pagination
+                [collectionSize]="totalPages"
+                [(page)]="currentPage"
+                [pageSize]="25"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="loadPage($event)"
+            ></ngb-pagination>
         </div>
         <!--end::Table-->
     </div>

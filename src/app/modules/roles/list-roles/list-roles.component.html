@@ -12,8 +12,6 @@
             </div>
             <!--end::Search-->
         </div>
-        <!--begin::Card title-->
-        <span class="spinner-border spinner-border-sm align-middle ms-2" *ngIf="isLoading$ | async"></span>
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
@@ -111,7 +109,7 @@
             <ngb-pagination
                 [collectionSize]="totalPages"
                 [(page)]="currentPage"
-                [pageSize]="25"
+                [pageSize]="10"
                 [rotate]="true"
                 [boundaryLinks]="true"
                 (pageChange)="loadPage($event)"

@@ -15,6 +15,9 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 // #fake-start#
 import { FakeAPIService } from './_fake/fake-api.service';
 import { ToastrModule } from 'ngx-toastr';
+
+import { LottieModule } from 'ngx-lottie';
+import { appConfig } from './app.config';
 // #fake-end#
 
 function appInitializer(authService: AuthService) {
@@ -48,6 +51,7 @@ function appInitializer(authService: AuthService) {
     SweetAlert2Module.forRoot(),
     ToastrModule.forRoot(),
     NgbPaginationModule,
+    LottieModule.forRoot(appConfig) 
   ],
   providers: [
     {

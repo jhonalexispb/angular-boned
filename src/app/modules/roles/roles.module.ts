@@ -5,12 +5,12 @@ import { RolesRoutingModule } from './roles-routing.module';
 import { RolesComponent } from './roles.component';
 import { CreateRolesComponent } from './create-roles/create-roles.component';
 import { EditRolesComponent } from './edit-roles/edit-roles.component';
-import { DeleteRolesComponent } from './delete-roles/delete-roles.component';
 import { ListRolesComponent } from './list-roles/list-roles.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 
 
 @NgModule({
@@ -18,8 +18,8 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     RolesComponent,
     CreateRolesComponent,
     EditRolesComponent,
-    DeleteRolesComponent,
-    ListRolesComponent
+    ListRolesComponent,
+    LoadingScreenComponent
   ],
   imports: [
     CommonModule,

@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { SIDEBAR } from 'src/app/config/config';
 import { RolesService } from '../service/roles.service';
+import { SweetalertService } from '../service/sweetalert.service';
 
 @Component({
   selector: 'app-edit-roles',
@@ -14,9 +15,8 @@ export class EditRolesComponent {
   @Input() ROLE_SELECTED:any;
   name:string = '';
 
-  isLoading:any;
-
   SIDEBAR:any = SIDEBAR;
+  sweet:any = new SweetalertService;
 
   permisions:any = [];
   constructor(
@@ -44,12 +44,12 @@ export class EditRolesComponent {
 
   store(){
     if(!this.name){
-      this.toast.error("Validacion","El nombre es requerido");
+      this.sweet.formulario_invalido("Validacion","El nombre es requerido");
       return false;
     }
 
     if(this.permisions.length == 0){
-      this.toast.error("Validacion","Necesitas seleccionar un permiso por lo menos");
+      this.sweet.formulario_invalido("Validacion","Necesitas seleccionar un permiso por lo menos");
       return false;
     }
 
@@ -59,14 +59,19 @@ export class EditRolesComponent {
     }
 
     //usamos el servicio para guardar la data
-    this.roleService.updateRole(this.ROLE_SELECTED.id,data).subscribe((resp:any)=>{
-      console.log(resp)
-      if(resp.message == 403){
-        this.toast.error("Validacion",resp.message_text);
-      }else{
-        this.toast.success("Exito","El rol se edito correctamente"); 
-        this.RoleE.emit(resp.role);
-        this.modal.close();
+    this.roleService.updateRole(this.ROLE_SELECTED.id,data).subscribe({
+      next:(resp:any)=>{
+        console.log(resp)
+        if(resp.message == 403){
+          this.toast.error("Validacion",resp.message_text);
+        }else{
+          this.RoleE.emit(resp.role);
+          this.modal.close();
+          this.sweet.success("Exito","El rol se edito correctamente"); 
+        }
+      },
+      error: (error) => {
+        this.sweet.error(error.status)
       }
     })
   }

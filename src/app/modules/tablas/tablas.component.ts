@@ -29,12 +29,6 @@ export class TablasComponent implements OnInit {
         },
         order: [[0, 'asc']],
         responsive: true,
-        columnDefs: [
-          {
-            targets: [1, 2],  // Ocultar columnas específicas en pantallas pequeñas
-            visible: false
-          }
-        ]
       });
     });
   }

@@ -57,6 +57,11 @@ const Routing: Routes = [
     path: 'usuarios',
     loadChildren: () => import('../modules/users/users.module').then((m) => m.UsersModule),
   },
+
+  {
+    path: 'tablas',
+    loadChildren: () => import('../modules/tablas/tablas.module').then((m) => m.TablasModule),
+  },
   {
     path: '',
     redirectTo: '/dashboard',

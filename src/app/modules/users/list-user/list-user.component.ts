@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../service/sweetalertusers.service';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { EditUserComponent } from '../edit-user/edit-user.component';
-import { UsersService } from '../service/users.service';
+import { UserService } from '../service/users.service';
+import { Subject } from 'rxjs';
+declare var $: any;
 
 @Component({
   selector: 'app-list-roles',
   templateUrl: './list-user.component.html',
   styleUrls: ['./list-user.component.scss']
 })
-export class ListRolesComponent {
+export class ListUserComponent implements OnInit, OnDestroy{
 
   search:string = '';
   USERS:any = [];
@@ -18,34 +20,72 @@ export class ListRolesComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1; 
+  isLoading$:any;
+
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(
     public modalService: NgbModal,
-    public userService: UsersService,
+    public userService: UserService,
+    private cdr: ChangeDetectorRef
   ){
 
   }
 
   ngOnInit(): void {
+    this.isLoading$ = this.userService.isLoading$
     this.listUsers();
   }
 
+  
+
   listUsers(page = 1){
     this.userService.listUsers(page,this.search).subscribe((resp: any) => {
-      this.USERS = resp.roles;
+      if ($.fn.dataTable.isDataTable('#example')) {
+        $('#example').DataTable().clear().destroy();  // Eliminar la instancia de DataTables
+      }
+      this.USERS = resp.users;
       this.totalPages = resp.total;
       this.currentPage = page;
+      this.cdr.detectChanges();
+      this.iniciarDatatable();
     })
+  }
+
+  ngOnDestroy(): void {
+    // Asegurarse de destruir el DataTable para evitar fugas de memoria
+    if (this.dtTrigger) {
+      this.dtTrigger.unsubscribe();
+    }
   }
 
   loadPage($event:any){
     this.listUsers($event);
   }
 
+  iniciarDatatable(){
+    $(document).ready(function () {
+
+      $('#example').DataTable({
+        paging: false,  // Activar paginación
+        searching: false,  // Activar la búsqueda
+        ordering: true,  // Activar la ordenación
+        info: true,  // Mostrar información sobre la tabla
+        lengthChange: true,  // Permitir cambiar el número de elementos por página
+        pageLength: 5,  // Número de elementos por página (paginación)
+        responsive: true,  // Hacer la tabla responsiva
+        language: {  // Personalización del idioma (opcional)
+          url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json' // Usar idioma español
+        },
+        order: [[0, 'asc']],  // Ordenar por la primera columna (index 0) por defecto
+      });
+    });
+  }
+
   createUser(){
     const modalRef = this.modalService.open(CreateUserComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.RoleC.subscribe((role:any)=>{
-      this.USERS.unshift(role); //integra el nuevo valor al inicio de la tabla
+      this.USERS.unshift(role);
     })
   }
 
@@ -53,8 +93,6 @@ export class ListRolesComponent {
     const modalRef = this.modalService.open(EditUserComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.USER_SELECTED = USER;
-
-    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.RoleE.subscribe((user:any)=>{
       let INDEX = this.USERS.findIndex((user:any) => user.id == USER.id);
       if(INDEX != -1){
@@ -64,24 +102,20 @@ export class ListRolesComponent {
   }
 
   deleteUser(USER:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', '¿Deseas eliminar este rol?').then((result:any) => {
+    this.sweet.confirmar_borrado('¿Estás seguro?', '¿Deseas eliminar este usuario?').then((result:any) => {
       if (result.isConfirmed) {
-        // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.userService.DeleteUserComponent(USER.id).subscribe({
+        this.userService.deleteUser(USER.id).subscribe({
           next: (resp: any) => {
             if (resp.message === 403) {
               this.sweet.error('Error', resp.message_text);
             } else {
-              this.USERS = this.USERS.filter((role:any) => role.id !== ROL.id);
-              this.sweet.success('Eliminado', 'El rol ha sido eliminado correctamente', 'success');
+              this.USERS = this.USERS.filter((user:any) => user.id !== USER.id);
+              this.sweet.success('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
             }
           },
           error: (error) => {
             this.sweet.error(error.status);
           },
-          complete: () => {
-
-          }
         })
       }
     });

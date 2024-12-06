@@ -12,6 +12,9 @@
             </div>
             <!--end::Search-->
         </div>
+
+        <!-- <span class="spinner-border spinner-border-sm align-middle ms-2" *ngIf="isLoading$ | async"></span> -->
+
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
@@ -43,87 +46,93 @@
         <!--begin::Table-->
         <div id="kt_customers_table_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
             <div id="" class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" id="kt_customers_table"
-                    style="width: 100%">
-                    <thead>
-                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Rol</span><span
-                                    class="dt-column-order"></span>
-                            </th>
+                <ng-container *ngIf="USERS.length > 0">
+                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" id="example"
+                        style="width: 100%">
+                        <thead>
+                            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Usuario</span><span
+                                        class="dt-column-order"></span>
+                                </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Rol</span><span
-                                    class="dt-column-order"></span>
-                            </th>
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Rol</span><span
+                                        class="dt-column-order"></span>
+                                </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Sucursal</span><span
-                                    class="dt-column-order"></span>
-                            </th>
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Sucursal</span><span
+                                        class="dt-column-order"></span>
+                                </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Telefono</span><span
-                                    class="dt-column-order"></span>
-                            </th>
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Telefono</span><span
+                                        class="dt-column-order"></span>
+                                </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
-                                colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Fecha de registro</span><span
-                                    class="dt-column-order"></span>
-                            </th>
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                                    colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Fecha de registro</span><span
+                                        class="dt-column-order"></span>
+                                </th>
 
-                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
-                                aria-label="Actions">
-                                <span class="dt-column-title">Actions</span><span class="dt-column-order"></span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="fw-semibold text-gray-600">
-                        <ng-container *ngFor="let USER of USERS">
-                            <tr>
+                                <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                                    aria-label="Actions">
+                                    <span class="dt-column-title">Actions</span><span class="dt-column-order"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="fw-semibold text-gray-600">
+                            <tr  *ngFor="let USER of USERS">
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="symbol symbol-50px me-5">
-                                            <img src="/metronic8/demo1/assets/media/stock/600x400/img-26.jpg" class="" alt="">
+                                            <img src='{{ USER.avatar }}' class="" alt="img">
                                         </div>
                                         
                                         <div class="d-flex justify-content-start flex-column">
-                                            <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">Sant Extreanet Solution</a>
-                                            <span class="text-muted fw-semibold text-muted d-block fs-7">HTML, JS, ReactJS</span>
+                                            <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ USER.name }}</a>
+                                            <span class="text-muted fw-semibold text-muted d-block fs-7">{{ USER.email }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    {{ USER.name }}
+                                    {{ USER.rol.name }}
                                 </td>
     
                                 <td>
-                                    <!-- <span style="width: 550px !important; display: block;"> -->
-                                        {{ USER.permission_pluck }}
-                                    <!-- </span> -->
+                                    
+                                    {{ USER.sucursal_id }}
+                                    
+                                </td>
+
+                                <td>
+                                    
+                                    {{ USER.phone }}
+                                    
                                 </td>
                                 
                                 <td>
                                     {{ USER.created_format_at }}
                                 </td>
                                 <td class="">
-                                    <a *ngIf="ROL.id" href="#" onclick="return false" (click)="editRole(USER)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="#" onclick="return false" (click)="editUser(USER)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </a>
-                                    <a *ngIf="ROL.id" href="#" onclick="return false" (click)="deleteRole(USER)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="#" onclick="return false" (click)="deleteUser(USER)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                     </a>
                                 </td>
                             </tr>
-                        </ng-container>
-                    </tbody>
-                    <tfoot></tfoot>
-                </table>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </ng-container>
             </div>
             <ngb-pagination
                 [collectionSize]="totalPages"

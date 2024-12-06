@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { DataTablesModule } from 'angular-datatables';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     InlineSVGModule,
     NgbModalModule,
     NgbPaginationModule,
+    DataTablesModule,
   ]
 })
 export class RolesModule { }

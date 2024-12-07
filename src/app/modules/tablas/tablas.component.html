@@ -1,4 +1,48 @@
-<table id="example" class="display" style="width:100%">
+<ngx-datatable
+  class="material"
+  [rows]="data"
+  [columns]="cols"
+  [columnMode]="ColumnMode.force"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="50">
+</ngx-datatable>
+
+<!-- Aquí puedes agregar plantillas personalizadas si es necesario -->
+<ng-template #editTmpl let-row="row">
+  <div>{{ row.permission_pluck.join(', ') }}</div> <!-- Aquí mostramos los permisos -->
+</ng-template>
+
+<ng-template #hdrTpl let-column="column">
+  <div>{{ column.name }}</div> <!-- Aquí mostramos los encabezados -->
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <table id="example" class="display" style="width:100%">
     <thead>
         <tr>
             <th>Name</th>
@@ -122,7 +166,6 @@
             <td>$4,000</td>
             <td>Administration</td>
         </tr>
-        <!-- Continue adding more rows as needed -->
     </tbody>
     <tfoot>
         <tr>
@@ -136,4 +179,4 @@
             <th>Department</th>
         </tr>
     </tfoot>
-</table>
+</table> -->

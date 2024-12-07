@@ -76,6 +76,12 @@ export class ListRolesComponent {
           url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json' // Usar idioma español
         },
         order: [[0, 'asc']],  // Ordenar por la primera columna (index 0) por defecto
+        columnDefs: [
+          {
+            targets: -1, // Índice de la columna de los botones (última columna)
+            responsivePriority: 1 // Siempre visible en dispositivos pequeños
+          }
+        ]
       });
     });
   }

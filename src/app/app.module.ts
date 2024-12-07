@@ -18,8 +18,6 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
-
-/* import { DataTablesModule } from 'angular-datatables'; */
 // #fake-end#
 
 function appInitializer(authService: AuthService) {
@@ -53,8 +51,8 @@ function appInitializer(authService: AuthService) {
     SweetAlert2Module.forRoot(),
     ToastrModule.forRoot(),
     NgbPaginationModule,
-    LottieModule.forRoot(appConfig),
-    /* DataTablesModule */
+    LottieModule.forRoot(appConfig)
+
   ],
   providers: [
     {

@@ -18,6 +18,7 @@ export class ListUserComponent implements OnInit, OnDestroy{
   USERS:any = [];
   sweet:any = new SweetalertService;
 
+  roles:any = [];
   totalPages:number = 0; 
   currentPage:number = 1; 
   isLoading$:any;
@@ -35,20 +36,28 @@ export class ListUserComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     this.isLoading$ = this.userService.isLoading$
     this.listUsers();
+    this.configAll();
   }
 
   
 
   listUsers(page = 1){
     this.userService.listUsers(page,this.search).subscribe((resp: any) => {
-      if ($.fn.dataTable.isDataTable('#example')) {
+      /* if ($.fn.dataTable.isDataTable('#example')) {
         $('#example').DataTable().clear().destroy();  // Eliminar la instancia de DataTables
-      }
+      } */
       this.USERS = resp.users;
       this.totalPages = resp.total;
       this.currentPage = page;
       this.cdr.detectChanges();
-      this.iniciarDatatable();
+      /* this.iniciarDatatable(); */
+    })
+  }
+
+  configAll(){
+    this.userService.configAll().subscribe((resp: any) => {
+      console.log(resp)
+      this.roles = resp.roles;
     })
   }
 
@@ -84,7 +93,8 @@ export class ListUserComponent implements OnInit, OnDestroy{
 
   createUser(){
     const modalRef = this.modalService.open(CreateUserComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.RoleC.subscribe((role:any)=>{
+    modalRef.componentInstance.roles = this.roles
+    modalRef.componentInstance.UserC.subscribe((role:any)=>{
       this.USERS.unshift(role);
     })
   }

@@ -11,7 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
-import { DataTablesModule } from 'angular-datatables';
+import { DropdownComponent } from './dropdown/dropdown.component';
+import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-menus/dropdown-menus.module";
 
 
 @NgModule({
@@ -20,12 +21,12 @@ import { DataTablesModule } from 'angular-datatables';
     CreateRolesComponent,
     EditRolesComponent,
     ListRolesComponent,
-    LoadingScreenComponent
+    LoadingScreenComponent,
+    DropdownComponent
   ],
   imports: [
     CommonModule,
     RolesRoutingModule,
-
     HttpClientModule, //peticiones
     FormsModule,
     NgbModule,
@@ -33,7 +34,7 @@ import { DataTablesModule } from 'angular-datatables';
     InlineSVGModule,
     NgbModalModule,
     NgbPaginationModule,
-    DataTablesModule,
-  ]
+    DropdownMenusModule,
+]
 })
 export class RolesModule { }

@@ -59,9 +59,10 @@ const Routing: Routes = [
   },
 
   {
-    path: 'tablas',
-    loadChildren: () => import('../modules/tablas/tablas.module').then((m) => m.TablasModule),
+    path: 'configuraciones',
+    loadChildren: () => import('../modules/configuration/configuration.module').then((m) => m.ConfigurationModule),
   },
+
   {
     path: '',
     redirectTo: '/dashboard',

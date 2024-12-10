@@ -92,17 +92,17 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="symbol symbol-50px me-5">
-                                            <img src='{{ USER.avatar }}' class="" alt="img">
+                                            <img [src]="USER.avatar" class="" alt="img">
                                         </div>
                                         
                                         <div class="d-flex justify-content-start flex-column">
-                                            <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ USER.name }}</a>
+                                            <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ USER.full_name }}</a>
                                             <span class="text-muted fw-semibold text-muted d-block fs-7">{{ USER.email }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    {{ USER.rol.name }}
+                                    {{ USER.role.name }}
                                 </td>
     
                                 <td>

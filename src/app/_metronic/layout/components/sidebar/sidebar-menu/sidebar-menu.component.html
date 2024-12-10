@@ -22,13 +22,13 @@
       </a>
     </div> -->
     
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="isRole()">
       <div class="menu-content pt-8 pb-2">
         <span class="menu-section text-muted text-uppercase fs-8 ls-1">Configuraciones</span>
       </div>
     </div>
 
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="isRole()" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="setting-3" class="fs-2"></app-keenicon>
@@ -124,14 +124,14 @@
     </div>
 
     <!-- Separator -->
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['register_user','edit_user']) || showMenu(['register_role','edit_role'])">
       <div class="menu-content pt-8 pb-2">
         <span class="menu-section text-muted text-uppercase fs-8 ls-1">Roles y Accesos</span>
       </div>
     </div>
 
     <!-- Pages -->
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['register_role','edit_role'])">
       <a class="menu-link without-sub" routerLink="/roles/list" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="people" class="fs-2"></app-keenicon>
@@ -140,7 +140,7 @@
       </a>
     </div>
     <!-- Customers -->
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="showMenu(['register_user','edit_user'])" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="profile-user" class="fs-2"></app-keenicon>
@@ -199,13 +199,22 @@
         </div>
       </div>
     </div> -->
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="
+      showMenu(['register_product']) ||
+      showMenu(['list_product']) ||
+      showMenu(['register_clientes','edit_clientes']) ||
+      showMenu(['valid_payments','reports_caja']) ||
+      showMenu(['register_proforma']) ||
+      showMenu(['listado_proforma']) ||
+      showMenu(['cronograma']) ||
+      showMenu(['comisiones'])
+    ">
       <div class="menu-content pt-8 pb-2">
         <span class="menu-section text-muted text-uppercase fs-8 ls-1">Comercial</span>
       </div>
     </div>
 
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="showMenu(['register_product']) || showMenu(['list_product'])" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="parcel" class="fs-2"></app-keenicon>
@@ -215,7 +224,7 @@
         <span class="menu-arrow"></span>
       </span>
       <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['register_product'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/users">
             <span
               class="menu-bullet">
@@ -225,7 +234,7 @@
             </span>
           </a>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['list_product'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/roles">
             <span
               class="menu-bullet">
@@ -238,7 +247,7 @@
       </div>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['register_clientes']) || showMenu(['edit_clientes'])">
       <a class="menu-link without-sub" routerLink="/tablas" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="badge" class="fs-2"></app-keenicon>
@@ -248,7 +257,7 @@
     </div>
 
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['valid_payments']) || showMenu(['reports_caja'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="save-deposit" class="fs-2"></app-keenicon>
@@ -258,7 +267,7 @@
     </div>
     
 
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="showMenu(['register_proforma']) || showMenu(['listado_proforma'])" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="tablet-text-down" class="fs-2"></app-keenicon>
@@ -268,7 +277,7 @@
         <span class="menu-arrow"></span>
       </span>
       <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['register_proforma'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/users">
             <span
               class="menu-bullet">
@@ -278,7 +287,7 @@
             </span>
           </a>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['listado_proforma'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/roles">
             <span
               class="menu-bullet">
@@ -291,7 +300,7 @@
       </div>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['cronograma'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="calendar" class="fs-2"></app-keenicon>
@@ -417,7 +426,7 @@
       </div>
     </div> -->
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['comisiones'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="discount" class="fs-2"></app-keenicon>
@@ -426,13 +435,21 @@
       </a>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="
+      showMenu(['register_compra']) ||
+      showMenu(['list_compra']) ||
+      showMenu(['register_transporte']) ||
+      showMenu(['list_transporte']) ||
+      showMenu(['despacho']) ||
+      showMenu(['movimientos']) ||
+      showMenu(['kardex'])
+    ">
       <div class="menu-content pt-8 pb-2">
         <span class="menu-section text-muted text-uppercase fs-8 ls-1">Inventario</span>
       </div>
     </div>
 
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="showMenu(['register_compra']) || showMenu(['list_compra'])" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="delivery-3" class="fs-2"></app-keenicon>
@@ -442,7 +459,7 @@
         <span class="menu-arrow"></span>
       </span>
       <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['register_compra'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/users">
             <span
               class="menu-bullet">
@@ -452,7 +469,7 @@
             </span>
           </a>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['list_compra'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/roles">
             <span
               class="menu-bullet">
@@ -465,7 +482,7 @@
       </div>
     </div>
 
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+    <div class="menu-item menu-accordion" *ngIf="showMenu(['register_transporte']) || showMenu(['list_transporte'])" data-kt-menu-trigger="click" routerLinkActive="here show">
       <span class="menu-link">
         <span class="menu-icon">
           <app-keenicon name="truck" class="fs-2"></app-keenicon>
@@ -475,7 +492,7 @@
         <span class="menu-arrow"></span>
       </span>
       <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['register_transporte'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/users">
             <span
               class="menu-bullet">
@@ -485,7 +502,7 @@
             </span>
           </a>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" *ngIf="showMenu(['list_transporte'])">
           <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/roles">
             <span
               class="menu-bullet">
@@ -498,7 +515,7 @@
       </div>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['despacho'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="courier-express" class="fs-2"></app-keenicon>
@@ -507,7 +524,7 @@
       </a>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['movimientos'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="delivery-2" class="fs-2"></app-keenicon>
@@ -516,7 +533,7 @@
       </a>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" *ngIf="showMenu(['kardex'])">
       <a class="menu-link without-sub" routerLink="/builder" routerLinkActive="active">
         <span class="menu-icon">
           <app-keenicon name="parcel-tracking" class="fs-2"></app-keenicon>

@@ -22,7 +22,7 @@ export class UserService {
   }
 
   registerUser(data:any){
-    this.texto.next('Registrando rol')
+    this.texto.next('Registrando usuario')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users";
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   listUsers(page = 1, search:string = ''){
-    this.texto.next('Listando roles')
+    this.texto.next('Listando usuarios')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users?page="+page+"&search="+search;
@@ -41,8 +41,7 @@ export class UserService {
     ) 
   }
 
-  configAll(page = 1, search:string = ''){
-    this.texto.next('Listando roles')
+  configAll(){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users/config";
@@ -52,7 +51,7 @@ export class UserService {
   }
 
   updateUser(ID_USER:string,data:any){
-    this.texto.next('Actualizando rol')
+    this.texto.next('Actualizando usuario')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users/"+ID_USER;
@@ -62,7 +61,7 @@ export class UserService {
   }
 
   deleteUser(ID_USER:string){
-    this.texto.next('Eliminando rol')
+    this.texto.next('Eliminando usuario')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users/"+ID_USER;

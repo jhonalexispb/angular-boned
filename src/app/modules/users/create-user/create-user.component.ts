@@ -19,6 +19,8 @@ export class CreateUserComponent {
   role_id:string = '';
   gender:string = '';
   n_document:string = '';
+  password:string = '';
+  password_repeat:string = ''
 
   file_name:any
   imagen_previzualizade:any;
@@ -71,6 +73,16 @@ export class CreateUserComponent {
       return false;
     }
 
+    if(!this.password){
+      this.sweet.formulario_invalido("Validacion","La contraseña es requerida");
+      return false;
+    }
+
+    if(this.password && this.password != this.password_repeat){
+      this.sweet.formulario_invalido("Validacion","Las constraseñas no coinciden");
+      return false;
+    }
+
 
     let formData = new FormData();
 
@@ -82,6 +94,7 @@ export class CreateUserComponent {
     formData.append("gender",this.gender)
     formData.append("n_document",this.n_document)
     formData.append("imagen",this.file_name)
+    formData.append("password", this.password)
 
     this.userService.registerUser(formData).subscribe({
       next: (resp: any) => {

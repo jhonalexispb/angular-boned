@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../../modules/auth/services/auth.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
@@ -14,7 +15,13 @@ export class NavbarComponent implements OnInit {
   userAvatarClass: string = 'symbol-35px symbol-md-40px';
   btnIconClass: string = 'fs-2 fs-md-1';
 
-  constructor() {}
+  user:any;
 
-  ngOnInit(): void {}
+  constructor(
+    public authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.user = this.authService.user;
+  }
 }

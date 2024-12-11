@@ -7,8 +7,8 @@
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listSucursales()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar sucursal" />
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listWarehouses()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar almacén" />
             </div>
             <!--end::Search-->
         </div>
@@ -17,8 +17,8 @@
             <!--begin::Toolbar-->
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
-                <button type="button" class="btn btn-primary" (click)="createSucursal()">
-                    Crear sucursal
+                <button type="button" class="btn btn-primary" (click)="createWarehouse()">
+                    Crear almacén
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -47,6 +47,13 @@
                     style="width: 100%">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Almacén</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
                             <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Sucursal</span><span
@@ -79,28 +86,32 @@
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
                         
-                            <tr *ngFor="let SUCURSAL of SUCURSALES">
+                            <tr *ngFor="let WAREHOUSE of WAREHOUSES">
                                 <td>
-                                    {{ SUCURSAL.name }}
-                                </td>
-    
-                                <td>
-                                    {{ SUCURSAL.address }}
-                                </td>
-                                
-                                <td>
-                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="SUCURSAL.state == 1">Activo</span>
-                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="SUCURSAL.state == 2">Inactivo</span>
+                                    {{ WAREHOUSE.name }}
                                 </td>
 
                                 <td>
-                                    {{ SUCURSAL.created_at }}
+                                    {{ WAREHOUSE.sucursale ? WAREHOUSE.sucursale.name : '----' }}
+                                </td>
+    
+                                <td>
+                                    {{ WAREHOUSE.address }}
+                                </td>
+                                
+                                <td>
+                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="WAREHOUSE.state == 1">Activo</span>
+                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="WAREHOUSE.state == 2">Inactivo</span>
+                                </td>
+
+                                <td>
+                                    {{ WAREHOUSE.created_at }}
                                 </td>
                                 <td class="">
-                                    <a href="#" onclick="return false" (click)="editSucursal(SUCURSAL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="#" onclick="return false" (click)="editWarehouse(WAREHOUSE)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </a>
-                                    <a  href="#" onclick="return false" (click)="deleteSucursal(SUCURSAL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a  href="#" onclick="return false" (click)="deleteWarehouse(WAREHOUSE)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                     </a>
                                 </td>

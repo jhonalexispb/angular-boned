@@ -7,7 +7,21 @@ import lottie from 'lottie-web';
 })
 export class SweetalertService {
 
-  constructor() { }
+  private user: any = null;
+
+  constructor() {
+    this.loadUser();
+  }
+
+  private loadUser(): void {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.user = JSON.parse(userData); // Guardamos el usuario en la propiedad
+      this.user = this.user.name;
+    }else{
+      this.user = ''
+    }
+  }
 
   // Función auxiliar para manejar la animación Lottie y los estilos
   private loadLottieAnimation(containerId: string, animationPath: string) {
@@ -46,7 +60,7 @@ export class SweetalertService {
       html: `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100%; text-align: center;">
         <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${text}</p>
+        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
         this.loadLottieAnimation('lottie-container', '/assets/animations/general/confetti.json');
@@ -66,7 +80,7 @@ export class SweetalertService {
       html: `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100%; text-align: center;">
         <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${text}</p>
+        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user}, ${text}</p>
       </div>`,
 
       //carga el lordicon caundo se llama a la pagina
@@ -88,7 +102,7 @@ export class SweetalertService {
       html: `
         <div style="display: flex; flex-direction: column; align-items: center;">
         <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${text}</p>
+        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
         this.loadLottieAnimation('lottie-container', '/assets/animations/general/alerta.json');
@@ -111,7 +125,7 @@ export class SweetalertService {
       html: `
         <div style="display: flex; flex-direction: column; align-items: center;">
         <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${text}</p>
+        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
         this.loadLottieAnimation('lottie-container', '/assets/animations/general/borrar_pregunta.json');
@@ -171,7 +185,7 @@ export class SweetalertService {
       html: `
         <div style="display: flex; flex-direction: column; align-items: center;">
         <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${message}</p>
+        <p style="text-align: center; margin-top: 10px;">${this.user}, ${message}</p>
       </div>`,
       didOpen: () => {
         this.loadLottieAnimation('lottie-container', gif);

@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, finalize, Observable } from 'rxjs';
 import { URL_SERVICIO } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WarehouseService {
+export class LugarEntregaService {
 
   isLoading$: Observable<boolean>;
   isLoadingSubject: BehaviorSubject<boolean>;
@@ -22,41 +22,41 @@ export class WarehouseService {
     this.texto = new BehaviorSubject<string>('');
   }
 
-  registerWarehouse(data:any){
-    this.texto.next('Registrando almacén')
+  registerLugarEntrega(data:any){
+    this.texto.next('Registrando lugar de entrega')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/warehouses";
+    let URL = URL_SERVICIO+"/lugar_entrega";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(()=>this.isLoadingSubject.next(false))
     )
   }
 
-  listWarehouses(page = 1, search:string = ''){
-    this.texto.next('Listando almacenes')
+  listLugarEntrega(page = 1, search:string = ''){
+    this.texto.next('Listando lugares de entrega')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/warehouses?page="+page+"&search="+search;
+    let URL = URL_SERVICIO+"/lugar_entrega?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(()=>this.isLoadingSubject.next(false))
     ) 
   }
 
-  updateWarehouse(ID_WAREHOUSE:string,data:any){
-    this.texto.next('Actualizando almacén')
+  updateLugarEntrega(ID_LUGAR_ENTREGA:string,data:any){
+    this.texto.next('Actualizando lugar de entrega')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/warehouses/"+ID_WAREHOUSE;
+    let URL = URL_SERVICIO+"/lugar_entrega/"+ID_LUGAR_ENTREGA;
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(()=>this.isLoadingSubject.next(false))
     )
   }
 
-  deleteWarehouse(ID_WAREHOUSE:string){
-    this.texto.next('Eliminando almacén')
+  deleteLugarEntrega(ID_LUGAR_ENTREGA:string){
+    this.texto.next('Eliminando lugar de entrega')
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/warehouses/"+ID_WAREHOUSE;
+    let URL = URL_SERVICIO+"/lugar_entrega/"+ID_LUGAR_ENTREGA;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(()=>this.isLoadingSubject.next(false))
     )

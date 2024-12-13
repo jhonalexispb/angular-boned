@@ -7,8 +7,8 @@
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listSucursales()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar sucursal" />
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listLugarEntrega()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar lugar de entrega" />
             </div>
             <!--end::Search-->
         </div>
@@ -17,8 +17,8 @@
             <!--begin::Toolbar-->
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
-                <button type="button" class="btn btn-primary" (click)="createSucursal()">
-                    Crear sucursal
+                <button type="button" class="btn btn-primary" (click)="createLugarEntrega()">
+                    Crear lugar de entrega
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -36,15 +36,22 @@
                     style="width: 100%">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+
                             <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Sucursal</span><span
+                                <span class="dt-column-title" role="button">Nombre</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Direccion</span><span
                                     class="dt-column-order"></span>
                             </th>
 
                             <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
                                 colspan="1" aria-label="Email: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Direccion</span><span
+                                <span class="dt-column-title" role="button">Coordenadas</span><span
                                     class="dt-column-order"></span>
                             </th>
 
@@ -68,28 +75,32 @@
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
                         
-                            <tr *ngFor="let SUCURSAL of SUCURSALES">
+                            <tr *ngFor="let LUGAR of LUGAR_ENTREGA">
                                 <td>
-                                    {{ SUCURSAL.name }}
-                                </td>
-    
-                                <td>
-                                    {{ SUCURSAL.address }}
-                                </td>
-                                
-                                <td>
-                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="SUCURSAL.state == 1">Activo</span>
-                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="SUCURSAL.state == 2">Inactivo</span>
+                                    {{ LUGAR.name }}
                                 </td>
 
                                 <td>
-                                    {{ SUCURSAL.created_at }}
+                                    {{ LUGAR.address }}
+                                </td>
+    
+                                <td>
+                                    {{ LUGAR.coordenadas }}
+                                </td>
+                                
+                                <td>
+                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="LUGAR.state == 1">Activo</span>
+                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="LUGAR.state == 2">Inactivo</span>
+                                </td>
+
+                                <td>
+                                    {{ LUGAR.created_at }}
                                 </td>
                                 <td class="">
-                                    <a href="#" onclick="return false" (click)="editSucursal(SUCURSAL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="#" onclick="return false" (click)="editLugarEntrega(LUGAR)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </a>
-                                    <a  href="#" onclick="return false" (click)="deleteSucursal(SUCURSAL)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a  href="#" onclick="return false" (click)="deleteLugarEntrega(LUGAR)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                     </a>
                                 </td>
@@ -112,3 +123,4 @@
     </div>
     <!--end::Card body-->
 </div>
+

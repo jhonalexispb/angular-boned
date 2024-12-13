@@ -1,29 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { WarehousesRoutingModule } from './warehouses-routing.module';
-import { WarehousesComponent } from './warehouses.component';
-import { CreateWarehouseComponent } from './create-warehouse/create-warehouse.component';
-import { EditWarehouseComponent } from './edit-warehouse/edit-warehouse.component';
-import { ListWarehouseComponent } from './list-warehouse/list-warehouse.component';
+import { LugarEntregaRoutingModule } from './lugar-entrega-routing.module';
+import { CreateLugarEntregaComponent } from './create-lugar-entrega/create-lugar-entrega.component';
+import { EditLugarEntregaComponent } from './edit-lugar-entrega/edit-lugar-entrega.component';
+import { ListLugarEntregaComponent } from './list-lugar-entrega/list-lugar-entrega.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { LugarEntregaComponent } from './lugar-entrega.component';
 
 
 @NgModule({
   declarations: [
-    WarehousesComponent,
-    CreateWarehouseComponent,
-    EditWarehouseComponent,
-    ListWarehouseComponent,
+    LugarEntregaComponent,
+    CreateLugarEntregaComponent,
+    EditLugarEntregaComponent,
+    ListLugarEntregaComponent,
     LoadingScreenComponent
   ],
   imports: [
     CommonModule,
-    WarehousesRoutingModule,
+    LugarEntregaRoutingModule,
 
     HttpClientModule,
     FormsModule,
@@ -33,4 +33,4 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     NgbModalModule,
   ]
 })
-export class WarehousesModule { }
+export class LugarEntregaModule { }

@@ -11,6 +11,11 @@ const routes: Routes = [
     path: 'almacenes',
     loadChildren: () => import('./warehouses/warehouses.module').then((m) => m.WarehousesModule),
   },
+
+  {
+    path: 'lugar-de-entrega',
+    loadChildren: () => import('./lugar-entrega/lugar-entrega.module').then((m) => m.LugarEntregaModule),
+  },
 ];
 
 @NgModule({

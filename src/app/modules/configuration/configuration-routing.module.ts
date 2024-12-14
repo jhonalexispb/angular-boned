@@ -16,6 +16,11 @@ const routes: Routes = [
     path: 'lugar-de-entrega',
     loadChildren: () => import('./lugar-entrega/lugar-entrega.module').then((m) => m.LugarEntregaModule),
   },
+
+  {
+    path: 'metodo-pago',
+    loadChildren: () => import('./method-payment/method-payment.module').then((m) => m.MethodPaymentModule),
+  },
 ];
 
 @NgModule({

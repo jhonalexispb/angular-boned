@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
-import { DropdownComponent } from './dropdown/dropdown.component';
 import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-menus/dropdown-menus.module";
 
 
@@ -22,7 +21,6 @@ import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-m
     EditRolesComponent,
     ListRolesComponent,
     LoadingScreenComponent,
-    DropdownComponent
   ],
   imports: [
     CommonModule,

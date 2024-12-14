@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SweetalertService } from 'src/app/modules/roles/service/sweetalert.service';
+
+import { SweetalertService } from '../../../../sweetAlert/sweetAlert.service';
 import { MethodService } from '../service/method.service';
 import { EditMethodComponent } from '../edit-method/edit-method.component';
 
@@ -14,6 +15,7 @@ export class ListMethodComponent {
     METODOS:any = [];
     isLoading$:any;
     sweet:any = new SweetalertService
+
   
     totalPages:number = 0; 
     currentPage:number = 1;

@@ -3,7 +3,7 @@ import { SucursalService } from '../service/sucursal.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateSucursalComponent } from '../create-sucursal/create-sucursal.component';
 import { EditSucursalComponent } from '../edit-sucursal/edit-sucursal.component';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-list-sucursal',

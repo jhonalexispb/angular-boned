@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SweetalertService } from '../service/sweetalertusers.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 import { UserService } from '../service/users.service';
@@ -40,7 +40,6 @@ export class ListUserComponent implements OnInit{
   listUsers(page = 1){
     this.userService.listUsers(page,this.search).subscribe((resp: any) => {
       this.USERS = resp.users;
-      console.log(this.USERS);
       this.totalPages = resp.total;
       this.currentPage = page;
     })

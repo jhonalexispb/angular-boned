@@ -53,7 +53,7 @@ export class SweetalertService {
   }
 
   // Mostrar una alerta de éxito
-  success(title: string, text: string) {
+  success(title: string, text: string, image:string = '/assets/animations/general/confetti.json') {
     Swal.fire({
       title: title,
       confirmButtonText: 'Aceptar',
@@ -63,7 +63,7 @@ export class SweetalertService {
         <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
-        this.loadLottieAnimation('lottie-container', '/assets/animations/general/confetti.json');
+        this.loadLottieAnimation('lottie-container', image);
       },
       willOpen: () => {
         // Llamamos a la función auxiliar para actualizar los estilos
@@ -73,7 +73,7 @@ export class SweetalertService {
   }
 
   // Mostrar una alerta de error
-  formulario_invalido(title: string, text: string) {
+  formulario_invalido(title: string, text: string, image:string = '/assets/animations/general/formulario_invalido.json') {
     Swal.fire({
       title: title,
       confirmButtonText: 'Cerrar',
@@ -85,7 +85,7 @@ export class SweetalertService {
 
       //carga el lordicon caundo se llama a la pagina
       didOpen: () => {
-        this.loadLottieAnimation('lottie-container', '/assets/animations/general/formulario_invalido.json');
+        this.loadLottieAnimation('lottie-container', image);
       },
       willOpen: () => {
         // Llamamos a la función auxiliar para actualizar los estilos
@@ -95,7 +95,7 @@ export class SweetalertService {
   }
 
   // Mostrar una alerta de advertencia
-  alerta(title: string, text: string) {
+  alerta(title: string, text: string, image:string = '/assets/animations/general/alerta.json') {
     Swal.fire({
       title: title,
       confirmButtonText: 'Aceptar',
@@ -105,7 +105,7 @@ export class SweetalertService {
         <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
-        this.loadLottieAnimation('lottie-container', '/assets/animations/general/alerta.json');
+        this.loadLottieAnimation('lottie-container', image);
       },
       willOpen: () => {
         // Llamamos a la función auxiliar para actualizar los estilos
@@ -115,7 +115,7 @@ export class SweetalertService {
   }
 
   // Mostrar una alerta de confirmación (por ejemplo, para eliminar)
-  confirmar_borrado(title: string, text: string) {
+  confirmar_borrado(title: string, text: string, image:string = '/assets/animations/general/borrar_pregunta.json') {
     return Swal.fire({
       title: title,
       text: text,
@@ -128,7 +128,7 @@ export class SweetalertService {
         <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
       </div>`,
       didOpen: () => {
-        this.loadLottieAnimation('lottie-container', '/assets/animations/general/borrar_pregunta.json');
+        this.loadLottieAnimation('lottie-container', image);
       },
       willOpen: () => {
         // Llamamos a la función auxiliar para actualizar los estilos

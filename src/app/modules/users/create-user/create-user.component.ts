@@ -2,7 +2,7 @@ import { Component, EventEmitter ,Input,Output } from '@angular/core';
 import { UserService } from '../service/users.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { SweetalertService } from '../service/sweetalertusers.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-create-user',

@@ -1,4 +1,4 @@
-import { SweetalertService } from './../service/sweetalert.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SIDEBAR } from 'src/app/config/config';

@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { SIDEBAR } from 'src/app/config/config';
 import { RolesService } from '../service/roles.service';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-edit-roles',

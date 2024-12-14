@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { SucursalService } from '../service/sucursal.service';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-edit-sucursal',

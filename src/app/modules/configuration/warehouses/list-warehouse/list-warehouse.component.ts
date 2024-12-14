@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WarehouseService } from '../service/warehouse.service';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateWarehouseComponent } from '../create-warehouse/create-warehouse.component';
 import { EditWarehouseComponent } from '../edit-warehouse/edit-warehouse.component';

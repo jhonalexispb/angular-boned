@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { SweetalertService } from '../service/sweetalertusers.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { UserService } from '../service/users.service';
 
 @Component({

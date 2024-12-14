@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateRolesComponent } from '../create-roles/create-roles.component';
 import { RolesService } from '../service/roles.service';
 import { EditRolesComponent } from '../edit-roles/edit-roles.component';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { Subject } from 'rxjs';
 declare var $: any;
 

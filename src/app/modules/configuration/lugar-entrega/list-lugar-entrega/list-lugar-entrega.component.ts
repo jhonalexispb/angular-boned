@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LugarEntregaService } from '../service/lugar-entrega.service';
 import { CreateLugarEntregaComponent } from '../create-lugar-entrega/create-lugar-entrega.component';

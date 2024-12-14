@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SweetalertService } from '../service/sweetalert.service';
+import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { WarehouseService } from '../service/warehouse.service';
 

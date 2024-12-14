@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MethodComponent } from './method.component';
 import { ListMethodComponent } from './list-method/list-method.component';
 
 const routes: Routes = [
   {
-    path: 'list',
+    path: 'list', // Ruta para el componente `ListMethodComponent`
     component: ListMethodComponent
   }
 ];

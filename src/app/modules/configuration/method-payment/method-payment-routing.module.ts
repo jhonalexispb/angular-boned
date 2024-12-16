@@ -1,3 +1,4 @@
+import { BankComponent } from './bank/bank.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MethodPaymentComponent } from './method-payment.component';
@@ -12,7 +13,12 @@ const routes: Routes = [
         path: 'metodo',
         component: MethodComponent,
         loadChildren: () => import('./method/method.module').then(m => m.MethodModule)
-      }
+      },
+      {
+        path: 'banco',
+        component: BankComponent,
+        loadChildren: () => import('./bank/bank.module').then(m => m.BankModule)
+      },
     ]
   }
 ];

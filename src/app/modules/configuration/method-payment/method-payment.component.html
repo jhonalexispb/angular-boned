@@ -2,9 +2,9 @@
     <!--begin::Nav-->             
     <ul class="nav nav-pills nav-pills-custom row position-relative mx-0 mb-9" role="tablist">
         <!--begin::Item--> 
-        <li class="nav-item col-4 mx-0 p-0" role="presentation">
+        <li class="nav-item col-4 mx-0 p-0">
             <!--begin::Link--> 
-            <a class="nav-link active d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/configuraciones/metodo-pago/metodo/list">                   
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/configuraciones/metodo-pago/metodo/list">                   
                 <!--begin::Subtitle-->
                 <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
                     Metodo
@@ -16,22 +16,13 @@
                 <!--end::Bullet-->
             </a>
             <!--end::Link-->  
-            
-            <!-- <a class="menu-link without-sub" routerLinkActive="active" routerLink="/configuraciones/sucursales/list">
-                <span
-                  class="menu-bullet">
-                  <span class="bullet bullet-dot"></span>
-                </span>
-                <span class="menu-title">Sucursales
-                </span>
-              </a> -->
         </li>
         <!--end::Item--> 
 
         <!--begin::Item--> 
-        <li class="nav-item col-4 mx-0 px-0" role="presentation">
+        <li class="nav-item col-4 mx-0 px-0">
             <!--begin::Link--> 
-            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" data-bs-toggle="pill" href="#kt_list_widget_10_tab_2" aria-selected="false" tabindex="-1" role="tab">                   
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/configuraciones/metodo-pago/banco/list">                   
                 <!--begin::Subtitle-->
                 <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
                     Banco
@@ -47,9 +38,9 @@
         <!--end::Item-->    
         
         <!--begin::Item--> 
-        <li class="nav-item col-4 mx-0 px-0" role="presentation">
+        <li class="nav-item col-4 mx-0 px-0">
             <!--begin::Link--> 
-            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" data-bs-toggle="pill" href="#kt_list_widget_10_tab_3" aria-selected="false" tabindex="-1" role="tab">                   
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" >                   
                 <!--begin::Subtitle-->
                 <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
                     Tipo de Voucher
@@ -74,22 +65,10 @@
     <div class="tab-content">
                         
             <!--begin::Tap pane-->
-            <div class="tab-pane fade show active" id="kt_list_widget_10_tab_1" role="tabpanel">
+            <div class="tab-pane fade show active">
                 <router-outlet></router-outlet>
             </div>
-            <!--end::Tap pane-->                               
-                        
-            <!--begin::Tap pane-->
-            <div class="tab-pane fade " id="kt_list_widget_10_tab_2" role="tabpanel">
-
-            </div>
-            <!--end::Tap pane-->                               
-                        
-            <!--begin::Tap pane-->
-            <div class="tab-pane fade " id="kt_list_widget_10_tab_3" role="tabpanel">
-
-            </div>
-            <!--end::Tap pane-->                               
+            <!--end::Tap pane-->                                                             
                      
     </div>
     <!--end::Tab Content-->        

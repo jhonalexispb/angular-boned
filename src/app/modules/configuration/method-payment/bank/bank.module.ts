@@ -6,6 +6,10 @@ import { BankComponent } from './bank.component';
 import { ListBankComponent } from './list-bank/list-bank.component';
 import { EditBankComponent } from './edit-bank/edit-bank.component';
 import { CreateBankComponent } from './create-bank/create-bank.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 
 
 @NgModule({
@@ -17,7 +21,13 @@ import { CreateBankComponent } from './create-bank/create-bank.component';
   ],
   imports: [
     CommonModule,
-    BankRoutingModule
+    BankRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    NgbModule,
+    ReactiveFormsModule,
+    InlineSVGModule,
+    NgbModalModule,
   ]
 })
 export class BankModule { }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/modules/auth';
 
 @Component({
@@ -10,7 +11,8 @@ export class SidebarMenuComponent implements OnInit {
 
   user:any
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -36,5 +38,9 @@ export class SidebarMenuComponent implements OnInit {
   isRole(){
     return this.user.role_name == 'Super-Admin' ? true : false
   } 
+
+  redireccionar(){
+    this.router.navigate(['/configuraciones/metodo-pago/metodo/list']);
+  }
 
 }

@@ -10,7 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 
 
 @NgModule({
@@ -19,7 +18,6 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     CreateSucursalComponent,
     EditSucursalComponent,
     ListSucursalComponent,
-    LoadingScreenComponent
   ],
   imports: [
     CommonModule,

@@ -80,7 +80,7 @@ export class ListWarehouseComponent {
               this.sweet.error('Error', resp.message_text);
             } else {
               this.WAREHOUSES = this.WAREHOUSES.filter((ware:any) => ware.id !== WAREHOUSE.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'el almacén ha sido eliminado correctamente', 'success');
+              this.sweet.success('Eliminado', 'el almacén ha sido eliminado correctamente');
             }
           },
           error: (error) => {

@@ -75,7 +75,7 @@ export class ListSucursalComponent {
               this.sweet.error('Error', resp.message_text);
             } else {
               this.SUCURSALES = this.SUCURSALES.filter((sucurs:any) => sucurs.id !== SUCURSAL.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'La sucursal ha sido eliminada correctamente', 'success');
+              this.sweet.success('Eliminado', 'La sucursal ha sido eliminada correctamente');
             }
           },
           error: (error) => {

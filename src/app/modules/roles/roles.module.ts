@@ -10,7 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-menus/dropdown-menus.module";
 
 
@@ -20,7 +19,6 @@ import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-m
     CreateRolesComponent,
     EditRolesComponent,
     ListRolesComponent,
-    LoadingScreenComponent,
   ],
   imports: [
     CommonModule,

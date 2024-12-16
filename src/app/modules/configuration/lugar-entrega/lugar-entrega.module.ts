@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { LugarEntregaComponent } from './lugar-entrega.component';
 
 
@@ -19,7 +18,6 @@ import { LugarEntregaComponent } from './lugar-entrega.component';
     CreateLugarEntregaComponent,
     EditLugarEntregaComponent,
     ListLugarEntregaComponent,
-    LoadingScreenComponent
   ],
   imports: [
     CommonModule,

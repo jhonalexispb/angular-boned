@@ -30,7 +30,6 @@ export class ListUserComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.userService.isLoading$
     this.listUsers();
     this.configAll();
   }
@@ -87,7 +86,7 @@ export class ListUserComponent implements OnInit{
               this.sweet.error('Error', resp.message_text);
             } else {
               this.USERS = this.USERS.filter((user:any) => user.id !== USER.id);
-              this.sweet.success('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
+              this.sweet.success('Eliminado', 'El usuario ha sido eliminado correctamente');
             }
           },
           error: (error) => {

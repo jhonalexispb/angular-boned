@@ -77,7 +77,7 @@ export class ListLugarEntregaComponent {
               this.sweet.error('Error', resp.message_text);
             } else {
               this.LUGAR_ENTREGA = this.LUGAR_ENTREGA.filter((ware:any) => ware.id !== LUGAR_ENTREGA.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'el lugar de entrega ha sido eliminado correctamente', 'success');
+              this.sweet.success('Eliminado', 'el lugar de entrega ha sido eliminado correctamente');
             }
           },
           error: (error) => {

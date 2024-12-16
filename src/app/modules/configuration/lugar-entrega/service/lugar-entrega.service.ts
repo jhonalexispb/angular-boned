@@ -1,3 +1,4 @@
+import { LoadingService } from './../../../loadingScreen/loading-screen/service/loading-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable } from 'rxjs';
@@ -16,49 +17,46 @@ export class LugarEntregaService {
   constructor(
     private http: HttpClient,
     public authservice: AuthService,
-  ) {
-    this.isLoadingSubject = new BehaviorSubject<boolean>(false);
-    this.isLoading$ = this.isLoadingSubject.asObservable();
-    this.texto = new BehaviorSubject<string>('');
-  }
+    private loadingService:LoadingService
+  ) {}
 
   registerLugarEntrega(data:any){
-    this.texto.next('Registrando lugar de entrega')
-    this.isLoadingSubject.next(true);
+    this.loadingService.showLoading('Registrando lugar de entrega')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/lugar_entrega";
     return this.http.post(URL,data,{headers: headers}).pipe(
-      finalize(()=>this.isLoadingSubject.next(false))
+      finalize(()=>this.loadingService.hideLoading())
     )
   }
 
   listLugarEntrega(page = 1, search:string = ''){
-    this.texto.next('Listando lugares de entrega')
-    this.isLoadingSubject.next(true);
+    this.loadingService.showLoading('Listando lugares de entrega')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/lugar_entrega?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
-      finalize(()=>this.isLoadingSubject.next(false))
+      finalize(()=>{
+        setTimeout(() => {
+          this.loadingService.hideLoading();
+        }, 1000);
+      })
     ) 
   }
 
   updateLugarEntrega(ID_LUGAR_ENTREGA:string,data:any){
-    this.texto.next('Actualizando lugar de entrega')
-    this.isLoadingSubject.next(true);
+    this.loadingService.showLoading('Actualizando lugar de entrega')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/lugar_entrega/"+ID_LUGAR_ENTREGA;
     return this.http.put(URL,data,{headers: headers}).pipe(
-      finalize(()=>this.isLoadingSubject.next(false))
+      finalize(()=>this.loadingService.hideLoading())
     )
   }
 
   deleteLugarEntrega(ID_LUGAR_ENTREGA:string){
-    this.texto.next('Eliminando lugar de entrega')
-    this.isLoadingSubject.next(true);
+    this.loadingService.showLoading('Eliminando lugar de entrega')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/lugar_entrega/"+ID_LUGAR_ENTREGA;
     return this.http.delete(URL,{headers: headers}).pipe(
-      finalize(()=>this.isLoadingSubject.next(false))
+      finalize(()=>this.loadingService.hideLoading())
     )
   }
 }

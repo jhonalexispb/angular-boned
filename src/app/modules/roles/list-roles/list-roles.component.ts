@@ -142,7 +142,7 @@ export class ListRolesComponent {
               } */
               
               //this.toast.success('Éxito', 'El rol se eliminó correctamente');
-              this.sweet.success('Eliminado', 'El rol ha sido eliminado correctamente', 'success');
+              this.sweet.success('Eliminado', 'El rol ha sido eliminado correctamente');
             }
           },
           error: (error) => {

@@ -9,7 +9,6 @@ import { ListUserComponent } from './list-user/list-user.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DataTablesModule } from 'angular-datatables';
 
@@ -20,7 +19,6 @@ import { DataTablesModule } from 'angular-datatables';
     CreateUserComponent,
     EditUserComponent,
     ListUserComponent,
-    LoadingScreenComponent,
   ],
   imports: [
     CommonModule,

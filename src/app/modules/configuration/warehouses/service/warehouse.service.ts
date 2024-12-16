@@ -18,11 +18,7 @@ export class WarehouseService {
     private http: HttpClient,
     public authservice: AuthService,
     private loadingService: LoadingService
-  ) {
-    this.isLoadingSubject = new BehaviorSubject<boolean>(false);
-    this.isLoading$ = this.isLoadingSubject.asObservable();
-    this.texto = new BehaviorSubject<string>('');
-  } 
+  ) {} 
 
   registerWarehouse(data:any){
     this.loadingService.showLoading('Registrando almacén')

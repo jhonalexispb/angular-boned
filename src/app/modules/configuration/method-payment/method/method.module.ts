@@ -9,15 +9,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 
 
 @NgModule({
   declarations: [
     MethodComponent,
     ListMethodComponent,
-    EditMethodComponent,
-    LoadingScreenComponent
+    EditMethodComponent
   ],
   imports: [
     CommonModule,

@@ -32,7 +32,7 @@ export class BankService {
     ) 
   }
 
-  registerSucursal(data:any){
+  registerBanco(data:any){
     this.loadingService.showLoading('Registrando banco')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/banco";

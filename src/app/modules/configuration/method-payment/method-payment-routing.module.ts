@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MethodPaymentComponent } from './method-payment.component';
 import { MethodComponent } from './method/method.component';
+import { ComprobanteComponent } from './comprobante/comprobante.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,11 @@ const routes: Routes = [
         path: 'banco',
         component: BankComponent,
         loadChildren: () => import('./bank/bank.module').then(m => m.BankModule)
+      },
+      {
+        path: 'comprobante-pago',
+        component: ComprobanteComponent,
+        loadChildren: () => import('./comprobante/comprobante.module').then(m => m.ComprobanteModule)
       },
     ]
   }

@@ -37,7 +37,7 @@ export class CreateBankComponent {
       formData.append("name", this.name);
       formData.append("imagebank", this.file_name);
   
-      this.bankService.registerSucursal(formData).subscribe({
+      this.bankService.registerBanco(formData).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if (resp.message == 403) {

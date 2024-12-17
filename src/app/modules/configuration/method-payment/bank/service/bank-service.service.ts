@@ -45,7 +45,7 @@ export class BankService {
     this.loadingService.showLoading('Actualizando banco')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/banco/"+ID_BANCO;
-    return this.http.put(URL,data,{headers: headers}).pipe(
+    return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(()=>this.loadingService.hideLoading())
     )
   }

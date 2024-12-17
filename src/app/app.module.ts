@@ -15,11 +15,11 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 // #fake-start#
 import { FakeAPIService } from './_fake/fake-api.service';
 import { ToastrModule } from 'ngx-toastr';
-
 import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
 import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component';
 // #fake-end#
+
 
 function appInitializer(authService: AuthService) {
   return () => {
@@ -52,8 +52,7 @@ function appInitializer(authService: AuthService) {
     SweetAlert2Module.forRoot(),
     ToastrModule.forRoot(),
     NgbPaginationModule,
-    LottieModule.forRoot(appConfig)
-
+    LottieModule.forRoot(appConfig),
   ],
   providers: [
     {
@@ -61,7 +60,7 @@ function appInitializer(authService: AuthService) {
       useFactory: appInitializer,
       multi: true,
       deps: [AuthService],
-    },
+    }
   ],
   bootstrap: [AppComponent],
 })

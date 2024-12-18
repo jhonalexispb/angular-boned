@@ -1,0 +1,126 @@
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
+                        class="path2"></span></i>
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listDepartamento()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar departamento" />
+            </div>
+            <!--end::Search-->
+        </div>
+
+        <!-- <span class="spinner-border spinner-border-sm align-middle ms-2" *ngIf="isLoading$ | async"></span> -->
+
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                <!--begin::Add customer-->
+                <button type="button" class="btn btn-primary" (click)="createDepartamento()">
+                    Crear Departamento
+                </button>
+                <!--end::Add customer-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Table-->
+        <div id="kt_customers_table_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
+            <div id="" class="table-responsive">
+                <ng-container *ngIf="DEPARTAMENTOS.length > 0">
+                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" id="example"
+                        style="width: 100%">
+                        <thead>
+                            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Nombre</span><span
+                                        class="dt-column-order"></span>
+                                </th>
+
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Provincias</span><span
+                                        class="dt-column-order"></span>
+                                </th>
+
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                    colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Estado</span><span
+                                        class="dt-column-order"></span>
+                                </th>
+
+                                <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                                    colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                                    <span class="dt-column-title" role="button">Fecha de registro</span><span
+                                        class="dt-column-order"></span>
+                                </th>
+
+                                <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                                    aria-label="Actions">
+                                    <span class="dt-column-title">Actions</span><span class="dt-column-order"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="fw-semibold text-gray-600">
+                            <tr  *ngFor="let DEP of DEPARTAMENTOS">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-50px me-5">
+                                            <img [src]="DEP.image" class="" alt="img">
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-start flex-column">
+                                            <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ DEP.name }}</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    
+                                </td>
+    
+                                <td>
+                                    
+                                    {{ DEP.state }}
+                                    
+                                </td>
+                                
+                                <td>
+                                    {{ DEP.created_format_at }}
+                                </td>
+                                <td class="">
+                                    <a href="#" onclick="return false" (click)="editDepartamento(DEP)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </a>
+                                    <a href="#" onclick="return false" (click)="deleteDepartamento(DEP)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </ng-container>
+            </div>
+            <ngb-pagination
+                [collectionSize]="totalPages"
+                [(page)]="currentPage"
+                [pageSize]="10"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="loadPage($event)"
+            ></ngb-pagination>
+        </div>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>
+

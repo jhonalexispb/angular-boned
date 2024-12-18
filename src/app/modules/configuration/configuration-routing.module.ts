@@ -21,6 +21,10 @@ const routes: Routes = [
     path: 'metodo-pago',
     loadChildren: () => import('./method-payment/method-payment.module').then((m) => m.MethodPaymentModule),
   },
+  {
+    path: 'geografia',
+    loadChildren: () => import('./geografia/geografia.module').then((m) => m.GeografiaModule),
+  },
 ];
 
 @NgModule({

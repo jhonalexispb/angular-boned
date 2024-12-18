@@ -69,12 +69,22 @@
           </a>
         </div>
         <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/metodo-pago/" (click)="redireccionar()">
+          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/metodo-pago/" (click)="redireccionar('/configuraciones/metodo-pago/metodo/list')">
             <span
               class="menu-bullet">
               <span class="bullet bullet-dot"></span>
             </span>
             <span class="menu-title">Metodo de pago
+            </span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/geografia" (click)="redireccionar('/configuraciones/geografia/departamento/list')">
+            <span
+              class="menu-bullet">
+              <span class="bullet bullet-dot"></span>
+            </span>
+            <span class="menu-title">Geografia
             </span>
           </a>
         </div>

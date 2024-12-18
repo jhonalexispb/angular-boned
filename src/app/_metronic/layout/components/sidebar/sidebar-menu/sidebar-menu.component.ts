@@ -39,8 +39,8 @@ export class SidebarMenuComponent implements OnInit {
     return this.user.role_name == 'Super-Admin' ? true : false
   } 
 
-  redireccionar(){
-    this.router.navigate(['/configuraciones/metodo-pago/metodo/list']);
+  redireccionar(ruta:string = ''){
+    this.router.navigate([ruta]);
   }
 
 }

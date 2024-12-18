@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { AsignarComprobanteComponent } from './asignar-comprobante/asignar-comprobante.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     ListBankComponent,
     EditBankComponent,
     CreateBankComponent,
+    AsignarComprobanteComponent,
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import lottie from 'lottie-web';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +30,11 @@ export class SweetalertService {
     if (lottieContainer) {
       // Usar lottie directamente
       const animation = lottie.loadAnimation({
-        container: lottieContainer,  // El contenedor de la animación
-        path: animationPath,  // Ruta de la animación JSON
-        renderer: 'svg',  // Renderizador SVG
-        loop: true,  // Hacer que la animación se repita
-        autoplay: true,  // Iniciar automáticamente
+        container: lottieContainer,
+        path: animationPath,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
       });
     }
   }

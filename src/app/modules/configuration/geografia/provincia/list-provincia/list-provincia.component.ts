@@ -59,7 +59,6 @@ export class ListProvinciaComponent {
             let INDEX = this.PROVINCIAS.findIndex((b:any) => b.id == PROV.id);
             if(INDEX != -1){
               this.PROVINCIAS[INDEX] = provincia
-              console.log(provincia)
             }
           }
         })

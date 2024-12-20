@@ -52,6 +52,7 @@ export class EditProvinciaComponent {
             formData.append("name", this.name);
             formData.append("image_provincia", this.file_name);
             formData.append("iddepartamento", this.departamento);
+            formData.append("state", this.state.toString());
         
             this.provinciaService.updateProvincia(this.PROVINCIA_SELECTED.id,formData).subscribe({
               next: (resp: any) => {
@@ -60,7 +61,7 @@ export class EditProvinciaComponent {
                   this.sweetGeografia.confirmar_restauracion('Atencion', resp.message_text);
                   this.sweetGeografia.getRestauracionObservable().subscribe((confirmed:boolean) => {
                     if (confirmed) {
-                      this.restaurar({ provincia: resp.provincia, isRestored: true });
+                      this.restaurar(resp.provincia);
                     }
                   })
                 } else if (resp.message == 403) {
@@ -86,7 +87,7 @@ export class EditProvinciaComponent {
                 if (resp.message === 403) {
                   this.sweet.error('Error', resp.message_text);
                 } else {
-                  this.ProvinciaE.emit(resp.provincia_restaurada);
+                  this.ProvinciaE.emit({ provincia: resp.provincia_restaurada, isRestored: true });
                   this.modal.close();
                   this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
                 }

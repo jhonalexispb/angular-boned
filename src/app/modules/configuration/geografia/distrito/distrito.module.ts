@@ -6,6 +6,10 @@ import { DistritoComponent } from './distrito.component';
 import { ListDistritoComponent } from './list-distrito/list-distrito.component';
 import { CreateDistritoComponent } from './create-distrito/create-distrito.component';
 import { EditDistritoComponent } from './edit-distrito/edit-distrito.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 
 
 @NgModule({
@@ -17,7 +21,14 @@ import { EditDistritoComponent } from './edit-distrito/edit-distrito.component';
   ],
   imports: [
     CommonModule,
-    DistritoRoutingModule
+    DistritoRoutingModule,
+
+    HttpClientModule,
+    FormsModule,
+    NgbModule,
+    ReactiveFormsModule,
+    InlineSVGModule,
+    NgbModalModule,
   ]
 })
 export class DistritoModule { }

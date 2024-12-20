@@ -33,6 +33,7 @@ export class CreateProvinciaComponent {
         }
     
         store(){
+
           if(!this.name){
             this.sweet.formulario_invalido("Validacion","el nombre de la provincia es requerida");
             return false;

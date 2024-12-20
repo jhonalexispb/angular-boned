@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../auth';
-import { URL_SERVICIO } from 'src/app/config/config';
+import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { LoadingService } from '../../loadingScreen/loading-screen/service/loading-service.service';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class UserService {
       finalize(()=>{
         setTimeout(() => {
           this.loadingService.hideLoading();
-        }, 1000);
+        }, ConfigDelay.LOADING_DELAY);
       })
     ) 
   }

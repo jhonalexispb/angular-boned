@@ -1,1 +1,128 @@
-<p>list-provincia works!</p>
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
+                        class="path2"></span></i>
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listProvincia()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar provincia" />
+            </div>
+            <!--end::Search-->
+        </div>
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                <!--begin::Add customer-->
+                <button type="button" class="btn btn-primary" (click)="createProvincia()">
+                    Crear provincia
+                </button>
+                <!--end::Add customer-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Table-->
+        <div id="kt_customers_table_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
+            <div id="" class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable"
+                    style="width: 100%">
+                    <thead>
+                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Nombre</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <!-- <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
+                                colspan="1" aria-label="Email: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Provincias</span><span
+                                    class="dt-column-order"></span>
+                            </th> -->
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                                colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Estado</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                                colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Fecha de registro</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                                aria-label="Actions">
+                                <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="PROVINCIAS.length > 0; else noData" class="fw-semibold text-gray-600">
+                        <tr *ngFor="let P of PROVINCIAS">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-50px me-5">
+                                        <img [src]="P.image" class="imagen" alt="img">
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.name }}</span>
+                                        <!-- <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ USER.full_name }}</a> -->
+                                            <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.departamento_name }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- <td>
+                                
+                            </td> -->
+                            
+                            <td>
+                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.state == 1">Activo</span>
+                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.state == 2">Inactivo</span>
+                            </td>
+
+                            <td>
+                                {{ P.created_at }}
+                            </td>
+                            <td class="">
+                                <a href="#" onclick="return false" (click)="editProvincia(P)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                </a>
+                                <a  href="#" onclick="return false" (click)="deleteProvincia(P)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+                <ng-template #noData>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            Sin datos
+                        </td>
+                    </tr>
+                </ng-template>
+            </div>
+            <ngb-pagination
+                [collectionSize]="totalPages"
+                [(page)]="currentPage"
+                [pageSize]="10"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="loadPage($event)"
+            ></ngb-pagination>
+        </div>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>
+
+

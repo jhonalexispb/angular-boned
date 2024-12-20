@@ -6,6 +6,10 @@ import { ProvinciaComponent } from './provincia.component';
 import { EditProvinciaComponent } from './edit-provincia/edit-provincia.component';
 import { ListProvinciaComponent } from './list-provincia/list-provincia.component';
 import { CreateProvinciaComponent } from './create-provincia/create-provincia.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 
 
 @NgModule({
@@ -17,7 +21,14 @@ import { CreateProvinciaComponent } from './create-provincia/create-provincia.co
   ],
   imports: [
     CommonModule,
-    ProvinciaRoutingModule
+    ProvinciaRoutingModule,
+
+    HttpClientModule,
+    FormsModule,
+    NgbModule,
+    ReactiveFormsModule,
+    InlineSVGModule,
+    NgbModalModule,
   ]
 })
 export class ProvinciaModule { }

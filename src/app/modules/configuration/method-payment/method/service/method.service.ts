@@ -2,7 +2,7 @@ import { LoadingService } from './../../../../loadingScreen/loading-screen/servi
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable } from 'rxjs';
-import { URL_SERVICIO } from 'src/app/config/config';
+import { ConfigDelay, URL_SERVICIO } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
 
 @Injectable({
@@ -27,7 +27,7 @@ export class MethodService {
         finalize(()=>{
           setTimeout(() => {
             this.loadingService.hideLoading();
-          }, 1000);
+          }, ConfigDelay.LOADING_DELAY);
         })
       ) 
     }

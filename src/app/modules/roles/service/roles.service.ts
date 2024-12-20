@@ -1,4 +1,4 @@
-import { URL_SERVICIO } from 'src/app/config/config';
+import { ConfigDelay, URL_SERVICIO } from 'src/app/config/config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable} from 'rxjs';
@@ -12,7 +12,6 @@ export class RolesService {
   isLoading$: Observable<boolean>;
   isLoadingSubject: BehaviorSubject<boolean>;
   texto: BehaviorSubject<string>;
-  private time: number = 1000;
   
   constructor(
     private http: HttpClient,
@@ -37,7 +36,7 @@ export class RolesService {
       finalize(()=>{
         setTimeout(() => {
           this.loadingService.hideLoading();
-        }, 1000);
+        }, ConfigDelay.LOADING_DELAY);
       })
     ) 
   }

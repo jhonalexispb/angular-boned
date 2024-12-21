@@ -5,6 +5,8 @@ import { ServiceDistritoService } from '../service/service-distrito.service';
 import { EditDistritoComponent } from '../edit-distrito/edit-distrito.component';
 import { CreateDistritoComponent } from '../create-distrito/create-distrito.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-distrito',
   templateUrl: './list-distrito.component.html',
@@ -20,6 +22,18 @@ export class ListDistritoComponent {
       
         totalPages:number = 0; 
         currentPage:number = 1;
+
+        page = 1;
+        selectPage(page: string) {
+          this.page = parseInt(page, 10) || 1;
+
+          this.currentPage = this.page;
+          this.loadPage(this.page);
+        }
+      
+        formatInput(input: HTMLInputElement) {
+          input.value = input.value.replace(FILTER_PAG_REGEX, '');
+        }
         
       
         constructor(

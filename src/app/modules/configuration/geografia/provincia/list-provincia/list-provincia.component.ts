@@ -5,6 +5,8 @@ import { ServiceProvinciaService } from '../service/service-provincia.service';
 import { EditProvinciaComponent } from '../edit-provincia/edit-provincia.component';
 import { CreateProvinciaComponent } from '../create-provincia/create-provincia.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-provincia',
   templateUrl: './list-provincia.component.html',
@@ -20,6 +22,19 @@ export class ListProvinciaComponent {
     
       totalPages:number = 0; 
       currentPage:number = 1;
+
+      
+      page = 1;
+      selectPage(page: string) {
+        this.page = parseInt(page, 10) || 1;
+
+        this.currentPage = this.page;
+        this.loadPage(this.page);
+      }
+    
+      formatInput(input: HTMLInputElement) {
+        input.value = input.value.replace(FILTER_PAG_REGEX, '');
+      }
       
     
       constructor(

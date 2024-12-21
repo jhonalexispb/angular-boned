@@ -5,6 +5,8 @@ import { ServiceDepartamentoService } from '../service/service-departamento.serv
 import { EditDepartamentoComponent } from '../edit-departamento/edit-departamento.component';
 import { CreateDepartamentoComponent } from '../create-departamento/create-departamento.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-departamento',
   templateUrl: './list-departamento.component.html',
@@ -15,6 +17,19 @@ export class ListDepartamentoComponent {
     DEPARTAMENTOS:any = [];
     isLoading$:any;
     sweet:any = new SweetalertService
+
+
+    page = 1;
+    selectPage(page: string) {
+      this.page = parseInt(page, 10) || 1;
+
+      this.currentPage = this.page;
+      this.loadPage(this.page);
+    }
+  
+    formatInput(input: HTMLInputElement) {
+      input.value = input.value.replace(FILTER_PAG_REGEX, '');
+    }
   
   
     totalPages:number = 0; 

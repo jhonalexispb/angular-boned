@@ -5,6 +5,8 @@ import { CreateSucursalComponent } from '../create-sucursal/create-sucursal.comp
 import { EditSucursalComponent } from '../edit-sucursal/edit-sucursal.component';
 import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-sucursal',
   templateUrl: './list-sucursal.component.html',
@@ -19,6 +21,17 @@ export class ListSucursalComponent {
   totalPages:number = 0; 
   currentPage:number = 1;
   
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
 
   constructor(
     public modalService: NgbModal,

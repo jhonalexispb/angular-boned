@@ -5,6 +5,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateWarehouseComponent } from '../create-warehouse/create-warehouse.component';
 import { EditWarehouseComponent } from '../edit-warehouse/edit-warehouse.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-warehouse',
   templateUrl: './list-warehouse.component.html',
@@ -20,6 +22,17 @@ export class ListWarehouseComponent {
   totalPages:number = 0; 
   currentPage:number = 1;
   
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
 
   constructor(
     public modalService: NgbModal,

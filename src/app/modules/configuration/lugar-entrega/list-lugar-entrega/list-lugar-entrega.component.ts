@@ -5,6 +5,8 @@ import { LugarEntregaService } from '../service/lugar-entrega.service';
 import { CreateLugarEntregaComponent } from '../create-lugar-entrega/create-lugar-entrega.component';
 import { EditLugarEntregaComponent } from '../edit-lugar-entrega/edit-lugar-entrega.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-lugar-entrega',
   templateUrl: './list-lugar-entrega.component.html',
@@ -19,6 +21,19 @@ export class ListLugarEntregaComponent {
   totalPages:number = 0; 
   currentPage:number = 1;
   
+  
+      
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
 
   constructor(
     public modalService: NgbModal,

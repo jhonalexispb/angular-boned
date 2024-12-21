@@ -4,6 +4,8 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { SweetGeografia } from '../../service/service-geografia.service';
 import { ServiceProvinciaService } from '../service/service-provincia.service';
 
+
+
 @Component({
   selector: 'app-create-provincia',
   templateUrl: './create-provincia.component.html',
@@ -16,6 +18,8 @@ export class CreateProvinciaComponent {
         file_name:any
         imagen_previzualizade:any;
         departamento:string = '';
+
+        loading: boolean = false;
       
         sweet:any = new SweetalertService
         sweetGeografia:any = new SweetGeografia;

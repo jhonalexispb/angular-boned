@@ -5,6 +5,8 @@ import { ComprobanteService } from '../service/comprobante-service.service';
 import { EditComprobanteComponent } from '../edit-comprobante/edit-comprobante.component';
 import { CreateComprobanteComponent } from '../create-comprobante/create-comprobante.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-comprobante',
   templateUrl: './list-comprobante.component.html',
@@ -16,9 +18,20 @@ export class ListComprobanteComponent {
     isLoading$:any;
     sweet:any = new SweetalertService
   
-  
     totalPages:number = 0; 
     currentPage:number = 1;
+
+    page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
     
   
     constructor(

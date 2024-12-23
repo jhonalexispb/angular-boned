@@ -5,6 +5,8 @@ import { CreateUserComponent } from '../create-user/create-user.component';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 import { UserService } from '../service/users.service';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-roles',
   templateUrl: './list-user.component.html',
@@ -27,6 +29,18 @@ export class ListUserComponent implements OnInit{
     public userService: UserService,
   ){
 
+  }
+
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
   }
 
   ngOnInit(): void {

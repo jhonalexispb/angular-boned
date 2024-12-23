@@ -5,6 +5,8 @@ import { SweetalertService } from '../../../../sweetAlert/sweetAlert.service';
 import { MethodService } from '../service/method.service';
 import { EditMethodComponent } from '../edit-method/edit-method.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-method',
   templateUrl: './list-method.component.html',
@@ -19,6 +21,18 @@ export class ListMethodComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1;
+
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
   
 
   constructor(

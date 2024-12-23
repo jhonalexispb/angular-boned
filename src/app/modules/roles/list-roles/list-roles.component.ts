@@ -7,6 +7,8 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { Subject } from 'rxjs';
 declare var $: any;
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-roles',
   templateUrl: './list-roles.component.html',
@@ -30,6 +32,18 @@ export class ListRolesComponent {
     private cdr: ChangeDetectorRef
   ){
 
+  }
+
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
   }
 
   ngOnInit(): void {

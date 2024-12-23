@@ -5,6 +5,8 @@ import { BankService } from '../service/bank-service.service';
 import { EditBankComponent } from '../edit-bank/edit-bank.component';
 import { CreateBankComponent } from '../create-bank/create-bank.component';
 
+const FILTER_PAG_REGEX = /[^0-9]/g;
+
 @Component({
   selector: 'app-list-bank',
   templateUrl: './list-bank.component.html',
@@ -20,6 +22,17 @@ export class ListBankComponent {
   totalPages:number = 0; 
   currentPage:number = 1;
   
+  page = 1;
+  selectPage(page: string) {
+    this.page = parseInt(page, 10) || 1;
+
+    this.currentPage = this.page;
+    this.loadPage(this.page);
+  }
+
+  formatInput(input: HTMLInputElement) {
+    input.value = input.value.replace(FILTER_PAG_REGEX, '');
+  }
 
   constructor(
     public modalService: NgbModal,

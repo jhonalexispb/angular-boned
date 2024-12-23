@@ -17,7 +17,7 @@ export class CreateProvinciaComponent {
         name:string = '';
         file_name:any
         imagen_previzualizade:any;
-        departamento:string = '';
+        departamento:null;
 
         loading: boolean = false;
       
@@ -109,3 +109,4 @@ export class CreateProvinciaComponent {
           reader.onloadend = () => this.imagen_previzualizade = reader.result
         }
 }
+

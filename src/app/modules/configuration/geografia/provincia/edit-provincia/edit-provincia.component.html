@@ -54,23 +54,26 @@
                     </div>
                 </div> -->
                 <div class="v-row mb-7">
-                    
                     <label class="required fw-bold fs-6 mb-2">Departamento: </label>
-                    <select
-                        class="form-control form-select-solid fw-bolder"
-                        name="role_selected"
-                        placeholder="Selec. Rol"
-                        [(ngModel)]="departamento"
-                        #departamentoControl="ngModel"
+                    <ng-select 
+                        name="departamento"
+                        [items]="DEPARTAMENTOS"
                         required
-                        [ngClass]="{'is-invalid': departamentoControl.invalid && departamentoControl.dirty}"
-                    >
-                    <option value="">Seleccione departamento</option>
-                    <ng-container *ngFor="let dep of DEPARTAMENTOS">
-                        <option [value]="dep.id">{{ dep.name }}</option>
-                    </ng-container>
-                    </select>
-                    <div *ngIf="departamentoControl.invalid && departamentoControl.dirty" class="invalid-feedback">
+                        bindLabel="name"
+                        bindValue="id"
+                        [(ngModel)]="departamento"
+                        placeholder="Seleccione un departamento"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [loading]="loading"  
+                        [loadingText]="'Cargando...'" 
+                        [bindLabel]="'name'"  
+                        [bindValue]="'id'"  
+                        #departamentoControl="ngModel"
+                        [ngClass]="{'is-invalid': departamentoControl.invalid && departamentoControl.touched}">
+                    </ng-select>
+                    <div *ngIf="departamentoControl.invalid && departamentoControl.touched" class="invalid-feedback">
                         El departamento es requerido
                     </div>
                 </div>

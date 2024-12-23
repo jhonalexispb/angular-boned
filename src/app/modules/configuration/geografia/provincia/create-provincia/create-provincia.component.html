@@ -24,11 +24,11 @@
     </div>
     <!--end::Modal header-->
     <!--begin::Modal body-->
-    <div class="modal-body scroll-y mx-5 my-7">
+    <div class="modal-body mx-5 my-7">
         <!--begin::Form-->
         <form id="kt_modal_add_user_form" class="form" action="#" #form="ngForm">
             <!--begin::Scroll-->
-            <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
+            <div class="" id="kt_modal_add_user_scroll" data-kt-scroll="true"
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
@@ -47,41 +47,12 @@
                     <!--end::Input-->
                 </div>
 
-                <!-- <div class="fv-row mb-7">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile"  accept=".jpeg, .bmp, .jpg, .png, .gif, .webp">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                </div> -->
-                <!-- <div class="v-row mb-7">
-                    
-                    <label class="required fw-bold fs-6 mb-2">Departamento: </label>
-                    <select
-                        class="form-control form-select-solid fw-bolder"
-                        name="role_selected"
-                        required
-                        placeholder="Selec. Rol"
-                        [(ngModel)]="departamento"
-                        #departamentoControl="ngModel"
-                        [ngClass]="{'is-invalid': departamentoControl.invalid && departamentoControl.touched}"
-                    >
-                    <option value="">Seleccione departamento</option>
-                    <ng-container *ngFor="let dep of DEPARTAMENTOS">
-                        <option [value]="dep.id">{{ dep.name }}</option>
-                    </ng-container>
-                    </select>
-                    <div *ngIf="departamentoControl.invalid && departamentoControl.touched" class="invalid-feedback">
-                        El departamento es requerido
-                    </div>
-                </div> -->
-
-
-
                 <div class="v-row mb-7">
                     <label class="required fw-bold fs-6 mb-2">Departamento: </label>
                     <ng-select 
                         name="departamento"
                         [items]="DEPARTAMENTOS"
+                        required
                         bindLabel="name"
                         bindValue="id"
                         [(ngModel)]="departamento"
@@ -130,5 +101,3 @@
     <!--end::Modal body-->
 </div>
 <!--end::Modal content CREATE-->
-
-

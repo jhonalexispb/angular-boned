@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SweetGeografia } from '../../service/service-geografia.service';
 import { ServiceDistritoService } from '../service/service-distrito.service';
+import { toInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 
 @Component({
   selector: 'app-edit-distrito',
@@ -16,8 +17,10 @@ export class EditDistritoComponent {
   name:string = '';
   file_name:any
   imagen_previzualizade:any;
-  provincia:string = '';
+  provincia:number;
   state:number = 1;
+
+  loading: boolean = false;
 
   sweet:any = new SweetalertService
   sweetGeografia:any = new SweetGeografia;
@@ -34,7 +37,7 @@ export class EditDistritoComponent {
     this.name = this.DISTRITO_SELECTED.name,
     this.file_name = this.DISTRITO_SELECTED.image,
     this.state = this.DISTRITO_SELECTED.state,
-    this.provincia = this.DISTRITO_SELECTED.idprovincia
+    this.provincia = parseInt(this.DISTRITO_SELECTED.idprovincia)
   }
 
   store(){
@@ -52,7 +55,7 @@ export class EditDistritoComponent {
     const formData = new FormData();
     formData.append("name", this.name);
     formData.append("image_distrito", this.file_name);
-    formData.append("idprovincia", this.provincia);
+    formData.append("idprovincia", this.provincia.toString());
     formData.append("state", this.state.toString());
 
     this.distritoService.updateDistrito(this.DISTRITO_SELECTED.id,formData).subscribe({

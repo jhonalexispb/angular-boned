@@ -28,3 +28,58 @@
 .toast-warning {
     background-color: #ffe1b6 !important;
 }
+
+html[data-bs-theme="light"] {
+    ng-select {
+      .ng-select-container {
+        background-color: #ffffff; /* Fondo blanco */
+        color: #000000; /* Texto negro */
+        border: 1px solid #cccccc; /* Borde claro */
+      }
+  
+      .ng-select-container .ng-input input {
+        background-color: #ffffff; /* Fondo blanco */
+        color: #000000; /* Texto negro */
+        caret-color: #000000; /* Color del cursor */
+      }
+    }
+  }
+  
+  /* Estilos para el modo oscuro cuando data-bs-theme="dark" */
+  html[data-bs-theme="dark"] {
+    ng-select {
+      .ng-select-container {
+        background-color: #15171c !important; /* Fondo oscuro */
+        color: #ffffff; /* Texto blanco */
+        border: 1px solid #444444 !important /* Borde oscuro */
+      }
+  
+      .ng-select-container .ng-input input {
+        background-color: #333333; /* Fondo oscuro */
+        color: #ffffff; /* Texto blanco */
+        caret-color: #ffffff; /* Color del cursor */
+      }
+
+      .ng-dropdown-panel .ng-dropdown-panel-items .ng-option{
+        background-color: #282d38;
+        color: #ffffff;
+        padding: 8px 10px;
+      }
+
+      .ng-dropdown-panel{
+        border: 1px solid #282d38;
+        background-color: #282d38;
+      }
+
+      .is-invalid {
+        .ng-select-container{
+            border: 1px solid red !important
+          }
+      }
+    }
+  }
+
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

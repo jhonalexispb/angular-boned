@@ -9,7 +9,6 @@ import { LoadingService } from 'src/app/modules/loadingScreen/loading-screen/ser
   providedIn: 'root'
 })
 export class ServiceDistritoService {
-  isLoading$: Observable<boolean>;
       isLoadingSubject: BehaviorSubject<boolean>;
       texto: BehaviorSubject<string>;
       

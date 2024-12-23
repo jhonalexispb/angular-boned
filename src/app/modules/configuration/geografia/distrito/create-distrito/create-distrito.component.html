@@ -24,11 +24,11 @@
     </div>
     <!--end::Modal header-->
     <!--begin::Modal body-->
-    <div class="modal-body scroll-y mx-5 my-7">
+    <div class="modal-body mx-5 my-7">
         <!--begin::Form-->
         <form id="kt_modal_add_user_form" class="form" action="#" #form="ngForm">
             <!--begin::Scroll-->
-            <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
+            <div class="d-flex flex-column me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
@@ -53,23 +53,28 @@
                         <label class="custom-file-label" for="customFile">Choose file</label>
                     </div>
                 </div> -->
+
                 <div class="v-row mb-7">
-                    
                     <label class="required fw-bold fs-6 mb-2">Provincia: </label>
-                    <select
-                        class="form-control form-select-solid fw-bolder"
-                        name="role_selected"
+                    <ng-select 
+                        name="provincia"
+                        [items]="PROVINCIAS"
                         required
-                        placeholder="Selec. Rol"
+                        bindLabel="provincia_department_name"
+                        bindValue="id"
                         [(ngModel)]="provincia"
+                        placeholder="Provincia / Departamento"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [loading]="loading"  
+                        [loadingText]="'Cargando...'" 
+                        [bindLabel]="'provincia_department_name'"  
+                        [bindValue]="'id'"  
+                        
                         #provinciaControl="ngModel"
-                        [ngClass]="{'is-invalid': provinciaControl.invalid && provinciaControl.touched}"
-                    >
-                    <option value="">Seleccione provincia</option>
-                    <ng-container *ngFor="let prov of PROVINCIAS">
-                        <option [value]="prov.id">{{ prov.name }}</option>
-                    </ng-container>
-                    </select>
+                        [ngClass]="{'is-invalid': provinciaControl.invalid && provinciaControl.touched}">
+                    </ng-select>
                     <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="invalid-feedback">
                         La provincia es requerida
                     </div>

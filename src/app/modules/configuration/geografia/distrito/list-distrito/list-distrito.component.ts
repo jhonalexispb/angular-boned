@@ -16,7 +16,7 @@ export class ListDistritoComponent {
   search:string = '';
         DISTRITOS:any = [];
         PROVINCIAS:any[] = [];
-        isLoading$:any;
+        isLoading:boolean;
         sweet:any = new SweetalertService
       
       
@@ -24,11 +24,13 @@ export class ListDistritoComponent {
         currentPage:number = 1;
 
         page = 1;
-        selectPage(page: string) {
-          this.page = parseInt(page, 10) || 1;
+        selectPage(page: number) {
+          if(page <= this.page && page > 0){
+            this.page = page || 1;
 
-          this.currentPage = this.page;
-          this.loadPage(this.page);
+            this.currentPage = this.page;
+            this.loadPage(this.page);
+          }
         }
       
         formatInput(input: HTMLInputElement) {
@@ -44,16 +46,17 @@ export class ListDistritoComponent {
         }
       
         ngOnInit(): void {
-          this.isLoading$ = this.distritoService.isLoading$;
           this.listDistrito();
         }
       
         listDistrito(page = 1){
+          this.isLoading = true
           this.distritoService.listDistrito(page,this.search).subscribe((resp: any) => {
             this.DISTRITOS = resp.distrito;
             this.totalPages = resp.total;
             this.PROVINCIAS = resp.provincias;
             this.currentPage = page;
+            this.isLoading = false
           })
         }
       

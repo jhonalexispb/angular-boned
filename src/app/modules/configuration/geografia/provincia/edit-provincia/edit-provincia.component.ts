@@ -16,11 +16,13 @@ export class EditProvinciaComponent {
           name:string = '';
           file_name:any
           imagen_previzualizade:any;
-          departamento:string = '';
+          departamento:number = 1;
           state: number = 1;
         
           sweet:any = new SweetalertService
           sweetGeografia:any = new SweetGeografia;
+
+          loading: boolean = false;
       
           constructor(
             public modal: NgbActiveModal,
@@ -34,7 +36,7 @@ export class EditProvinciaComponent {
             this.name = this.PROVINCIA_SELECTED.name,
             this.file_name = this.PROVINCIA_SELECTED.image,
             this.state = this.PROVINCIA_SELECTED.state,
-            this.departamento = this.PROVINCIA_SELECTED.iddepartamento
+            this.departamento = parseInt(this.PROVINCIA_SELECTED.iddepartamento)
           }
       
           store(){
@@ -51,7 +53,7 @@ export class EditProvinciaComponent {
             const formData = new FormData();
             formData.append("name", this.name);
             formData.append("image_provincia", this.file_name);
-            formData.append("iddepartamento", this.departamento);
+            formData.append("iddepartamento", this.departamento.toString());
             formData.append("state", this.state.toString());
         
             this.provinciaService.updateProvincia(this.PROVINCIA_SELECTED.id,formData).subscribe({

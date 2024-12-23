@@ -8,7 +8,7 @@
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
                 <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listDistrito()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar distrito" />
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar distrito" autocomplete="off"/>
             </div>
             <!--end::Search-->
         </div>
@@ -119,13 +119,13 @@
                             <label id="paginationInputLabel" for="paginationInput" class="col-form-label me-2 ms-1">Pagina</label>
                             <input
                                 #i
-                                type="text"
+                                type="number"
                                 inputmode="numeric"
                                 pattern="[0-9]*"
                                 class="form-control custom-pages-input"
                                 id="paginationInput"
                                 [value]="page"
-                                (keyup.enter)="selectPage(i.value)"
+                                (keyup.enter)="selectPage(+i.value)"
                                 
                                 (input)="formatInput($any($event).target)"
                                 aria-labelledby="paginationInputLabel paginationDescription"

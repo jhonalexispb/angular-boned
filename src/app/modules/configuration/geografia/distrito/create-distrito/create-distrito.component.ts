@@ -15,7 +15,9 @@ export class CreateDistritoComponent {
         name:string = '';
         file_name:any
         imagen_previzualizade:any;
-        provincia:string = '';
+        provincia:null;
+
+        loading: boolean = false;
       
         sweet:any = new SweetalertService
         sweetGeografia:any = new SweetGeografia;

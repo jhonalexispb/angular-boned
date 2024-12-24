@@ -25,6 +25,10 @@ const routes: Routes = [
     path: 'geografia',
     loadChildren: () => import('./geografia/geografia.module').then((m) => m.GeografiaModule),
   },
+  {
+    path: 'producto-categoria',
+    loadChildren: () => import('./producto-categoria/producto-categoria.module').then((m) => m.ProductoCategoriaModule),
+  },
 ];
 
 @NgModule({

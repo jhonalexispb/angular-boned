@@ -1,0 +1,127 @@
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
+                        class="path2"></span></i>
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listCategoria()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar categoria" />
+            </div>
+            <!--end::Search-->
+        </div>
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                <!--begin::Add customer-->
+                <button type="button" class="btn btn-primary" (click)="createCategoria()">
+                    Crear categoria
+                </button>
+                <!--end::Add customer-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Table-->
+        <div id="kt_customers_table_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
+            <div id="" class="table-responsive mb-5">
+                <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable"
+                    style="width: 100%">
+                    <thead>
+                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Nombre</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
+                                colspan="1" aria-label="Email: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Estado</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                                colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Fecha de registro</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                                aria-label="Actions">
+                                <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="fw-semibold text-gray-600">
+                        
+                            <tr *ngFor="let CAT of CATEGORIAS">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-50px me-5">
+                                            <img [src]="CAT.image" class="image" alt="img">
+                                        </div>
+                                        <div class="d-flex justify-content-start flex-column">
+                                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ CAT.name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="CAT.state == 1">Activo</span>
+                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="CAT.state == 2">Inactivo</span>
+                                </td>
+
+                                <td>
+                                    {{ CAT.created_at }}
+                                </td>
+                                <td class="">
+                                    <a href="#" onclick="return false" (click)="editCategoria(CAT)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </a>
+                                    <a  href="#" onclick="return false" (click)="deleteCategoria(CAT)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+            <ngb-pagination [collectionSize]="totalPages" [(page)]="currentPage" [boundaryLinks]="true" [rotate]="true" (pageChange)="loadPage($event)" [pageSize]="25">
+                <ng-template ngbPaginationPages let-page let-pages="pages">
+                    <li *ngIf="pages.length > 0" class="ngb-custom-pages-item">
+                        <div class="mb-3 d-flex px-2">
+                            <label id="paginationInputLabel" for="paginationInput" class="col-form-label me-2 ms-1">Pagina</label>
+                            <input
+                                #i
+                                type="text"
+                                inputmode="numeric"
+                                pattern="[0-9]*"
+                                class="form-control custom-pages-input"
+                                id="paginationInput"
+                                [value]="page"
+                                (keyup.enter)="selectPage(i.value)"
+                                
+                                (input)="formatInput($any($event).target)"
+                                aria-labelledby="paginationInputLabel paginationDescription"
+                                style="width: 5rem; text-align:center"
+                            />
+                            <span id="paginationDescription" class="col-form-label text-nowrap px-2"> de {{ pages.length }}</span>
+                        </div>
+                    </li>
+                </ng-template>
+            </ngb-pagination>
+        </div>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>

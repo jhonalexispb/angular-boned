@@ -1,4 +1,3 @@
-import { toInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
@@ -15,7 +14,6 @@ export class EditCategoriaComponent {
   @Input() CATEGORIA_SELECTED:any = [];
             name:string = '';
             file_name:any
-            IMAGE_CATEGORIE:any
             imagen_previzualizade:any;
             state:string;
           

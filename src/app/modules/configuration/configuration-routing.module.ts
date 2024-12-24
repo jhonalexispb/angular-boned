@@ -29,6 +29,10 @@ const routes: Routes = [
     path: 'producto-categoria',
     loadChildren: () => import('./producto-categoria/producto-categoria.module').then((m) => m.ProductoCategoriaModule),
   },
+  {
+    path: 'representante-proveedor',
+    loadChildren: () => import('./representante-proveedor/representante-proveedor.module').then((m) => m.RepresentanteProveedorModule),
+  },
 ];
 
 @NgModule({

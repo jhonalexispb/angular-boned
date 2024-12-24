@@ -17,4 +17,9 @@ export class UserLocalStorageService {
     const user = this.getUser();
     return user.gender || ''; // Si no hay género, retornamos una cadena vacía
   }
+
+  getUserName(): string {
+    const user = this.getUser();
+    return user.name || ''; // Si no hay género, retornamos una cadena vacía
+  }
 }

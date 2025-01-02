@@ -18,6 +18,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
 import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component';
+import { ButtonsGroupListComponent } from './components/buttons-group-list/buttons-group-list.component';
 // #fake-end#
 
 
@@ -31,7 +32,7 @@ function appInitializer(authService: AuthService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, LoadingScreenComponent],
+  declarations: [AppComponent, LoadingScreenComponent, ButtonsGroupListComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

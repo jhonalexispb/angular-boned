@@ -32,17 +32,16 @@
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
-                    <a [href]="'https://wa.me/' + NUMBER_REPRESENTANTE_SELECTED" class="badge-light-success p-2 rounded" target="_blank" style="text-decoration: none;">
-                    Enviar mensaje de whattsapp a {{ NUMBER_REPRESENTANTE_SELECTED.name }}
-                    <i class="fa-brands fa-whatsapp text-success"></i>
-                    {{ NUMBER_REPRESENTANTE_SELECTED.phone }}
+                    <a [href]="'https://wa.me/' + NUMBER_REPRESENTANTE_SELECTED.phone" class="badge-light-success p-2 rounded" target="_blank" style="text-decoration: none;">
+                        <i class="fa-brands fa-whatsapp text-success"></i>
+                        Enviar mensaje de whatsapp a {{ NUMBER_REPRESENTANTE_SELECTED.name }}
+                        {{ NUMBER_REPRESENTANTE_SELECTED.phone }}
                     </a>
                 </div>
                 <div class="fv-row mb-7">
-                    <a [href]="'tel:' + NUMBER_REPRESENTANTE_SELECTED" class="badge-light-success p-2 rounded" target="_blank" style="text-decoration: none;">
-                        Llamar a
-                      <i class="fa-solid fa-phone text-success"></i>
-                      {{ NUMBER_REPRESENTANTE_SELECTED }}
+                    <a [href]="'tel:' + NUMBER_REPRESENTANTE_SELECTED.phone" class="badge-light-success p-2 rounded" target="_blank" style="text-decoration: none;">
+                        <i class="fa-solid fa-phone text-success"></i>
+                        Llamar a {{ NUMBER_REPRESENTANTE_SELECTED.name }}
                     </a>
                   </div>
             </div>

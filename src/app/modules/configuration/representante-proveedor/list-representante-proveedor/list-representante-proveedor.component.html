@@ -89,12 +89,6 @@
                                                 <span class="fs-7 fw-bold"> {{ REP.celular }}</span>
                                             </div>
                                         </div>
-                                        <div *ngIf="REP.telefono">
-                                            <div class="badge-light-success p-2 rounded">
-                                                <i class="fa-solid fa-phone"></i>
-                                                <span class="fs-7 fw-bold"> {{ REP.telefono }}</span>
-                                            </div>
-                                        </div>
                                       </div>
                                 </td>
 
@@ -117,6 +111,10 @@
                                     <a  href="#" onclick="return false" (click)="deleteRepresentanteProveedor(REP)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                     </a>
+                                    <!-- <app-buttons-group-list
+                                    (editAction)="editRepresentanteProveedor(item)"
+                                    (deleteAction)="deleteRepresentanteProveedor(item)">
+                                    </app-buttons-group-list> -->
                                 </td>
                             </tr>
                         

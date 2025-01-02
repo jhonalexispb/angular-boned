@@ -14,7 +14,6 @@ export class EditRepresentanteProveedorComponent {
     @Input() REPRESENTANTE_PROVEEDOR_SELECTED:any = [];
               name:string = '';
               celular:string = '';
-              telefono:string = '';
               correo:string = '';
               state:string;
             
@@ -33,7 +32,6 @@ export class EditRepresentanteProveedorComponent {
                 this.name = this.REPRESENTANTE_PROVEEDOR_SELECTED.name,
                 this.celular = this.REPRESENTANTE_PROVEEDOR_SELECTED.celular,
                 this.state = this.REPRESENTANTE_PROVEEDOR_SELECTED.state,
-                this.telefono = this.REPRESENTANTE_PROVEEDOR_SELECTED.telefono,
                 this.correo = this.REPRESENTANTE_PROVEEDOR_SELECTED.email
               }
           
@@ -43,11 +41,15 @@ export class EditRepresentanteProveedorComponent {
                   this.sweet.formulario_invalido("Validacion","el nombre del representante es requerido");
                   return false;
                 }
+
+                if(this.celular && String(this.celular).replace(/\D/g, '').length !== 9){
+                  this.sweet.formulario_invalido("Validacion","el celular debe de tener 9 digitos");
+                  return false;
+                }
             
                 const data = {
                   'name': this.name,
                   'celular':this.celular,
-                  'telefono':this.telefono,
                   'email':this.correo,
                   'state':this.state
                 };
@@ -73,8 +75,8 @@ export class EditRepresentanteProveedorComponent {
         
                   error: (error) => {
                     // Lógica cuando ocurre un error
-                    this.sweet.error(error.status);
-                    //console.log(error.status)
+                    this.sweet.error(error.status,error.error.message);
+                    console.log(error)
                   },
                 });
               }

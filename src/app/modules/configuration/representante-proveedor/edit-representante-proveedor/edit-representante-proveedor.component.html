@@ -52,17 +52,12 @@
                     <label class="fw-bold fs-6 mb-2">Celular</label>
                     <!--end::Label-->
                     <!--begin::Input-->
-                    <input name="celular" type="text" class="form-control mb-3 mb-lg-0"
-                        placeholder="999 *** ***" [(ngModel)]="celular" autocomplete="off"/>
-                </div>
-
-                <div class="fv-row mb-7">
-                    <!--begin::Label-->
-                    <label class="fw-bold fs-6 mb-2">Telefono</label>
-                    <!--end::Label-->
-                    <!--begin::Input-->
-                    <input name="telefono" type="text" class="form-control mb-3 mb-lg-0"
-                        placeholder="..." [(ngModel)]="telefono" autocomplete="off"/>
+                    <input name="celular" type="number" class="form-control mb-3 mb-lg-0"
+                        placeholder="999 *** ***" [(ngModel)]="celular" autocomplete="off" #nameCelular="ngModel" pattern="^[0-9]{9}$"
+                        [ngClass]="{'is-invalid': nameCelular.invalid && nameCelular.dirty}"/>
+                    <div *ngIf="nameCelular.value && nameCelular.invalid && nameCelular.dirty" class="invalid-feedback">
+                        El celular debe de tener 9 digitos
+                    </div>
                 </div>
 
                 <div class="fv-row mb-7">
@@ -70,10 +65,19 @@
                     <label class="required fw-bold fs-6 mb-2">Email</label>
                     <!--end::Label-->
                     <!--begin::Input-->
-                    <input name="correo" type="email" class="form-control mb-3 mb-lg-0" #correoRepresentante="ngModel" required
-                        placeholder="..." [(ngModel)]="correo" autocomplete="off" [ngClass]="{'is-invalid': correoRepresentante.invalid && correoRepresentante.touched}"/>
+                    <input name="correo" type="email" class="form-control mb-3 mb-lg-0"
+                            placeholder="Ingrese su correo" [(ngModel)]="correo" autocomplete="off" 
+                            #correoRepresentante="ngModel" required
+                            [ngClass]="{'is-invalid': correoRepresentante.invalid && correoRepresentante.touched}" />
+                    
+                    <!-- Mensajes de error -->
                     <div *ngIf="correoRepresentante.invalid && correoRepresentante.touched" class="invalid-feedback">
-                        El correo es requerido
+                        <div *ngIf="correoRepresentante.errors?.['required']">
+                            El correo es requerido
+                        </div>
+                        <div *ngIf="correoRepresentante.errors?.['email']">
+                            El correo no tiene un formato válido
+                        </div>
                     </div>
                 </div>
 

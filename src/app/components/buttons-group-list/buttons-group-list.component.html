@@ -1,0 +1,8 @@
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-primary" (click)="toggleOptions()">Acciones</button>
+  
+    <div *ngIf="showOptions" class="btn-group">
+      <button type="button" class="btn btn-warning" (click)="edit()">Editar</button>
+      <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+    </div>
+  </div>

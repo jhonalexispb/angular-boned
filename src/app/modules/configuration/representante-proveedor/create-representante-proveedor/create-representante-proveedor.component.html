@@ -48,21 +48,12 @@
                 </div>
 
                 <div class="fv-row mb-7">
-                    <!--begin::Label-->
-                    <label class="fw-bold fs-6 mb-2">Celular</label>
-                    <!--end::Label-->
-                    <!--begin::Input-->
-                    <input type="text" name="celular" class="form-control mb-3 mb-lg-0"
-                        placeholder="999 *** ***" [(ngModel)]="celular" autocomplete="off"/>
-                </div>
-
-                <div class="fv-row mb-7">
-                    <!--begin::Label-->
-                    <label class="fw-bold fs-6 mb-2">Telefono</label>
-                    <!--end::Label-->
-                    <!--begin::Input-->
-                    <input type="text" name="telefono" class="form-control mb-3 mb-lg-0"
-                        placeholder="..." [(ngModel)]="telefono" autocomplete="off"/>
+                    <input name="celular" type="number" class="form-control mb-3 mb-lg-0"
+                        placeholder="999 *** ***" [(ngModel)]="celular" autocomplete="off" #nameCelular="ngModel" pattern="^[0-9]{9}$"
+                        [ngClass]="{'is-invalid': nameCelular.invalid && nameCelular.dirty}"/>
+                    <div *ngIf="nameCelular.value && nameCelular.invalid && nameCelular.dirty" class="invalid-feedback">
+                        El celular debe de tener 9 digitos
+                    </div>
                 </div>
 
                 <div class="fv-row mb-7">

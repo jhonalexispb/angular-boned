@@ -12,7 +12,6 @@ import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ComunicationRepresentanteProveedorComponent } from './comunication-representante-proveedor/comunication-representante-proveedor.component';
 
-
 @NgModule({
   declarations: [
     RepresentanteProveedorComponent,
@@ -30,6 +29,6 @@ import { ComunicationRepresentanteProveedorComponent } from './comunication-repr
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-  ]
+  ],
 })
 export class RepresentanteProveedorModule { }

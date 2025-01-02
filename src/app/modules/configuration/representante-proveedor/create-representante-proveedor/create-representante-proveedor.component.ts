@@ -43,6 +43,11 @@ export class CreateRepresentanteProveedorComponent {
       return false;
     }
 
+    if(this.celular && String(this.celular).replace(/\D/g, '').length !== 9){
+      this.sweet.formulario_invalido("Validacion","el celular debe de tener 9 digitos");
+      return false;
+    }
+
     const data = {
       'name': this.name,
       'celular':this.celular,

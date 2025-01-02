@@ -8,7 +8,7 @@ import { UserLocalStorageService } from 'src/app/modules/users/service/userLocal
   styleUrls: ['./comunication-representante-proveedor.component.scss']
 })
 export class ComunicationRepresentanteProveedorComponent {
-  @Input() NUMBER_REPRESENTANTE_SELECTED:any = []
+  @Input() NUMBER_REPRESENTANTE_SELECTED: { phone: string, name: string };
   user:any = ''
   nameRepresentante:string = ''
   phone:string = ''
@@ -22,6 +22,6 @@ export class ComunicationRepresentanteProveedorComponent {
   ngOnInit(): void {
     this.user = this.getUserService.getUserName()  
     this.nameRepresentante = this.NUMBER_REPRESENTANTE_SELECTED.name,
-    this.phone = this.NUMBER_REPRESENTANTE_SELECTED.celular
+    this.phone = this.NUMBER_REPRESENTANTE_SELECTED.phone
   }
 }

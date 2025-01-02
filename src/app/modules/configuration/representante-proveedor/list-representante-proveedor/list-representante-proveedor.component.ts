@@ -105,8 +105,11 @@ export class ListRepresentanteProveedorComponent {
         });
       }
 
-      comunicationRepresentanteProveedor(NUMBER_REP:any){
+      comunicationRepresentanteProveedor(DATOS_REP:any){
         const modalRef = this.modalService.open(ComunicationRepresentanteProveedorComponent,{centered:true, size: 'md'})
-        modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = NUMBER_REP;
+        modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
+          phone: DATOS_REP[0],  // Celular
+          name: DATOS_REP[1]    // Nombre
+        };
       }
 }

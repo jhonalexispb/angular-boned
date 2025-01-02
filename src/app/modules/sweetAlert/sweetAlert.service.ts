@@ -138,7 +138,7 @@ export class SweetalertService {
     });
   }
 
-  error(error:any){
+  error(error:any, msg:any = ''){
     let gif:any = ''
     let message:any = ''
 
@@ -170,6 +170,12 @@ export class SweetalertService {
       case 400: {
         message = 'La solicitud no fue válida. Verifica los datos enviados.';
         gif = '/assets/animations/general/error_400.json';  // Animación para error 400 (Bad Request)
+        break;
+      }
+
+      case 422: {
+        message = msg;
+        gif = '/assets/animations/general/formulario_invalido.json';
         break;
       }
   

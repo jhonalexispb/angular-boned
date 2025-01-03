@@ -33,6 +33,10 @@ const routes: Routes = [
     path: 'representante-proveedor',
     loadChildren: () => import('./representante-proveedor/representante-proveedor.module').then((m) => m.RepresentanteProveedorModule),
   },
+  {
+    path: 'proveedor',
+    loadChildren: () => import('./proveedor/proveedor.module').then((m) => m.ProveedorModule),
+  },
 ];
 
 @NgModule({

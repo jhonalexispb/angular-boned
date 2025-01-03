@@ -28,10 +28,10 @@ export class ServiceProveedorService {
         )
       }
     
-      listCategorias(page = 1, search:string = ''){
-        this.loadingService.showLoading('Listando categorias')
+      listProveedor(page = 1, search:string = ''){
+        this.loadingService.showLoading('Listando proveedores')
         let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-        let URL = URL_SERVICIO+"/producto_categoria?page="+page+"&search="+search;
+        let URL = URL_SERVICIO+"/proveedor?page="+page+"&search="+search;
         return this.http.get(URL,{headers: headers}).pipe(
           finalize(()=>{
             setTimeout(() => {
@@ -41,28 +41,28 @@ export class ServiceProveedorService {
         ) 
       }
     
-      updateCategoria(ID_CATEGORIA:string,data:any){
-        this.loadingService.showLoading('Actualizando categoria')
+      updateProveedor(ID_PROVEEDOR:string,data:any){
+        this.loadingService.showLoading('Actualizando proveedor')
         let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-        let URL = URL_SERVICIO+"/producto_categoria/"+ID_CATEGORIA;
+        let URL = URL_SERVICIO+"/proveedor/"+ID_PROVEEDOR;
         return this.http.post(URL,data,{headers: headers}).pipe(
           finalize(()=>this.loadingService.hideLoading())
         )
       }
     
-      deleteCategoria(ID_CATEGORIA:string){
-        this.loadingService.showLoading('Eliminando categoria')
+      deleteProveedor(ID_PROVEEDOR:string){
+        this.loadingService.showLoading('Eliminando Proveedor')
         let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-        let URL = URL_SERVICIO+"/producto_categoria/"+ID_CATEGORIA;
+        let URL = URL_SERVICIO+"/proveedor/"+ID_PROVEEDOR;
         return this.http.delete(URL,{headers: headers}).pipe(
           finalize(()=>this.loadingService.hideLoading())
         )
       }
   
-      restaurarCategoria(ID_CATEGORIA:string){
-        this.loadingService.showLoading('Restaurando categoria')
+      restaurarProveedor(ID_PROVEEDOR:string){
+        this.loadingService.showLoading('Restaurando proveedor')
         let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-        let URL = URL_SERVICIO+"/producto_categoria/restaurar/"+ID_CATEGORIA;
+        let URL = URL_SERVICIO+"/proveedor/restaurar/"+ID_PROVEEDOR;
         return this.http.put(URL,'',{headers: headers}).pipe(
           finalize(()=>this.loadingService.hideLoading())
         )

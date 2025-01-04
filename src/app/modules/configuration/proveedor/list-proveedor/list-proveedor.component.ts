@@ -74,6 +74,8 @@ export class ListProveedorComponent {
     const modalRef = this.modalService.open(EditProveedorComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.PROVEEDOR_SELECTED = REP;
+    modalRef.componentInstance.DISTRITOS = this.DISTRITOS
+    modalRef.componentInstance.REPRESENTANTES = this.REPRESENTANTES
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.ProveedorE.subscribe((rep:any)=>{

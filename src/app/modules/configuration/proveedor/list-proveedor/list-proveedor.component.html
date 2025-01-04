@@ -106,7 +106,18 @@
                                 </td>
 
                                 <td>
-                                    {{ PROV.address }} / {{ PROV.ubicacion }}
+                                    <ng-container *ngIf="PROV.address && PROV.ubicacion">
+                                        {{ PROV.address }} / {{ PROV.ubicacion }}
+                                    </ng-container>
+                                    <ng-container *ngIf="PROV.address && !PROV.ubicacion">
+                                        {{ PROV.address }} / sin ubicacion
+                                    </ng-container>
+                                    <ng-container *ngIf="!PROV.address && PROV.ubicacion">
+                                        sin direccion / {{ PROV.ubicacion }}
+                                    </ng-container>
+                                    <ng-container *ngIf="!PROV.address && !PROV.ubicacion">
+                                        sin direccion / sin ubicacion
+                                    </ng-container>
                                 </td>
 
                                 <td>

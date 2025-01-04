@@ -64,6 +64,7 @@ export class EditProveedorComponent {
         'address':this.address,
         'iddistrito':this.distrito,
         'idrepresentante':this.representate,
+        'state':this.state
       };
   
       this.ProveedorService.updateProveedor(this.PROVEEDOR_SELECTED.id, data).subscribe({
@@ -79,7 +80,7 @@ export class EditProveedorComponent {
           } else if (resp.message == 403) {
             this.sweet.alerta('Ups', resp.message_text);
           } else {
-            this.ProveedorE.emit(resp.proveedor);
+            this.ProveedorE.emit({proveedor:resp.proveedor, isRestored: false});
             this.modal.close();
             this.sweet.success('¡Éxito!', 'el proveedor se actualizo correctamente');
           }
@@ -99,7 +100,7 @@ export class EditProveedorComponent {
           if (resp.message === 403) {
             this.sweet.error('Error', resp.message_text);
           } else {
-            this.ProveedorE.emit(resp.proveedor_restaurado);
+            this.ProveedorE.emit({proveedor:resp.proveedor_restaurado, isRestored: true});
             this.modal.close();
             this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
           }

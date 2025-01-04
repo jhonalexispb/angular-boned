@@ -45,7 +45,7 @@ export class ServiceProveedorService {
         this.loadingService.showLoading('Actualizando proveedor')
         let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
         let URL = URL_SERVICIO+"/proveedor/"+ID_PROVEEDOR;
-        return this.http.post(URL,data,{headers: headers}).pipe(
+        return this.http.put(URL,data,{headers: headers}).pipe(
           finalize(()=>this.loadingService.hideLoading())
         )
       }

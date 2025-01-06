@@ -26,8 +26,8 @@ const routes: Routes = [
     loadChildren: () => import('./geografia/geografia.module').then((m) => m.GeografiaModule),
   },
   {
-    path: 'producto-categoria',
-    loadChildren: () => import('./producto-categoria/producto-categoria.module').then((m) => m.ProductoCategoriaModule),
+    path: 'atributos-producto',
+    loadChildren: () => import('./atributtes-products/atributtes-products.module').then((m) => m.AtributtesProductsModule),
   },
   {
     path: 'representante-proveedor',

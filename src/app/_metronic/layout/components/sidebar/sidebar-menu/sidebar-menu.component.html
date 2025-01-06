@@ -79,7 +79,7 @@
           </a>
         </div>
         <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/geografia" (click)="redireccionar('/configuraciones/geografia/departamento/list')">
+          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/geografia/" (click)="redireccionar('/configuraciones/geografia/departamento/list')">
             <span
               class="menu-bullet">
               <span class="bullet bullet-dot"></span>
@@ -99,12 +99,12 @@
           </a>
         </div>
         <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/configuraciones/producto-categoria/list">
+          <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/configuraciones/atributos-producto/" (click)="redireccionar('/configuraciones/atributos-producto/laboratorios/list')">
             <span
               class="menu-bullet">
               <span class="bullet bullet-dot"></span>
             </span>
-            <span class="menu-title">Categorias
+            <span class="menu-title">Atributos de productos
             </span>
           </a>
         </div>
@@ -262,7 +262,7 @@
       </span>
       <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
         <div class="menu-item" *ngIf="showMenu(['register_product'])">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/users">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/productos/create">
             <span
               class="menu-bullet">
               <span class="bullet bullet-dot"></span>
@@ -272,7 +272,7 @@
           </a>
         </div>
         <div class="menu-item" *ngIf="showMenu(['list_product'])">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/apps/roles">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/productos/list">
             <span
               class="menu-bullet">
               <span class="bullet bullet-dot"></span>

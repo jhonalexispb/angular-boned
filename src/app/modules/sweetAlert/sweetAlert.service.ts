@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import lottie from 'lottie-web';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

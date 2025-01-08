@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SweetGeografia } from '../../service/service-geografia.service';
 import { ServiceDistritoService } from '../service/service-distrito.service';
-import { toInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 
 @Component({
   selector: 'app-edit-distrito',

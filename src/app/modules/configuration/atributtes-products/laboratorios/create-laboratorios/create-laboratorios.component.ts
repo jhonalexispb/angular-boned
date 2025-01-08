@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SweetRestaurarCategoria } from '../../categorias/service/restauracionAlert.service';
@@ -11,11 +11,13 @@ import { LaboratoriosServiceService } from '../service/laboratorios-service.serv
 })
 export class CreateLaboratoriosComponent {
   @Output() LaboratorioC:EventEmitter<any> = new EventEmitter();
+  @Input() PROVEEDORES:any = [];
   name:string = '';
   file_name:any
   imagen_previzualizade:any;
   color:string = '#58BF53';
   margen_minimo:number = 20;
+  proveedores = [];
 
   loading: boolean = false;
 
@@ -41,9 +43,20 @@ export class CreateLaboratoriosComponent {
       return false;
     }
 
+    if(this.proveedores.length < 1){
+      this.sweet.formulario_invalido("Validacion","el laboratorio debe de tener asociado al menos un proveedor");
+      return false;
+    }
+
     const formData = new FormData();
     formData.append("name", this.name);
-    formData.append("image_laboratorio", this.file_name);
+    if (this.file_name) {
+      formData.append('image_laboratorio', this.file_name);
+    }
+
+    formData.append("margen_minimo", this.margen_minimo.toString());
+    formData.append("color", this.color);
+    formData.append("proveedores", JSON.stringify(this.proveedores));
 
     this.laboratorioService.registerLaboratorio(formData).subscribe({
       next: (resp: any) => {
@@ -63,12 +76,6 @@ export class CreateLaboratoriosComponent {
           this.sweet.success('¡Éxito!', 'el laboratorio se registró correctamente');
         }
       },
-
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
-      },
     });
   }
 
@@ -83,9 +90,6 @@ export class CreateLaboratoriosComponent {
           this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
         }
       },
-      error: (error) => {
-        this.sweet.error(error.status);
-      }
     })
   }
 

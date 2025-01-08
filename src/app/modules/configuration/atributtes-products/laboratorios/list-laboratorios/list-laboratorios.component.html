@@ -42,7 +42,13 @@
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
+                            <th class="dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Color</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
                                 colspan="1" aria-label="Email: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Estado</span><span
                                     class="dt-column-order"></span>
@@ -54,7 +60,7 @@
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                            <th class="text-center min-w-100px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
                                 aria-label="Actions">
                                 <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                             </th>
@@ -71,6 +77,12 @@
                                         <div class="d-flex justify-content-start flex-column">
                                             <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ LAB.name }}</span>
                                         </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div [ngStyle]="{ 'background-color': LAB.color }" style="width: 50px; height: 20px; border-radius: 10px;">
+                                        <!-- Puedes ajustar el tamaño del div si lo deseas -->
                                     </div>
                                 </td>
                                 

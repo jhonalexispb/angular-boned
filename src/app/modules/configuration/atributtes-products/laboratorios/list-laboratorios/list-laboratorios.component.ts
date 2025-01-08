@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { CreateCategoriasComponent } from '../../categorias/create-categorias/create-categorias.component';
-import { EditCategoriasComponent } from '../../categorias/edit-categorias/edit-categorias.component';
-import { CategoriasServiceService } from '../../categorias/service/categorias-service.service';
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
 import { CreateLaboratoriosComponent } from '../create-laboratorios/create-laboratorios.component';
 import { EditLaboratoriosComponent } from '../edit-laboratorios/edit-laboratorios.component';
@@ -18,6 +15,7 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListLaboratoriosComponent {
   search:string = '';
   LABORATORIOS:any = [];
+  PROVEEDORES:any = [];
   isLoading$:any;
   sweet:any = new SweetalertService
 
@@ -51,6 +49,7 @@ export class ListLaboratoriosComponent {
   listLaboratorio(page = 1){
     this.laboratorioService.listLaboratorio(page,this.search).subscribe((resp: any) => {
       this.LABORATORIOS = resp.laboratorio;
+      this.PROVEEDORES = resp.proveedores;
       this.totalPages = resp.total;
       this.currentPage = page;
     })
@@ -62,6 +61,7 @@ export class ListLaboratoriosComponent {
 
   createLaboratorio(){
     const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PROVEEDORES = this.PROVEEDORES;
     modalRef.componentInstance.LaboratorioC.subscribe((lab:any)=>{
       this.LABORATORIOS.unshift(lab); //integra el nuevo valor al inicio de la tabla
     })
@@ -71,6 +71,7 @@ export class ListLaboratoriosComponent {
     const modalRef = this.modalService.open(EditLaboratoriosComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.LABORATORIO_SELECTED = LAB;
+    modalRef.componentInstance.PROVEEDORES = this.PROVEEDORES;
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.LaboratorioE.subscribe((lab:any)=>{

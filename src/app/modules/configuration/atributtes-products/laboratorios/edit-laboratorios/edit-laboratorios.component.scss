@@ -1,0 +1,34 @@
+.color-picker-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre el input y la vista previa */
+}
+
+.color-picker {
+    width: 150px; /* Ajusta el tamaño del input */
+    height: 50px;
+    border:none;
+    cursor: pointer;
+    border-radius: 10px; /* Bordes redondeados para el input */
+    transition: transform 0.2s ease, box-shadow 0.3s ease; /* Animaciones */
+}
+
+.color-picker:focus {
+    outline: none; /* Quita el borde azul predeterminado */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Efecto de sombra cuando se hace foco */
+    transform: scale(1.1); /* Efecto de aumentar tamaño al hacer foco */
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #666;
+    font-style: italic; /* Texto en cursiva para hacerlo más amigable */
+}
+
+/* Efecto de hover en el input */
+.color-picker:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Suaviza el borde cuando el ratón pasa por encima */
+}

@@ -67,10 +67,10 @@
 
                 <div class="fv-row mb-7">
                     <!--begin::Label-->
-                    <label class="fw-bold fs-6 mb-2">Color para el catálogo</label>
+                    <label class="fw-bold fs-6">Color para el catálogo</label>
                     <!--end::Label-->
                     <!-- Description of the field -->
-                    <small class="text-muted">Selecciona un color que se utilizará para el catálogo. Por defecto se usará el color verde</small>
+                    <small class="text-muted">Por defecto se usará el color verde</small>
                     <!--begin::Input with preview-->
                     <div class="color-picker-container">
                         <input type="color" name="color" class="form-control color-picker" 
@@ -81,12 +81,40 @@
 
                 <div class="fv-row mb-7">
                     <!--begin::Label-->
-                    <label class="required fw-bold fs-6 mb-2">Margen mínimo</label>
+                    <label class="fw-bold fs-6">Margen mínimo</label>
+                    <small class="text-muted">Por defecto se tomará el 20%</small>
                     <!--end::Label-->
                     <!--begin::Input-->
                     <input type="number" name="margen_minimo" class="form-control mb-3 mb-lg-0"
                         placeholder="20.00" [(ngModel)]="margen_minimo" autocomplete="off"/>
                     <!--end::Input-->
+                </div>
+
+                <div class="v-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2">Proveedores: </label>
+                    <ng-select 
+                        name="proveedores"
+                        [items]="PROVEEDORES"
+                        required
+                        bindLabel="name"
+                        bindValue="id"
+                        [(ngModel)]="proveedores"
+                        placeholder="Selecciona uno o mas proveedores"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [loading]="loading"  
+                        [loadingText]="'Cargando...'" 
+                        [multiple]="true"
+                        [bindLabel]="'name'"  
+                        [bindValue]="'id'"  
+                        
+                        #provinciaControl="ngModel"
+                        [ngClass]="{'is-invalid': provinciaControl.invalid && provinciaControl.touched}">
+                    </ng-select>
+                    <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="invalid-feedback">
+                        El proveedor es requerido
+                    </div>
                 </div>
             </div>
             <!--end::Scroll-->

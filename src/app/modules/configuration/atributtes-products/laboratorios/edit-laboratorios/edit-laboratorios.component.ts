@@ -9,6 +9,7 @@ import { SweetRestaurarCategoria } from '../service/restauracionAlert.service';
   templateUrl: './edit-laboratorios.component.html',
   styleUrls: ['./edit-laboratorios.component.scss']
 })
+
 export class EditLaboratoriosComponent {
   @Output() LaboratorioE:EventEmitter<any> = new EventEmitter();
   @Input() PROVEEDORES:any = [];
@@ -18,13 +19,15 @@ export class EditLaboratoriosComponent {
   imagen_previzualizade:any;
   color:string = '#58BF53';
   margen_minimo:number = 20;
-  proveedores = [];
+  proveedores:any = [];
   state:number;
 
   loading: boolean = false;
 
   sweet:any = new SweetalertService
   sweetRestaurarCategoria:any = new SweetRestaurarCategoria;
+
+  
 
   constructor(
     public modal: NgbActiveModal,
@@ -36,17 +39,14 @@ export class EditLaboratoriosComponent {
 
   ngOnInit(): void {
     this.name = this.LABORATORIO_SELECTED.name,
-    this.file_name = this.LABORATORIO_SELECTED.image,
     this.color = this.LABORATORIO_SELECTED.color,
     this.margen_minimo = this.LABORATORIO_SELECTED.margen_minimo,
-    this.proveedores = this.LABORATORIO_SELECTED.proveedor_laboratorio,
+    this.proveedores = this.LABORATORIO_SELECTED.idproveedor,
     this.state = this.LABORATORIO_SELECTED.state,
     this.imagen_previzualizade = this.LABORATORIO_SELECTED.image
   }
 
   store(){
-
-    console.log(this.proveedores)
 
     if(!this.name){
       this.sweet.formulario_invalido("Validacion","el nombre del laboratorio es requerido");
@@ -66,6 +66,7 @@ export class EditLaboratoriosComponent {
 
     formData.append("margen_minimo", this.margen_minimo.toString());
     formData.append("color", this.color);
+    formData.append("state", this.state.toString());
     formData.append("proveedores", JSON.stringify(this.proveedores));
 
     this.laboratorioService.updateLaboratorio(this.LABORATORIO_SELECTED.id,formData).subscribe({
@@ -81,7 +82,7 @@ export class EditLaboratoriosComponent {
         } else if (resp.message == 403) {
           this.sweet.alerta('Ups', resp.message_text);
         } else {
-          this.LaboratorioE.emit(resp.laboratorio);
+          this.LaboratorioE.emit({laboratorio:resp.laboratorio, isRestored: false});
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el laboratorio se actualizo correctamente');
         }
@@ -95,7 +96,7 @@ export class EditLaboratoriosComponent {
         if (resp.message === 403) {
           this.sweet.error('Error', resp.message_text);
         } else {
-          this.LaboratorioE.emit(resp.laboratorio_restaurado);
+          this.LaboratorioE.emit({laboratorio:resp.laboratorio_restaurado, isRestored: false});
           this.modal.close();
           this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
         }

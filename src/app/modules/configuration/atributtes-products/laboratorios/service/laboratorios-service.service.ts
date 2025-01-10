@@ -65,6 +65,7 @@ export class LaboratoriosServiceService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/laboratorio/"+ID_LABORATORIO;
     return this.http.delete(URL,{headers: headers}).pipe(
+      catchError(this.handleError.bind(this)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
@@ -74,6 +75,7 @@ export class LaboratoriosServiceService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/laboratorio/restaurar/"+ID_LABORATORIO;
     return this.http.put(URL,'',{headers: headers}).pipe(
+      catchError(this.handleError.bind(this)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }

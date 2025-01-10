@@ -36,31 +36,37 @@
                     style="width: 100%">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                            <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Nombre</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                            <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Margen minimo</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-100px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Color</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
+                            <th class="min-w-100px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
                                 colspan="1" aria-label="Email: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Estado</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            <th class="min-w-150px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
                                 colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Fecha de registro</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="text-center min-w-100px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                            <th class="text-center min-w-125px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
                                 aria-label="Actions">
                                 <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                             </th>
@@ -71,12 +77,18 @@
                             <tr *ngFor="let LAB of LABORATORIOS">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-50px me-5">
+                                        <div class="symbol symbol-80px me-5">
                                             <img [src]="LAB.image" class="image" alt="img">
                                         </div>
                                         <div class="d-flex justify-content-start flex-column">
-                                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ LAB.name }}</span>
+                                            <span class="text-gray-700 fw-bold text-hover-primary mb-1 fs-6">{{ LAB.name }}</span>
                                         </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="text-center">
+                                        {{ LAB.margen_minimo }} %
                                     </div>
                                 </td>
 

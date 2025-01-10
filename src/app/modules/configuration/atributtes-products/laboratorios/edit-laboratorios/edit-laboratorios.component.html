@@ -116,6 +116,19 @@
                         El proveedor es requerido
                     </div>
                 </div>
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="fw-bold fs-6 mb-2">Estado</label>
+                    <select
+                        class="form-control form-select-solid fw-bolder"
+                        name="state"
+                        placeholder="Seleccciona estado"
+                        [(ngModel)] = "state"
+                    >
+                        <option value="1">Activo</option>
+                        <option value="2">Inactivo</option>
+                    </select>
+                </div>
             </div>
             <!--end::Scroll-->
 

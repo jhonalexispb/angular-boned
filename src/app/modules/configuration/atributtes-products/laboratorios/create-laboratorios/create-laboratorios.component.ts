@@ -37,7 +37,6 @@ export class CreateLaboratoriosComponent {
   }
 
   store(){
-
     if(!this.name){
       this.sweet.formulario_invalido("Validacion","el nombre del laboratorio es requerido");
       return false;

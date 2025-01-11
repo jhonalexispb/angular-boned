@@ -3,6 +3,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SweetRestaurarCategoria } from '../../categorias/service/restauracionAlert.service';
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
+import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-laboratorios',
@@ -28,12 +30,9 @@ export class CreateLaboratoriosComponent {
     public modal: NgbActiveModal,
     //llamamos al servicio
     public laboratorioService: LaboratoriosServiceService,
+    private handleErrorService: HandleErrorService
   ){
 
-  }
-
-  ngOnInit(): void {
-    
   }
 
   store(){
@@ -59,8 +58,35 @@ export class CreateLaboratoriosComponent {
 
     this.laboratorioService.registerLaboratorio(formData).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        if(resp.message == 409){
+          this.LaboratorioC.emit(resp.laboratorio);
+          this.modal.close();
+          this.sweet.success('¡Éxito!', 'el laboratorio se registró correctamente');
+      },
+      error: (resp: any) => {
+        // Si ocurre un error, llamamos al servicio handleError
+        this.handleErrorService.handleError(resp)
+        this.handleErrorService.getRestauracionObservable().pipe(take(1)).subscribe((confirmed:string) => {
+          if (confirmed) {
+              this.laboratorioService.restaurarLaboratorio(confirmed).pipe(take(1)).subscribe({
+                next: (resp: any) => {
+                  
+                    this.LaboratorioC.emit(resp.laboratorio_restaurado);
+                    this.modal.close();
+                    this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
+                  
+                },
+                error: (resp: any) => {
+                  this.handleErrorService.handleError(resp)
+                }
+              })
+          }
+      })
+      }
+    });
+  }
+
+  // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
+        /* if(resp.message == 409){
           this.sweetRestaurarCategoria.confirmar_restauracion('Atencion', resp.message_text);
           this.sweetRestaurarCategoria.getRestauracionObservable().subscribe((confirmed:boolean) => {
             if (confirmed) {
@@ -69,16 +95,10 @@ export class CreateLaboratoriosComponent {
           })
         } else if (resp.message == 403) {
           this.sweet.alerta('Ups', resp.message_text);
-        } else {
-          this.LaboratorioC.emit(resp.laboratorio);
-          this.modal.close();
-          this.sweet.success('¡Éxito!', 'el laboratorio se registró correctamente');
-        }
-      },
-    });
-  }
+        } else { */
+         /* } */
 
-  restaurar(prov:any){
+  /* restaurar(prov:any){
     this.laboratorioService.restaurarLaboratorio(prov).subscribe({
       next: (resp: any) => {
         if (resp.message === 403) {
@@ -90,7 +110,7 @@ export class CreateLaboratoriosComponent {
         }
       },
     })
-  }
+  } */
 
   processFile($event:any){
     if($event.target.files[0].type.indexOf("image") < 0){

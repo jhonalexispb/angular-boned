@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import lottie from 'lottie-web';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SweetalertService {
-
+  private restaurarSubject = new Subject<boolean>();
   private user: any = null;
 
   constructor() {
     this.loadUser();
+  }
+
+  getRestauracionObservable() {
+    return this.restaurarSubject.asObservable();
   }
 
   private loadUser(): void {
@@ -137,7 +142,108 @@ export class SweetalertService {
     });
   }
 
+  confirmar_restauracion(title: string, text: string, image:string = '/assets/animations/general/ojitos.json') {
+    return Swal.fire({
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, restauremoslo',
+      cancelButtonText: 'Cancelar',
+      html: `
+        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
+        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
+      </div>`,
+      didOpen: () => {
+        this.loadLottieAnimation('lottie-container', image);
+      },
+      willOpen: () => {
+        // Llamamos a la función auxiliar para actualizar los estilos
+        this.updateAlertStyles();
+      }
+    }).then((result) => {
+      // Emitimos la confirmación según la acción del usuario
+      if (result.isConfirmed) {
+        this.restaurarSubject.next(true);  // Emitimos 'true' si el usuario confirma
+      } else {
+        this.restaurarSubject.next(false);  // Emitimos 'false' si el usuario cancela
+      }
+    });
+  }
+
   error(error:any, msg:any = ''){
+    let gif:any = ''
+    let message:any = ''
+
+    switch(error){
+      case 500: {
+        message = 'Error interno del servidor. Intenta nuevamente más tarde.'
+        gif = '/assets/animations/general/error_500.json'
+        break;
+      }
+
+      case 404: {
+        message = 'Pagina no encontrada';
+        gif = '/assets/animations/general/error_404.json';  // Animación para error 404
+        break;
+      }
+  
+      case 403: {
+        message = 'No tienes permisos suficientes para realizar esta acción.';
+        gif = '/assets/animations/general/error_403.json';  // Animación para error 403
+        break;
+      }
+  
+      case 0: {
+        message = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+        gif = '/assets/animations/general/error_de_conexion.json';  // Animación para error de conexión
+        break;
+      }
+  
+      case 400: {
+        message = 'La solicitud no fue válida. Verifica los datos enviados.';
+        gif = '/assets/animations/general/error_400.json';  // Animación para error 400 (Bad Request)
+        break;
+      }
+
+      case 409: {
+        message = 'La solicitud no fue válida. Verifica los datos enviados.';
+        gif = '/assets/animations/general/error_400.json';  // Animación para error 400 (Bad Request)
+        break;
+      }
+
+      case 422: {
+        message = msg;
+        gif = '/assets/animations/general/formulario_invalido.json';
+        break;
+      }
+  
+      default: {
+        message = 'Hubo un error inesperado. Intenta nuevamente.';
+        gif = '/assets/animations/general/error_default.json';  // Animación genérica para errores no especificados
+        break;
+      }
+    } 
+
+    Swal.fire({
+      title: 'Opps!',
+      confirmButtonText: 'Aceptar',
+      html: `
+        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
+        <p style="text-align: center; margin-top: 10px;">${this.user}, ${message}</p>
+      </div>`,
+      didOpen: () => {
+        this.loadLottieAnimation('lottie-container', gif);
+      },
+      willOpen: () => {
+        // Llamamos a la función auxiliar para actualizar los estilos
+        this.updateAlertStyles();
+      }
+    });
+  }
+
+  errorBackend(error:any, msg:any, errors: { field: string, message: string }[]){
     let gif:any = ''
     let message:any = ''
 
@@ -175,6 +281,13 @@ export class SweetalertService {
       case 422: {
         message = msg;
         gif = '/assets/animations/general/formulario_invalido.json';
+        let errorDetails = '';
+        errors.forEach((errorObj) => {
+          errorDetails += `<strong>${errorObj.field}</strong>: ${errorObj.message}<br/>`;
+        });
+
+        // Agregar los detalles de los errores al mensaje principal
+        message += `<br/>${errorDetails}`;
         break;
       }
   

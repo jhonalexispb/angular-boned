@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { SweetRestaurarProveedor } from '../service/restauracionAlert.service';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
 
 @Component({
@@ -12,8 +11,8 @@ import { ServiceProveedorService } from '../service/service-proveedor.service';
 export class EditProveedorComponent {
   @Output() ProveedorE:EventEmitter<any> = new EventEmitter();
   @Input() PROVEEDOR_SELECTED:any = [];
-  @Input()  DISTRITOS:any = []
-  @Input()  REPRESENTANTES:any = []
+  DISTRITOS:any = []
+  REPRESENTANTES:any = []
     name:string = '';
     razonSocial:string = '';
     address:string = '';
@@ -23,7 +22,6 @@ export class EditProveedorComponent {
     representate:null;
   
     sweet:any = new SweetalertService
-    sweetRestaurarProveedor:any = new SweetRestaurarProveedor;
 
     loading: boolean = false;
   
@@ -42,7 +40,11 @@ export class EditProveedorComponent {
       this.correo = this.PROVEEDOR_SELECTED.email,
       this.state = this.PROVEEDOR_SELECTED.state,
       this.distrito = this.PROVEEDOR_SELECTED.iddistrito,
-      this.representate = this.PROVEEDOR_SELECTED.idrepresentante
+      this.representate = this.PROVEEDOR_SELECTED.idrepresentante,
+      this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
+        this.DISTRITOS = data.distritos;
+        this.REPRESENTANTES = data.representantes;
+      });
     }
   
     store(){
@@ -71,14 +73,12 @@ export class EditProveedorComponent {
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if(resp.message == 409){
-            this.sweetRestaurarProveedor.confirmar_restauracion('Atencion', resp.message_text);
-            this.sweetRestaurarProveedor.getRestauracionObservable().subscribe((confirmed:boolean) => {
+            this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+            this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
               if (confirmed) {
                 this.restaurar(resp.proveedor);
               }
             })
-          } else if (resp.message == 403) {
-            this.sweet.alerta('Ups', resp.message_text);
           } else {
             this.ProveedorE.emit({proveedor:resp.proveedor, isRestored: false});
             this.modal.close();
@@ -97,13 +97,9 @@ export class EditProveedorComponent {
     restaurar(cat:any){
       this.ProveedorService.restaurarProveedor(cat).subscribe({
         next: (resp: any) => {
-          if (resp.message === 403) {
-            this.sweet.error('Error', resp.message_text);
-          } else {
             this.ProveedorE.emit({proveedor:resp.proveedor_restaurado, isRestored: true});
             this.modal.close();
             this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-          }
         },
         error: (error) => {
           this.sweet.error(error.status);

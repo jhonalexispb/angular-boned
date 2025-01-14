@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { SweetRestaurarProveedor } from '../service/restauracionAlert.service';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
 
 @Component({
@@ -9,21 +8,21 @@ import { ServiceProveedorService } from '../service/service-proveedor.service';
   templateUrl: './create-proveedor.component.html',
   styleUrls: ['./create-proveedor.component.scss']
 })
-export class CreateProveedorComponent {
+export class CreateProveedorComponent{
   @Output() ProveedorC:EventEmitter<any> = new EventEmitter();
-  @Input()  DISTRITOS:any = []
-  @Input()  REPRESENTANTES:any = []
+  DISTRITOS:any = []
+  REPRESENTANTES:any = []
     name:string = '';
     razonSocial:string = '';
     address:string = '';
     correo:string = '';
     distrito:null;
-    representate:null;
+    representante:null;
+ 
   
     sweet:any = new SweetalertService
-    sweetRestaurarProveedor:any = new SweetRestaurarProveedor;
 
-    loading: boolean = false;
+    
   
     constructor(
       public modal: NgbActiveModal,
@@ -34,11 +33,13 @@ export class CreateProveedorComponent {
     }
   
     ngOnInit(): void {
-      
+      this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
+        this.DISTRITOS = data.distritos;
+        this.REPRESENTANTES = data.representantes;
+      });
     }
   
     store(){
-  
       if(!this.name){
         this.sweet.formulario_invalido("Validacion","el nombre del proveedor es requerido");
         return false;
@@ -55,15 +56,15 @@ export class CreateProveedorComponent {
         'email':this.correo,
         'address':this.address,
         'iddistrito':this.distrito,
-        'idrepresentante':this.representate,
+        'idrepresentante':this.representante,
       };
   
       this.ProveedorService.registerProveedor(data).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if(resp.message == 409){
-            this.sweetRestaurarProveedor.confirmar_restauracion('Atencion', resp.message_text);
-            this.sweetRestaurarProveedor.getRestauracionObservable().subscribe((confirmed:boolean) => {
+            this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+            this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
               if (confirmed) {
                 this.restaurar(resp.proveedor);
               }

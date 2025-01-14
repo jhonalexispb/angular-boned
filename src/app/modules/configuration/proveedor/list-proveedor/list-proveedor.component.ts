@@ -15,8 +15,6 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 })
 export class ListProveedorComponent {
   search:string = '';
-  DISTRITOS:any = [];
-  REPRESENTANTES:any = [];
   PROVEEDORES:any = [];
   isLoading$:any;
   sweet:any = new SweetalertService
@@ -49,8 +47,6 @@ export class ListProveedorComponent {
 
   listProveedor(page = 1){
     this.proveedorService.listProveedor(page,this.search).subscribe((resp: any) => {
-      this.DISTRITOS = resp.distritos;
-      this.REPRESENTANTES = resp.representantes;
       this.PROVEEDORES = resp.proveedor;
       this.totalPages = resp.total;
       this.currentPage = page;
@@ -63,8 +59,6 @@ export class ListProveedorComponent {
 
   createProveedor(){
     const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.DISTRITOS = this.DISTRITOS
-    modalRef.componentInstance.REPRESENTANTES = this.REPRESENTANTES
     modalRef.componentInstance.ProveedorC.subscribe((r:any)=>{
       this.PROVEEDORES.unshift(r); //integra el nuevo valor al inicio de la tabla
     })
@@ -74,8 +68,6 @@ export class ListProveedorComponent {
     const modalRef = this.modalService.open(EditProveedorComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.PROVEEDOR_SELECTED = REP;
-    modalRef.componentInstance.DISTRITOS = this.DISTRITOS
-    modalRef.componentInstance.REPRESENTANTES = this.REPRESENTANTES
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.ProveedorE.subscribe((rep:any)=>{

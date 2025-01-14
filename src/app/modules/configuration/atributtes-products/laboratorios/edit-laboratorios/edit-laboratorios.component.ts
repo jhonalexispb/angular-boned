@@ -72,37 +72,31 @@ export class EditLaboratoriosComponent {
     this.laboratorioService.updateLaboratorio(this.LABORATORIO_SELECTED.id,formData).subscribe({
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        /* if(resp.message == 409){
-          this.sweetRestaurarCategoria.confirmar_restauracion('Atencion', resp.message_text);
-          this.sweetRestaurarCategoria.getRestauracionObservable().subscribe((confirmed:boolean) => {
+        if(resp.message == 409){
+          this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+          this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
             if (confirmed) {
               this.restaurar(resp.laboratorio);
             }
           })
-        } else if (resp.message == 403) {
-          this.sweet.alerta('Ups', resp.message_text);
-        } else { */
+        } else {
           this.LaboratorioE.emit({laboratorio:resp.laboratorio, isRestored: false});
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el laboratorio se actualizo correctamente');
-        /* } */
+        }
       },
     });
   }
 
-  /* restaurar(prov:any){
+  restaurar(prov:any){
     this.laboratorioService.restaurarLaboratorio(prov).subscribe({
       next: (resp: any) => {
-        if (resp.message === 403) {
-          this.sweet.error('Error', resp.message_text);
-        } else {
-          this.LaboratorioE.emit({laboratorio:resp.laboratorio_restaurado, isRestored: false});
-          this.modal.close();
-          this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-        }
+        this.LaboratorioE.emit({laboratorio:resp.laboratorio_restaurado, isRestored: true});
+        this.modal.close();
+        this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
       },
     })
-  } */
+  }
 
   processFile($event:any){
     if($event.target.files[0].type.indexOf("image") < 0){

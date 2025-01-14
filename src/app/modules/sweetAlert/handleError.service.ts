@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { AuthService } from '../auth';
 import { LoadingService } from '../loadingScreen/loading-screen/service/loading-service.service';
 import { SweetalertService } from './sweetAlert.service';
 import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,14 +33,7 @@ export class HandleErrorService {
         this.sweet.alerta('Acceso denegado', 'No tienes permiso para realizar esta acción');
         } else if (error.status === 422) {
         if(error.error.message){
-            if(error.error.message == 409){
-            this.sweet.confirmar_restauracion('Atencion',error.error.message_text);
-            this.sweet.getRestauracionObservable().pipe(take(1)).subscribe((confirmed:boolean) => {
-                if (confirmed) {
-                    this.restaurarSubject.next(error.error.laboratorio);
-                }
-            })
-            } else if (error.error.message == 403) {
+            if (error.error.message == 403) {
             this.sweet.alerta('Ups', error.error.message_text);
             } else{
             this.sweet.error(error.error.message,error.error.message_text);

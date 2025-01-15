@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, finalize, catchError  } from 'rxjs';
+import { finalize, catchError  } from 'rxjs';
 import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
 import { LoadingService } from 'src/app/modules/loadingScreen/loading-screen/service/loading-service.service';
@@ -11,9 +11,6 @@ import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.servi
   providedIn: 'root'
 })
 export class LaboratoriosServiceService {
-  isLoading$: Observable<boolean>;
-  isLoadingSubject: BehaviorSubject<boolean>;
-  texto: BehaviorSubject<string>;
   sweet:any = new SweetalertService
   
   constructor(

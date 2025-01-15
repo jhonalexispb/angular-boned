@@ -15,7 +15,6 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListLaboratoriosComponent {
   search:string = '';
   LABORATORIOS:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
@@ -41,7 +40,6 @@ export class ListLaboratoriosComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.laboratorioService.isLoading$;
     this.listLaboratorio();
   }
 

@@ -1,9 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { SweetRestaurarCategoria } from '../../categorias/service/restauracionAlert.service';
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
-import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
+import { CreateProveedorComponent } from '../../../proveedor/create-proveedor/create-proveedor.component';
 
 @Component({
   selector: 'app-create-laboratorios',
@@ -12,13 +11,13 @@ import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.servi
 })
 export class CreateLaboratoriosComponent {
   @Output() LaboratorioC:EventEmitter<any> = new EventEmitter();
-  @Input() PROVEEDORES:any = [];
+  PROVEEDORES:any[] = [];
   name:string = '';
   file_name:any
   imagen_previzualizade:any;
   color:string = '#58BF53';
   margen_minimo:number = 20;
-  proveedores = [];
+  proveedores:any[] = [];
 
   loading: boolean = false;
 
@@ -28,9 +27,23 @@ export class CreateLaboratoriosComponent {
     public modal: NgbActiveModal,
     //llamamos al servicio
     public laboratorioService: LaboratoriosServiceService,
-    private handleErrorService: HandleErrorService
+    public modalService: NgbModal,
   ){
 
+  }
+
+  ngOnInit(): void {
+    this.laboratorioService.obtenerRecursos().subscribe((data: any) => {
+      this.PROVEEDORES = data.proveedores;
+    });
+  }
+
+  crearProveedor(){
+    const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.ProveedorC.subscribe((prov:any)=>{
+      this.PROVEEDORES = [prov, ...this.PROVEEDORES];
+      this.proveedores = [prov.id, ...this.proveedores];
+    })
   }
 
   store(){

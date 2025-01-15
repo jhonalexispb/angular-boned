@@ -16,7 +16,6 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListProveedorComponent {
   search:string = '';
   PROVEEDORES:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
@@ -41,7 +40,6 @@ export class ListProveedorComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.proveedorService.isLoading$;
     this.listProveedor();
   }
 

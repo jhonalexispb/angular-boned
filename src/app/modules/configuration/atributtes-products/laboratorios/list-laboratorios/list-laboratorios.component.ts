@@ -15,7 +15,6 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListLaboratoriosComponent {
   search:string = '';
   LABORATORIOS:any = [];
-  PROVEEDORES:any = [];
   isLoading$:any;
   sweet:any = new SweetalertService
 
@@ -49,7 +48,6 @@ export class ListLaboratoriosComponent {
   listLaboratorio(page = 1){
     this.laboratorioService.listLaboratorio(page,this.search).subscribe((resp: any) => {
       this.LABORATORIOS = resp.laboratorio;
-      this.PROVEEDORES = resp.proveedores;
       this.totalPages = resp.total;
       this.currentPage = page;
     })
@@ -61,7 +59,6 @@ export class ListLaboratoriosComponent {
 
   createLaboratorio(){
     const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.PROVEEDORES = this.PROVEEDORES;
     modalRef.componentInstance.LaboratorioC.subscribe((lab:any)=>{
       this.LABORATORIOS.unshift(lab); //integra el nuevo valor al inicio de la tabla
     })
@@ -71,7 +68,6 @@ export class ListLaboratoriosComponent {
     const modalRef = this.modalService.open(EditLaboratoriosComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.LABORATORIO_SELECTED = LAB;
-    modalRef.componentInstance.PROVEEDORES = this.PROVEEDORES;
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.LaboratorioE.subscribe((lab:any)=>{

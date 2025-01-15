@@ -91,7 +91,12 @@
                 </div>
 
                 <div class="v-row mb-7">
-                    <label class="required fw-bold fs-6 mb-2">Proveedores: </label>
+                    <div class="d-flex justify-content-between mb-2" data-kt-customer-table-toolbar="base">
+                        <label class="required fw-bold fs-6 mb-2">Proveedores: </label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="crearProveedor()">
+                            +
+                        </button>
+                    </div>
                     <ng-select 
                         name="proveedores"
                         [items]="PROVEEDORES"
@@ -106,9 +111,6 @@
                         [loading]="loading"  
                         [loadingText]="'Cargando...'" 
                         [multiple]="true"
-                        [bindLabel]="'name'"  
-                        [bindValue]="'id'"  
-                        
                         #provinciaControl="ngModel"
                         [ngClass]="{'is-invalid': provinciaControl.invalid && provinciaControl.touched}">
                     </ng-select>

@@ -76,4 +76,15 @@ export class LaboratoriosServiceService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //solicitamos los proveedores
+  obtenerRecursos(){
+    this.loadingService.showLoading('Solicitando recursos')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/laboratorio/recursos/";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

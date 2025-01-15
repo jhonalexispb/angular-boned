@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
+import { CreateProveedorComponent } from '../../../proveedor/create-proveedor/create-proveedor.component';
 /* import { SweetRestaurarCategoria } from '../service/restauracionAlert.service'; */
 
 @Component({
@@ -12,7 +13,7 @@ import { LaboratoriosServiceService } from '../service/laboratorios-service.serv
 
 export class EditLaboratoriosComponent {
   @Output() LaboratorioE:EventEmitter<any> = new EventEmitter();
-  @Input() PROVEEDORES:any = [];
+  PROVEEDORES:any = [];
   @Input() LABORATORIO_SELECTED:any = [];
   name:string = '';
   file_name:any;
@@ -25,14 +26,12 @@ export class EditLaboratoriosComponent {
   loading: boolean = false;
 
   sweet:any = new SweetalertService
-  /* sweetRestaurarCategoria:any = new SweetRestaurarCategoria; */
-
-  
 
   constructor(
     public modal: NgbActiveModal,
     //llamamos al servicio
     public laboratorioService: LaboratoriosServiceService,
+    public modalService: NgbModal,
   ){
 
   }
@@ -43,7 +42,10 @@ export class EditLaboratoriosComponent {
     this.margen_minimo = this.LABORATORIO_SELECTED.margen_minimo,
     this.proveedores = this.LABORATORIO_SELECTED.idproveedor,
     this.state = this.LABORATORIO_SELECTED.state,
-    this.imagen_previzualizade = this.LABORATORIO_SELECTED.image
+    this.imagen_previzualizade = this.LABORATORIO_SELECTED.image,
+    this.laboratorioService.obtenerRecursos().subscribe((data: any) => {
+      this.PROVEEDORES = data.proveedores;
+    });
   }
 
   store(){
@@ -109,4 +111,12 @@ export class EditLaboratoriosComponent {
     reader.readAsDataURL(this.file_name);
     reader.onloadend = () => this.imagen_previzualizade = reader.result
   }
+
+  crearProveedor(){
+      const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.ProveedorC.subscribe((prov:any)=>{
+        this.PROVEEDORES = [prov, ...this.PROVEEDORES];
+        this.proveedores = [prov.id, ...this.proveedores];
+      })
+    }
 }

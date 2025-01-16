@@ -1,0 +1,70 @@
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Crear ruc</h2>
+
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-7">
+        <form [formGroup]="rucForm" (ngSubmit)="onSubmit()">
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2">RUC</label>
+              <input
+                id="ruc"
+                type="number"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="ruc"
+                maxlength="11"
+                placeholder="Ingrese el RUC"
+                autocomplete="off"
+              />
+              <div *ngIf="rucForm.get('ruc')?.touched && rucForm.get('ruc')?.invalid" class="text-danger">
+                <span *ngIf="rucForm.get('ruc')?.errors?.['required']">El RUC es obligatorio.</span>
+                <span *ngIf="rucForm.get('ruc')?.errors?.['minlength']">El RUC debe tener 11 dígitos.</span>
+                <span *ngIf="rucForm.get('ruc')?.errors?.['maxlength']">El RUC no puede exceder los 11 dígitos.</span>
+              </div>
+            </div>
+        
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2" for="razonSocial">Razón Social</label>
+              <input
+                id="razonSocial"
+                type="text"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="razonSocial"
+                placeholder="Ingrese la razón social"
+                autocomplete="off"
+              />
+              <div *ngIf="rucForm.get('razonSocial')?.touched && rucForm.get('razonSocial')?.invalid" class="text-danger">
+                <span *ngIf="rucForm.get('razonSocial')?.errors?.['required']">La razón social es obligatoria.</span>
+              </div>
+            </div>
+            
+            <div class="text-center pt-15">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="rucForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->

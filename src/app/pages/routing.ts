@@ -69,6 +69,11 @@ const Routing: Routes = [
   },
 
   {
+    path: 'clientes',
+    loadChildren: () => import('../modules/clientes/clientes.module').then((m) => m.ClientesModule),
+  },
+
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full',

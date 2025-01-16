@@ -285,7 +285,7 @@
     </div>
 
     <div class="menu-item" *ngIf="showMenu(['register_clientes']) || showMenu(['edit_clientes'])">
-      <a class="menu-link without-sub" routerLink="/tablas" routerLinkActive="active">
+      <a class="menu-link without-sub" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"  routerLink="/clientes/" (click)="redireccionar('/clientes/sucursales/list')">
         <span class="menu-icon">
           <app-keenicon name="badge" class="fs-2"></app-keenicon>
         </span>

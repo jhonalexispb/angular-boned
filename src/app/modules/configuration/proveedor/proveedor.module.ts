@@ -11,6 +11,7 @@ import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ProveedorComponent } from './proveedor.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    NgSelectModule
+    NgSelectModule,
+    PaginationModule
   ]
 })
 export class ProveedorModule { }

@@ -6,8 +6,6 @@ import { ServiceProveedorService } from '../service/service-proveedor.service';
 import { CreateProveedorComponent } from '../create-proveedor/create-proveedor.component';
 import { EditProveedorComponent } from '../edit-proveedor/edit-proveedor.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-proveedor',
   templateUrl: './list-proveedor.component.html',
@@ -26,10 +24,6 @@ export class ListProveedorComponent {
     this.page = parseInt(page, 10) || 1;
     this.currentPage = this.page;
     this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
   }
 
   constructor(
@@ -51,8 +45,8 @@ export class ListProveedorComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listProveedor($event);
+  loadPage(page: number){
+    this.listProveedor(page);
   }
 
   createProveedor(){

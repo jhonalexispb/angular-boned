@@ -52,7 +52,7 @@ function appInitializer(authService: AuthService) {
     NgbModule,
     SweetAlert2Module.forRoot(),
     ToastrModule.forRoot(),
-    NgbPaginationModule,
+    NgbPaginationModule,  
     LottieModule.forRoot(appConfig),
   ],
   providers: [

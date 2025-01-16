@@ -36,18 +36,18 @@ export class ListCategoriasComponent {
 
   constructor(
     public modalService: NgbModal,
-    public sucursalService: CategoriasServiceService,
+    public categoriasService: CategoriasServiceService,
   ){
 
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.sucursalService.isLoading$;
+    this.isLoading$ = this.categoriasService.isLoading$;
     this.listCategoria();
   }
 
   listCategoria(page = 1){
-    this.sucursalService.listCategorias(page,this.search).subscribe((resp: any) => {
+    this.categoriasService.listCategorias(page,this.search).subscribe((resp: any) => {
       this.CATEGORIAS = resp.categoria;
       this.totalPages = resp.total;
       this.currentPage = page;
@@ -88,7 +88,7 @@ export class ListCategoriasComponent {
     this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la categoria: ${CAT.name}?`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.sucursalService.deleteCategoria(CAT.id).subscribe({
+        this.categoriasService.deleteCategoria(CAT.id).subscribe({
           next: (resp: any) => {
             if (resp.message === 403) {
               this.sweet.error('Error', resp.message_text);

@@ -1,0 +1,29 @@
+<ngb-pagination
+  [collectionSize]="collectionSize"
+  [(page)]="currentPage"
+  [boundaryLinks]="true"
+  [rotate]="true"
+  (pageChange)="onPageChange($event)"
+  [pageSize]="pageSize">
+  <ng-template ngbPaginationPages let-page let-pages="pages">
+    <li *ngIf="pages.length > 0" class="ngb-custom-pages-item">
+      <div class="mb-3 d-flex px-2">
+        <label id="paginationInputLabel" for="paginationInput" class="col-form-label me-2 ms-1">Página</label>
+        <input
+          #i
+          type="number"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          class="form-control custom-pages-input"
+          id="paginationInput"
+          [value]="page"
+          (keyup.enter)="onPageChange(+i.value)"
+          (input)="formatInput(i)"
+          aria-labelledby="paginationInputLabel paginationDescription"
+          style="width: 5rem; text-align:center"
+        />
+        <span id="paginationDescription" class="col-form-label text-nowrap px-2"> de {{ pages.length }}</span>
+      </div>
+    </li>
+  </ng-template>
+</ngb-pagination>

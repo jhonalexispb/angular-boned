@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { ComprobanteService } from '../service/comprobante-service.service';
 import { UserLocalStorageService } from 'src/app/modules/users/service/userLocalStorage.service';
-import { SweetComprobante } from '../service/sweetComprobante.service';
 
 @Component({
   selector: 'app-edit-comprobante',
@@ -19,8 +18,6 @@ export class EditComprobanteComponent {
   gender: string = '';
 
   sweet:any = new SweetalertService
-  sweetComprobante:any = new SweetComprobante
-
   permisions:any = [];
   constructor(
     public modal: NgbActiveModal,
@@ -48,8 +45,8 @@ export class EditComprobanteComponent {
       const genero = this.gender === 'FEMENINO' 
       ? "seguro"
       : "segura";
-      this.sweetComprobante.confirmar_estado_deshabilidato("¡Atención!",`¿Estás ${genero} de deshabilitar el comprobante: ${this.name} PARA TODOS LOS BANCOS?`);
-      this.sweetComprobante.getConfirmationObservable().subscribe((confirmed:boolean) => {
+      this.sweet.confirmar_estado_deshabilidato("¡Atención!",`¿Estás ${genero} de deshabilitar el comprobante: ${this.name} PARA TODOS LOS BANCOS?`);
+      this.sweet.getConfirmationObservable().subscribe((confirmed:boolean) => {
         if (confirmed) {
           this.procederConActualizacion();
         }
@@ -68,20 +65,10 @@ export class EditComprobanteComponent {
 
     this.comprobanteService.updateComprobante(this.COMPROBANTE_SELECTED.id, data).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        if (resp.message == 403) {
-          this.sweet.alerta('Error', resp.message_text);
-        } else {
           this.ComprobanteE.emit(resp.comprobante_pago);
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el comprobante se actualizó correctamente');
         }
-      },
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
-      },
     });
   }
 }

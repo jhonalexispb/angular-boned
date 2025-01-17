@@ -92,14 +92,28 @@
                                 <td>
                                     {{ R.created_at }}
                                 </td>
-                                <td class="">
+                                <!-- <td class="">
                                     <a href="#" onclick="return false" (click)="editRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </a>
                                     <a  href="#" onclick="return false" (click)="deleteRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                     </a>
-                                </td>
+                                </td> -->
+                                <td class="">
+                                    <div class="dropdown">
+                                      <!-- Botón de 3 puntos -->
+                                      <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ki-duotone ki-dots-vertical fs-2"><span class="path1"></span><span class="path2"></span></i> <!-- Tres puntos (ícono) -->
+                                      </button>
+                                  
+                                      <!-- Menú desplegable -->
+                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" href="#" (click)="editRuc(R)">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#" (click)="deleteRuc(R)">Eliminar</a></li>
+                                      </ul>
+                                    </div>
+                                  </td>
                             </tr>
                         
                     </tbody>

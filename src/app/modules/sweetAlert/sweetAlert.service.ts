@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 })
 export class SweetalertService {
   private restaurarSubject = new Subject<boolean>();
+  private confirmationSubject = new Subject<boolean>();
   private user: any = null;
 
   constructor() {
@@ -16,6 +17,10 @@ export class SweetalertService {
 
   getRestauracionObservable() {
     return this.restaurarSubject.asObservable();
+  }
+
+  getConfirmationObservable() {
+    return this.confirmationSubject.asObservable();
   }
 
   private loadUser(): void {
@@ -32,8 +37,7 @@ export class SweetalertService {
   private loadLottieAnimation(containerId: string, animationPath: string) {
     const lottieContainer = document.getElementById(containerId);
     if (lottieContainer) {
-      // Usar lottie directamente
-      const animation = lottie.loadAnimation({
+      lottie.loadAnimation({
         container: lottieContainer,
         path: animationPath,
         renderer: 'svg',
@@ -57,117 +61,55 @@ export class SweetalertService {
     }
   }
 
-  // Mostrar una alerta de éxito
-  success(title: string, text: string, image:string = '/assets/animations/general/confetti.json') {
-    Swal.fire({
+  private createAlert(title: string, text: string, image: string, confirmButtonText: string = 'Aceptar', showCancelButton: boolean = false, cancelButtonText: string = 'Cancelar') {
+    return Swal.fire({
       title: title,
-      confirmButtonText: 'Aceptar',
+      confirmButtonText: confirmButtonText,
+      cancelButtonText: cancelButtonText,
+      showCancelButton: showCancelButton,
       html: `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100%; text-align: center;">
-        <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user}, ${text}</p>
-      </div>`,
+          <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+          <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user ? `${this.user}, ` : ''}${text}</p>
+        </div>`,
       didOpen: () => {
         this.loadLottieAnimation('lottie-container', image);
       },
       willOpen: () => {
-        // Llamamos a la función auxiliar para actualizar los estilos
         this.updateAlertStyles();
       }
     });
+  }
+
+  // Mostrar una alerta de éxito
+  success(title: string, text: string, image: string = '/assets/animations/general/confetti.json') {
+    this.createAlert(title, text, image);
   }
 
   // Mostrar una alerta de error
-  formulario_invalido(title: string, text: string, image:string = '/assets/animations/general/formulario_invalido.json') {
-    Swal.fire({
-      title: title,
-      confirmButtonText: 'Cerrar',
-      html: `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100%; text-align: center;">
-        <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-        <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user}, ${text}</p>
-      </div>`,
-
-      //carga el lordicon caundo se llama a la pagina
-      didOpen: () => {
-        this.loadLottieAnimation('lottie-container', image);
-      },
-      willOpen: () => {
-        // Llamamos a la función auxiliar para actualizar los estilos
-        this.updateAlertStyles();
-      }
-    });
+  formulario_invalido(title: string, text: string, image: string = '/assets/animations/general/formulario_invalido.json') {
+    this.createAlert(title, text, image);
   }
 
   // Mostrar una alerta de advertencia
-  alerta(title: string, text: string, image:string = '/assets/animations/general/alerta.json') {
-    Swal.fire({
-      title: title,
-      confirmButtonText: 'Aceptar',
-      html: `
-        <div style="display: flex; flex-direction: column; align-items: center;">
-        <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
-      </div>`,
-      didOpen: () => {
-        this.loadLottieAnimation('lottie-container', image);
-      },
-      willOpen: () => {
-        // Llamamos a la función auxiliar para actualizar los estilos
-        this.updateAlertStyles();
-      }
-    });
+  alerta(title: string, text: string, image: string = '/assets/animations/general/alerta.json') {
+    this.createAlert(title, text, image);
   }
 
   // Mostrar una alerta de confirmación (por ejemplo, para eliminar)
-  confirmar_borrado(title: string, text: string, image:string = '/assets/animations/general/borrar_pregunta.json') {
-    return Swal.fire({
-      title: title,
-      text: text,
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminemoslo',
-      cancelButtonText: 'Cancelar',
-      html: `
-        <div style="display: flex; flex-direction: column; align-items: center;">
-        <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
-      </div>`,
-      didOpen: () => {
-        this.loadLottieAnimation('lottie-container', image);
-      },
-      willOpen: () => {
-        // Llamamos a la función auxiliar para actualizar los estilos
-        this.updateAlertStyles();
-      }
+  confirmar_borrado(title: string, text: string, image: string = '/assets/animations/general/borrar_pregunta.json') {
+    return this.createAlert(title, text, image, 'Sí, eliminemoslo', true);
+  }
+
+  confirmar_restauracion(title: string, text: string, image: string = '/assets/animations/general/ojitos.json') {
+    return this.createAlert(title, text, image, 'Sí, restauremoslo', true).then((result) => {
+      this.restaurarSubject.next(result.isConfirmed);
     });
   }
 
-  confirmar_restauracion(title: string, text: string, image:string = '/assets/animations/general/ojitos.json') {
-    return Swal.fire({
-      title: title,
-      text: text,
-      showCancelButton: true,
-      confirmButtonText: 'Sí, restauremoslo',
-      cancelButtonText: 'Cancelar',
-      html: `
-        <div style="display: flex; flex-direction: column; align-items: center;">
-        <div id="lottie-container" style="width: 200px; height: 200px; margin: auto;"></div>
-        <p style="text-align: center; margin-top: 10px;">${this.user}, ${text}</p>
-      </div>`,
-      didOpen: () => {
-        this.loadLottieAnimation('lottie-container', image);
-      },
-      willOpen: () => {
-        // Llamamos a la función auxiliar para actualizar los estilos
-        this.updateAlertStyles();
-      }
-    }).then((result) => {
-      // Emitimos la confirmación según la acción del usuario
-      if (result.isConfirmed) {
-        this.restaurarSubject.next(true);  // Emitimos 'true' si el usuario confirma
-      } else {
-        this.restaurarSubject.next(false);  // Emitimos 'false' si el usuario cancela
-      }
+  confirmar_estado_deshabilidato(title: string, text: string, image: string = '/assets/animations/configuration-methodPayment-comprobante/advertencia.json') {
+    return this.createAlert(title, text, image, 'Sí, deshabilitemoslo', true).then((result) => {
+      this.confirmationSubject.next(result.isConfirmed);
     });
   }
 

@@ -13,7 +13,6 @@ import { CreateComprobanteComponent } from '../create-comprobante/create-comprob
 export class ListComprobanteComponent {
   search:string = '';
   COMPROBANTES:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
@@ -27,7 +26,6 @@ export class ListComprobanteComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.comprobanteService.isLoading$;
     this.listComprobante();
   }
 
@@ -67,15 +65,8 @@ export class ListComprobanteComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.comprobanteService.deleteComprobante(COMPROBANTE.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.COMPROBANTES = this.COMPROBANTES.filter((c:any) => c.id !== COMPROBANTE.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'El comprobante ha sido eliminado correctamente');
-            }
-          },
-          error: (error) => {
-            this.sweet.error(error.status);
+            this.COMPROBANTES = this.COMPROBANTES.filter((c:any) => c.id !== COMPROBANTE.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'El comprobante ha sido eliminado correctamente');
           }
         })
       }

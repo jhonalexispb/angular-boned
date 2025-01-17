@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'app-pagination',
   templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.css']
+  styleUrls: ['./pagination.component.scss']
 })
 export class PaginationComponent {
   @Input() collectionSize: number = 0;  // Número total de elementos
@@ -18,7 +18,5 @@ export class PaginationComponent {
   }
 
   // Para formatear el valor del input del número de página
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(/[^0-9]/g, ''); // Solo permite números
-  }
+  
 }

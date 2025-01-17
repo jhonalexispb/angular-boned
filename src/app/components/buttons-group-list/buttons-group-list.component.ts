@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-buttons-group-list',
@@ -6,20 +6,10 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./buttons-group-list.component.scss']
 })
 export class ButtonsGroupListComponent {
-  showOptions = false; // Determina si los botones de editar y eliminar deben mostrarse
+  buttonsVisible: boolean = false;  // Control de visibilidad de los botones
 
-  @Output() editAction = new EventEmitter<void>();
-  @Output() deleteAction = new EventEmitter<void>();
-
-  toggleOptions() {
-    this.showOptions = !this.showOptions; // Alterna la visibilidad de los botones de acción
-  }
-
-  edit() {
-    this.editAction.emit(); // Emite el evento para editar
-  }
-
-  delete() {
-    this.deleteAction.emit(); // Emite el evento para eliminar
+  // Función para alternar la visibilidad de los botones
+  toggleButtonsVisibility() {
+    this.buttonsVisible = !this.buttonsVisible;
   }
 }

@@ -1,8 +1,6 @@
-<div class="btn-group" role="group">
-    <button type="button" class="btn btn-primary" (click)="toggleOptions()">Acciones</button>
-  
-    <div *ngIf="showOptions" class="btn-group">
-      <button type="button" class="btn btn-warning" (click)="edit()">Editar</button>
-      <button type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
-    </div>
-  </div>
+<button class="btn btn-primary p-1" (click)="toggleButtonsVisibility()"><i class="ki-solid ki-dots-vertical fs-1 p-0"></i></button>
+
+<!-- Lista de botones que se muestran u ocultan -->
+<div *ngIf="buttonsVisible">
+  <ng-content></ng-content>  <!-- Aquí se proyectan los botones que pasen como contenido -->
+</div>

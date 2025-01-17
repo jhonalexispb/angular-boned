@@ -10,6 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 
 
 @NgModule({
@@ -29,6 +31,8 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
+    PaginationModule,
+    ButtonsGroupListModule
   ]
 })
 export class SucursalesModule { }

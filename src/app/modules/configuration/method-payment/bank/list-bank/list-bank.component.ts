@@ -5,8 +5,6 @@ import { BankService } from '../service/bank-service.service';
 import { EditBankComponent } from '../edit-bank/edit-bank.component';
 import { CreateBankComponent } from '../create-bank/create-bank.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-bank',
   templateUrl: './list-bank.component.html',
@@ -15,24 +13,10 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListBankComponent {
   search:string = '';
   BANCOS:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
-
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -42,7 +26,6 @@ export class ListBankComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.bankService.isLoading$;
     this.listBancos();
   }
 
@@ -54,8 +37,8 @@ export class ListBankComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listBancos($event);
+  loadPage(page:number){
+    this.listBancos(page);
   }
 
   editBank(BANK:any){
@@ -82,15 +65,8 @@ export class ListBankComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.bankService.deleteBanco(BANCO.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.BANCOS = this.BANCOS.filter((b:any) => b.id !== BANCO.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'El banco ha sido eliminado correctamente');
-            }
-          },
-          error: (error) => {
-            this.sweet.error(error.status);
+            this.BANCOS = this.BANCOS.filter((b:any) => b.id !== BANCO.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'El banco ha sido eliminado correctamente');
           }
         })
       }

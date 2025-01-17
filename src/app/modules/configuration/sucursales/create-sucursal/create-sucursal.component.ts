@@ -44,20 +44,10 @@ export class CreateSucursalComponent {
 
     this.sucursalService.registerSucursal(data).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        if (resp.message == 403) {
-          this.sweet.alerta('Error', resp.message_text);
-        } else {
-          this.SucursalC.emit(resp.sucursal);
-          this.modal.close();
-          this.sweet.success('¡Éxito!', 'La sucursal se registró correctamente');
-        }
-      },
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
-      },
+        this.SucursalC.emit(resp.sucursal);
+        this.modal.close();
+        this.sweet.success('¡Éxito!', 'La sucursal se registró correctamente');
+      }
     });
   }
 }

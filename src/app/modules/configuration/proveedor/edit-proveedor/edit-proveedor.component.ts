@@ -85,12 +85,6 @@ export class EditProveedorComponent {
           this.sweet.success('¡Éxito!', 'el proveedor se actualizo correctamente');
         }
       },
-
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
-      },
     });
   }
 
@@ -100,9 +94,6 @@ export class EditProveedorComponent {
           this.ProveedorE.emit({proveedor:resp.proveedor_restaurado, isRestored: true});
           this.modal.close();
           this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-      },
-      error: (error) => {
-        this.sweet.error(error.status);
       }
     })
   }

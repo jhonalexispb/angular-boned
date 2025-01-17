@@ -5,9 +5,6 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { CreateCategoriasComponent } from '../create-categorias/create-categorias.component';
 import { EditCategoriasComponent } from '../edit-categorias/edit-categorias.component';
 
-
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-categorias',
   templateUrl: './list-categorias.component.html',
@@ -16,23 +13,10 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListCategoriasComponent {
   search:string = '';
   CATEGORIAS:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -42,7 +26,6 @@ export class ListCategoriasComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.categoriasService.isLoading$;
     this.listCategoria();
   }
 
@@ -54,8 +37,8 @@ export class ListCategoriasComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listCategoria($event);
+  loadPage(page: number) {
+    this.listCategoria(page);
   }
 
   createCategoria(){
@@ -90,15 +73,8 @@ export class ListCategoriasComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.categoriasService.deleteCategoria(CAT.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.CATEGORIAS = this.CATEGORIAS.filter((sucurs:any) => sucurs.id !== CAT.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'La categoria ha sido eliminada correctamente','/assets/animations/general/borrado_exitoso.json');
-            }
-          },
-          error: (error) => {
-            this.sweet.error(error.status);
+            this.CATEGORIAS = this.CATEGORIAS.filter((sucurs:any) => sucurs.id !== CAT.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'La categoria ha sido eliminada correctamente','/assets/animations/general/borrado_exitoso.json');
           }
         })
       }

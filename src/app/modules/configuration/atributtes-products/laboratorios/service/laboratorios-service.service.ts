@@ -4,14 +4,12 @@ import { finalize, catchError  } from 'rxjs';
 import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
 import { LoadingService } from 'src/app/modules/loadingScreen/loading-screen/service/loading-service.service';
-import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LaboratoriosServiceService {
-  sweet:any = new SweetalertService
   
   constructor(
     private http: HttpClient,

@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { SweetRestaurarRepresentante } from '../service/restauracionAlert.service';
 import { RepresentanteProveedorService } from '../service/representante-proveedor-service.service';
 
 @Component({
@@ -17,7 +16,6 @@ export class CreateRepresentanteProveedorComponent {
   correo:string = '';
 
   sweet:any = new SweetalertService
-  sweetRestaurarRepresentante:any = new SweetRestaurarRepresentante;
 
   constructor(
     public modal: NgbActiveModal,
@@ -59,25 +57,17 @@ export class CreateRepresentanteProveedorComponent {
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
         if(resp.message == 409){
-          this.sweetRestaurarRepresentante.confirmar_restauracion('Atencion', resp.message_text);
-          this.sweetRestaurarRepresentante.getRestauracionObservable().subscribe((confirmed:boolean) => {
+          this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+          this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
             if (confirmed) {
               this.restaurar(resp.representante_proveedor);
             }
           })
-        } else if (resp.message == 403) {
-          this.sweet.alerta('Ups', resp.message_text);
         } else {
           this.RepresentanteProveedorC.emit(resp.representante_proveedor);
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el representante se creo correctamente');
         }
-      },
-
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
       },
     });
   }
@@ -85,16 +75,9 @@ export class CreateRepresentanteProveedorComponent {
   restaurar(cat:any){
     this.RepresentanteProveedorService.restaurarRepresentanteProveedor(cat).subscribe({
       next: (resp: any) => {
-        if (resp.message === 403) {
-          this.sweet.error('Error', resp.message_text);
-        } else {
-          this.RepresentanteProveedorC.emit(resp.representante_proveedor_restaurado);
-          this.modal.close();
-          this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-        }
-      },
-      error: (error) => {
-        this.sweet.error(error.status);
+        this.RepresentanteProveedorC.emit(resp.representante_proveedor_restaurado);
+        this.modal.close();
+        this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
       }
     })
   }

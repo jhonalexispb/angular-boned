@@ -5,8 +5,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateWarehouseComponent } from '../create-warehouse/create-warehouse.component';
 import { EditWarehouseComponent } from '../edit-warehouse/edit-warehouse.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-warehouse',
   templateUrl: './list-warehouse.component.html',
@@ -16,23 +14,10 @@ export class ListWarehouseComponent {
   search:string = '';
   WAREHOUSES:any = [];
   SUCURSALES:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -42,7 +27,6 @@ export class ListWarehouseComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.warehouseService.isLoading$;
     this.listWarehouses();
   }
 
@@ -55,8 +39,8 @@ export class ListWarehouseComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listWarehouses($event);
+  loadPage(page:number){
+    this.listWarehouses(page);
   }
 
   createWarehouse(){
@@ -89,15 +73,8 @@ export class ListWarehouseComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.warehouseService.deleteWarehouse(WAREHOUSE.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.WAREHOUSES = this.WAREHOUSES.filter((ware:any) => ware.id !== WAREHOUSE.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'el almacén ha sido eliminado correctamente');
-            }
-          },
-          error: (error) => {
-            this.sweet.error(error.status);
+            this.WAREHOUSES = this.WAREHOUSES.filter((ware:any) => ware.id !== WAREHOUSE.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'el almacén ha sido eliminado correctamente');
           }
         })
       }

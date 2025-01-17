@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ComunicationRepresentanteProveedorComponent } from './comunication-representante-proveedor/comunication-representante-proveedor.component';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ComunicationRepresentanteProveedorComponent } from './comunication-repr
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
+    PaginationModule
   ],
 })
 export class RepresentanteProveedorModule { }

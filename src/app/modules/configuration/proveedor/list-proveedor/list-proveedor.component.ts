@@ -81,16 +81,9 @@ export class ListProveedorComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.proveedorService.deleteProveedor(REP.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
               this.PROVEEDORES = this.PROVEEDORES.filter((sucurs:any) => sucurs.id !== REP.id); // Eliminamos el rol de la lista
               this.sweet.success('Eliminado', 'el proveedor ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
-            }
           },
-          error: (error) => {
-            this.sweet.error(error.status);
-          }
         })
       }
     });

@@ -1,22 +1,21 @@
 import { ConfigDelay, URL_SERVICIO } from 'src/app/config/config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, finalize, Observable} from 'rxjs';
+import { finalize, catchError } from 'rxjs';
 import { AuthService } from '../../auth';
 import { LoadingService } from '../../loadingScreen/loading-screen/service/loading-service.service';
+import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
-  isLoading$: Observable<boolean>;
-  isLoadingSubject: BehaviorSubject<boolean>;
-  texto: BehaviorSubject<string>;
-  
+
   constructor(
     private http: HttpClient,
     public authservice: AuthService,
     private loadingService: LoadingService,
+    public handleErrorService: HandleErrorService,
   ) {}
 
   registerRole(data:any){
@@ -24,6 +23,7 @@ export class RolesService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/roles";
     return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
@@ -33,6 +33,7 @@ export class RolesService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/roles?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
         setTimeout(() => {
           this.loadingService.hideLoading();
@@ -46,6 +47,7 @@ export class RolesService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/roles/"+ID_ROLE;
     return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
@@ -55,6 +57,7 @@ export class RolesService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/roles/"+ID_ROLE;
     return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }

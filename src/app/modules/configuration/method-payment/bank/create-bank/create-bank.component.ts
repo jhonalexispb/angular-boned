@@ -39,19 +39,9 @@ export class CreateBankComponent {
   
       this.bankService.registerBanco(formData).subscribe({
         next: (resp: any) => {
-          // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-          if (resp.message == 403) {
-            this.sweet.alerta('Error', resp.message_text);
-          } else {
-            this.BancoC.emit(resp.bank);
-            this.modal.close();
-            this.sweet.success('¡Éxito!', 'El banco se registró correctamente');
-          }
-        },
-        error: (error) => {
-          // Lógica cuando ocurre un error
-          this.sweet.error(error.status);
-          //console.log(error.status)
+          this.BancoC.emit(resp.bank);
+          this.modal.close();
+          this.sweet.success('¡Éxito!', 'El banco se registró correctamente');
         },
       });
     }

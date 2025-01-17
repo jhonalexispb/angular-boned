@@ -1,23 +1,20 @@
 import { LoadingService } from './../../../loadingScreen/loading-screen/service/loading-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, finalize } from 'rxjs';
+import { finalize, catchError } from 'rxjs';
 import { ConfigDelay, URL_SERVICIO } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
+import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WarehouseService {
-
-  isLoading$: Observable<boolean>;
-  isLoadingSubject: BehaviorSubject<boolean>;
-  texto: BehaviorSubject<string>;
-  
+export class WarehouseService {  
   constructor(
     private http: HttpClient,
     public authservice: AuthService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    public handleErrorService: HandleErrorService,
   ) {} 
 
   registerWarehouse(data:any){
@@ -25,6 +22,7 @@ export class WarehouseService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/warehouses";
     return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
@@ -34,6 +32,7 @@ export class WarehouseService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/warehouses?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
         setTimeout(() => {
           this.loadingService.hideLoading();
@@ -47,6 +46,7 @@ export class WarehouseService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/warehouses/"+ID_WAREHOUSE;
     return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
@@ -56,6 +56,7 @@ export class WarehouseService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/warehouses/"+ID_WAREHOUSE;
     return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }

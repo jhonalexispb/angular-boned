@@ -5,8 +5,6 @@ import { LaboratoriosServiceService } from '../service/laboratorios-service.serv
 import { CreateLaboratoriosComponent } from '../create-laboratorios/create-laboratorios.component';
 import { EditLaboratoriosComponent } from '../edit-laboratorios/edit-laboratorios.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-laboratorios',
   templateUrl: './list-laboratorios.component.html',
@@ -19,18 +17,6 @@ export class ListLaboratoriosComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -51,8 +37,8 @@ export class ListLaboratoriosComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listLaboratorio($event);
+  loadPage(page: number) {
+    this.listLaboratorio(page);
   }
 
   createLaboratorio(){
@@ -86,17 +72,10 @@ export class ListLaboratoriosComponent {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.laboratorioService.deleteLaboratorio(LAB.id).subscribe({
-          next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.LABORATORIOS = this.LABORATORIOS.filter((sucurs:any) => sucurs.id !== LAB.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'El laboratorio ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
-            }
+          next: () => {
+            this.LABORATORIOS = this.LABORATORIOS.filter((sucurs:any) => sucurs.id !== LAB.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'El laboratorio ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
           },
-          error: (error) => {
-            this.sweet.error(error.status);
-          }
         })
       }
     });

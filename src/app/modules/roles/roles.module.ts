@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-menus/dropdown-menus.module";
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 
 @NgModule({
@@ -29,8 +30,8 @@ import { DropdownMenusModule } from "../../_metronic/partials/content/dropdown-m
     ReactiveFormsModule, //formulario reactivo
     InlineSVGModule,
     NgbModalModule,
-    NgbPaginationModule,
     DropdownMenusModule,
+    PaginationModule
 ]
 })
 export class RolesModule { }

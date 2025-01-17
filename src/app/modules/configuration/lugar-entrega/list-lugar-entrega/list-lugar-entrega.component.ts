@@ -5,8 +5,6 @@ import { LugarEntregaService } from '../service/lugar-entrega.service';
 import { CreateLugarEntregaComponent } from '../create-lugar-entrega/create-lugar-entrega.component';
 import { EditLugarEntregaComponent } from '../edit-lugar-entrega/edit-lugar-entrega.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-lugar-entrega',
   templateUrl: './list-lugar-entrega.component.html',
@@ -15,25 +13,10 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListLugarEntregaComponent {
   search:string = '';
   LUGAR_ENTREGA:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  
-      
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -43,7 +26,6 @@ export class ListLugarEntregaComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.lugarEntregaService.isLoading$;
     this.listLugarEntrega();
   }
 
@@ -55,8 +37,8 @@ export class ListLugarEntregaComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listLugarEntrega($event);
+  loadPage(page: number){
+    this.listLugarEntrega(page);
   }
 
   createLugarEntrega(){
@@ -88,16 +70,9 @@ export class ListLugarEntregaComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.lugarEntregaService.deleteLugarEntrega(LUGAR_ENTREGA.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
               this.LUGAR_ENTREGA = this.LUGAR_ENTREGA.filter((ware:any) => ware.id !== LUGAR_ENTREGA.id); // Eliminamos el rol de la lista
               this.sweet.success('Eliminado', 'el lugar de entrega ha sido eliminado correctamente');
-            }
           },
-          error: (error) => {
-            this.sweet.error(error.status);
-          }
         })
       }
     });

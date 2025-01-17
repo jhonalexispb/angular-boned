@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LugarEntregaComponent } from './lugar-entrega.component';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { LugarEntregaComponent } from './lugar-entrega.component';
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
+    PaginationModule
   ]
 })
 export class LugarEntregaModule { }

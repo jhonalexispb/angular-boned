@@ -5,13 +5,11 @@ import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from 'src/app/modules/auth';
 import { LoadingService } from 'src/app/modules/loadingScreen/loading-screen/service/loading-service.service';
 import { HandleErrorService } from 'src/app/modules/sweetAlert/handleError.service';
-import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrincipiosActivosServiceService {
-  sweet:any = new SweetalertService
     
   constructor(
     private http: HttpClient,

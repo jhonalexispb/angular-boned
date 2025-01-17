@@ -26,9 +26,9 @@ export class EditCategoriasComponent {
 
   ngOnInit(): void {
     (this.name = this.CATEGORIA_SELECTED.name),
-      (this.file_name = this.CATEGORIA_SELECTED.image),
-      (this.state = this.CATEGORIA_SELECTED.state),
-      (this.imagen_previzualizade = this.CATEGORIA_SELECTED.image);
+    (this.file_name = this.CATEGORIA_SELECTED.image),
+    (this.state = this.CATEGORIA_SELECTED.state),
+    (this.imagen_previzualizade = this.CATEGORIA_SELECTED.image);
   }
 
   store() {

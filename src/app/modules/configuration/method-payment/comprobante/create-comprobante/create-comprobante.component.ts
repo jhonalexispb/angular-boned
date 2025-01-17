@@ -10,47 +10,47 @@ import { ComprobanteService } from '../service/comprobante-service.service';
 })
 export class CreateComprobanteComponent {
   @Output() ComprobanteC:EventEmitter<any> = new EventEmitter();
-      name:string = '';
-    
-      sweet:any = new SweetalertService
-  
-      constructor(
-        public modal: NgbActiveModal,
-        //llamamos al servicio
-        public comprobanteService: ComprobanteService,
-      ){
-    
-      }
-    
-      ngOnInit(): void {
-      }
-  
-      store(){
-        if(!this.name){
-          this.sweet.formulario_invalido("Validacion","el nombre del comprobante es requerido");
-          return false;
-        }
+  name:string = '';
 
-        let data = {
-          name: this.name
+  sweet:any = new SweetalertService
+
+  constructor(
+    public modal: NgbActiveModal,
+    //llamamos al servicio
+    public comprobanteService: ComprobanteService,
+  ){
+
+  }
+
+  ngOnInit(): void {
+  }
+
+  store(){
+    if(!this.name){
+      this.sweet.formulario_invalido("Validacion","el nombre del comprobante es requerido");
+      return false;
+    }
+
+    let data = {
+      name: this.name
+    }
+
+    this.comprobanteService.registerComprobante(data).subscribe({
+      next: (resp: any) => {
+        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
+        if (resp.message == 403) {
+          this.sweet.alerta('Error', resp.message_text);
+        } else {
+          this.ComprobanteC.emit(resp.comprobante_pago);
+          this.modal.close();
+          this.sweet.success('¡Éxito!', 'el comprobante se registró correctamente');
         }
-    
-        this.comprobanteService.registerComprobante(data).subscribe({
-          next: (resp: any) => {
-            // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-            if (resp.message == 403) {
-              this.sweet.alerta('Error', resp.message_text);
-            } else {
-              this.ComprobanteC.emit(resp.comprobante_pago);
-              this.modal.close();
-              this.sweet.success('¡Éxito!', 'el comprobante se registró correctamente');
-            }
-          },
-          error: (error) => {
-            // Lógica cuando ocurre un error
-            this.sweet.error(error.status);
-            //console.log(error.status)
-          },
-        });
-      }
+      },
+      error: (error) => {
+        // Lógica cuando ocurre un error
+        this.sweet.error(error.status);
+        //console.log(error.status)
+      },
+    });
+  }
 }

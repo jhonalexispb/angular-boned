@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { ServiceDepartamentoService } from '../service/service-departamento.service';
-import { SweetGeografia } from '../../service/service-geografia.service';
 
 @Component({
   selector: 'app-edit-departamento',
@@ -18,7 +17,6 @@ export class EditDepartamentoComponent {
   state:number = 1;
 
   sweet:any = new SweetalertService;
-  sweetGeografia:any = new SweetGeografia;
 
   constructor(
     public modal: NgbActiveModal,
@@ -49,41 +47,27 @@ export class EditDepartamentoComponent {
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
         if(resp.message == 409){
-          this.sweetGeografia.confirmar_restauracion('Atencion', resp.message_text);
-          this.sweetGeografia.getRestauracionObservable().subscribe((confirmed:boolean) => {
+          this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+          this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
             if (confirmed) {
               this.restaurar(resp.departamento);
             }
           })
-        } else if (resp.message == 403) {
-          this.sweet.alerta('Error', resp.message_text);
         } else {
           this.DepartamentoE.emit({ departamento: resp.departamento, isRestored: false });
           this.modal.close();
           this.sweet.success('¡Éxito!', 'El departamento se actualizo correctamente');
         }
-      },
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
-      },
+      }
     });
   }
 
   restaurar(DEP:any){
     this.departamentoService.restaurarDepartamento(DEP).subscribe({
       next: (resp: any) => {
-        if (resp.message === 403) {
-          this.sweet.error('Error', resp.message_text);
-        } else {
-          this.DepartamentoE.emit({ departamento: resp.departamento_restaurado, isRestored: true });
-          this.modal.close();
-          this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-        }
-      },
-      error: (error) => {
-        this.sweet.error(error.status);
+        this.DepartamentoE.emit({ departamento: resp.departamento_restaurado, isRestored: true });
+        this.modal.close();
+        this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
       }
     })
   }

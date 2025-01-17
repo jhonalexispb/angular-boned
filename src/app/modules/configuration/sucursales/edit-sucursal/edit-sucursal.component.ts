@@ -50,19 +50,9 @@ export class EditSucursalComponent {
 
     this.sucursalService.updateSucursal(this.SUCURSAL_SELECTED.id, data).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        if (resp.message == 403) {
-          this.sweet.alerta('Error', resp.message_text);
-        } else {
           this.SucursalE.emit(resp.sucursal);
           this.modal.close();
           this.sweet.success('¡Éxito!', 'La sucursal se actualizó correctamente');
-        }
-      },
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
       },
     });
   }

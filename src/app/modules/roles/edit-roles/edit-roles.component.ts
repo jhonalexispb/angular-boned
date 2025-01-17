@@ -61,18 +61,10 @@ export class EditRolesComponent {
     //usamos el servicio para guardar la data
     this.roleService.updateRole(this.ROLE_SELECTED.id,data).subscribe({
       next:(resp:any)=>{
-        console.log(resp)
-        if(resp.message == 403){
-          this.toast.error("Validacion",resp.message_text);
-        }else{
           this.RoleE.emit(resp.role);
           this.modal.close();
           this.sweet.success("Exito","El rol se edito correctamente"); 
-        }
       },
-      error: (error) => {
-        this.sweet.error(error.status)
-      }
     })
   }
 }

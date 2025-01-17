@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { SweetGeografia } from '../../service/service-geografia.service';
 import { ServiceDistritoService } from '../service/service-distrito.service';
 
 @Component({
@@ -22,7 +21,6 @@ export class EditDistritoComponent {
   loading: boolean = false;
 
   sweet:any = new SweetalertService
-  sweetGeografia:any = new SweetGeografia;
 
   constructor(
     public modal: NgbActiveModal,
@@ -61,25 +59,17 @@ export class EditDistritoComponent {
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
         if(resp.message == 409){
-          this.sweetGeografia.confirmar_restauracion('Atencion', resp.message_text);
-          this.sweetGeografia.getRestauracionObservable().subscribe((confirmed:boolean) => {
+          this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+          this.sweet.getRestauracionObservable().subscribe((confirmed:boolean) => {
             if (confirmed) {
               this.restaurar(resp.distrito);
             }
           })
-        } else if (resp.message == 403) {
-          this.sweet.alerta('Ups', resp.message_text);
         } else {
           this.DistritoE.emit({distrito:resp.distrito, isRestored: false});
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el distrito se actualizo correctamente');
         }
-      },
-
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
       },
     });
   }
@@ -87,16 +77,9 @@ export class EditDistritoComponent {
   restaurar(prov:any){
     this.distritoService.restaurarDistrito(prov).subscribe({
       next: (resp: any) => {
-        if (resp.message === 403) {
-          this.sweet.error('Error', resp.message_text);
-        } else {
           this.DistritoE.emit({distrito:resp.distrito_restaurado, isRestored: true});
           this.modal.close();
           this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-        }
-      },
-      error: (error) => {
-        this.sweet.error(error.status);
       }
     })
   }

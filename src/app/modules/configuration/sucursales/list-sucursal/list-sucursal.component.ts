@@ -5,8 +5,6 @@ import { CreateSucursalComponent } from '../create-sucursal/create-sucursal.comp
 import { EditSucursalComponent } from '../edit-sucursal/edit-sucursal.component';
 import { SweetalertService } from '../../../sweetAlert/sweetAlert.service';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-sucursal',
   templateUrl: './list-sucursal.component.html',
@@ -15,23 +13,10 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListSucursalComponent {
   search:string = '';
   SUCURSALES:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
   currentPage:number = 1;
-  
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -41,7 +26,6 @@ export class ListSucursalComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.sucursalService.isLoading$;
     this.listSucursales();
   }
 
@@ -84,15 +68,8 @@ export class ListSucursalComponent {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.sucursalService.deleteSucursal(SUCURSAL.id).subscribe({
           next: (resp: any) => {
-            if (resp.message === 403) {
-              this.sweet.error('Error', resp.message_text);
-            } else {
-              this.SUCURSALES = this.SUCURSALES.filter((sucurs:any) => sucurs.id !== SUCURSAL.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'La sucursal ha sido eliminada correctamente');
-            }
-          },
-          error: (error) => {
-            this.sweet.error(error.status);
+            this.SUCURSALES = this.SUCURSALES.filter((sucurs:any) => sucurs.id !== SUCURSAL.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'La sucursal ha sido eliminada correctamente');
           }
         })
       }

@@ -5,8 +5,6 @@ import { SweetalertService } from '../../../../sweetAlert/sweetAlert.service';
 import { MethodService } from '../service/method.service';
 import { EditMethodComponent } from '../edit-method/edit-method.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-method',
   templateUrl: './list-method.component.html',
@@ -15,26 +13,11 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
 export class ListMethodComponent {
   search:string = '';
   METODOS:any = [];
-  isLoading$:any;
   sweet:any = new SweetalertService
-
 
   totalPages:number = 0; 
   currentPage:number = 1;
-
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
   
-
   constructor(
     public modalService: NgbModal,
     public metodoService: MethodService,
@@ -43,7 +26,6 @@ export class ListMethodComponent {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.metodoService.isLoading$;
     this.listMetodos();
   }
 
@@ -55,8 +37,8 @@ export class ListMethodComponent {
     })
   }
 
-  loadPage($event:any){
-    this.listMetodos($event);
+  loadPage(page:number){
+    this.listMetodos(page);
   }
 
   editMetodo(METODO:any){

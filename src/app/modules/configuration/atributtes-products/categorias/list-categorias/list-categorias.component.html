@@ -96,30 +96,12 @@
                     <tfoot></tfoot>
                 </table>
             </div>
-            <ngb-pagination [collectionSize]="totalPages" [(page)]="currentPage" [boundaryLinks]="true" [rotate]="true" (pageChange)="loadPage($event)" [pageSize]="25">
-                <ng-template ngbPaginationPages let-page let-pages="pages">
-                    <li *ngIf="pages.length > 0" class="ngb-custom-pages-item">
-                        <div class="mb-3 d-flex px-2">
-                            <label id="paginationInputLabel" for="paginationInput" class="col-form-label me-2 ms-1">Pagina</label>
-                            <input
-                                #i
-                                type="text"
-                                inputmode="numeric"
-                                pattern="[0-9]*"
-                                class="form-control custom-pages-input"
-                                id="paginationInput"
-                                [value]="page"
-                                (keyup.enter)="selectPage(i.value)"
-                                
-                                (input)="formatInput($any($event).target)"
-                                aria-labelledby="paginationInputLabel paginationDescription"
-                                style="width: 5rem; text-align:center"
-                            />
-                            <span id="paginationDescription" class="col-form-label text-nowrap px-2"> de {{ pages.length }}</span>
-                        </div>
-                    </li>
-                </ng-template>
-            </ngb-pagination>
+            <app-pagination
+            [collectionSize]="totalPages"
+            [currentPage]="currentPage"
+            [pageSize]="25"
+            (pageChange)="loadPage($event)">
+            </app-pagination>
         </div>
         <!--end::Table-->
     </div>

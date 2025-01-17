@@ -5,8 +5,6 @@ import { ServiceProvinciaService } from '../service/service-provincia.service';
 import { EditProvinciaComponent } from '../edit-provincia/edit-provincia.component';
 import { CreateProvinciaComponent } from '../create-provincia/create-provincia.component';
 
-const FILTER_PAG_REGEX = /[^0-9]/g;
-
 @Component({
   selector: 'app-list-provincia',
   templateUrl: './list-provincia.component.html',
@@ -16,22 +14,9 @@ export class ListProvinciaComponent {
   search: string = '';
   PROVINCIAS: any = [];
   DEPARTAMENTOS: any[] = [];
-  isLoading$: any;
   sweet: any = new SweetalertService();
   totalPages: number = 0;
   currentPage: number = 1;
-
-  page = 1;
-  selectPage(page: string) {
-    this.page = parseInt(page, 10) || 1;
-
-    this.currentPage = this.page;
-    this.loadPage(this.page);
-  }
-
-  formatInput(input: HTMLInputElement) {
-    input.value = input.value.replace(FILTER_PAG_REGEX, '');
-  }
 
   constructor(
     public modalService: NgbModal,
@@ -39,7 +24,6 @@ export class ListProvinciaComponent {
   ) {}
 
   ngOnInit(): void {
-    this.isLoading$ = this.provinciaService.isLoading$;
     this.listProvincia();
   }
 
@@ -54,8 +38,8 @@ export class ListProvinciaComponent {
       });
   }
 
-  loadPage($event: any) {
-    this.listProvincia($event);
+  loadPage(page: number) {
+    this.listProvincia(page);
   }
 
   editProvincia(PROV: any) {
@@ -100,21 +84,14 @@ export class ListProvinciaComponent {
           // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
           this.provinciaService.deleteProvincia(PROVINCIA.id).subscribe({
             next: (resp: any) => {
-              if (resp.message === 403) {
-                this.sweet.error('Error', resp.message_text);
-              } else {
-                this.PROVINCIAS = this.PROVINCIAS.filter(
-                  (b: any) => b.id !== PROVINCIA.id
-                ); // Eliminamos el rol de la lista
-                this.sweet.success(
-                  'Eliminado',
-                  `la provincia ${PROVINCIA.name} ha sido eliminada correctamente`,
-                  '/assets/animations/general/borrado_exitoso.json'
-                );
-              }
-            },
-            error: (error) => {
-              this.sweet.error(error.status);
+              this.PROVINCIAS = this.PROVINCIAS.filter(
+                (b: any) => b.id !== PROVINCIA.id
+              ); // Eliminamos el rol de la lista
+              this.sweet.success(
+                'Eliminado',
+                `la provincia ${PROVINCIA.name} ha sido eliminada correctamente`,
+                '/assets/animations/general/borrado_exitoso.json'
+              );
             },
           });
         }

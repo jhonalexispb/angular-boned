@@ -66,19 +66,11 @@ export class CreateProveedorComponent{
               this.restaurar(resp.proveedor);
             }
           })
-        } else if (resp.message == 403) {
-          this.sweet.alerta('Ups', resp.message_text);
         } else {
           this.ProveedorC.emit(resp.proveedor);
           this.modal.close();
           this.sweet.success('¡Éxito!', 'el proveedor se creo correctamente');
         }
-      },
-
-      error: (error) => {
-        // Lógica cuando ocurre un error
-        this.sweet.error(error.status);
-        //console.log(error.status)
       },
     });
   }
@@ -86,16 +78,9 @@ export class CreateProveedorComponent{
   restaurar(cat:any){
     this.ProveedorService.restaurarProveedor(cat).subscribe({
       next: (resp: any) => {
-        if (resp.message === 403) {
-          this.sweet.error('Error', resp.message_text);
-        } else {
-          this.ProveedorC.emit(resp.proveedor_restaurado);
-          this.modal.close();
-          this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
-        }
-      },
-      error: (error) => {
-        this.sweet.error(error.status);
+        this.ProveedorC.emit(resp.proveedor_restaurado);
+        this.modal.close();
+        this.sweet.success('¡Restaurado!', resp.message_text, '/assets/animations/general/restored.json');
       }
     })
   }

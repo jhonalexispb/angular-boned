@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { AsignarComprobanteComponent } from './asignar-comprobante/asignar-comprobante.component';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { AsignarComprobanteComponent } from './asignar-comprobante/asignar-compr
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
+    PaginationModule
   ]
 })
 export class BankModule { }

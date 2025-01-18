@@ -16,6 +16,12 @@ export class CreateSucursalesComponent {
     sweet:any = new SweetalertService
     DISTRITOS:any[] = [];
     CATEGORIAS_DIGEMID:any[] = [];
+    nregistroDigemid:boolean = false
+    nombreComercial:boolean = false
+    seccionDni:boolean = false
+    categoriaDigemid:boolean = false
+    seccion_detalles:boolean = false
+    estado_digemid:number
   
     constructor(
       private fb: FormBuilder,
@@ -30,85 +36,95 @@ export class CreateSucursalesComponent {
         this.CATEGORIAS_DIGEMID = data.categorias_digemid;
       });
 
-
       this.clienteSucursalForm = this.fb.group({
         ruc: [
           '',
-          [Validators.required, Validators.minLength(11), Validators.maxLength(11), Validators.pattern(/^\d+$/)]
+          [Validators.required, Validators.minLength(11), Validators.maxLength(11)]
         ],
         razon_social: ['', [Validators.required]],
         nombre_comercial: ['', [Validators.required]],
-        dni: ['', [Validators.required]],
+        dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
         nombre_dni: ['', [Validators.required]],
         direccion: ['', [Validators.required]],
         celular: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         correo: ['', [Validators.required, Validators.email]],
-        distrito: [[Validators.required]],
-        categoria_digemid: [ [Validators.required]],
-        estado_digemid: [ [Validators.required]],
-        nregistro: ['', [Validators.required]],
+        distrito: [null,[Validators.required]],
+        categoria_digemid: [ '',[Validators.required]],
+        estado_digemid: ['', [Validators.required]],
+        nregistro: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(7)]],
       });
 
-      this.clienteSucursalForm.get('estado_digemid')?.valueChanges.subscribe((estado) => {
-        this.applyDynamicConditions(estado);
+      this.clienteSucursalForm.get('estado_digemid')?.valueChanges.subscribe((estado: number) => {
+        this.ajustarFormulario(estado);
       });
     }
 
-    applyDynamicConditions(estado: number): void {
-      // Resetear los campos en cada cambio
-      this.resetFieldVisibilityAndValidators();
-  
+    ajustarFormulario(estado: number) {
+    
+      // Forzar mostrar las secciones por depuración
+      this.seccion_detalles = true;
+      this.nregistroDigemid = false;
+      this.nombreComercial = false;
+      this.seccionDni = false;
+      this.categoriaDigemid = false;
+
+      this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+      this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+      this.clienteSucursalForm.get('nombre_comercial')?.setValidators([Validators.required]);
+      this.clienteSucursalForm.get('nregistro')?.setValidators([Validators.required, Validators.minLength(7), Validators.maxLength(7)]);
+      this.clienteSucursalForm.get('correo')?.setValidators([Validators.required , Validators.email]);
+      
+      estado = Number(estado);
+
       switch (estado) {
-        case 1: // Estado activo
+        case 1: // Estado Activo
+          this.nregistroDigemid = true;
+          this.nombreComercial = true;
+          this.categoriaDigemid = true;
+
           this.clienteSucursalForm.get('dni')?.clearValidators();
           this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
-          this.clienteSucursalForm.get('dni')?.setValue('');
-          this.clienteSucursalForm.get('nombre_dni')?.setValue('');
           break;
-        case 2: // Cierre temporal
-        case 3: // Cierre definitivo
+        case 2: // Cierre Definitivo
+          this.nregistroDigemid = true;
+          this.nombreComercial = true;
+          this.seccionDni = true;
+          this.categoriaDigemid = true;
+
+          this.clienteSucursalForm.get('correo')?.clearValidators();
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+          break;
+
+        case 3: // Cierre Temporal
+          this.nregistroDigemid = true;
+          this.nombreComercial = true;
+          this.seccionDni = true;
+          this.categoriaDigemid = true;
+
+          this.clienteSucursalForm.get('correo')?.clearValidators();
           this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
           this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
           break;
         case 4: // Sin registro Digemid
+          this.nombreComercial = true;
+          this.seccionDni = true;
+
           this.clienteSucursalForm.get('nregistro')?.clearValidators();
-          this.clienteSucursalForm.get('categoria_digemid')?.clearValidators();
-          this.clienteSucursalForm.get('nregistro')?.setValue('');
-          this.clienteSucursalForm.get('categoria_digemid')?.setValue('');
-          break;
-        case 5: // Persona natural
-          this.clienteSucursalForm.get('nregistro')?.clearValidators();
-          this.clienteSucursalForm.get('nombre_comercial')?.clearValidators();
-          this.clienteSucursalForm.get('categoria_digemid')?.clearValidators();
           this.clienteSucursalForm.get('correo')?.clearValidators();
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+          break;
+        case 5: // Persona Natural
+          this.seccionDni = true;
+
+          this.clienteSucursalForm.get('nregistro')?.clearValidators();
+          this.clienteSucursalForm.get('correo')?.clearValidators();
+          this.clienteSucursalForm.get('nombre_comercial')?.clearValidators();
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
           break;
       }
-  
-      // Aplicar validadores
-      this.clienteSucursalForm.get('dni')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('nombre_dni')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('nregistro')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('categoria_digemid')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('nombre_comercial')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('correo')?.updateValueAndValidity();
-    }
-
-    resetFieldVisibilityAndValidators(): void {
-      // Eliminar validadores de todos los campos
-      this.clienteSucursalForm.get('dni')?.clearValidators();
-      this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
-      this.clienteSucursalForm.get('nregistro')?.clearValidators();
-      this.clienteSucursalForm.get('categoria_digemid')?.clearValidators();
-      this.clienteSucursalForm.get('nombre_comercial')?.clearValidators();
-      this.clienteSucursalForm.get('correo')?.clearValidators();
-      
-      // Limpiar los valores
-      this.clienteSucursalForm.get('dni')?.setValue('');
-      this.clienteSucursalForm.get('nombre_dni')?.setValue('');
-      this.clienteSucursalForm.get('nregistro')?.setValue('');
-      this.clienteSucursalForm.get('categoria_digemid')?.setValue('');
-      this.clienteSucursalForm.get('nombre_comercial')?.setValue('');
-      this.clienteSucursalForm.get('correo')?.setValue('');
     }
     
 

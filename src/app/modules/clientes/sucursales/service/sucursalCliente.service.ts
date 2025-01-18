@@ -10,7 +10,7 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 @Injectable({
   providedIn: 'root'
 })
-export class SucursalService {
+export class SucursalClienteService {
   sweet:any = new SweetalertService  
   constructor(
     private http: HttpClient,
@@ -68,6 +68,17 @@ export class SucursalService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/cliente/restaurar/"+IR_SUCURSAL;
     return this.http.put(URL,'',{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //solicitamos los distritos/provincia/departamentos, y categorias
+  obtenerRecursosParaCrear(){
+    this.loadingService.showLoading('Solicitando recursos')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/cliente_sucursal/recursos/";
+    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

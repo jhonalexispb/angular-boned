@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { CreateRucComponent } from '../../ruc/create-ruc/create-ruc.component';
-import { EditRucComponent } from '../../ruc/edit-ruc/edit-ruc.component';
-import { RucService } from '../../ruc/service/ruc.service';
+import { SucursalClienteService } from '../service/sucursalCliente.service';
+import { CreateSucursalesComponent } from '../create-sucursales/create-sucursales.component';
+import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
 
 @Component({
   selector: 'app-list-sucursales',
@@ -12,7 +12,7 @@ import { RucService } from '../../ruc/service/ruc.service';
 })
 export class ListSucursalesComponent {
   search:string = '';
-  RUC_LIST:any = [];
+  SUCURSALES_LIST:any = [];
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
@@ -20,61 +20,61 @@ export class ListSucursalesComponent {
 
   constructor(
     public modalService: NgbModal,
-    public rucService: RucService,
+    public sucursalesService: SucursalClienteService,
   ){
 
   }
 
   ngOnInit(): void {
-    this.listRuc();
+    this.listSucursalesClientes();
   }
 
-  listRuc(page = 1){
-    this.rucService.listRuc(page,this.search).subscribe((resp: any) => {
-      this.RUC_LIST = resp.clientes;
+  listSucursalesClientes(page = 1){
+    this.sucursalesService.listSucursalCliente(page,this.search).subscribe((resp: any) => {
+      /* this.SUCURSALES_LIST = resp.cliente_sucursales;
       this.totalPages = resp.total;
-      this.currentPage = page;
+      this.currentPage = page; */
     })
   }
 
   loadPage(page: number) {
-    this.listRuc(page);
+    this.listSucursalesClientes(page);
   }
 
-  createRuc(){
-    const modalRef = this.modalService.open(CreateRucComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.RucC.subscribe((r:any)=>{
-      this.RUC_LIST.unshift(r); //integra el nuevo valor al inicio de la tabla
+  createSucursalCliente(){
+    const modalRef = this.modalService.open(CreateSucursalesComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.ClienteSucursalC.subscribe((r:any)=>{
+      this.SUCURSALES_LIST.unshift(r); //integra el nuevo valor al inicio de la tabla
     })
   }
 
-  editRuc(R:any){
-    const modalRef = this.modalService.open(EditRucComponent,{centered:true, size: 'md'})
+  editSucursalCliente(R:any){
+    const modalRef = this.modalService.open(EditSucursalesComponent,{centered:true, size: 'md'})
 
-    modalRef.componentInstance.RUC_SELECTED = R;
+    modalRef.componentInstance.CLIENTE_SUCURSAL_SELECTED = R;
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
-    modalRef.componentInstance.RucE.subscribe((r:any)=>{
-      const { ruc, isRestored } = r; 
+    modalRef.componentInstance.ClienteSucursalE.subscribe((r:any)=>{
+      const { clienteSucursal, isRestored } = r; 
       if (isRestored) {
-        this.RUC_LIST.unshift(ruc);
+        this.SUCURSALES_LIST.unshift(clienteSucursal);
       } else {
-        let INDEX = this.RUC_LIST.findIndex((b:any) => b.id == R.id);
+        let INDEX = this.SUCURSALES_LIST.findIndex((b:any) => b.id == R.id);
         if(INDEX != -1){
-          this.RUC_LIST[INDEX] = ruc
+          this.SUCURSALES_LIST[INDEX] = clienteSucursal
         }
       }
     })
   }
 
-  deleteRuc(RUC:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el cliente: ${RUC.ruc} ${RUC.razonSocial}?`).then((result:any) => {
+  deleteSucursalCliente(SUC_CL:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la sucursal: ${SUC_CL.ruc} ${SUC_CL.razon_social} ${SUC_CL.nombre_comercial}?`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.rucService.deleteRuc(RUC.id).subscribe({
+        this.sucursalesService.deleteSucursalCliente(SUC_CL.id).subscribe({
           next: (resp: any) => {
-            this.RUC_LIST = this.RUC_LIST.filter((sucurs:any) => sucurs.id !== RUC.id); // Eliminamos el rol de la lista
-            this.sweet.success('Eliminado', 'El cliente ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
+            this.SUCURSALES_LIST = this.SUCURSALES_LIST.filter((sucurs:any) => sucurs.id !== SUC_CL.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'La sucursal ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
           },
         })
       }

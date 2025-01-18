@@ -1,1 +1,233 @@
-<p>create-sucursales works!</p>
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Crear sucursal</h2>
+
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-7">
+        <form [formGroup]="clienteSucursalForm">
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2">RUC</label>
+              <input
+                id="ruc"
+                type="text"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="ruc"
+                maxlength="11"
+                placeholder="Ingrese el RUC"
+                autocomplete="off"
+              />
+              <div *ngIf="clienteSucursalForm.get('ruc')?.touched && clienteSucursalForm.get('ruc')?.invalid" class="text-danger">
+                <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['required']">El RUC es obligatorio.</span>
+                <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['minlength']">El RUC debe tener 11 dígitos.</span>
+                <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['maxlength']">El RUC no puede exceder los 11 dígitos.</span>
+              </div>
+            </div>
+        
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2" for="razonSocial">Razón Social</label>
+              <input
+                id="razonSocial"
+                type="text"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="razon_social"
+                placeholder="Ingrese la razón social"
+                autocomplete="off"
+              />
+              <div *ngIf="clienteSucursalForm.get('razonSocial')?.touched && clienteSucursalForm.get('razonSocial')?.invalid" class="text-danger">
+                <span *ngIf="clienteSucursalForm.get('razonSocial')?.errors?.['required']">La razón social es obligatoria.</span>
+              </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fw-bold fs-6 mb-2">Estado Digemid</label>
+                <select
+                    class="form-control form-select-solid fw-bolder"
+                    formControlName="estado_digemid"
+                    placeholder="Seleccciona estado"
+                >
+                    <option value="1">Activo</option>
+                    <option value="2">Cierre Definitivo</option>
+                    <option value="3">Cierre Temporal</option>
+                    <option value="4">Sin registro en Digemid</option>
+                    <option value="5">Persona Natural</option>
+                </select>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2" for="nombre_comercial">Nombre Comercial</label>
+                <input
+                    id="nombre_comercial"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="nombre_comercial"
+                    placeholder="Ingrese el nombre comercial"
+                    autocomplete="off"
+                />
+                <div *ngIf="clienteSucursalForm.get('nombre_comercial')?.touched && clienteSucursalForm.get('nombre_comercial')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('nombre_comercial')?.errors?.['required']">El nombre comercial es obligatorio.</span>
+                </div>
+            </div>
+
+            <div *ngIf="clienteSucursalForm.get('estado_digemid')?.value !== 1">
+                <div class="fv-row mb-7">
+                  <label class="required fw-bold fs-6 mb-2" for="dni">Numero de DNI</label>
+                  <input
+                    id="dni"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="dni"
+                    placeholder="Ingrese el numero de DNI"
+                    autocomplete="off"
+                    maxlength="8"
+                  />
+                  <div *ngIf="clienteSucursalForm.get('dni')?.touched && clienteSucursalForm.get('dni')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['required']">El DNI es obligatorio.</span>
+                  </div>
+                </div>
+
+                <div class="fv-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2" for="nombre_dni">Nombre de DNI</label>
+                    <input
+                        id="nombre_dni"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="nombre_dni"
+                        placeholder="Ingrese el nombre de la persona"
+                        autocomplete="off"
+                        maxlength="8"
+                    />
+                    <div *ngIf="clienteSucursalForm.get('nombre_dni')?.touched && clienteSucursalForm.get('nombre_dni')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('nombre_dni')?.errors?.['required']">El nombre de la persona es obligatorio.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2" for="nregistro">Numero de registro Digemid</label>
+                <input
+                    id="nregistro"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="nregistro"
+                    placeholder="Ingrese el numero de registro"
+                    autocomplete="off"
+                    maxlength="8"
+                />
+                <div *ngIf="clienteSucursalForm.get('nregistro')?.touched && clienteSucursalForm.get('nregistro')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['required']">El numero de registro es obligatorio.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fw-bold fs-6 mb-2">Categoria Digemid</label>
+                <select
+                    class="form-control form-select-solid fw-bolder"
+                    formControlName="categoria_digemid"
+                    placeholder="Seleccciona una categoria"
+                >
+                <option *ngFor="let categoria of CATEGORIAS_DIGEMID" [value]="categoria.id">
+                    {{ categoria.nombre }}
+                </option>
+                </select>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2" for="direccion">Direccion</label>
+                <input
+                    id="direccion"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="direccion"
+                    placeholder="Ingrese la direccion"
+                    autocomplete="off"
+                />
+                <div *ngIf="clienteSucursalForm.get('direccion')?.touched && clienteSucursalForm.get('direccion')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('direccion')?.errors?.['required']">La direccion es obligatoria.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="required fw-bold fs-6 mb-2">Distrito/Provincia/Departamento</label>
+                <!--end::Label-->
+                <ng-select 
+                    
+                    [items]="DISTRITOS"
+                    required
+                    bindLabel="distrito_provincia_department_name"
+                    bindValue="id"
+                    formControlName="distrito"
+                    placeholder="Selecciona un distrito"
+                    [searchable]="true"
+                    [clearable]="true" 
+                    [virtualScroll]="true"  
+                    [multiple]="false"
+                    [loadingText]="'Cargando...'">
+                </ng-select>
+                <div *ngIf="clienteSucursalForm.get('distrito')?.touched && clienteSucursalForm.get('distrito')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('distrito')?.errors?.['required']">El distrito es obligatorio.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2" for="celular">Celular</label>
+                <input
+                    id="celular"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="celular"
+                    placeholder="Ingrese el numero de celular"
+                    autocomplete="off"
+                />
+                <div *ngIf="clienteSucursalForm.get('celular')?.touched && clienteSucursalForm.get('celular')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('celular')?.errors?.['required']">El numero de celular es obligatorio.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2" for="correo">Correo</label>
+                <input
+                    id="correo"
+                    type="text"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="correo"
+                    placeholder="Ingrese un correo"
+                    autocomplete="off"
+                />
+                <div *ngIf="clienteSucursalForm.get('correo')?.touched && clienteSucursalForm.get('correo')?.invalid" class="text-danger">
+                    <span *ngIf="clienteSucursalForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
+                </div>
+            </div>
+
+            <div class="text-center pt-15">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="clienteSucursalForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+

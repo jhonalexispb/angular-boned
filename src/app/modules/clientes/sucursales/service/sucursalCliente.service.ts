@@ -83,4 +83,26 @@ export class SucursalClienteService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //solicitamos la razon social del ruc en el backend
+  obtenerRazonSocial(ruc:any){
+    this.loadingService.showLoading('Solicitando razón social')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/servicio_consulta/get_razon_social?ruc="+ruc;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //solicitamos el nombre de un DNI en el backend
+  obtenerNombrePorDni(dni:any){
+    this.loadingService.showLoading('Solicitando el nombre de la persona')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/servicio_consulta/get_nombre_por_dni?dni="+dni;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

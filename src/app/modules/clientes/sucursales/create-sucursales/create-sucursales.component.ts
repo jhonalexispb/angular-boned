@@ -22,6 +22,7 @@ export class CreateSucursalesComponent {
     categoriaDigemid:boolean = false
     seccion_detalles:boolean = false
     estado_digemid:number
+    correo_obligatorio:boolean = false
   
     constructor(
       private fb: FormBuilder,
@@ -57,6 +58,14 @@ export class CreateSucursalesComponent {
       this.clienteSucursalForm.get('estado_digemid')?.valueChanges.subscribe((estado: number) => {
         this.ajustarFormulario(estado);
       });
+
+      this.clienteSucursalForm.get('ruc')?.valueChanges.subscribe((newValue) => {
+        this.clienteSucursalForm.get('razon_social')?.setValue('');
+      });
+
+      this.clienteSucursalForm.get('dni')?.valueChanges.subscribe((newValue) => {
+        this.clienteSucursalForm.get('nombre_dni')?.setValue('');
+      });
     }
 
     ajustarFormulario(estado: number) {
@@ -67,8 +76,15 @@ export class CreateSucursalesComponent {
       this.nombreComercial = false;
       this.seccionDni = false;
       this.categoriaDigemid = false;
+      this.correo_obligatorio = false;
 
-      this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+      this.clienteSucursalForm.get('dni')?.reset();
+      this.clienteSucursalForm.get('nombre_dni')?.reset();
+      this.clienteSucursalForm.get('nombre_comercial')?.reset();
+      this.clienteSucursalForm.get('nregistro')?.reset();
+      this.clienteSucursalForm.get('categoria_digemid')?.reset('');
+
+      this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
       this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
       this.clienteSucursalForm.get('nombre_comercial')?.setValidators([Validators.required]);
       this.clienteSucursalForm.get('nregistro')?.setValidators([Validators.required, Validators.minLength(7), Validators.maxLength(7)]);
@@ -81,9 +97,12 @@ export class CreateSucursalesComponent {
           this.nregistroDigemid = true;
           this.nombreComercial = true;
           this.categoriaDigemid = true;
+          this.correo_obligatorio = true;
 
           this.clienteSucursalForm.get('dni')?.clearValidators();
           this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
+
+          this.resetearValoresFormulario();
           break;
         case 2: // Cierre Definitivo
           this.nregistroDigemid = true;
@@ -92,8 +111,10 @@ export class CreateSucursalesComponent {
           this.categoriaDigemid = true;
 
           this.clienteSucursalForm.get('correo')?.clearValidators();
-          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
           this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+
+          this.resetearValoresFormulario();
           break;
 
         case 3: // Cierre Temporal
@@ -103,45 +124,79 @@ export class CreateSucursalesComponent {
           this.categoriaDigemid = true;
 
           this.clienteSucursalForm.get('correo')?.clearValidators();
-          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
           this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+
+          this.resetearValoresFormulario();
           break;
         case 4: // Sin registro Digemid
           this.nombreComercial = true;
           this.seccionDni = true;
+          this.categoriaDigemid = true;
 
           this.clienteSucursalForm.get('nregistro')?.clearValidators();
           this.clienteSucursalForm.get('correo')?.clearValidators();
-          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
           this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+
+          this.resetearValoresFormulario();
           break;
         case 5: // Persona Natural
           this.seccionDni = true;
-
+          this.clienteSucursalForm.get('correo')?.reset();
           this.clienteSucursalForm.get('nregistro')?.clearValidators();
           this.clienteSucursalForm.get('correo')?.clearValidators();
           this.clienteSucursalForm.get('nombre_comercial')?.clearValidators();
-          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
           this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+          this.clienteSucursalForm.get('categoria_digemid')?.clearValidators();
+
+          this.resetearValoresFormulario();
           break;
       }
     }
+
+    resetearValoresFormulario(){
+      this.clienteSucursalForm.get('nregistro')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('correo')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('nombre_comercial')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('dni')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('nombre_dni')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('categoria_digemid')?.updateValueAndValidity();
+    }
     
 
-    /* onSubmit() {
+    onSubmit() {
       if (this.clienteSucursalForm.invalid) {
         return;
       }
       const formData = this.clienteSucursalForm.value;
-      this.clienteSucursalService.submitFormulario(formData).subscribe(
-        (response) => {
-          this.sweet.success("Formulario enviado exitosamente");
+      console.log(formData)
+    }
+
+    buscarRazonSocial() {
+      this.clienteSucursalForm.get('razon_social')?.reset();
+      this.clienteSucursalService.obtenerRazonSocial(this.clienteSucursalForm.get('ruc')?.value).subscribe({
+        next: (resp: any) => {
+          if(resp.message){
+            this.sweet.success('¡Bien!',resp.message_text);
+          } else{
+            this.sweet.success('¡En efecto!',resp.message_text,'/assets/animations/general/ojitos.json');
+          }
+          this.clienteSucursalForm.get('razon_social')?.reset(resp.razonSocial);
         },
-        (error) => {
-          this.sweet.error("Hubo un error al enviar el formulario");
-        }
-      );
-    } */
+      })
+    }
+
+    buscarNombreDni(){
+      this.clienteSucursalForm.get('nombre_dni')?.reset();
+      this.clienteSucursalService.obtenerNombrePorDni(this.clienteSucursalForm.get('dni')?.value).subscribe({
+        next: (resp: any) => {
+          this.sweet.success('¡Bien!',resp.message_text);
+          this.clienteSucursalForm.get('nombre_dni')?.reset(resp.nombre_dni);
+        },
+      })
+    }
 
     /* onSubmit(): void {
       if (this.clienteSucursalForm.valid) {

@@ -113,6 +113,13 @@ export class SweetalertService {
     });
   }
 
+  //ir a Sunat
+  go_sunat(title: string, text: string, image: string = '/assets/animations/configuration-methodPayment-comprobante/advertencia.json') {
+    return this.createAlert(title, text, image, 'Consultar en SUNAT', true).then((result) => {
+      this.confirmationSubject.next(result.isConfirmed);
+    });
+  }
+
   error(error:any, msg:any = ''){
     let gif:any = ''
     let message:any = ''

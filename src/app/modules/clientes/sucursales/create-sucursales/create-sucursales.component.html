@@ -25,21 +25,26 @@
     <!--end::Modal header-->
     <!--begin::Modal body-->
     <div class="modal-body mx-5 my-1 p-2">
-        <form [formGroup]="clienteSucursalForm">
+        <form [formGroup]="clienteSucursalForm" (ngSubmit)="onSubmit()">
             <div class="py-2">
                 <div class="fv-row mb-7">
                     <label class="required fw-bold fs-6 mb-2">RUC</label>
-                    <input
-                      id="ruc"
-                      type="text"
-                      class="form-control mb-3 mb-lg-0"
-                      formControlName="ruc"
-                      maxlength="11"
-                      placeholder="Ingrese el RUC"
-                      autocomplete="off"
-                      pattern="\d*"
-                      onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                    />
+                    <div class="input-group mb-3">
+                        <input
+                        id="ruc"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="ruc"
+                        maxlength="11"
+                        placeholder="Ingrese el RUC"
+                        autocomplete="off"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        />
+                        <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="clienteSucursalForm.get('ruc')?.invalid || clienteSucursalForm.get('ruc')?.pristine">
+                        <i class="fa fa-search"></i>
+                        </button>
+                    </div>
                     <div *ngIf="clienteSucursalForm.get('ruc')?.dirty && clienteSucursalForm.get('ruc')?.invalid" class="text-danger">
                       <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['required']">El RUC es obligatorio.</span>
                       <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['minlength']">El RUC debe tener 11 dígitos.</span>
@@ -125,17 +130,22 @@
                 <div *ngIf="seccionDni">
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-6 mb-2" for="dni">Numero de DNI</label>
-                        <input
-                        id="dni"
-                        type="text"
-                        class="form-control mb-3 mb-lg-0"
-                        formControlName="dni"
-                        placeholder="Ingrese el numero de DNI"
-                        autocomplete="off"
-                        maxlength="8"
-                        pattern="\d*"
-                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                        />
+                        <div class="input-group mb-3">
+                            <input
+                            id="dni"
+                            type="text"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="dni"
+                            placeholder="Ingrese el numero de DNI"
+                            autocomplete="off"
+                            maxlength="8"
+                            pattern="\d*"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            />
+                            <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarNombreDni()" [disabled]="clienteSucursalForm.get('dni')?.invalid || clienteSucursalForm.get('dni')?.pristine">
+                            <i class="fa fa-search"></i>
+                            </button>
+                        </div>
                         <div *ngIf="clienteSucursalForm.get('dni')?.touched && clienteSucursalForm.get('dni')?.invalid" class="text-danger">
                         <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['required']">El DNI es obligatorio.</span>
                         <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['minlength']">El DNI debe tener 8 dígitos.</span>
@@ -152,7 +162,6 @@
                             formControlName="nombre_dni"
                             placeholder="Ingrese el nombre de la persona"
                             autocomplete="off"
-                            maxlength="8"
                         />
                         <div *ngIf="clienteSucursalForm.get('nombre_dni')?.touched && clienteSucursalForm.get('nombre_dni')?.invalid" class="text-danger">
                             <span *ngIf="clienteSucursalForm.get('nombre_dni')?.errors?.['required']">El nombre de la persona es obligatorio.</span>
@@ -226,14 +235,19 @@
                         formControlName="celular"
                         placeholder="Ingrese el numero de celular"
                         autocomplete="off"
+                        maxlength="9"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                     />
                     <div *ngIf="clienteSucursalForm.get('celular')?.touched && clienteSucursalForm.get('celular')?.invalid" class="text-danger">
                         <span *ngIf="clienteSucursalForm.get('celular')?.errors?.['required']">El numero de celular es obligatorio.</span>
+                        <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['minlength']">El numero de celular debe tener 9 dígitos.</span>
+                        <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['maxlength']">El numero de celular no puede exceder los 9 dígitos.</span>
                     </div>
                 </div>
     
                 <div class="fv-row mb-7">
-                    <label class="required fw-bold fs-6 mb-2" for="correo">Correo</label>
+                    <label [ngClass]="{'required': correo_obligatorio}" class="fw-bold fs-6 mb-2" for="correo">Correo</label>
                     <input
                         id="correo"
                         type="text"
@@ -244,6 +258,7 @@
                     />
                     <div *ngIf="clienteSucursalForm.get('correo')?.touched && clienteSucursalForm.get('correo')?.invalid" class="text-danger">
                         <span *ngIf="clienteSucursalForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
+                        <span *ngIf="clienteSucursalForm.get('correo')?.errors?.['email']">El correo no es válido.</span>
                     </div>
                 </div>
             </div>

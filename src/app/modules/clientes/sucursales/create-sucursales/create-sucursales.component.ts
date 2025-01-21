@@ -104,7 +104,7 @@ export class CreateSucursalesComponent {
 
           this.resetearValoresFormulario();
           break;
-        case 2: // Cierre Definitivo
+        case 2: // Cierre temporal
           this.nregistroDigemid = true;
           this.nombreComercial = true;
           this.seccionDni = true;
@@ -117,7 +117,7 @@ export class CreateSucursalesComponent {
           this.resetearValoresFormulario();
           break;
 
-        case 3: // Cierre Temporal
+        case 3: // Cierre definitivo
           this.nregistroDigemid = true;
           this.nombreComercial = true;
           this.seccionDni = true;
@@ -170,8 +170,29 @@ export class CreateSucursalesComponent {
       if (this.clienteSucursalForm.invalid) {
         return;
       }
-      const formData = this.clienteSucursalForm.value;
-      console.log(formData)
+      
+      this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
+        next: (resp: any) => {
+          // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
+          if (resp.message == 409) {
+            this.sweet.confirmar_restauracion('Atencion', resp.message_text);
+            this.sweet
+              .getRestauracionObservable()
+              .subscribe((confirmed: boolean) => {
+                if (confirmed) {
+                  this.restaurar(resp.cliente);
+                }
+              });
+          } else {
+            this.ClienteSucursalC.emit(resp.cliente);
+            this.modal.close();
+            this.sweet.success(
+              '¡Éxito!',
+              'la sucursal se registró correctamente'
+            );
+          }
+        },
+      })
     }
 
     buscarRazonSocial() {

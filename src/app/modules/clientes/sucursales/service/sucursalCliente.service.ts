@@ -22,7 +22,7 @@ export class SucursalClienteService {
   registerSucursalCliente(data:any){
     this.loadingService.showLoading('Registrando sucursal')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente";
+    let URL = URL_SERVICIO+"/cliente_sucursal";
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
@@ -32,7 +32,7 @@ export class SucursalClienteService {
   listSucursalCliente(page = 1, search:string = ''){
     this.loadingService.showLoading('Listando sucursales')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente?page="+page+"&search="+search;
+    let URL = URL_SERVICIO+"/cliente_sucursal?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
@@ -46,7 +46,7 @@ export class SucursalClienteService {
   updateSucursalCliente(IR_SUCURSAL:string,data:any){
     this.loadingService.showLoading('Actualizando sucursal')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente/"+IR_SUCURSAL;
+    let URL = URL_SERVICIO+"/cliente_sucursal/"+IR_SUCURSAL;
     return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
@@ -56,7 +56,7 @@ export class SucursalClienteService {
   deleteSucursalCliente(IR_SUCURSAL:string){
     this.loadingService.showLoading('Eliminando sucursal')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente/"+IR_SUCURSAL;
+    let URL = URL_SERVICIO+"/cliente_sucursal/"+IR_SUCURSAL;
     return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
@@ -66,7 +66,7 @@ export class SucursalClienteService {
   restaurarSucursalCliente(IR_SUCURSAL:string){
     this.loadingService.showLoading('Restaurando sucursal')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente/restaurar/"+IR_SUCURSAL;
+    let URL = URL_SERVICIO+"/cliente_sucursal/restaurar/"+IR_SUCURSAL;
     return this.http.put(URL,'',{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

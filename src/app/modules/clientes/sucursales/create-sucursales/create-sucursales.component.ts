@@ -184,7 +184,7 @@ export class CreateSucursalesComponent {
                 }
               });
           } else {
-            this.ClienteSucursalC.emit(resp.cliente);
+            this.ClienteSucursalC.emit(resp.cliente_sucursal);
             this.modal.close();
             this.sweet.success(
               '¡Éxito!',

@@ -31,9 +31,9 @@ export class ListSucursalesComponent {
 
   listSucursalesClientes(page = 1){
     this.sucursalesService.listSucursalCliente(page,this.search).subscribe((resp: any) => {
-      /* this.SUCURSALES_LIST = resp.cliente_sucursales;
+      this.SUCURSALES_LIST = resp.cliente_sucursales;
       this.totalPages = resp.total;
-      this.currentPage = page; */
+      this.currentPage = page;
     })
   }
 

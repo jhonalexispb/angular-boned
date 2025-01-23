@@ -107,6 +107,11 @@ export class SweetalertService {
     });
   }
 
+  //Usar esto para caundo se pregunta por algo
+  confirmar(title: string, text: string, image: string, text_confirmacion: string, showCancel: boolean, text_cancel:string){
+    return this.createAlert(title, text, image, text_confirmacion, showCancel, text_cancel);
+  }
+
   confirmar_estado_deshabilidato(title: string, text: string, image: string = '/assets/animations/configuration-methodPayment-comprobante/advertencia.json') {
     return this.createAlert(title, text, image, 'Sí, deshabilitemoslo', true).then((result) => {
       this.confirmationSubject.next(result.isConfirmed);

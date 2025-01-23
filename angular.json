@@ -42,7 +42,8 @@
               "src/styles.scss",
               "node_modules/@swimlane/ngx-datatable/index.css",
               "node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css",
-              "node_modules/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css"
+              "node_modules/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css",
+              "./node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

@@ -1,0 +1,16 @@
+@import 'leaflet/dist/leaflet.css';
+
+.eliminar {
+    display: block;
+    margin: 10px auto;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button.btn-danger:hover {
+    background-color: darkred;
+}

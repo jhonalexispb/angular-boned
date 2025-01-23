@@ -1,18 +1,31 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
+import * as L from 'leaflet';
+
+L.Marker.prototype.options.icon = L.icon({
+  iconRetinaUrl: 'assets/images/marker-icon-2x.png',
+  iconUrl: 'assets/images/marker-icon.png',
+  shadowUrl: 'assets/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
 
 @Component({
   selector: 'app-create-sucursales',
   templateUrl: './create-sucursales.component.html',
   styleUrls: ['./create-sucursales.component.scss']
 })
-export class CreateSucursalesComponent {
+export class CreateSucursalesComponent implements OnInit {
   @Output() ClienteSucursalC: EventEmitter<any> = new EventEmitter();
   
     clienteSucursalForm: FormGroup;
+    errorUbicacion: string | null = null;
     sweet:any = new SweetalertService
     DISTRITOS:any[] = [];
     CATEGORIAS_DIGEMID:any[] = [];
@@ -23,6 +36,14 @@ export class CreateSucursalesComponent {
     seccion_detalles:boolean = false
     estado_digemid:number
     correo_obligatorio:boolean = false
+    extraerDniRuc:boolean = false
+    imagen_previzualizade:any;
+    file_name:any
+    map: any;
+    marker: any;
+    vista_mapa: boolean = false
+    tomar_foto: boolean = true
+    capturar_coordenadas_al_abrir = false
   
     constructor(
       private fb: FormBuilder,
@@ -30,7 +51,7 @@ export class CreateSucursalesComponent {
       //llamamos al servicio
       public clienteSucursalService: SucursalClienteService
     ) {}
-  
+
     ngOnInit(): void {
       this.clienteSucursalService.obtenerRecursosParaCrear().subscribe((data: any) => {
         this.DISTRITOS = data.distritos;
@@ -53,6 +74,9 @@ export class CreateSucursalesComponent {
         categoria_digemid: [ '',[Validators.required]],
         estado_digemid: ['', [Validators.required]],
         nregistro: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(7)]],
+        latitud: [''],
+        longitud: [''],
+        imagen: [null] 
       });
 
       this.clienteSucursalForm.get('estado_digemid')?.valueChanges.subscribe((estado: number) => {
@@ -66,10 +90,121 @@ export class CreateSucursalesComponent {
       this.clienteSucursalForm.get('dni')?.valueChanges.subscribe((newValue) => {
         this.clienteSucursalForm.get('nombre_dni')?.setValue('');
       });
+
+      this.clienteSucursalForm.get('imagen')?.valueChanges.subscribe((newValue) => {
+        if (newValue) {
+          this.tomar_foto = false;
+        } 
+      });
+
+      this.clienteSucursalForm.get('ruc')?.valueChanges.subscribe((newValue) => {
+        if (newValue && newValue.length === 11 && newValue.startsWith('10')) {
+          this.extraerDniRuc = true;
+        } else {
+          this.extraerDniRuc = false;
+        }
+      });
+    }
+
+    obtenerUbicacion() {
+      if (!navigator.geolocation) {
+        this.errorUbicacion = 'La geolocalización no es soportada por tu navegador.';
+        return;
+      }
+
+      this.vista_mapa = true
+  
+      this.errorUbicacion = 'Obteniendo ubicación, por favor espera...';
+  
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = parseFloat(position.coords.latitude.toFixed(6));
+          const lng = parseFloat(position.coords.longitude.toFixed(6));
+  
+          this.clienteSucursalForm.patchValue({
+            latitud: lat,
+            longitud: lng,
+          });
+
+          if (!this.map) {
+            // Inicializar el mapa solo si no está creado
+            this.map = L.map('map').setView([lat, lng], 13); // Convertir lat, lng a string
+            // Cargar capa base de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap contributors',
+            }).addTo(this.map);
+          }
+      
+          // Agregar marcador inicial al mapa
+          if (!this.marker) {
+            // Agregar marcador solo si no está creado
+            this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+          } else {
+            // Si el marcador ya existe, actualizar su posición
+            this.marker.setLatLng([lat, lng]);
+          }
+      
+          // Actualizar campos del formulario al mover el marcador
+          this.marker.on('dragend', (event: any) => {
+            const position = event.target.getLatLng();
+            this.clienteSucursalForm.patchValue({
+              latitud: position.lat.toFixed(6),
+              longitud: position.lng.toFixed(6),
+            });
+          });
+
+          this.map.setView([lat, lng], 13);
+          this.errorUbicacion = null; // Limpiar errores
+        },
+        (error) => {
+          this.errorUbicacion = this.getErrorMessage(error.code);
+        }
+      );
+    }
+
+    borrarUbicacion() {
+      if (this.map) {
+        // Eliminar el marcador si existe
+        if (this.marker) {
+          this.map.removeLayer(this.marker);
+          this.marker = null;
+        }
+    
+        this.map.remove();
+        this.map = null;
+      }
+    
+      this.clienteSucursalForm.patchValue({
+        latitud: null,
+        longitud: null,
+      });
+    
+      this.vista_mapa = false;
+      this.errorUbicacion = null;
+    }
+
+    eliminarImagen(): void {
+      this.imagen_previzualizade = null;
+      this.tomar_foto = true;
+      this.clienteSucursalForm.patchValue({
+        foto: null
+      });
+    }
+
+    private getErrorMessage(code: number): string {
+      switch (code) {
+        case 1:
+          return 'Permiso denegado. Por favor, habilita el acceso a la ubicación.';
+        case 2:
+          return 'Posición no disponible. Intenta nuevamente.';
+        case 3:
+          return 'Tiempo de espera agotado. Verifica tu conexión a Internet.';
+        default:
+          return 'Ocurrió un error desconocido al intentar obtener la ubicación.';
+      }
     }
 
     ajustarFormulario(estado: number) {
-    
       // Forzar mostrar las secciones por depuración
       this.seccion_detalles = true;
       this.nregistroDigemid = false;
@@ -77,6 +212,11 @@ export class CreateSucursalesComponent {
       this.seccionDni = false;
       this.categoriaDigemid = false;
       this.correo_obligatorio = false;
+
+      if(this.capturar_coordenadas_al_abrir){
+        this.obtenerUbicacion()
+        this.capturar_coordenadas_al_abrir = false
+      }
 
       this.clienteSucursalForm.get('dni')?.reset();
       this.clienteSucursalForm.get('nombre_dni')?.reset();
@@ -170,8 +310,10 @@ export class CreateSucursalesComponent {
       if (this.clienteSucursalForm.invalid) {
         return;
       }
+
+      console.log(this.clienteSucursalForm.value)
       
-      this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
+      /* this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if (resp.message == 409) {
@@ -192,7 +334,7 @@ export class CreateSucursalesComponent {
             );
           }
         },
-      })
+      }) */
     }
 
     buscarRazonSocial() {
@@ -219,37 +361,26 @@ export class CreateSucursalesComponent {
       })
     }
 
-    /* onSubmit(): void {
-      if (this.clienteSucursalForm.valid) {
-        this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
-          next: (resp: any) => {
-            // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-            if (resp.message == 409) {
-              this.sweet.confirmar_restauracion('Atencion', resp.message_text);
-              this.sweet
-                .getRestauracionObservable()
-                .subscribe((confirmed: boolean) => {
-                  if (confirmed) {
-                    this.restaurar(resp.cliente);
-                  }
-                });
-            } else {
-              this.ClienteSucursalC.emit(resp.cliente);
-              this.modal.close();
-              this.sweet.success(
-                '¡Éxito!',
-                'el ruc se registró correctamente'
-              );
-            }
-          },
-        });
-      } else {
-        this.sweet.formulario_invalido(
-          'Validacion',
-          'Existen errores en tu formulario'
-        );
+    extraerDni(){
+      const ruc = this.clienteSucursalForm.get('ruc')?.value; // Obtener el valor del campo RUC
+      const dni = ruc.substring(2, 10); // Extraer desde el tercer carácter (índice 2) hasta el décimo (índice 10)
+      this.clienteSucursalForm.get('dni')?.setValue(dni);
+      this.buscarNombreDni()
+    }
+
+    abrirEnlace() {
+      const ruc = this.clienteSucursalForm.get('ruc')?.value;
+      navigator.clipboard.writeText(ruc).then(() => {
+        window.open('https://serviciosweb-digemid.minsa.gob.pe/Consultas/Establecimientos', '_blank');
+      })
+    }
+
+    abrirSelectorDeFoto() {
+      const fileInput = document.getElementById('customFile') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.click();
       }
-    } */
+    }
   
     restaurar(prov: any) {
       this.clienteSucursalService.restaurarSucursalCliente(prov).subscribe({
@@ -265,5 +396,38 @@ export class CreateSucursalesComponent {
       });
     }
 
+    processFile(event: any): void {
+      const file = event.target.files[0];
     
+      // Verificar si existe un archivo
+      if (!file) {
+        this.sweet.formulario_invalido("Atención", "No se seleccionó ningún archivo.");
+        return;
+      }
+    
+      // Validar que sea una imagen
+      if (file.type.indexOf("image") < 0) {
+        this.sweet.formulario_invalido("Atención", "El archivo que seleccionaste no es una imagen.");
+        return;
+      }
+    
+      // Asignar el archivo seleccionado
+      this.file_name = file;
+
+      if (file) {
+        this.clienteSucursalForm.patchValue({
+          imagen: this.file_name // Aquí guardas el archivo en el formulario
+        });
+      }
+    
+      // Leer y previsualizar la imagen
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagen_previzualizade = reader.result; // Asignar la imagen previsualizada
+      };
+      reader.onerror = () => {
+        this.sweet.formulario_invalido("Error", "No se pudo leer el archivo. Por favor, inténtalo de nuevo.");
+      };
+      reader.readAsDataURL(file);
+    }
 }

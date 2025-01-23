@@ -41,8 +41,11 @@ export class ListSucursalesComponent {
     this.listSucursalesClientes(page);
   }
 
-  createSucursalCliente(){
+  createSucursalCliente(buscarCoordenada:boolean){
     const modalRef = this.modalService.open(CreateSucursalesComponent,{centered:true, size: 'md'})
+    if(buscarCoordenada){
+      modalRef.componentInstance.capturar_coordenadas_al_abrir = true;
+    }
     modalRef.componentInstance.ClienteSucursalC.subscribe((r:any)=>{
       this.SUCURSALES_LIST.unshift(r); //integra el nuevo valor al inicio de la tabla
     })
@@ -65,6 +68,16 @@ export class ListSucursalesComponent {
         }
       }
     })
+  }
+
+  preguntaPorUbicacion(){
+    this.sweet.confirmar('Antes de todo', `¿Te encuentras en el estableciemiento? O estas creando el cliente en una combi`,'/assets/animations/general/ubicacion.json','Si, estoy con el cliente',true,'No, estoy en otro lado').then((result:any) => {
+      if (result.isConfirmed) {
+        this.createSucursalCliente(true)
+      }else{
+        this.createSucursalCliente(false)
+      }
+    });
   }
 
   deleteSucursalCliente(SUC_CL:any){

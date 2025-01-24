@@ -85,11 +85,9 @@
                       > 
                           <!-- <option value="">Sel</option> -->
                           <option value="" disabled selected>Selecciona un estado</option>
-                          <option value="1">Activo</option>
-                          <option value="2">Cierre Temporal</option>
-                          <option value="3">Cierre Definitivo</option>
-                          <option value="4">Sin registro en Digemid</option>
-                          <option value="5">Persona Natural</option>
+                          <option *ngFor="let estado of ESTADOS_DIGEMID" [value]="estado.id">
+                            {{ estado.nombre }}
+                            </option>
                       </select>
                       <div *ngIf="clienteSucursalForm.get('estado_digemid')?.touched && clienteSucursalForm.get('estado_digemid')?.invalid" class="text-danger">
                         <span *ngIf="clienteSucursalForm.get('estado_digemid')?.errors?.['required']">El estado es obligatorio</span>

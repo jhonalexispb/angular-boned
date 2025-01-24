@@ -29,6 +29,7 @@ export class CreateSucursalesComponent implements OnInit {
     sweet:any = new SweetalertService
     DISTRITOS:any[] = [];
     CATEGORIAS_DIGEMID:any[] = [];
+    ESTADOS_DIGEMID:any[] = [];
     nregistroDigemid:boolean = false
     nombreComercial:boolean = false
     seccionDni:boolean = false
@@ -56,6 +57,7 @@ export class CreateSucursalesComponent implements OnInit {
       this.clienteSucursalService.obtenerRecursosParaCrear().subscribe((data: any) => {
         this.DISTRITOS = data.distritos;
         this.CATEGORIAS_DIGEMID = data.categorias_digemid;
+        this.ESTADOS_DIGEMID = data.estados_digemid;
       });
 
       this.clienteSucursalForm = this.fb.group({
@@ -313,7 +315,7 @@ export class CreateSucursalesComponent implements OnInit {
 
       console.log(this.clienteSucursalForm.value)
       
-      /* this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
+      this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if (resp.message == 409) {
@@ -334,7 +336,7 @@ export class CreateSucursalesComponent implements OnInit {
             );
           }
         },
-      }) */
+      })
     }
 
     buscarRazonSocial() {

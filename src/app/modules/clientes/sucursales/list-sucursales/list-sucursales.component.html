@@ -32,30 +32,30 @@
         <!--begin::Table-->
         <div id="kt_customers_table_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
             <div id="" class="table-responsive mb-5">
-                <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
+                <table class="table table-auto align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
                       <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
                           <span class="dt-column-title" role="button">Ruc</span><span class="dt-column-order"></span>
-                        </th>
-                  
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                          <span class="dt-column-title" role="button">Razon Social</span><span class="dt-column-order"></span>
                         </th>
 
                         <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
                           <span class="dt-column-title" role="button">Nombre Comercial</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                          <span class="dt-column-title" role="button">Direccion</span><span class="dt-column-order"></span>
+                        </th>
+
+                        <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
                           <span class="dt-column-title" role="button">Deuda</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
                           <span class="dt-column-title" role="button">Linea de Credito</span><span class="dt-column-order"></span>
                         </th>
                   
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
+                        <th class="min-w-90px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
                           <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
                         </th>
                   
@@ -86,17 +86,22 @@
                                 </div>
                                 <!-- Aquí se muestra el RUC -->
                                 <div class="d-flex align-items-center">
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.ruc }}</span>
-                                    </div>
+                                    <div class="d-flex align-items-center">
+                                      <div class="d-flex justify-content-start flex-column">
+                                          <a href="#" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.ruc }}</a>
+                                          <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.razon_social }}</span>
+                                      </div>
+                                  </div>
                                 </div>
                             </div>
                         </td>
-                  
+
                         <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.razon_social }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.nombre_comercial }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.categoria_digemid }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.nombre_estado_digemid }}</span>
                             </div>
                           </div>
                         </td>
@@ -104,7 +109,8 @@
                         <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.nombre_comercial }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.direccion }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.distrito }}/{{ S.provincia }}/{{ S.departamento }} </span>
                             </div>
                           </div>
                         </td>

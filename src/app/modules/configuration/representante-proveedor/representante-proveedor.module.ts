@@ -10,7 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { ComunicationRepresentanteProveedorComponent } from './comunication-representante-proveedor/comunication-representante-proveedor.component';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 
 @NgModule({
@@ -19,7 +18,6 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ListRepresentanteProveedorComponent,
     EditRepresentanteProveedorComponent,
     CreateRepresentanteProveedorComponent,
-    ComunicationRepresentanteProveedorComponent
   ],
   imports: [
     CommonModule,

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { ComunicationRepresentanteProveedorComponent } from '../../representante-proveedor/comunication-representante-proveedor/comunication-representante-proveedor.component';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
 import { CreateProveedorComponent } from '../create-proveedor/create-proveedor.component';
 import { EditProveedorComponent } from '../edit-proveedor/edit-proveedor.component';
+import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
 
 @Component({
   selector: 'app-list-proveedor',
@@ -90,10 +90,10 @@ export class ListProveedorComponent {
   }
 
   comunicationRepresentanteProveedor(DATOS_REP:any){
-    const modalRef = this.modalService.open(ComunicationRepresentanteProveedorComponent,{centered:true, size: 'md'})
+    const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
       phone: DATOS_REP[0],
-      name: DATOS_REP[1]
+      persona: DATOS_REP[1]
     };
   }
 }

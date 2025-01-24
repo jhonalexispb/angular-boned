@@ -35,31 +35,39 @@
                 <table class="table table-auto align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
                       <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-200px">
                           <span class="dt-column-title" role="button">Ruc</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-200px">
                           <span class="dt-column-title" role="button">Nombre Comercial</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-200px">
                           <span class="dt-column-title" role="button">Direccion</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-125px">
+                          <span class="dt-column-title" role="button">Celular</span><span class="dt-column-order"></span>
+                        </th>
+
+                        <th class="min-w-200px">
+                          <span class="dt-column-title" role="button">Correo</span><span class="dt-column-order"></span>
+                        </th>
+
+                        <th class="min-w-80px">
                           <span class="dt-column-title" role="button">Deuda</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                        <th class="min-w-80px">
                           <span class="dt-column-title" role="button">Linea de Credito</span><span class="dt-column-order"></span>
                         </th>
                   
-                        <th class="min-w-90px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
+                        <th class="min-w-90px">
                           <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
                         </th>
                   
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
+                        <th class="min-w-125px">
                           <span class="dt-column-title" role="button">Fecha de registro</span><span class="dt-column-order"></span>
                         </th>
                   
@@ -116,9 +124,43 @@
                         </td>
 
                         <td>
+                            <div style="display: flex; flex-direction: column; align-items: flex-start; ">
+                              <div *ngIf="S.celulares.length > 0;  else no_celular">
+                                <div *ngFor="let celular of S.celulares" class="badge-light-success p-2 rounded" (click)="comunicationClienteSucursal([celular, S.nombre_comercial])">
+                                  <i class="fa-brands fa-whatsapp text-success"></i>
+                                  <span class="fs-7 fw-bold"> {{ celular }}</span>
+                                </div>
+                              </div>
+                              <ng-template #no_celular>
+                                <div class="badge-light-warning p-2 rounded">
+                                    <i class="fa-solid fa-exclamation-triangle text-warning"></i>
+                                    <span class="fs-7 fw-bold"> Sin celular</span>
+                                </div>
+                            </ng-template>
+                          </div>
+                        </td>
+
+                        <td>
+                            <div style="display: flex; flex-direction: column; align-items: flex-start; ">
+                              <div *ngIf="S.correos.length > 0;  else no_correo">
+                                <div *ngFor="let c of S.correos" class="badge-light-primary p-2 rounded">
+                                  <i class="fa-solid fa-envelope text-primary"></i>
+                                  <a [href]="'mailto:' + c" class="fs-7 fw-bold text-decoration-none text-primary"> {{ c }}</a>
+                                </div>
+                              </div>
+                              <ng-template #no_correo>
+                                <div class="badge-light-warning p-2 rounded">
+                                    <i class="fa-solid fa-exclamation-triangle text-warning"></i>
+                                    <span class="fs-7 fw-bold"> Sin Correo</span>
+                                </div>
+                            </ng-template>
+                          </div>
+                        </td>
+
+                        <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.deuda }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ S.deuda }}</span>
                             </div>
                           </div>
                         </td>
@@ -126,7 +168,7 @@
                         <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.linea_credito }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ S.linea_credito }}</span>
                             </div>
                           </div>
                         </td>

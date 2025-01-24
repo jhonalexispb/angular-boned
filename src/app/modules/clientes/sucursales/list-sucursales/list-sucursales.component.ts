@@ -4,6 +4,7 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { SucursalClienteService } from '../service/sucursalCliente.service';
 import { CreateSucursalesComponent } from '../create-sucursales/create-sucursales.component';
 import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
+import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
 
 @Component({
   selector: 'app-list-sucursales',
@@ -80,8 +81,16 @@ export class ListSucursalesComponent {
     });
   }
 
+  comunicationClienteSucursal(DATOS:any){
+    const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
+      phone: DATOS[0],  // Celular
+      persona: DATOS[1]    // Nombre
+    };
+  }
+
   deleteSucursalCliente(SUC_CL:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la sucursal: ${SUC_CL.ruc} ${SUC_CL.razon_social} ${SUC_CL.nombre_comercial}?`).then((result:any) => {
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la sucursal: ${SUC_CL.nombre_comercial} de ${SUC_CL.ruc} ${SUC_CL.razon_social}?`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
         this.sucursalesService.deleteSucursalCliente(SUC_CL.id).subscribe({

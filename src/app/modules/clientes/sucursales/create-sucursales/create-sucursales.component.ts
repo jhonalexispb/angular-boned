@@ -70,8 +70,9 @@ export class CreateSucursalesComponent implements OnInit {
         dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
         nombre_dni: ['', [Validators.required]],
         direccion: ['', [Validators.required]],
-        celular: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-        correo: ['', [Validators.required, Validators.email]],
+        //Por el momento celular y correo no van a ser obligatorios
+        celular: ['', [Validators.minLength(9), Validators.maxLength(9)]],
+        correo: ['', [Validators.email]],
         distrito: [null,[Validators.required]],
         categoria_digemid: [ '',[Validators.required]],
         estado_digemid: ['', [Validators.required]],
@@ -239,8 +240,8 @@ export class CreateSucursalesComponent implements OnInit {
           this.nregistroDigemid = true;
           this.nombreComercial = true;
           this.categoriaDigemid = true;
-          this.correo_obligatorio = true;
-
+          this.correo_obligatorio = false;
+          this.clienteSucursalForm.get('correo')?.clearValidators();
           this.clienteSucursalForm.get('dni')?.clearValidators();
           this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
 
@@ -300,7 +301,7 @@ export class CreateSucursalesComponent implements OnInit {
 
     resetearValoresFormulario(){
       this.clienteSucursalForm.get('nregistro')?.updateValueAndValidity();
-      this.clienteSucursalForm.get('correo')?.updateValueAndValidity();
+      /* this.clienteSucursalForm.get('correo')?.updateValueAndValidity(); */
       this.clienteSucursalForm.get('nombre_comercial')?.updateValueAndValidity();
       this.clienteSucursalForm.get('dni')?.updateValueAndValidity();
       this.clienteSucursalForm.get('nombre_dni')?.updateValueAndValidity();

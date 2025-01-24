@@ -84,6 +84,16 @@ export class SucursalClienteService {
     )
   }
 
+  obtenerRecursosParaEditar(IR_SUCURSAL:string){
+    this.loadingService.showLoading('Solicitando recursos')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/cliente_sucursal/recursos/"+IR_SUCURSAL;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //solicitamos la razon social del ruc en el backend
   obtenerRazonSocial(ruc:any){
     this.loadingService.showLoading('Solicitando razón social')

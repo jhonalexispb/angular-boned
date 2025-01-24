@@ -1,1 +1,300 @@
-<p>edit-sucursales works!</p>
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <div class="d-flex flex-column align-items-start mb-2">
+            <h2 class="fw-bolder">Editar sucursal: {{CLIENTE_SUCURSAL_SELECTED.nombre_comercial}}</h2>
+            <h2 class="fw-bolder">{{CLIENTE_SUCURSAL_SELECTED.ruc}}</h2>
+            <h2 class="fw-bolder">{{CLIENTE_SUCURSAL_SELECTED.razon_social}}</h2>
+        </div>
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-1 p-2">
+        <form [formGroup]="clienteSucursalForm" (ngSubmit)="onSubmit()">
+            <div class="py-2">
+                <div class="fv-row mb-7">
+                    <div class="d-flex justify-content-between mb-2" data-kt-customer-table-toolbar="base">
+                        <label class="required fw-bold fs-6 mb-2">RUC</label>
+                        <button 
+                            type="button" 
+                            class="btn btn-success px-4 py-2" 
+                            (click)="abrirEnlace()" 
+                            [disabled]="clienteSucursalForm.get('ruc')?.invalid">
+                            Ir a DIGEMID
+                        </button>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input
+                        id="ruc"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="ruc"
+                        maxlength="11"
+                        placeholder="Ingrese el RUC"
+                        autocomplete="off"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        />
+                        <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="clienteSucursalForm.get('ruc')?.invalid || clienteSucursalForm.get('ruc')?.pristine || clienteSucursalForm.get('razon_social')?.valid">
+                        <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="clienteSucursalForm.get('ruc')?.dirty && clienteSucursalForm.get('ruc')?.invalid" class="text-danger">
+                      <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['required']">El RUC es obligatorio.</span>
+                      <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['minlength']">El RUC debe tener 11 dígitos.</span>
+                      <span *ngIf="clienteSucursalForm.get('ruc')?.errors?.['maxlength']">El RUC no puede exceder los 11 dígitos.</span>
+                    </div>
+                  </div>
+              
+                  <div class="fv-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2" for="razon_social">Razón Social</label>
+                    <input
+                      id="razon_social"
+                      type="text"
+                      class="form-control mb-3 mb-lg-0"
+                      formControlName="razon_social"
+                      placeholder="Ingrese la razón social"
+                      autocomplete="off"
+                    />
+                    <div *ngIf="clienteSucursalForm.get('razon_social')?.touched && clienteSucursalForm.get('razon_social')?.invalid" class="text-danger">
+                      <span *ngIf="clienteSucursalForm.get('razon_social')?.errors?.['required']">La razón social es obligatoria.</span>
+                    </div>
+                  </div>
+      
+                  <div class="fv-row mb-3">
+                      <!--begin::Label-->
+                      <label class="required fw-bold fs-6 mb-2">Estado Digemid</label>
+                      <select formControlName="estado_digemid"
+                          class="form-control form-select-solid fw-bolder"
+                          formControlName="estado_digemid"
+                          placeholder="Seleccciona estado"
+                      > 
+                          <!-- <option value="">Sel</option> -->
+                          <option value="" disabled selected>Selecciona un estado</option>
+                          <option *ngFor="let estado of ESTADOS_DIGEMID" [value]="estado.id">
+                            {{ estado.nombre }}
+                            </option>
+                      </select>
+                      <div *ngIf="clienteSucursalForm.get('estado_digemid')?.touched && clienteSucursalForm.get('estado_digemid')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('estado_digemid')?.errors?.['required']">El estado es obligatorio</span>
+                      </div>
+                  </div>
+            </div>
+
+            <div *ngIf="seccion_detalles">
+                <hr class="opacity-20">
+
+                <div class="fv-row mb-7 pt-4" *ngIf="nregistroDigemid">
+                    <label class="required fw-bold fs-6 mb-2" for="nregistro">Numero de registro Digemid</label>
+                    <input
+                        id="nregistro"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="nregistro"
+                        placeholder="Ingrese el numero de registro"
+                        autocomplete="off"
+                        maxlength="7"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                    />
+                    <div *ngIf="clienteSucursalForm.get('nregistro')?.touched && clienteSucursalForm.get('nregistro')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['required']">El numero de registro es obligatorio.</span>
+                        <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['minlength']">El numero de registro debe tener 7 dígitos.</span>
+                        <span *ngIf="clienteSucursalForm.get('nregistro')?.errors?.['maxlength']">El numero de registro no puede exceder los 7 dígitos.</span>
+                    </div>
+                </div>
+
+                <div class="fv-row mb-7" *ngIf="actaDeInspeccion">
+                    <label class="required fw-bold fs-6 mb-2" for="foto">Foto del acta de inspeccion</label>
+                    <div class="custom-file">
+                        <button 
+                            *ngIf="tomar_foto_inspeccion"
+                            type="button" 
+                            class="btn btn-primary px-4 py-2 mb-3 w-100" 
+                            (click)="abrirSelectorDeFoto('customFileActa')">
+                            Tomar foto a la acta
+                        </button>
+                        <input type="file" class="custom-file-input d-none" id="customFileActa"  accept="image/*" capture="environment" (change)="processFileActa($event)">
+                    </div>
+                    <div *ngIf="imagen_previzualizade_inspeccion" >
+                        <img [src]="imagen_previzualizade_inspeccion" style="width: 100%;" alt="">
+                        <button 
+                            type="button" 
+                            class="btn btn-danger mt-2 eliminar" 
+                            (click)="eliminarImagenActa()">
+                            Eliminar Imagen
+                        </button>
+                    </div>
+                </div>
+
+                <div class="fv-row mb-7" *ngIf="nombreComercial">
+                    <label class="required fw-bold fs-6 mb-2" for="nombre_comercial">Nombre Comercial</label>
+                    <input
+                        id="nombre_comercial"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="nombre_comercial"
+                        placeholder="Ingrese el nombre comercial"
+                        autocomplete="off"
+                    />
+                    <div *ngIf="clienteSucursalForm.get('nombre_comercial')?.touched && clienteSucursalForm.get('nombre_comercial')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('nombre_comercial')?.errors?.['required']">El nombre comercial es obligatorio.</span>
+                    </div>
+                </div>
+    
+                <div *ngIf="seccionDni">
+                    <div class="fv-row mb-7">
+                        <div class="d-flex justify-content-between mb-2" data-kt-customer-table-toolbar="base">
+                            <label class="required fw-bold fs-6 mb-2" for="dni">Numero de DNI</label>
+                            <button *ngIf="extraerDniRuc" type="button" class="btn btn-primary px-4 py-2" (click)="extraerDni()" [disabled]="clienteSucursalForm.get('nombre_dni')?.valid">
+                                Extraer del RUC
+                            </button>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input
+                            id="dni"
+                            type="text"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="dni"
+                            placeholder="Ingrese el numero de DNI"
+                            autocomplete="off"
+                            maxlength="8"
+                            pattern="\d*"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            />
+                            <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarNombreDni()" [disabled]="clienteSucursalForm.get('dni')?.invalid || clienteSucursalForm.get('nombre_dni')?.valid">
+                            <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="clienteSucursalForm.get('dni')?.touched && clienteSucursalForm.get('dni')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['required']">El DNI es obligatorio.</span>
+                        <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['minlength']">El DNI debe tener 8 dígitos.</span>
+                        <span *ngIf="clienteSucursalForm.get('dni')?.errors?.['maxlength']">El DNI no puede exceder los 8 dígitos.</span>
+                        </div>
+                    </div>
+    
+                    <div class="fv-row mb-7">
+                        <label class="required fw-bold fs-6 mb-2" for="nombre_dni">Nombre de DNI</label>
+                        <input
+                            id="nombre_dni"
+                            type="text"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="nombre_dni"
+                            placeholder="Ingrese el nombre de la persona"
+                            autocomplete="off"
+                        />
+                        <div *ngIf="clienteSucursalForm.get('nombre_dni')?.touched && clienteSucursalForm.get('nombre_dni')?.invalid" class="text-danger">
+                            <span *ngIf="clienteSucursalForm.get('nombre_dni')?.errors?.['required']">El nombre de la persona es obligatorio.</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="fv-row mb-7" *ngIf="categoriaDigemid">
+                    <!--begin::Label-->
+                    <label class="required fs-6 mb-2">Categoria Digemid</label>
+                    <select
+                        class="form-control form-select-solid fw-bolder"
+                        formControlName="categoria_digemid"
+                        placeholder="Seleccciona una categoria"
+                    >
+                    <option value="" disabled selected>Selecciona una categoria</option>
+                    <option *ngFor="let categoria of CATEGORIAS_DIGEMID" [value]="categoria.id">
+                        {{ categoria.nombre }}
+                    </option>
+                    </select>
+                    <div *ngIf="clienteSucursalForm.get('categoria_digemid')?.touched && clienteSucursalForm.get('categoria_digemid')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('categoria_digemid')?.errors?.['required']">La categoria es obligatoria.</span>
+                    </div>
+                </div>
+                
+                <hr class="opacity-20 my-8">
+
+                <div class="fv-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2" for="direccion">Direccion</label>
+                    <input
+                        id="direccion"
+                        type="text"
+                        class="form-control mb-3 mb-lg-0"
+                        formControlName="direccion"
+                        placeholder="Ingrese la direccion"
+                        autocomplete="off"
+                    />
+                    <div *ngIf="clienteSucursalForm.get('direccion')?.touched && clienteSucursalForm.get('direccion')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('direccion')?.errors?.['required']">La direccion es obligatoria.</span>
+                    </div>
+                </div>
+    
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2">Distrito/Provincia/Departamento</label>
+                    <!--end::Label-->
+                    <ng-select 
+                        [items]="DISTRITOS"
+                        required
+                        bindLabel="distrito_provincia_department_name"
+                        bindValue="id"
+                        formControlName="distrito"
+                        placeholder="Selecciona un distrito"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [multiple]="false"
+                        [loadingText]="'Cargando...'">
+                    </ng-select>
+                    <div *ngIf="clienteSucursalForm.get('distrito')?.touched && clienteSucursalForm.get('distrito')?.invalid" class="text-danger">
+                        <span *ngIf="clienteSucursalForm.get('distrito')?.errors?.['required']">El distrito es obligatorio.</span>
+                    </div>
+                </div>
+
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2" for="foto">Foto del establecimiento</label>
+                    <div class="custom-file">
+                        <button 
+                            *ngIf="tomar_foto"
+                            type="button" 
+                            class="btn btn-primary px-4 py-2 mb-3 w-100" 
+                            (click)="abrirSelectorDeFoto('customFile')">
+                            Tomar foto al establecimiento
+                        </button>
+                        <input type="file" class="custom-file-input d-none" id="customFile"  accept="image/*" capture="environment" (change)="processFile($event)">
+                    </div>
+                    <div *ngIf="imagen_previzualizade" >
+                        <img [src]="imagen_previzualizade" style="width: 100%;" alt="">
+                        <button 
+                            type="button" 
+                            class="btn btn-danger mt-2 eliminar" 
+                            (click)="eliminarImagen()">
+                            Eliminar Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center pt-4">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="clienteSucursalForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+
+

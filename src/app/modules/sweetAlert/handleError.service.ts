@@ -42,35 +42,38 @@ export class HandleErrorService {
               break;
           
             case 422:
-              if (error.error.message) {
-                if (error.error.message == 403) {
-                  if(error.error.go_sunat){
-                    this.sweet.go_sunat('Ups', error.error.message_text);
-                    const ruc = error.error.ruc_search;
-                    this.sweet.getConfirmationObservable().subscribe((confirmed:boolean) => {
-                      if (confirmed) {
-                        navigator.clipboard.writeText(ruc).then(() => {
-                          window.open('https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp', '_blank');
-                        })
-                      }
-                    });
-                  }else{
-                    this.sweet.alerta('Ups', error.error.message_text);
-                  }
-                } else {
-                  this.sweet.error(error.error.message, error.error.message_text);
+              if (error.error.message == 403) {
+                if(error.error.go_sunat){
+                  this.sweet.go_sunat('Ups', error.error.message_text);
+                  const ruc = error.error.ruc_search;
+                  this.sweet.getConfirmationObservable().subscribe((confirmed:boolean) => {
+                    if (confirmed) {
+                      navigator.clipboard.writeText(ruc).then(() => {
+                        window.open('https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp', '_blank');
+                      })
+                    }
+                  });
+                }else{
+                  this.sweet.alerta('Ups', error.error.message_text);
                 }
               } else {
                 const errorMessages = error.error.errors;
                 const formattedErrors: { field: string, message: string }[] = [];
-          
+
                 // Formatear los errores para enviarlos como parámetros
                 for (let field in errorMessages) {
                   errorMessages[field].forEach((message: string) => {
                     formattedErrors.push({ field: field, message: message });
                   });
                 }
-                this.sweet.errorBackend(error.status, 'Por favor, corrige los siguientes errores de validación:', formattedErrors);
+
+                // Crear una cadena de texto con los errores formateados
+                const errorText = formattedErrors
+                  .map(error => `${error.message}`)
+                  .join(', '); // Unir todos los errores en una sola cadena separada por comas
+
+                // Mostrar el mensaje de los errores
+                this.sweet.formulario_invalido('Opps!', `Por favor, corrige los siguientes errores de validación: ${errorText}`);
               }
               break;
           

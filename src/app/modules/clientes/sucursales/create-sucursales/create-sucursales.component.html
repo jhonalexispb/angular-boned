@@ -118,6 +118,29 @@
                     </div>
                 </div>
 
+                <div class="fv-row mb-7" *ngIf="actaDeInspeccion">
+                    <label class="required fw-bold fs-6 mb-2" for="foto">Foto del acta de inspeccion</label>
+                    <div class="custom-file">
+                        <button 
+                            *ngIf="tomar_foto_inspeccion"
+                            type="button" 
+                            class="btn btn-primary px-4 py-2 mb-3 w-100" 
+                            (click)="abrirSelectorDeFoto('customFileActa')">
+                            Tomar foto a la acta
+                        </button>
+                        <input type="file" class="custom-file-input d-none" id="customFileActa"  accept="image/*" capture="environment" (change)="processFileActa($event)">
+                    </div>
+                    <div *ngIf="imagen_previzualizade_inspeccion" >
+                        <img [src]="imagen_previzualizade_inspeccion" style="width: 100%;" alt="">
+                        <button 
+                            type="button" 
+                            class="btn btn-danger mt-2 eliminar" 
+                            (click)="eliminarImagenActa()">
+                            Eliminar Imagen
+                        </button>
+                    </div>
+                </div>
+
                 <div class="fv-row mb-7" *ngIf="nombreComercial">
                     <label class="required fw-bold fs-6 mb-2" for="nombre_comercial">Nombre Comercial</label>
                     <input
@@ -274,14 +297,14 @@
                 </div>
 
                 <div class="fv-row mb-7">
-                    <label class="fw-bold fs-6 mb-2" for="foto">Foto</label>
+                    <label class="fw-bold fs-6 mb-2" for="foto">Foto del establecimiento</label>
                     <div class="custom-file">
                         <button 
                             *ngIf="tomar_foto"
                             type="button" 
                             class="btn btn-primary px-4 py-2 mb-3 w-100" 
-                            (click)="abrirSelectorDeFoto()">
-                            Tomar Foto
+                            (click)="abrirSelectorDeFoto('customFile')">
+                            Tomar foto al establecimiento
                         </button>
                         <input type="file" class="custom-file-input d-none" id="customFile"  accept="image/*" capture="environment" (change)="processFile($event)">
                     </div>

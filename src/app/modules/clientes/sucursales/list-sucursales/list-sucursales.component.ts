@@ -83,7 +83,7 @@ export class ListSucursalesComponent {
 
   comunicationClienteSucursal(DATOS:any){
     const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
+    modalRef.componentInstance.NUMBER_SELECTED = {
       phone: DATOS[0],  // Celular
       persona: DATOS[1]    // Nombre
     };

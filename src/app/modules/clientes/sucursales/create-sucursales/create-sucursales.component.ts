@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
 import * as L from 'leaflet';
+import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
 
 L.Marker.prototype.options.icon = L.icon({
   iconRetinaUrl: 'assets/images/marker-icon-2x.png',
@@ -37,13 +38,16 @@ export class CreateSucursalesComponent implements OnInit {
     seccion_detalles:boolean = false
     estado_digemid:number
     correo_obligatorio:boolean = false
+    actaDeInspeccion:boolean = false
     extraerDniRuc:boolean = false
     imagen_previzualizade:any;
+    imagen_previzualizade_inspeccion:any;
     file_name:any
     map: any;
     marker: any;
     vista_mapa: boolean = false
     tomar_foto: boolean = true
+    tomar_foto_inspeccion: boolean = true
     capturar_coordenadas_al_abrir = false
   
     constructor(
@@ -79,7 +83,8 @@ export class CreateSucursalesComponent implements OnInit {
         nregistro: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(7)]],
         latitud: [''],
         longitud: [''],
-        imagen: [null] 
+        image: [null],
+        documento_en_proceso: [null]  
       });
 
       this.clienteSucursalForm.get('estado_digemid')?.valueChanges.subscribe((estado: number) => {
@@ -94,9 +99,15 @@ export class CreateSucursalesComponent implements OnInit {
         this.clienteSucursalForm.get('nombre_dni')?.setValue('');
       });
 
-      this.clienteSucursalForm.get('imagen')?.valueChanges.subscribe((newValue) => {
+      this.clienteSucursalForm.get('image')?.valueChanges.subscribe((newValue) => {
         if (newValue) {
           this.tomar_foto = false;
+        } 
+      });
+
+      this.clienteSucursalForm.get('documento_en_proceso')?.valueChanges.subscribe((newValue) => {
+        if (newValue) {
+          this.tomar_foto_inspeccion = false;
         } 
       });
 
@@ -190,7 +201,15 @@ export class CreateSucursalesComponent implements OnInit {
       this.imagen_previzualizade = null;
       this.tomar_foto = true;
       this.clienteSucursalForm.patchValue({
-        foto: null
+        image: null
+      });
+    }
+
+    eliminarImagenActa(): void {
+      this.imagen_previzualizade_inspeccion = null;
+      this.tomar_foto_inspeccion = true;
+      this.clienteSucursalForm.patchValue({
+        documento_en_proceso: null
       });
     }
 
@@ -215,6 +234,7 @@ export class CreateSucursalesComponent implements OnInit {
       this.seccionDni = false;
       this.categoriaDigemid = false;
       this.correo_obligatorio = false;
+      this.actaDeInspeccion = false;
 
       if(this.capturar_coordenadas_al_abrir){
         this.obtenerUbicacion()
@@ -296,6 +316,20 @@ export class CreateSucursalesComponent implements OnInit {
 
           this.resetearValoresFormulario();
           break;
+
+        case 6: // En proceso
+          this.nombreComercial = true;
+          this.categoriaDigemid = true;
+          this.actaDeInspeccion = true;
+          this.correo_obligatorio = false;
+          this.clienteSucursalForm.get('nregistro')?.clearValidators();
+          this.clienteSucursalForm.get('correo')?.clearValidators();
+          this.clienteSucursalForm.get('dni')?.clearValidators();
+          this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
+          this.clienteSucursalForm.get('documento_en_proceso')?.setValidators([Validators.required]);
+
+          this.resetearValoresFormulario();
+          break;
       }
     }
 
@@ -306,6 +340,7 @@ export class CreateSucursalesComponent implements OnInit {
       this.clienteSucursalForm.get('dni')?.updateValueAndValidity();
       this.clienteSucursalForm.get('nombre_dni')?.updateValueAndValidity();
       this.clienteSucursalForm.get('categoria_digemid')?.updateValueAndValidity();
+      this.clienteSucursalForm.get('documento_en_proceso')?.updateValueAndValidity();
     }
     
 
@@ -314,9 +349,17 @@ export class CreateSucursalesComponent implements OnInit {
         return;
       }
 
-      console.log(this.clienteSucursalForm.value)
+      const formData = new FormData();
+
+      for (const key in this.clienteSucursalForm.value) {
+        if (this.clienteSucursalForm.value[key]) {
+          formData.append(key, this.clienteSucursalForm.value[key]);
+        }
+      }
+
+      console.log(formData)
       
-      this.clienteSucursalService.registerSucursalCliente(this.clienteSucursalForm.value).subscribe({
+      this.clienteSucursalService.registerSucursalCliente(formData).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if (resp.message == 409) {
@@ -378,8 +421,8 @@ export class CreateSucursalesComponent implements OnInit {
       })
     }
 
-    abrirSelectorDeFoto() {
-      const fileInput = document.getElementById('customFile') as HTMLInputElement;
+    abrirSelectorDeFoto(id:string) {
+      const fileInput = document.getElementById(id) as HTMLInputElement;
       if (fileInput) {
         fileInput.click();
       }
@@ -419,7 +462,7 @@ export class CreateSucursalesComponent implements OnInit {
 
       if (file) {
         this.clienteSucursalForm.patchValue({
-          imagen: this.file_name // Aquí guardas el archivo en el formulario
+          image: this.file_name // Aquí guardas el archivo en el formulario
         });
       }
     
@@ -427,6 +470,41 @@ export class CreateSucursalesComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagen_previzualizade = reader.result; // Asignar la imagen previsualizada
+      };
+      reader.onerror = () => {
+        this.sweet.formulario_invalido("Error", "No se pudo leer el archivo. Por favor, inténtalo de nuevo.");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    processFileActa(event: any): void {
+      const file = event.target.files[0];
+    
+      // Verificar si existe un archivo
+      if (!file) {
+        this.sweet.formulario_invalido("Atención", "No se seleccionó ningún archivo.");
+        return;
+      }
+    
+      // Validar que sea una imagen
+      if (file.type.indexOf("image") < 0) {
+        this.sweet.formulario_invalido("Atención", "El archivo que seleccionaste no es una imagen.");
+        return;
+      }
+    
+      // Asignar el archivo seleccionado
+      this.file_name = file;
+
+      if (file) {
+        this.clienteSucursalForm.patchValue({
+          documento_en_proceso: this.file_name // Aquí guardas el archivo en el formulario
+        });
+      }
+    
+      // Leer y previsualizar la imagen
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagen_previzualizade_inspeccion = reader.result; // Asignar la imagen previsualizada
       };
       reader.onerror = () => {
         this.sweet.formulario_invalido("Error", "No se pudo leer el archivo. Por favor, inténtalo de nuevo.");

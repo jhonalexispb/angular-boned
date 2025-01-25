@@ -34,7 +34,6 @@ export class EditSucursalesComponent {
   file_name:any
   tomar_foto: boolean = true
   tomar_foto_inspeccion: boolean = true
-  capturar_coordenadas_al_abrir = true
 
   constructor(
     private fb: FormBuilder,
@@ -184,12 +183,6 @@ export class EditSucursalesComponent {
     this.correo_obligatorio = false;
     this.actaDeInspeccion = false;
 
-    this.clienteSucursalForm.get('dni')?.reset();
-    this.clienteSucursalForm.get('nombre_dni')?.reset();
-    this.clienteSucursalForm.get('nombre_comercial')?.reset();
-    this.clienteSucursalForm.get('nregistro')?.reset();
-    this.clienteSucursalForm.get('categoria_digemid')?.reset('');
-
     this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
     this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
     this.clienteSucursalForm.get('nombre_comercial')?.setValidators([Validators.required]);
@@ -208,6 +201,11 @@ export class EditSucursalesComponent {
         this.clienteSucursalForm.get('dni')?.clearValidators();
         this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
 
+        this.clienteSucursalForm.get('dni')?.reset();
+        this.clienteSucursalForm.get('nombre_dni')?.reset();
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset();
+        this.imagen_previzualizade_inspeccion = null;
+
         this.resetearValoresFormulario();
         break;
       case 2: // Cierre temporal
@@ -215,10 +213,13 @@ export class EditSucursalesComponent {
         this.nombreComercial = true;
         this.seccionDni = true;
         this.categoriaDigemid = true;
+        this.extraerDniRuc = true;
 
         this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset();
+        this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
         break;
@@ -228,10 +229,13 @@ export class EditSucursalesComponent {
         this.nombreComercial = true;
         this.seccionDni = true;
         this.categoriaDigemid = true;
+        this.extraerDniRuc = true;
 
         this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset();
+        this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
         break;
@@ -245,6 +249,10 @@ export class EditSucursalesComponent {
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
 
+        this.clienteSucursalForm.get('nregistro')?.reset();
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset();
+        this.imagen_previzualizade_inspeccion = null;
+    
         this.resetearValoresFormulario();
         break;
       case 5: // Persona Natural
@@ -256,6 +264,12 @@ export class EditSucursalesComponent {
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
         this.clienteSucursalForm.get('categoria_digemid')?.clearValidators();
+
+        this.clienteSucursalForm.get('nombre_comercial')?.reset();
+        this.clienteSucursalForm.get('nregistro')?.reset();
+        this.clienteSucursalForm.get('categoria_digemid')?.reset('');
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset();
+        this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
         break;
@@ -270,6 +284,12 @@ export class EditSucursalesComponent {
         this.clienteSucursalForm.get('dni')?.clearValidators();
         this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
         this.clienteSucursalForm.get('documento_en_proceso')?.setValidators([Validators.required]);
+
+        this.clienteSucursalForm.get('dni')?.reset();
+        this.clienteSucursalForm.get('nombre_dni')?.reset();
+        this.clienteSucursalForm.get('nregistro')?.reset();
+        this.imagen_previzualizade_inspeccion = this.CLIENTE_SUCURSAL_SELECTED.documento_en_proceso;
+        this.clienteSucursalForm.get('documento_en_proceso')?.reset(this.CLIENTE_SUCURSAL_SELECTED.documento_en_proceso);
 
         this.resetearValoresFormulario();
         break;
@@ -292,28 +312,13 @@ export class EditSucursalesComponent {
       return;
     }
 
-    const formData = new FormData();
-
-    for (const key in this.clienteSucursalForm.value) {
-      if (this.clienteSucursalForm.value[key]) {
-        formData.append(key, this.clienteSucursalForm.value[key]);
-      }
-    }
-
-    console.log(formData)
+    console.log(this.clienteSucursalForm.value)
     
-    this.clienteSucursalService.registerSucursalCliente(formData).subscribe({
+    this.clienteSucursalService.updateSucursalCliente(this.CLIENTE_SUCURSAL_SELECTED.id,this.clienteSucursalForm.value).subscribe({
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
         if (resp.message == 409) {
-          this.sweet.confirmar_restauracion('Atencion', resp.message_text);
-          this.sweet
-            .getRestauracionObservable()
-            .subscribe((confirmed: boolean) => {
-              if (confirmed) {
-                this.restaurar(resp.cliente);
-              }
-            });
+          this.sweet.alert('Atencion', resp.message_text);
         } else {
           this.ClienteSucursalE.emit(resp.cliente_sucursal);
           this.modal.close();
@@ -369,20 +374,6 @@ export class EditSucursalesComponent {
     if (fileInput) {
       fileInput.click();
     }
-  }
-
-  restaurar(prov: any) {
-    this.clienteSucursalService.restaurarSucursalCliente(prov).subscribe({
-      next: (resp: any) => {
-        this.ClienteSucursalE.emit(resp.cliente_restaurado);
-        this.modal.close();
-        this.sweet.success(
-          '¡Restaurado!',
-          resp.message_text,
-          '/assets/animations/general/restored.json'
-        );
-      },
-    });
   }
 
   processFile(event: any): void {

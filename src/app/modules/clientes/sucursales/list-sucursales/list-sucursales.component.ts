@@ -59,15 +59,10 @@ export class ListSucursalesComponent {
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
     modalRef.componentInstance.ClienteSucursalE.subscribe((r:any)=>{
-      const { clienteSucursal, isRestored } = r; 
-      if (isRestored) {
-        this.SUCURSALES_LIST.unshift(clienteSucursal);
-      } else {
         let INDEX = this.SUCURSALES_LIST.findIndex((b:any) => b.id == R.id);
         if(INDEX != -1){
-          this.SUCURSALES_LIST[INDEX] = clienteSucursal
+          this.SUCURSALES_LIST[INDEX] = r
         }
-      }
     })
   }
 

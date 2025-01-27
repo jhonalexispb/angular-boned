@@ -59,17 +59,28 @@
                     </thead>
                   
                     <tbody class="fw-semibold text-gray-600">
-                      <tr *ngFor="let R of RUC_LIST">
+                      <tr *ngFor="let R of RUC_LIST; let index = index">
                         <td>
                             <div class="d-flex justify-content-start align-items-center gap-2">
                                 <div class="d-md-none">
-                                    <app-buttons-group-list>
-                                        <button (click)="editRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                            <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                        </button>
-                                        <button (click)="deleteRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                        </button>
+                                    <app-buttons-group-list
+                                    [index]="index"
+                                    [activeDropdownIndex]="activeDropdownIndex"
+                                    (dropdownToggle)="handleDropdownToggle($event)">
+                                        <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                          <li>
+                                            <button (click)="editRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
+                                              <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                              Editar
+                                            </button>
+                                          </li>
+                                          <li>
+                                            <button (click)="deleteRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
+                                              <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                              Eliminar
+                                            </button>
+                                          </li>
+                                        </ul>
                                     </app-buttons-group-list>
                                 </div>
                                 <!-- Aquí se muestra el RUC -->
@@ -100,9 +111,11 @@
                         <td class="d-none d-md-table-cell">
                           <button (click)="editRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                             <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                            Editar
                           </button>
                           <button (click)="deleteRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                             <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                            Eliminar
                           </button>
                         </td>
                       </tr>

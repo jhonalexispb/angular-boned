@@ -15,9 +15,10 @@ export class ListRucComponent {
   search:string = '';
   RUC_LIST:any = [];
   sweet:any = new SweetalertService
-
   totalPages:number = 0; 
   currentPage:number = 1;
+
+  activeDropdownIndex: number | null = null; // Índice del dropdown activo
 
   constructor(
     public modalService: NgbModal,
@@ -80,5 +81,10 @@ export class ListRucComponent {
         })
       }
     });
+  }
+
+  // Método que se ejecuta cuando un dropdown es activado o desactivado
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 }

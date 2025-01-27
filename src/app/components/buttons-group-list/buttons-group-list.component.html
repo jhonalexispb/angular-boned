@@ -1,6 +1,20 @@
-<button class="btn btn-primary p-1" (click)="toggleButtonsVisibility()"><i class="ki-solid ki-dots-vertical fs-1 p-0"></i></button>
+<!-- <div class="dropdown" (click)="toggleButtonsVisibility()">
+  <button class="btn btn-primary p-1" aria-expanded="false">
+    <i class="ki-solid ki-dots-vertical fs-1 p-0"></i>
+  </button>
 
-<!-- Lista de botones que se muestran u ocultan -->
-<div *ngIf="buttonsVisible">
-  <ng-content></ng-content>  <!-- Aquí se proyectan los botones que pasen como contenido -->
+  <div *ngIf="buttonsVisible" class="dropdown-menu show">
+    <ng-content></ng-content>
+  </div>
+</div> -->
+
+<div class="dropdown" (click)="index !== null && toggleButtonsVisibility(index)">
+  <button class="btn btn-primary p-1" aria-expanded="false">
+    <i class="ki-solid ki-dots-vertical fs-1 p-0"></i>
+  </button>
+
+  <!-- Lista de botones que se muestran u ocultan en un dropdown -->
+  <div *ngIf="activeDropdownIndex === index" class="dropdown-menu show">
+    <ng-content></ng-content> <!-- Aquí se proyectan los botones como contenido -->
+  </div>
 </div>

@@ -4,7 +4,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
 import * as L from 'leaflet';
-import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
 
 L.Marker.prototype.options.icon = L.icon({
   iconRetinaUrl: 'assets/images/marker-icon-2x.png',

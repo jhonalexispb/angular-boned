@@ -14,6 +14,7 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ComunicationPersonModule } from 'src/app/components/comunication-person/comunication-person.module';
+import { GestionarSucursalesComponent } from './gestionar-sucursales/gestionar-sucursales.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ComunicationPersonModule } from 'src/app/components/comunication-person
     SucursalesComponent,
     ListSucursalesComponent,
     EditSucursalesComponent,
-    CreateSucursalesComponent
+    CreateSucursalesComponent,
+    GestionarSucursalesComponent
   ],
   imports: [
     CommonModule,

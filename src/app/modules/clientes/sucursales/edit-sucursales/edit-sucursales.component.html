@@ -41,11 +41,11 @@
                             Ir a DIGEMID
                         </button>
                     </div>
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input
                         id="ruc"
                         type="text"
-                        class="form-control mb-3 mb-lg-0"
+                        class="form-control"
                         formControlName="ruc"
                         maxlength="11"
                         placeholder="Ingrese el RUC"
@@ -53,7 +53,7 @@
                         pattern="\d*"
                         onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                         />
-                        <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="clienteSucursalForm.get('ruc')?.invalid || clienteSucursalForm.get('ruc')?.pristine || clienteSucursalForm.get('razon_social')?.valid">
+                        <button class="btn btn-primary" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="clienteSucursalForm.get('ruc')?.invalid || clienteSucursalForm.get('ruc')?.pristine || clienteSucursalForm.get('razon_social')?.valid">
                         <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -168,11 +168,11 @@
                                 Extraer del RUC
                             </button>
                         </div>
-                        <div class="input-group mb-3">
+                        <div class="input-group">
                             <input
                             id="dni"
                             type="text"
-                            class="form-control mb-3 mb-lg-0"
+                            class="form-control"
                             formControlName="dni"
                             placeholder="Ingrese el numero de DNI"
                             autocomplete="off"
@@ -180,7 +180,7 @@
                             pattern="\d*"
                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                             />
-                            <button class="btn btn-primary mb-3" type="button" id="button-addon2" (click)="buscarNombreDni()" [disabled]="clienteSucursalForm.get('dni')?.invalid || clienteSucursalForm.get('nombre_dni')?.valid">
+                            <button class="btn btn-primary" type="button" id="button-addon2" (click)="buscarNombreDni()" [disabled]="clienteSucursalForm.get('dni')?.invalid || clienteSucursalForm.get('nombre_dni')?.valid">
                             <i class="fa fa-search"></i>
                             </button>
                         </div>

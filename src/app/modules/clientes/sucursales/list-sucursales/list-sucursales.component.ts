@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
 import { CreateSucursalesComponent } from '../create-sucursales/create-sucursales.component';
 import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
 import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
+import { GestionarSucursalesComponent } from '../gestionar-sucursales/gestionar-sucursales.component';
 
 @Component({
   selector: 'app-list-sucursales',
@@ -12,12 +13,13 @@ import { ComunicationPersonComponent } from 'src/app/components/comunication-per
   styleUrls: ['./list-sucursales.component.scss']
 })
 export class ListSucursalesComponent {
-  search:string = '';
+  search:any;
   SUCURSALES_LIST:any = [];
   sweet:any = new SweetalertService
 
   totalPages:number = 0; 
   currentPage:number = 1;
+  activeDropdownIndex: number | null = null;
 
   constructor(
     public modalService: NgbModal,
@@ -28,6 +30,16 @@ export class ListSucursalesComponent {
 
   ngOnInit(): void {
     this.listSucursalesClientes();
+  }
+
+  onSearchChange() {
+    if (this.search === null) {
+      this.search = ''; // Convertir null a cadena vacía
+    }
+    this.listSucursalesClientes(); // Llamar a tu función para actualizar la lista
+    if(this.search === ''){
+      this.search = null
+    }
   }
 
   listSucursalesClientes(page = 1){
@@ -96,5 +108,24 @@ export class ListSucursalesComponent {
         })
       }
     });
+  }
+
+  gestionarSucursal(SUC_CL:any){
+    const modalRef = this.modalService.open(GestionarSucursalesComponent,{centered:true, size: 'md'})
+
+    modalRef.componentInstance.CLIENTE_SUCURSAL_TO_SELECTED = SUC_CL;
+
+    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
+    modalRef.componentInstance.ClienteGestionE.subscribe((r:any)=>{
+        let INDEX = this.SUCURSALES_LIST.findIndex((b:any) => b.id == SUC_CL.id);
+        if(INDEX != -1){
+          this.SUCURSALES_LIST[INDEX] = r
+        }
+    })
+  }
+
+  // Método que se ejecuta cuando un dropdown es activado o desactivado
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 }

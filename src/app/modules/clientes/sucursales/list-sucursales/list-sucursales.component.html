@@ -2,13 +2,32 @@
     <!--begin::Card header-->
     <div class="card-header border-0 pt-6">
         <!--begin::Card title-->
-        <div class="card-title">
+        <div class="card-title w-100 w-md-50">
             <!--begin::Search-->
-            <div class="d-flex align-items-center position-relative my-1">
-                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
-                        class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listSucursalesClientes()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar por ruc o razon social" />
+            <div class="d-flex align-items-center w-100 my-1">
+                <ng-select 
+                  [items]="SUCURSALES_LIST"
+                  bindLabel="sucursal_name_complete"
+                  bindValue="id"
+                  placeholder="Buscar por ruc, razon social o nombre comercial"
+                  [searchable]="true"
+                  [clearable]="true" 
+                  [virtualScroll]="true"  
+                  [multiple]="false"
+                  [loadingText]="'Cargando...'"
+                  [(ngModel)]="search" 
+                  (change)="onSearchChange()"
+                  name="search"
+                  class="w-100">
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="mi-custom-option d-flex flex-column gap-2">
+                      <h6 style="font-size: 1rem;">{{ item.ruc }} {{ item.nombre_comercial }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">R. Social: {{ item.razon_social }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.direccion }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.distrito }}/{{ item.provincia }}/{{ item.departamento }}</h6>
+                    </div>
+                  </ng-template>
+                </ng-select>
             </div>
             <!--end::Search-->
         </div>
@@ -67,29 +86,52 @@
                           <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
                         </th>
                   
-                        <th class="min-w-125px">
+                        <th class="min-w-150px">
                           <span class="dt-column-title" role="button">Fecha de registro</span><span class="dt-column-order"></span>
                         </th>
                   
                         <!-- Columna Acciones: Visible solo en pantallas grandes -->
-                        <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1">
+                        <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
                           <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                         </th>
                       </tr>
                     </thead>
                   
                     <tbody class="fw-semibold text-gray-600">
-                      <tr *ngFor="let S of SUCURSALES_LIST">
+                      <tr *ngFor="let S of SUCURSALES_LIST; let index = index">
                         <td>
                             <div class="d-flex justify-content-start align-items-center gap-2">
                                 <div class="d-md-none">
-                                    <app-buttons-group-list>
-                                        <button (click)="editSucursalCliente(S)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <app-buttons-group-list
+                                    [index]="index"
+                                    [activeDropdownIndex]="activeDropdownIndex"
+                                    (dropdownToggle)="handleDropdownToggle($event)">
+                                    <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                      <li>
+                                        <button (click)="editSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                            Editar
+                                          </div>
                                         </button>
-                                        <button (click)="deleteSucursalCliente(S)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                      </li>
+                                      <li>
+                                        <button (click)="deleteSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                            Eliminar
+                                          </div>
                                         </button>
+                                      </li>
+                                      <li>
+                                        <button (click)="gestionarSucursal(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
+                                            <i class="ki-duotone ki-user-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            Gestionar
+                                          </div>
+                                        </button>
+                                      </li>
+                                    </ul>
                                     </app-buttons-group-list>
                                 </div>
                                 <!-- Aquí se muestra el RUC -->
@@ -181,13 +223,27 @@
                         <td>{{ S.created_at }}</td>
                   
                         <!-- Columna Acciones visible solo en pantallas grandes -->
-                        <td class="d-none d-md-table-cell">
-                          <button (click)="editSucursalCliente(S)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                            <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                          </button>
-                          <button (click)="deleteSucursalCliente(S)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                          </button>
+                        <td class="d-none d-md-table-cell acciones-container">
+                          <ul class="pt-3 px-3 d-flex gap-2">
+                            <li>
+                              <button (click)="editSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                  <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                  Editar
+                              </button>
+                            </li>
+                            <li>
+                              <button (click)="deleteSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                  <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                  Eliminar
+                              </button>
+                            </li>
+                            <li>
+                              <button (click)="gestionarSucursal(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                  <i class="ki-duotone ki-user-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                  Gestionar
+                              </button>
+                            </li>
+                          </ul>
                         </td>
                       </tr>
                     </tbody>

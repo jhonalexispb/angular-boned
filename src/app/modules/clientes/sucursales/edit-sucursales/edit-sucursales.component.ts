@@ -57,14 +57,14 @@ export class EditSucursalesComponent {
       ruc_id: [this.CLIENTE_SUCURSAL_SELECTED.ruc_id],
       razon_social: [this.CLIENTE_SUCURSAL_SELECTED.razon_social, [Validators.required]],
       nombre_comercial: [this.CLIENTE_SUCURSAL_SELECTED.nombre_comercial, [Validators.required]],
-      dni: [this.CLIENTE_SUCURSAL_SELECTED.dni ? this.CLIENTE_SUCURSAL_SELECTED.dni.numero : null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      dni: [this.CLIENTE_SUCURSAL_SELECTED.dni ? this.CLIENTE_SUCURSAL_SELECTED.dni.numero : null],
       nombre_dni: [this.CLIENTE_SUCURSAL_SELECTED.dni ? this.CLIENTE_SUCURSAL_SELECTED.dni.nombre_dni : null],
       dni_id: [this.CLIENTE_SUCURSAL_SELECTED.dni ? this.CLIENTE_SUCURSAL_SELECTED.dni.dni_id : null],
       direccion: [this.CLIENTE_SUCURSAL_SELECTED.direccion, [Validators.required]],
       distrito: [this.CLIENTE_SUCURSAL_SELECTED.distrito_id,[Validators.required]],
-      categoria_digemid: [ this.CLIENTE_SUCURSAL_SELECTED.categoria_digemid_id,[Validators.required]],
+      categoria_digemid: [ this.CLIENTE_SUCURSAL_SELECTED.categoria_digemid_id],
       estado_digemid: [this.CLIENTE_SUCURSAL_SELECTED.estado_digemid, [Validators.required]],
-      nregistro: [this.CLIENTE_SUCURSAL_SELECTED.nregistro, [Validators.required, Validators.minLength(7), Validators.maxLength(7)]],
+      nregistro: [this.CLIENTE_SUCURSAL_SELECTED.nregistro],
       nregistro_id: [this.CLIENTE_SUCURSAL_SELECTED.nregistro_id],
       image: [null],
       documento_en_proceso: [null],
@@ -140,7 +140,6 @@ export class EditSucursalesComponent {
         this.nregistroDigemid = true;
         this.nombreComercial = true;
         this.categoriaDigemid = true;
-        this.correo_obligatorio = false;
         break;
       case 2: // Cierre temporal
         this.nregistroDigemid = true;
@@ -168,7 +167,6 @@ export class EditSucursalesComponent {
         this.nombreComercial = true;
         this.categoriaDigemid = true;
         this.actaDeInspeccion = true;
-        this.correo_obligatorio = false;
         break;
     }
   }
@@ -180,14 +178,12 @@ export class EditSucursalesComponent {
     this.nombreComercial = false;
     this.seccionDni = false;
     this.categoriaDigemid = false;
-    this.correo_obligatorio = false;
     this.actaDeInspeccion = false;
 
     this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
     this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
     this.clienteSucursalForm.get('nombre_comercial')?.setValidators([Validators.required]);
     this.clienteSucursalForm.get('nregistro')?.setValidators([Validators.required, Validators.minLength(7), Validators.maxLength(7)]);
-    this.clienteSucursalForm.get('correo')?.setValidators([Validators.required , Validators.email]);
     
     estado = Number(estado);
 
@@ -196,8 +192,6 @@ export class EditSucursalesComponent {
         this.nregistroDigemid = true;
         this.nombreComercial = true;
         this.categoriaDigemid = true;
-        this.correo_obligatorio = false;
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.clearValidators();
         this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
 
@@ -215,13 +209,13 @@ export class EditSucursalesComponent {
         this.categoriaDigemid = true;
         this.extraerDniRuc = true;
 
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
         this.clienteSucursalForm.get('documento_en_proceso')?.reset();
         this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
+        this.ajustarBotonExtraerDni();
         break;
 
       case 3: // Cierre definitivo
@@ -231,13 +225,13 @@ export class EditSucursalesComponent {
         this.categoriaDigemid = true;
         this.extraerDniRuc = true;
 
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
         this.clienteSucursalForm.get('documento_en_proceso')?.reset();
         this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
+        this.ajustarBotonExtraerDni();
         break;
       case 4: // Sin registro Digemid
         this.nombreComercial = true;
@@ -245,7 +239,6 @@ export class EditSucursalesComponent {
         this.categoriaDigemid = true;
 
         this.clienteSucursalForm.get('nregistro')?.clearValidators();
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
 
@@ -254,12 +247,11 @@ export class EditSucursalesComponent {
         this.imagen_previzualizade_inspeccion = null;
     
         this.resetearValoresFormulario();
+        this.ajustarBotonExtraerDni();
         break;
       case 5: // Persona Natural
         this.seccionDni = true;
-        this.clienteSucursalForm.get('correo')?.reset();
         this.clienteSucursalForm.get('nregistro')?.clearValidators();
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('nombre_comercial')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(8)]);
         this.clienteSucursalForm.get('nombre_dni')?.setValidators([Validators.required]);
@@ -272,15 +264,14 @@ export class EditSucursalesComponent {
         this.imagen_previzualizade_inspeccion = null;
 
         this.resetearValoresFormulario();
+        this.ajustarBotonExtraerDni();
         break;
 
       case 6: // En proceso
         this.nombreComercial = true;
         this.categoriaDigemid = true;
         this.actaDeInspeccion = true;
-        this.correo_obligatorio = false;
         this.clienteSucursalForm.get('nregistro')?.clearValidators();
-        this.clienteSucursalForm.get('correo')?.clearValidators();
         this.clienteSucursalForm.get('dni')?.clearValidators();
         this.clienteSucursalForm.get('nombre_dni')?.clearValidators();
         this.clienteSucursalForm.get('documento_en_proceso')?.setValidators([Validators.required]);
@@ -296,9 +287,17 @@ export class EditSucursalesComponent {
     }
   }
 
+  ajustarBotonExtraerDni() {
+    let ruc_evaluado: string = this.clienteSucursalForm.get('ruc')?.value;
+    if (ruc_evaluado && ruc_evaluado.length === 11 && ruc_evaluado.startsWith('10')) {
+      this.extraerDniRuc = true;
+    } else {
+      this.extraerDniRuc = false;
+    }
+  }
+
   resetearValoresFormulario(){
     this.clienteSucursalForm.get('nregistro')?.updateValueAndValidity();
-    /* this.clienteSucursalForm.get('correo')?.updateValueAndValidity(); */
     this.clienteSucursalForm.get('nombre_comercial')?.updateValueAndValidity();
     this.clienteSucursalForm.get('dni')?.updateValueAndValidity();
     this.clienteSucursalForm.get('nombre_dni')?.updateValueAndValidity();
@@ -309,12 +308,34 @@ export class EditSucursalesComponent {
 
   onSubmit() {
     if (this.clienteSucursalForm.invalid) {
+      // Imprimir si el formulario es inválido
+      console.log('Formulario inválido:', this.clienteSucursalForm.invalid);
+    
+      // Iterar sobre los controles del formulario
+      for (const controlName in this.clienteSucursalForm.controls) {
+        if (this.clienteSucursalForm.controls.hasOwnProperty(controlName)) {
+          const control = this.clienteSucursalForm.controls[controlName];
+    
+          // Verificar si el control tiene errores
+          if (control.errors) {
+            console.log(`Errores en el campo "${controlName}":`, control.errors);
+          }
+        }
+      }
+    
       return;
+    }
+
+    const formData = new(FormData);
+    for (const key in this.clienteSucursalForm.value) {
+      if (this.clienteSucursalForm.value[key]) {
+        formData.append(key, this.clienteSucursalForm.value[key]);
+      }
     }
 
     console.log(this.clienteSucursalForm.value)
     
-    this.clienteSucursalService.updateSucursalCliente(this.CLIENTE_SUCURSAL_SELECTED.id,this.clienteSucursalForm.value).subscribe({
+    this.clienteSucursalService.updateSucursalCliente(this.CLIENTE_SUCURSAL_SELECTED.id,formData).subscribe({
       next: (resp: any) => {
         // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
         if (resp.message == 409) {

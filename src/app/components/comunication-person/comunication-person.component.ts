@@ -8,11 +8,11 @@ import { UserLocalStorageService } from 'src/app/modules/users/service/userLocal
   styleUrls: ['./comunication-person.component.scss']
 })
 export class ComunicationPersonComponent {
-  @Input() NUMBER_SELECTED: { phone: string, name: string, persona: string};
+  @Input() NUMBER_SELECTED: {n_datos: number, valor: string, persona: string};
     user:any = ''
-    nameRepresentante:string = ''
-    phone:string = ''
+    valor:string = ''
     persona:string = ''
+    n_datos:number = 0
   
     constructor(
       public modal: NgbActiveModal,
@@ -21,9 +21,9 @@ export class ComunicationPersonComponent {
     }
   
     ngOnInit(): void {
-      this.user = this.getUserService.getUserName()  
-      this.nameRepresentante = this.NUMBER_SELECTED.name,
-      this.phone = this.NUMBER_SELECTED.phone
-      this.persona = this.NUMBER_SELECTED.persona
+      this.user = this.getUserService.getUserName(),  
+      this.valor = this.NUMBER_SELECTED.valor,
+      this.persona = this.NUMBER_SELECTED.persona,
+      this.n_datos = this.NUMBER_SELECTED.n_datos
     }
 }

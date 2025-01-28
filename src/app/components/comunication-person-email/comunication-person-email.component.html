@@ -4,7 +4,6 @@
     <div class="modal-header" id="kt_modal_add_user_header">
         <!--begin::Modal title-->
         <h2 class="fw-bolder">{{user}} comuniquémonos con {{EMAIL_SELECTED.persona}}</h2>
-
         <!--end::Modal title-->
         <!--begin::Close-->
         <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
@@ -26,17 +25,28 @@
     <!--begin::Modal body-->
     <div class="modal-body">
             <!--begin::Scroll-->
+            <h3 class="fw-bolder mb-3">Cantidad de correos en la sucursal:  {{EMAIL_SELECTED.n_datos}}</h3>
             <div class="d-flex flex-column me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
-                    <a [href]="'https://wa.me/' + EMAIL_SELECTED.email" class="badge-light-success p-4 rounded fs-5" target="_blank" style="text-decoration: none;">
-                        <i class="fa-brands fa-whatsapp text-success"></i>
-                        Enviar email a {{ EMAIL_SELECTED.name }}
-                        {{ EMAIL_SELECTED.email }}
-                    </a>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; ">
+                        <div *ngIf="EMAIL_SELECTED.valor && EMAIL_SELECTED.valor.length > 0;  else none">
+                          <div *ngFor="let email of EMAIL_SELECTED.valor" class="d-flex flex-column gap-2 ">
+                            <div class="badge-light-primary p-4 rounded">
+                                <i class="fa-solid fa-envelope text-primary"></i>
+                                <a [href]="'mailto:' + email" class="fs-7 fw-bold text-primary"> {{ email }}</a>
+                            </div>
+                          </div>
+                        </div>
+                        <ng-template #none>
+                          <div class="badge-light-warning p-2 rounded">
+                              No existen correos
+                          </div>
+                      </ng-template>
+                    </div>
                 </div>
             </div>
             <!--end::Scroll-->

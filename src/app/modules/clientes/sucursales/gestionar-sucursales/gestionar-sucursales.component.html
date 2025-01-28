@@ -31,44 +31,70 @@
         <form [formGroup]="clienteGestionarSucursalForm" (ngSubmit)="onSubmit()">
             <div class="py-2">
               
-                  <div class="fv-row mb-7">
+                <div class="fv-row mb-7">
                     <label class="required fw-bold fs-6 mb-2" for="formaPago">Modo de pago</label>
-                    <input
-                      id="razon_social"
-                      type="text"
-                      class="form-control mb-3 mb-lg-0"
-                      formControlName="razon_social"
-                      placeholder="Ingrese la razón social"
-                      autocomplete="off"
-                    />
-                    <select formControlName="formaPago">
-                        <option value="">Seleccione una opcion</option>
+                    <select formControlName="formaPago" class="form-control mb-3 mb-lg-0">
+                        <option value="" disabled>Seleccione una opcion</option>
                         <option value="1">Credito</option>
                         <option value="2">Contado</option>
                         <option value="3">Credito/Contado</option>
                     </select>
                     <div *ngIf="clienteGestionarSucursalForm.get('formaPago')?.touched && clienteGestionarSucursalForm.get('razon_social')?.invalid" class="text-danger">
-                      <span *ngIf="clienteGestionarSucursalForm.get('formaPago')?.errors?.['required']">La forma de pago es obligatoria.</span>
+                        <span *ngIf="clienteGestionarSucursalForm.get('formaPago')?.errors?.['required']">La forma de pago es obligatoria.</span>
                     </div>
-                  </div>
-      
-                  <div class="fv-row mb-3">
-                      <!--begin::Label-->
-                      <label class="required fw-bold fs-6 mb-2">Tipo facturacion</label>
-                      <select
-                          class="form-control form-select-solid fw-bolder"
-                          formControlName="modo_facturacion_id"
-                      > 
-                          <!-- <option value="">Sel</option> -->
-                          <option value="" disabled selected>Selecciona una opcion</option>
-                          <option *ngFor="let tipo of T_FACTURACION" [value]="tipo.id">
+                </div>
+
+                <div *ngIf="seccionCredito">
+                    <div class="fv-row mb-7 pt-4">
+                        <label class="required fw-bold fs-6 mb-2" for="nregistro">Linea de credito</label>
+                        <input
+                            id="linea_credito"
+                            type="number"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="linea_credito"
+                            placeholder="Ingrese un monto"
+                            autocomplete="off"
+                        />
+                        <div *ngIf="clienteGestionarSucursalForm.get('linea_credito')?.touched && clienteGestionarSucursalForm.get('linea_credito')?.invalid" class="text-danger">
+                            <span *ngIf="clienteGestionarSucursalForm.get('linea_credito')?.errors?.['required']">La línea de crédito es obligatoria.</span>
+                            <span *ngIf="clienteGestionarSucursalForm.get('linea_credito')?.errors?.['min']">La línea de crédito no puede ser menor que 0.</span>
+                        </div>
+                    </div>
+          
+                    <div class="fv-row mb-3">
+                        <!--begin::Label-->
+                        <label class="required fw-bold fs-6 mb-2">Tipo facturacion</label>
+                        <select
+                            class="form-control form-select-solid fw-bolder"
+                            formControlName="modo_facturacion_id"
+                        > 
+                            <!-- <option value="">Sel</option> -->
+                            <option value="" disabled selected>Selecciona una opcion</option>
+                            <option *ngFor="let tipo of T_FACTURACION" [value]="tipo.id">
                             {{ tipo.nombre }}
                             </option>
-                      </select>
-                      <div *ngIf="clienteGestionarSucursalForm.get('modo_facturacion_id')?.touched && clienteGestionarSucursalForm.get('modo_facturacion_id')?.invalid" class="text-danger">
+                        </select>
+                        <div *ngIf="clienteGestionarSucursalForm.get('modo_facturacion_id')?.touched && clienteGestionarSucursalForm.get('modo_facturacion_id')?.invalid" class="text-danger">
                         <span *ngIf="clienteGestionarSucursalForm.get('modo_facturacion_id')?.errors?.['required']">El estado es obligatorio</span>
-                      </div>
-                  </div>
+                        </div>
+                    </div>
+    
+                    <div class="fv-row mb-7 pt-4">
+                        <label class="required fw-bold fs-6 mb-2" for="nregistro">Dias para la facturacion</label>
+                        <input
+                            id="dias"
+                            type="number"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="dias"
+                            placeholder="Ingrese un valor"
+                            autocomplete="off"
+                        />
+                        <div *ngIf="clienteGestionarSucursalForm.get('dias')?.touched && clienteGestionarSucursalForm.get('dias')?.invalid" class="text-danger">
+                            <span *ngIf="clienteGestionarSucursalForm.get('dias')?.errors?.['required']">El numero de dias es obligatorio es obligatoria.</span>
+                            <span *ngIf="clienteGestionarSucursalForm.get('dias')?.errors?.['min']">La numero de dias no puede ser menor que 0.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="text-center pt-4">

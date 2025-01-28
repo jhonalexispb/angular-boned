@@ -63,6 +63,16 @@ export class SucursalClienteService {
     )
   }
 
+  gestionarSucursalCliente(ID_SUCURSAL:string,data:any){
+    this.loadingService.showLoading('Configurando sucursal')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/cliente_sucursal/gestionar_sucursal/"+ID_SUCURSAL;
+    return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   restaurarSucursalCliente(ID_SUCURSAL:string){
     this.loadingService.showLoading('Restaurando sucursal')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})

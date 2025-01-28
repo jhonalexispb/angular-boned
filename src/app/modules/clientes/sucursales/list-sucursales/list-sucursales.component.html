@@ -1,6 +1,6 @@
 <div class="card">
     <!--begin::Card header-->
-    <div class="card-header border-0 pt-6">
+    <div class="card-header border-0 pt-6 cabecera">
         <!--begin::Card title-->
         <div class="card-title w-100 w-md-50">
             <!--begin::Search-->
@@ -66,12 +66,8 @@
                           <span class="dt-column-title" role="button">Direccion</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-125px">
-                          <span class="dt-column-title" role="button">Celular</span><span class="dt-column-order"></span>
-                        </th>
-
-                        <th class="min-w-200px">
-                          <span class="dt-column-title" role="button">Correo</span><span class="dt-column-order"></span>
+                        <th class="min-w-80px">
+                          <span class="dt-column-title" role="button">Forma de pago</span><span class="dt-column-order"></span>
                         </th>
 
                         <th class="min-w-80px">
@@ -101,34 +97,50 @@
                       <tr *ngFor="let S of SUCURSALES_LIST; let index = index">
                         <td>
                             <div class="d-flex justify-content-start align-items-center gap-2">
-                                <div class="d-md-none">
+                                <div class="d-md-none d-flex align-items-center">
                                     <app-buttons-group-list
                                     [index]="index"
                                     [activeDropdownIndex]="activeDropdownIndex"
                                     (dropdownToggle)="handleDropdownToggle($event)">
                                     <ul class="pt-3 px-3 d-flex flex-column gap-2">
                                       <li>
-                                        <button (click)="editSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="editSucursalCliente(S)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
-                                            <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                            <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                             Editar
                                           </div>
                                         </button>
                                       </li>
                                       <li>
-                                        <button (click)="deleteSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="deleteSucursalCliente(S)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
-                                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                            <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                             Eliminar
                                           </div>
                                         </button>
                                       </li>
                                       <li>
-                                        <button (click)="gestionarSucursal(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="gestionarSucursal(S)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
-                                            <i class="ki-duotone ki-user-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            <i class="ki-duotone ki-user-edit fs-2 text-warning"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                                             Gestionar
                                           </div>
+                                        </button>
+                                      </li>
+                                      <li>
+                                        <button (click)="comunicationClienteSucursal([S.celulares.length,S.celulares,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                          <div class="d-flex gap-2">
+                                            <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            Comunicarse
+                                          </div>  
+                                        </button>
+                                      </li>
+                                      <li>
+                                        <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
+                                            <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            Notificar
+                                          </div> 
                                         </button>
                                       </li>
                                     </ul>
@@ -166,36 +178,10 @@
                         </td>
 
                         <td>
-                            <div style="display: flex; flex-direction: column; align-items: flex-start; ">
-                              <div *ngIf="S.celulares.length > 0;  else no_celular">
-                                <div *ngFor="let celular of S.celulares" class="badge-light-success p-2 rounded" (click)="comunicationClienteSucursal([celular, S.nombre_comercial])">
-                                  <i class="fa-brands fa-whatsapp text-success"></i>
-                                  <span class="fs-7 fw-bold"> {{ celular }}</span>
-                                </div>
-                              </div>
-                              <ng-template #no_celular>
-                                <div class="badge-light-warning p-2 rounded">
-                                    <i class="fa-solid fa-exclamation-triangle text-warning"></i>
-                                    <span class="fs-7 fw-bold"> Sin celular</span>
-                                </div>
-                            </ng-template>
-                          </div>
-                        </td>
-
-                        <td>
-                            <div style="display: flex; flex-direction: column; align-items: flex-start; ">
-                              <div *ngIf="S.correos.length > 0;  else no_correo">
-                                <div *ngFor="let c of S.correos" class="badge-light-primary p-2 rounded">
-                                  <i class="fa-solid fa-envelope text-primary"></i>
-                                  <a [href]="'mailto:' + c" class="fs-7 fw-bold text-decoration-none text-primary"> {{ c }}</a>
-                                </div>
-                              </div>
-                              <ng-template #no_correo>
-                                <div class="badge-light-warning p-2 rounded">
-                                    <i class="fa-solid fa-exclamation-triangle text-warning"></i>
-                                    <span class="fs-7 fw-bold"> Sin Correo</span>
-                                </div>
-                            </ng-template>
+                          <div class="d-flex align-items-center">
+                            <div class="p-2 rounded" [ngClass]="getFormaPagoClasses(S.formaPago)">
+                              <span class="fw-bold mb-1 fs-6" [ngClass]="getFormaPagoClassesText(S.formaPago)">{{ getFormaPagoTexto(S.formaPago) }}</span>
+                            </div>
                           </div>
                         </td>
 
@@ -226,21 +212,43 @@
                         <td class="d-none d-md-table-cell acciones-container">
                           <ul class="pt-3 px-3 d-flex gap-2">
                             <li>
-                              <button (click)="editSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
-                                  <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                              <button (click)="editSucursalCliente(S)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                   Editar
+                                </div>
                               </button>
                             </li>
                             <li>
-                              <button (click)="deleteSucursalCliente(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
-                                  <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                              <button (click)="deleteSucursalCliente(S)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                   Eliminar
+                                </div>
                               </button>
                             </li>
                             <li>
-                              <button (click)="gestionarSucursal(S)" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
-                                  <i class="ki-duotone ki-user-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                              <button (click)="gestionarSucursal(S)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-user-edit fs-2 text-warning"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                                   Gestionar
+                                </div>
+                              </button>
+                            </li>
+                            <li>
+                              <button (click)="comunicationClienteSucursal([S.celulares.length,S.celulares,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                <div class="d-flex flex-column align-items-center gap-1"> 
+                                  <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                  Comunicarse
+                                </div>
+                              </button>
+                            </li>
+                            <li>
+                              <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">   
+                                  <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                  Notificar
+                                </div>
                               </button>
                             </li>
                           </ul>

@@ -6,6 +6,7 @@ import { CreateSucursalesComponent } from '../create-sucursales/create-sucursale
 import { EditSucursalesComponent } from '../edit-sucursales/edit-sucursales.component';
 import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
 import { GestionarSucursalesComponent } from '../gestionar-sucursales/gestionar-sucursales.component';
+import { ComunicationPersonEmailComponent } from 'src/app/components/comunication-person-email/comunication-person-email.component';
 
 @Component({
   selector: 'app-list-sucursales',
@@ -90,9 +91,21 @@ export class ListSucursalesComponent {
 
   comunicationClienteSucursal(DATOS:any){
     const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
+    console.log(DATOS)
     modalRef.componentInstance.NUMBER_SELECTED = {
-      phone: DATOS[0],  // Celular
-      persona: DATOS[1]    // Nombre
+      n_datos: DATOS[0],    // Nombre
+      valor: DATOS[1],  // Celular
+      persona: DATOS[2],    // Nombre
+    };
+  }
+
+  comunicationClienteSucursalEmail(DATOS:any){
+    const modalRef = this.modalService.open(ComunicationPersonEmailComponent,{centered:true, size: 'md'})
+    console.log(DATOS)
+    modalRef.componentInstance.EMAIL_SELECTED = {
+      n_datos: DATOS[0],    // Nombre
+      valor: DATOS[1],  // Celular
+      persona: DATOS[2],    // Nombre
     };
   }
 
@@ -119,9 +132,65 @@ export class ListSucursalesComponent {
     modalRef.componentInstance.ClienteGestionE.subscribe((r:any)=>{
         let INDEX = this.SUCURSALES_LIST.findIndex((b:any) => b.id == SUC_CL.id);
         if(INDEX != -1){
-          this.SUCURSALES_LIST[INDEX] = r
+          this.SUCURSALES_LIST[INDEX].linea_credito = r.linea_credito;  // Asigna el nuevo valor de linea_credito
+          this.SUCURSALES_LIST[INDEX].formaPago = r.formaPago; 
         }
     })
+  }
+
+  getFormaPagoTexto(formaPago: string): string {
+    switch (formaPago) {
+      case '1':
+        return 'Crédito';
+      case '2':
+        return 'Contado';
+      case '3':
+        return 'Crédito/Contado';
+      default:
+        return 'Desconocido'; // Por si acaso hay un valor que no esperas
+    }
+  }
+
+  getFormaPagoClasses(formaPago: string): string {
+    let classes = '';
+  
+    switch (formaPago) {
+      case '1':
+        classes = 'bg-success';  // Verde
+        break;
+      case '2':
+        classes = 'badge-light-warning';  // Amarillo
+        break;
+      case '3':
+        classes = 'badge-light-primary';  // Azul
+        break;
+      default:
+        classes = 'bg-secondary';  // Gris por defecto
+        break;
+    }
+  
+    return classes;  // Retorna un string con las clases
+  }
+
+  getFormaPagoClassesText(formaPago: string): string {
+    let classes = '';
+  
+    switch (formaPago) {
+      case '1':
+        classes = 'text-success';  // Verde
+        break;
+      case '2':
+        classes = 'text-decoration-none text-warning';  // Amarillo
+        break;
+      case '3':
+        classes = 'text-decoration-none text-primary';  // Azul
+        break;
+      default:
+        classes = 'text-secondary';  // Gris por defecto
+        break;
+    }
+  
+    return classes;  // Retorna un string con las clases
   }
 
   // Método que se ejecuta cuando un dropdown es activado o desactivado

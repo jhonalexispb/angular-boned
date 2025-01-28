@@ -15,6 +15,8 @@ export class GestionarSucursalesComponent {
   clienteGestionarSucursalForm: FormGroup;
   sweet:any = new SweetalertService
   T_FACTURACION:any[] = [];
+  diasIniciales: number | null = null; 
+  seccionCredito:boolean
 
   constructor(
     private fb: FormBuilder,
@@ -28,15 +30,54 @@ export class GestionarSucursalesComponent {
       formaPago: [null, [Validators.required]],
       dias: [null, [Validators.required]],
       modo_facturacion_id: [null, [Validators.required]],
-      linea_Credito: [this.CLIENTE_SUCURSAL_TO_SELECTED.linea_credito, [Validators.required]],
+      linea_credito: [this.CLIENTE_SUCURSAL_TO_SELECTED.linea_credito, [Validators.required, Validators.min(0)]],
     });
+
     this.clienteSucursalService.obtenerRecursosParaGestionar(this.CLIENTE_SUCURSAL_TO_SELECTED.id).subscribe((data: any) => {
       this.T_FACTURACION = data.modos_facturacion;
+
+      if(data.datos_sucursal.forma_pago == 2){
+        this.seccionCredito = false;
+      } else {
+        this.seccionCredito = true;
+      }
+
+      this.actualizarModoFacturacionConDias(data.datos_sucursal.modo_facturacion, data.datos_sucursal.dias);
+
+      this.diasIniciales = data.datos_sucursal.dias;
 
       this.clienteGestionarSucursalForm.get('formaPago')?.reset(data.datos_sucursal.forma_pago);
       this.clienteGestionarSucursalForm.get('dias')?.reset(data.datos_sucursal.dias);
       this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.reset(data.datos_sucursal.modo_facturacion);
+
+      this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.valueChanges.subscribe((estado: number) => {
+        this.actualizarDiasPorModoFacturacion(estado);
+      });
+
+      this.clienteGestionarSucursalForm.get('formaPago')?.valueChanges.subscribe((estado: number) => {
+        if (estado == 2) {
+          this.seccionCredito = false;
+        } else {
+          this.seccionCredito = true;
+        }
+      });
     });
+  }
+
+  actualizarModoFacturacionConDias(modoFacturacionId: number, dias: number): void {
+    const modoFacturacion = this.T_FACTURACION.find(modo => modo.id == modoFacturacionId);
+    if (modoFacturacion) {
+      modoFacturacion.dias = dias;  // Actualizamos la propiedad 'dias' del modo de facturación encontrado
+    }
+  }
+
+  actualizarDiasPorModoFacturacion(estado: number): void {
+    // Buscar el modo de facturación seleccionado en la lista T_FACTURACION
+    let modoSeleccionado = this.T_FACTURACION.find(modo => modo.id == estado);
+    // Si encontramos el modo, asignamos el valor de días, si no, restauramos el valor inicial
+    this.clienteGestionarSucursalForm.get('dias')?.setValue(modoSeleccionado.dias);
+  
+    this.clienteGestionarSucursalForm.get('dias')?.updateValueAndValidity();
   }
 
   onSubmit() {
@@ -46,19 +87,14 @@ export class GestionarSucursalesComponent {
 
     console.log(this.clienteGestionarSucursalForm.value)
     
-    this.clienteSucursalService.updateSucursalCliente(this.CLIENTE_SUCURSAL_TO_SELECTED.id,this.clienteGestionarSucursalForm.value).subscribe({
+    this.clienteSucursalService.gestionarSucursalCliente(this.CLIENTE_SUCURSAL_TO_SELECTED.id,this.clienteGestionarSucursalForm.value).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        if (resp.message == 409) {
-          this.sweet.alert('Atencion', resp.message_text);
-        } else {
-          this.ClienteGestionE.emit(resp.cliente_sucursal);
-          this.modal.close();
-          this.sweet.success(
-            '¡Éxito!',
-            'la sucursal se registró correctamente'
-          );
-        }
+        this.ClienteGestionE.emit(resp.sucursal_gestionada);
+        this.modal.close();
+        this.sweet.success(
+          '¡Éxito!',
+          'la sucursal se gestionó correctamente'
+        );
       },
     })
   }   

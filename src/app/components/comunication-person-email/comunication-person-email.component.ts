@@ -8,22 +8,16 @@ import { UserLocalStorageService } from 'src/app/modules/users/service/userLocal
   styleUrls: ['./comunication-person-email.component.scss']
 })
 export class ComunicationPersonEmailComponent {
-  @Input() EMAIL_SELECTED: { email: string, name: string, persona: string};
-  user:any = ''
-  nameRepresentante:string = ''
-  email:string = ''
-  persona:string = ''
-
-  constructor(
-    public modal: NgbActiveModal,
-    public getUserService: UserLocalStorageService,
-  ){
-  }
-
-  ngOnInit(): void {
-    this.user = this.getUserService.getUserName()  
-    this.nameRepresentante = this.EMAIL_SELECTED.name,
-    this.email = this.EMAIL_SELECTED.email
-    this.persona = this.EMAIL_SELECTED.persona
-  }
+  @Input() EMAIL_SELECTED: {n_datos: number, valor: string, persona: string};
+    user:any = ''
+  
+    constructor(
+      public modal: NgbActiveModal,
+      public getUserService: UserLocalStorageService,
+    ){
+    }
+  
+    ngOnInit(): void {
+      this.user = this.getUserService.getUserName()  
+    }
 }

@@ -15,6 +15,7 @@ import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/bu
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ComunicationPersonModule } from 'src/app/components/comunication-person/comunication-person.module';
 import { GestionarSucursalesComponent } from './gestionar-sucursales/gestionar-sucursales.component';
+import { ComunicationPersonEmailModule } from 'src/app/components/comunication-person-email/comunication-person-email.module';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { GestionarSucursalesComponent } from './gestionar-sucursales/gestionar-s
     PaginationModule,
     ButtonsGroupListModule,
     NgSelectModule,
-    ComunicationPersonModule
+    ComunicationPersonModule,
+    ComunicationPersonEmailModule
   ]
 })
 export class SucursalesModule { }

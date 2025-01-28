@@ -25,3 +25,9 @@ ul {
   .mi-custom-option small {
     display: block;    /* Asegura que cada elemento se muestre en una línea separada */
   }
+
+  app-buttons-group-list {
+    position: absolute;
+    z-index: 10;
+    left: 5px;
+  }

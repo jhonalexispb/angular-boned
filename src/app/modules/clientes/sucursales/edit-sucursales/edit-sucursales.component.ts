@@ -308,8 +308,6 @@ export class EditSucursalesComponent {
 
   onSubmit() {
     if (this.clienteSucursalForm.invalid) {
-      // Imprimir si el formulario es inválido
-      console.log('Formulario inválido:', this.clienteSucursalForm.invalid);
     
       // Iterar sobre los controles del formulario
       for (const controlName in this.clienteSucursalForm.controls) {
@@ -332,8 +330,6 @@ export class EditSucursalesComponent {
         formData.append(key, this.clienteSucursalForm.value[key]);
       }
     }
-
-    console.log(this.clienteSucursalForm.value)
     
     this.clienteSucursalService.updateSucursalCliente(this.CLIENTE_SUCURSAL_SELECTED.id,formData).subscribe({
       next: (resp: any) => {

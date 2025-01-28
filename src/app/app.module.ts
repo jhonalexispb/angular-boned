@@ -18,7 +18,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
 import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component';
-import { ComunicationPersonEmailComponent } from './components/comunication-person-email/comunication-person-email.component';
 // #fake-end#
 
 

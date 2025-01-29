@@ -7,8 +7,8 @@
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listCategoria()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar categoria" />
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listFabricante()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar fabricante" />
             </div>
             <!--end::Search-->
         </div>
@@ -17,8 +17,8 @@
             <!--begin::Toolbar-->
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
-                <button type="button" class="btn btn-primary" (click)="createCategoria()">
-                    Crear categoria
+                <button type="button" class="btn btn-primary" (click)="createFabricante()">
+                    Crear fabricante
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -36,19 +36,25 @@
                     style="width: 100%">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                            <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Nombre</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
+                            <th class="min-w-100px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
+                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                                <span class="dt-column-title" role="button">Pais</span><span
+                                    class="dt-column-order"></span>
+                            </th>
+
+                            <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
                                 colspan="1" aria-label="Email: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Estado</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
                                 colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Fecha de registro</span><span
                                     class="dt-column-order"></span>
@@ -61,37 +67,39 @@
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
-                        
-                            <tr *ngFor="let CAT of CATEGORIAS">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-50px me-5">
-                                            <img [src]="CAT.image" class="image" alt="img">
-                                        </div>
-                                        <div class="d-flex justify-content-start flex-column">
-                                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ CAT.name }}</span>
-                                        </div>
+                        <tr *ngFor="let F of FABRICANTES">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-50px me-5">
+                                        <img [src]="F.image" class="image" alt="img">
                                     </div>
-                                </td>
-                                
-                                <td>
-                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="CAT.state == 1">Activo</span>
-                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="CAT.state == 2">Inactivo</span>
-                                </td>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ F.nombre }}</span>
+                                    </div>
+                                </div>
+                            </td>
 
-                                <td>
-                                    {{ CAT.created_at }}
-                                </td>
-                                <td class="">
-                                    <a href="#" onclick="return false" (click)="editCategoria(CAT)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                    </a>
-                                    <a  href="#" onclick="return false" (click)="deleteCategoria(CAT)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        
+                            <td>
+                                {{ F.pais }}
+                            </td>
+                            
+                            <td>
+                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="F.status == 1">Activo</span>
+                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="F.status == 2">Inactivo</span>
+                            </td>
+
+                            <td>
+                                {{ F.created_at }}
+                            </td>
+                            <td class="">
+                                <a href="#" onclick="return false" (click)="editFabricante(F)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                </a>
+                                <a  href="#" onclick="return false" (click)="deleteFabricante(F)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                </a>
+                            </td>
+                        </tr>
                     </tbody>
                     <tfoot></tfoot>
                 </table>

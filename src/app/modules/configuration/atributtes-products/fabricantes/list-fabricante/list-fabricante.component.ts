@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { CreateCategoriasComponent } from '../../categorias/create-categorias/create-categorias.component';
-import { EditCategoriasComponent } from '../../categorias/edit-categorias/edit-categorias.component';
 import { FabricantesService } from '../service/fabricantes.service';
 import { CreateFabricanteComponent } from '../create-fabricante/create-fabricante.component';
+import { EditFabricanteComponent } from '../edit-fabricante/edit-fabricante.component';
 
 @Component({
   selector: 'app-list-fabricante',
@@ -44,38 +43,38 @@ export class ListFabricanteComponent {
 
   createFabricante(){
     const modalRef = this.modalService.open(CreateFabricanteComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.CategoriaC.subscribe((cat:any)=>{
-      this.FABRICANTES.unshift(cat); //integra el nuevo valor al inicio de la tabla
+    modalRef.componentInstance.FabricanteC.subscribe((f:any)=>{
+      this.FABRICANTES.unshift(f); //integra el nuevo valor al inicio de la tabla
     })
   }
 
-  editCategoria(CAT:any){
-    const modalRef = this.modalService.open(EditCategoriasComponent,{centered:true, size: 'md'})
+  editFabricante(F:any){
+    const modalRef = this.modalService.open(EditFabricanteComponent,{centered:true, size: 'md'})
 
-    modalRef.componentInstance.CATEGORIA_SELECTED = CAT;
+    modalRef.componentInstance.FABRICANTE_SELECTED = F;
 
     //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
-    modalRef.componentInstance.CategoriaE.subscribe((cat:any)=>{
-      const { categoria, isRestored } = cat; 
+    modalRef.componentInstance.FabricanteE.subscribe((f:any)=>{
+      const { fabricante, isRestored } = f; 
       if (isRestored) {
-        this.FABRICANTES.unshift(categoria);
+        this.FABRICANTES.unshift(fabricante);
       } else {
-        let INDEX = this.FABRICANTES.findIndex((b:any) => b.id == CAT.id);
+        let INDEX = this.FABRICANTES.findIndex((b:any) => b.id == F.id);
         if(INDEX != -1){
-          this.FABRICANTES[INDEX] = categoria
+          this.FABRICANTES[INDEX] = fabricante
         }
       }
     })
   }
 
-  deleteCategoria(CAT:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la categoria: ${CAT.name}?`).then((result:any) => {
+  deleteFabricante(F:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el fabricante: ${F.nombre}?`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.fabricantesService.deleteCategoria(CAT.id).subscribe({
+        this.fabricantesService.deleteFabricante(F.id).subscribe({
           next: (resp: any) => {
-            this.FABRICANTES = this.FABRICANTES.filter((sucurs:any) => sucurs.id !== CAT.id); // Eliminamos el rol de la lista
-            this.sweet.success('Eliminado', 'La categoria ha sido eliminada correctamente','/assets/animations/general/borrado_exitoso.json');
+            this.FABRICANTES = this.FABRICANTES.filter((sucurs:any) => sucurs.id !== F.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'El fabricante ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
           }
         })
       }

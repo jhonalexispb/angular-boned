@@ -1,1 +1,84 @@
-<p>create-fabricante works!</p>
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Crear fabricante</h2>
+
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-7">
+        <form [formGroup]="fabricanteForm" (ngSubmit)="onSubmit()">
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2">Nombre del fabricante</label>
+              <input
+                id="nombre"
+                type="text"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="nombre"
+                placeholder="Escribe el nombre"
+                autocomplete="off"
+              />
+              <div *ngIf="fabricanteForm.get('ruc')?.touched && fabricanteForm.get('ruc')?.invalid" class="text-danger">
+                <span *ngIf="fabricanteForm.get('ruc')?.errors?.['required']">El nombre es obligatorio.</span>
+              </div>
+            </div>
+        
+            <div class="fv-row mb-7">
+              <label class="fw-bold fs-6 mb-2" for="pais">Pais</label>
+              <ng-select 
+                id="pais"
+                [items]="PAISES"
+                bindLabel="nombre"
+                bindValue="nombre"
+                formControlName="pais"
+                placeholder="Selecciona un pais"
+                [searchable]="true"
+                [clearable]="true" 
+                [virtualScroll]="true"  
+                [loading]="loading"  
+                [multiple]="false"
+                [loadingText]="'Cargando...'"
+                [addTag]="true">
+              </ng-select>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="fw-bold fs-6 mb-2">Logotipo del fabricante</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile"  accept=".jpeg, .bmp, .jpg, .png, .gif, .webp"  (change)="processFile($event)">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <div *ngIf="imagen_previzualizade">
+                    <img [src]="imagen_previzualizade" style="width: 100%;" alt="">
+                </div>
+            </div>
+            
+            <div class="text-center pt-15">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="fabricanteForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->
+
+

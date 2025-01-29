@@ -11,6 +11,7 @@ import { FabricantesComponent } from './fabricantes.component';
 import { ListFabricanteComponent } from './list-fabricante/list-fabricante.component';
 import { EditFabricanteComponent } from './edit-fabricante/edit-fabricante.component';
 import { CreateFabricanteComponent } from './create-fabricante/create-fabricante.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { CreateFabricanteComponent } from './create-fabricante/create-fabricante
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule
+    PaginationModule,
+    NgSelectModule,
   ]
 })
 export class FabricantesModule { }

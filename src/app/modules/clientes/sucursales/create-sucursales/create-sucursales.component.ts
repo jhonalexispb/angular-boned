@@ -355,8 +355,6 @@ export class CreateSucursalesComponent implements OnInit {
           formData.append(key, this.clienteSucursalForm.value[key]);
         }
       }
-
-      console.log(formData)
       
       this.clienteSucursalService.registerSucursalCliente(formData).subscribe({
         next: (resp: any) => {

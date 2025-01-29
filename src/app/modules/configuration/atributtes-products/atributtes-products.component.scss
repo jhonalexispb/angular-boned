@@ -1,0 +1,42 @@
+.nav-item{
+    padding: 12px 20px; /* Aumenta el padding para que los enlaces sean más grandes */
+    font-size: 1.1rem;   /* Aumenta el tamaño de la fuente */
+    font-weight: 600;    /* Hace el texto más grueso */
+    
+    color: #007bff; /* Texto azul */
+    width: 100%;
+    display: block;
+    /* Borde difuso y semi-transparente */
+    border: 1px solid transparent; /* Borde transparente */
+   
+    border-radius: 4px;
+}
+
+.nav-item.active {
+    background-color: #007bff;  /* Cambia el color de fondo cuando está activo */
+    color: white;                /* Asegura que el texto sea blanco cuando está activo */
+}
+
+.nav-item:hover .nav-link {
+    background-color: #007bff; /* Cambio de fondo en hover */
+    color: white;             /* Cambio de color de texto en hover */
+}
+
+.nav-item-peque{
+    padding: 5px; 
+    font-size: 1.1rem;   /* Aumenta el tamaño de la fuente */
+    font-weight: 600;    /* Hace el texto más grueso */
+    
+    color: #007bff; /* Texto azul */
+    width: 100%;
+    display: block;
+    /* Borde difuso y semi-transparente */
+    border: 1px solid transparent; /* Borde transparente */
+   
+    border-radius: 4px;
+}
+
+.nav-item-peque.active {
+    background-color: #007bff;  /* Cambia el color de fondo cuando está activo */
+    color: white;                /* Asegura que el texto sea blanco cuando está activo */
+}

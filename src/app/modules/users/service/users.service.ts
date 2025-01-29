@@ -26,7 +26,7 @@ export class UserService {
   }
 
   listUsers(page = 1, search:string = ''){
-    this.loadingService.showLoading('Listando usuarios','/assets/animations/general/pantalla_de_carga.json')
+    this.loadingService.showLoading('Listando usuarios')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/users?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(

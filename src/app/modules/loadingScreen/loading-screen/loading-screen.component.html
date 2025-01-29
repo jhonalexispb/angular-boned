@@ -1,7 +1,14 @@
 <div *ngIf="isLoading$ | async" class="loading-overlay">
-    <div class="loading-content">
-      <div #lottieContainer style="width: 200px; height: 200px;"></div>
-      <!-- <span class="spinner-border text-white" role="status"></span> -->
-      <p class="loading-text">{{ texto$ | async }}</p>
-    </div>
+  <div class="loading-content">
+    <div #lottieContainer style="width: 200px; height: 200px;"></div>
+    <p class="loading-text">{{ texto$ | async }}</p>
   </div>
+</div>
+
+<!-- <div *ngIf="isLoading$ | async" class="loading-overlay">
+  <div class="loading-content">
+    <div *ngIf="animationPath" #lottieContainer style="width: 200px; height: 200px;"></div>
+    <p class="loading-text">{{ texto$ | async }}</p>
+  </div>
+</div> -->
+

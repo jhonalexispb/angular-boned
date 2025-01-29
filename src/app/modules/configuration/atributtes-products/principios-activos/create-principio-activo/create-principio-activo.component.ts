@@ -25,8 +25,10 @@ export class CreatePrincipioActivoComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.principioActivoService.obtenerRecursos().subscribe((data: any) => {
       this.PRINCIPIOS_ACTIVOS = data.nombres_principios_activos;
+      this.loading = false;
     });
   }
 

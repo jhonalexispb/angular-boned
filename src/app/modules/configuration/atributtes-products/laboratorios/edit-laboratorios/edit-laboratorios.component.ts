@@ -37,6 +37,7 @@ export class EditLaboratoriosComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.name = this.LABORATORIO_SELECTED.name,
     this.color = this.LABORATORIO_SELECTED.color,
     this.margen_minimo = this.LABORATORIO_SELECTED.margen_minimo,
@@ -45,6 +46,7 @@ export class EditLaboratoriosComponent {
     this.imagen_previzualizade = this.LABORATORIO_SELECTED.image,
     this.laboratorioService.obtenerRecursos().subscribe((data: any) => {
       this.PROVEEDORES = data.proveedores;
+      this.loading = false;
     });
   }
 

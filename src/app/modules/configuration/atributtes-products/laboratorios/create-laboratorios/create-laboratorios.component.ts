@@ -33,8 +33,10 @@ export class CreateLaboratoriosComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.laboratorioService.obtenerRecursos().subscribe((data: any) => {
       this.PROVEEDORES = data.proveedores;
+      this.loading = false;
     });
   }
 

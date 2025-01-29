@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,11 +11,11 @@ import { FabricantesService } from '../service/fabricantes.service';
 })
 export class CreateFabricanteComponent {
   @Output() FabricanteC: EventEmitter<any> = new EventEmitter();
+  PAISES:any[] = [];
   fabricanteForm: FormGroup;
     sweet:any = new SweetalertService
     imagen_previzualizade:any;
     file_name:any;
-    PAISES:any[] = [];
     loading: boolean = false;
   
     constructor(
@@ -26,6 +26,7 @@ export class CreateFabricanteComponent {
     ) {}
   
     ngOnInit(): void {
+      this.loading = true;
       this.fabricanteForm = this.fb.group({
         nombre: ['', [Validators.required]],
         pais: [null],
@@ -34,6 +35,7 @@ export class CreateFabricanteComponent {
 
       this.fabricanteService.obtenerRecursos().subscribe((data: any) => {
         this.PAISES = data.nombres_paises;
+        this.loading = false;
       });
     }
   

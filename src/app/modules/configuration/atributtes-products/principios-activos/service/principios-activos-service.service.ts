@@ -74,7 +74,6 @@ export class PrincipiosActivosServiceService {
 
   //solicitamos los nombres de los principios activos
   obtenerRecursos(){
-    this.loadingService.showLoading('Solicitando recursos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/principio_activo/recursos/";
     return this.http.get(URL,{headers: headers}).pipe(

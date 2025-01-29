@@ -27,11 +27,13 @@ export class EditPrincipioActivoComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.principio_activo = this.PRINCIPIO_ACTIVO_SELECTED.name,
     this.concentracion = this.PRINCIPIO_ACTIVO_SELECTED.concentracion,
     this.state = this.PRINCIPIO_ACTIVO_SELECTED.state,
     this.principioActivoService.obtenerRecursos().subscribe((data: any) => {
       this.PRINCIPIOS_ACTIVOS = data.nombres_principios_activos;
+      this.loading = false;
     });
   }
 

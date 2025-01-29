@@ -27,8 +27,10 @@ export class EditFabricanteComponent {
   ) {}
 
   ngOnInit(): void {
+    this.loading = true;
     this.fabricanteService.obtenerRecursos().subscribe((data: any) => {
       this.PAISES = data.nombres_paises;
+      this.loading = false;
     });
 
     this.fabricanteForm = this.fb.group({

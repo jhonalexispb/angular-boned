@@ -84,12 +84,11 @@ export class FabricantesService {
 
   //solicitamos los nombres de paises existentes
   obtenerRecursos(){
-    this.loadingService.showLoading('Solicitando recursos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/fabricante_productos/recursos/";
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
+      finalize(()=>this.loadingService.hideLoading()),
     )
   }
 }

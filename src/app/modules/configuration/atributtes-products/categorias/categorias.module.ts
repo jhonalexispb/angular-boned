@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule
+    PaginationModule,
+    ButtonsGroupListModule,
   ]
 })
 export class CategoriasModule { }

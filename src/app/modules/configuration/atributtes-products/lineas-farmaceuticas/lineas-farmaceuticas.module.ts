@@ -11,6 +11,7 @@ import { LineasFarmaceuticasComponent } from './lineas-farmaceuticas.component';
 import { ListLineasFarmaceuticasComponent } from './list-lineas-farmaceuticas/list-lineas-farmaceuticas.component';
 import { EditLineasFarmaceuticasComponent } from './edit-lineas-farmaceuticas/edit-lineas-farmaceuticas.component';
 import { CreateLineasFarmaceuticasComponent } from './create-lineas-farmaceuticas/create-lineas-farmaceuticas.component';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { CreateLineasFarmaceuticasComponent } from './create-lineas-farmaceutica
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule
+    PaginationModule,
+    ButtonsGroupListModule,
   ]
 })
 export class LineasFarmaceuticasModule { }

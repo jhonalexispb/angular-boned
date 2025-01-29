@@ -12,6 +12,7 @@ import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     InlineSVGModule,
     NgbModalModule,
     NgSelectModule,
-    PaginationModule 
+    PaginationModule,
+    ButtonsGroupListModule 
   ]
 })
 export class PrincipiosActivosModule { }

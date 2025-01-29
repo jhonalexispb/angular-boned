@@ -12,6 +12,7 @@ import { ListFabricanteComponent } from './list-fabricante/list-fabricante.compo
 import { EditFabricanteComponent } from './edit-fabricante/edit-fabricante.component';
 import { CreateFabricanteComponent } from './create-fabricante/create-fabricante.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NgbModalModule,
     PaginationModule,
     NgSelectModule,
+    ButtonsGroupListModule,
   ]
 })
 export class FabricantesModule { }

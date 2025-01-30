@@ -11,6 +11,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataTablesModule } from 'angular-datatables';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
+import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 
 @NgModule({
@@ -32,6 +36,10 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     NgbModalModule,
     NgbPaginationModule,
     DataTablesModule,
+    NgSelectModule,
+    ButtonsGroupListModule,
+    PaginationModule,
+    DropzoneModule
   ]
 })
 export class ProductsModule { }

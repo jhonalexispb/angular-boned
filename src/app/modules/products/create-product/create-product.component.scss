@@ -1,0 +1,28 @@
+.image-input-placeholder {
+    background-image: url('/assets/media/svg/files/blank-image.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 200px;
+    width: 100%;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  [data-bs-theme="dark"] .image-input-placeholder {
+    background-image: url('/assets/media/svg/files/blank-image-dark.svg');
+  }
+  
+  .image-input-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }

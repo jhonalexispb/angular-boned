@@ -1,16 +1,9 @@
 <div class="d-flex flex-column flex-column-fluid">
-  <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-    <div
-      id="kt_app_toolbar_container"
-      class="app-container container-xxl d-flex flex-stack"
-    >
-      <div
-        class="page-title d-flex flex-column justify-content-center flex-wrap me-3"
-      >
-        <h1
-          class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0"
-        >
-          Register Product
+  <div id="kt_app_toolbar" class="app-toolbar pt-8">
+    <div class="app-container container-xxl d-flex flex-stack">
+      <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+        <h1 class="page-heading d-flex text-gray-900 fw-bold flex-column justify-content-center my-0 fs-1">
+          Crear producto
         </h1>
       </div>
     </div>
@@ -23,18 +16,14 @@
       <form
         id="kt_ecommerce_add_product_form"
         class="form d-flex flex-column flex-lg-row"
-        data-kt-redirect="apps/ecommerce/catalog/products.html"
       >
-        <div
-          class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10"
-        >
-          <div class="card card-flush py-4">
+        <div class="">
+          <!-- <div class="card card-flush py-4">
             <div class="card-header">
               <div class="card-title">
                 <h2>Imagen principal</h2>
               </div>
             </div>
-
             <div class="card-body text-center pt-0">
               <style>
                 .image-input-placeholder {
@@ -44,7 +33,6 @@
                   background-image: url("assets/media/svg/files/blank-image-dark.svg");
                 }
               </style>
-
               <div class="form-group">
                 <label for="mainImage">Imagen Principal</label>
                 <dropzone
@@ -52,14 +40,9 @@
                   [message]="'Arrastra la imagen principal aquí'"
                   (success)="onMainImageUploadSuccess($event)"
                   (error)="onMainImageUploadError($event)"
+                  class="custom-dropzone"
                 ></dropzone>
-                <!-- <div *ngIf="mainImage">
-                                  <h4>Imagen Principal:</h4>
-                                  <img [src]="mainImage" alt="Imagen Principal" width="200" />
-                                </div> -->
               </div>
-
-              <!-- Imágenes secundarias -->
               <div class="form-group">
                 <label for="secondaryImages">Imágenes Secundarias</label>
                 <dropzone
@@ -68,66 +51,11 @@
                   (success)="onSecondaryImagesUploadSuccess($event)"
                   (error)="onSecondaryImagesUploadError($event)"
                 ></dropzone>
-                <!-- <div *ngFor="let image of secondaryImages; let i = index">
-                                  <h4>Imagen Secundaria {{ i + 1 }}:</h4>
-                                  <img [src]="image" alt="Imagen Secundaria" width="100" />
-                                </div> -->
-              </div>
-
-              <div
-                class="image-input image-input-empty image-input-outline image-input-placeholder mb-3"
-                data-kt-image-input="true"
-              >
-                <div class="image-input-wrapper w-150px h-150px"></div>
-
-                <label
-                  class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                  data-kt-image-input-action="change"
-                  data-bs-toggle="tooltip"
-                  title="Change avatar"
-                >
-                  <i class="ki-duotone ki-pencil fs-7">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-
-                  <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
-                  <input type="hidden" name="avatar_remove" />
-                </label>
-
-                <span
-                  class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                  data-kt-image-input-action="cancel"
-                  data-bs-toggle="tooltip"
-                  title="Cancel avatar"
-                >
-                  <i class="ki-duotone ki-cross fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </span>
-
-                <span
-                  class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                  data-kt-image-input-action="remove"
-                  data-bs-toggle="tooltip"
-                  title="Remove avatar"
-                >
-                  <i class="ki-duotone ki-cross fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </span>
-              </div>
-
-              <div class="text-muted fs-7">
-                Set the product thumbnail image. Only *.png, *.jpg and *.jpeg
-                image files are accepted
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="card card-flush py-4">
+          <!-- <div class="card card-flush py-4">
             <div class="card-header">
               <div class="card-title">
                 <h2>Estado</h2>
@@ -156,41 +84,7 @@
 
               <div class="text-muted fs-7">Habilita o deshabilita la venta del producto.</div>
             </div>
-          </div>
-
-          <div class="card card-flush py-4">
-            <div class="card-header">
-              <div class="card-title">
-                <h2>Categorias</h2>
-              </div>
-            </div>
-
-            <div class="card-body pt-0">
-              <label
-                for="kt_ecommerce_add_product_store_template"
-                class="form-label"
-                >Select a categorie</label
-              >
-
-              <ng-select 
-                name="proveedores"
-                [items]="CATEGORIAS"
-                required
-                bindLabel="name"
-                bindValue="id"
-                placeholder="Selecciona uno o mas proveedores"
-                [searchable]="true"
-                [clearable]="true" 
-                [virtualScroll]="true"  
-                [loading]="loading"  
-                [loadingText]="'Cargando...'" 
-                [multiple]="true">
-            </ng-select>
-              <div class="text-muted fs-7">
-                Añade actegorias para su uso en el catalogo
-              </div>
-            </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
@@ -230,46 +124,328 @@
               role="tab-panel"
             >
               <div class="d-flex flex-column gap-7 gap-lg-10">
-                <div class="card card-flush py-4">
-                  <div class="card-header">
-                    <div class="card-title">
-                      <h2>General</h2>
-                    </div>
-                  </div>
-
-                  <div class="card-body pt-0">
-                    <div class="mb-10 fv-row">
-                      <label class="required form-label">Nombre</label>
-
-                      <input
-                        type="text"
-                        name="product_name"
-                        class="form-control mb-2"
-                        placeholder="Product name"
-                        value=""
-                      />
-
-                      <div class="text-muted fs-7">
-                        Coloca solo el nombre por ejemplo "FARMCOXYL CL"
+                
+                  <div class="card card-flush">
+                    <div class="card-header">
+                      <div class="card-title">
+                        <h2>General</h2>
                       </div>
                     </div>
+                
+                    <div class="card-body pt-0">
+                      <div class="row g-5">
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="required form-label">Tipo</label>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="">Selecciona una opcion</option>
+                              <option value="1">Generico</option>
+                              <option value="2">Comercial</option>
+                            </select>
+                            <div class="text-muted fs-7">
+                              El producto es generico si su nombre es igual que su principio activo
+                            </div>
+                          </div>
+                        </div>
+                
+                        <!-- Laboratorio -->
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="form-label">Codigo de barra</label>
+                            <input
+                              type="text"
+                              name="product_name"
+                              class="form-control"
+                              placeholder="Escribe el nombre del producto"
+                            />
+                            <div class="text-muted fs-7">
+                              Procura usar la pistolita para capturar el valor
+                            </div>
+                          </div>
+                        </div>
+                
+                        <!-- Descripción -->
+                        <div class="col-md-4"> <!-- Descripción a una sola columna -->
+                          <div class="mb-3">
+                            <label class="form-label">Unidad</label>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="">Selecciona una opcion</option>
+                              <option value="1">NIU</option>
+                              <option value="2">Comercial</option>
+                            </select>
+                            <div class="text-muted fs-7">
+                              Usaremos NIU por defecto
+                            </div>
+                          </div>
+                        </div>
 
-                    <div>
-                      <label class="form-label">Descripcion</label>
+                        <div class="col-md-4">
+                          <label class="form-label">¿Sale en boleta?</label>
+                          <div class="form-check form-check-custom form-check-solid mb-3">
+                            <input class="form-check-input" type="checkbox" value=""/>
+                            <label class="form-check-label">Si</label>
+                          </div>
+  
+                          <div class="text-muted fs-7">
+                            Importante para determinar el documento de venta
+                          </div>
+                        </div>
 
-                      <textarea
-                        class="form-control form-control-solid"
-                        rows="3"
-                        name="target_details"
-                        placeholder="Type Target Details"
-                      ></textarea>
+                      </div>
+                    </div>
+                  
+                </div>
 
-                      <div class="text-muted fs-7">
-                        Aca coloca 
+                <div class="d-flex flex-column gap-7 gap-lg-10">
+                  <div class="card card-flush pt-10">
+                    <div class="card-header">
+                      <div class="w-100">
+                        <div class="card-title m-0">
+                          <div class="w-100 d-md-flex justify-content-between">
+                            <h2>Informacion</h2>
+                            <div class="d-md-flex align-items-center gap-2 mt-5 mt-md-0">
+                              <label class="form-label fs-4 m-0">SKU:</label>
+                              <input
+                                type="text"
+                                name="product_name"
+                                class="form-control w-100"
+                                placeholder="Codigo del producto"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <div class="card-body pt-0">
+                      <div class="row g-5"> 
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="required form-label mb-4 mt-2">Nombre</label>
+                            <input
+                              type="text"
+                              name="product_name"
+                              class="form-control"
+                              placeholder="Escribe el nombre del producto"
+                            />
+                            <div class="text-muted fs-7">
+                              Coloca solo el nombre, por ejemplo "FARMOXYL CL"
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4"> 
+                          <div class="mb-3">
+                            <label class="required form-label mb-4 mt-2">Caracteristicas</label>
+                            <input
+                            type="text"
+                            name="product_name"
+                            class="form-control"
+                            placeholder="Escribe las caracteristicas del producto"
+                            />
+                            <div class="text-muted fs-7">
+                              Ejemplo: "CJA X 100 TAB REC"
+                            </div>
+                          </div>
+                        </div>
+              
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="required form-label m-0">Laboratorio </label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="0">Tax Free</option>
+                              <option value="1">Taxable Goods</option>
+                              <option value="2">Downloadable Product</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="required form-label m-0">Principios Activos</label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="0">Tax Free</option>
+                              <option value="1">Taxable Goods</option>
+                              <option value="2">Downloadable Product</option>
+                            </select>
+                            <div class="text-muted fs-7">
+                              Revisa en la parte trasera de la caja
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="required form-label m-0">Linea Farmaceutica</label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="0">Tax Free</option>
+                              <option value="1">Taxable Goods</option>
+                              <option value="2">Downloadable Product</option>
+                            </select>
+                            <div class="text-muted fs-7">
+                              Consultalo en google
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="required form-label m-0">Fabricante</label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <select class="form-select">
+                              <option></option>
+                              <option value="0">Tax Free</option>
+                              <option value="1">Taxable Goods</option>
+                              <option value="2">Downloadable Product</option>
+                            </select>
+                            <div class="text-muted fs-7">
+                              Revisa en la parte trasera de la caja
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="required form-label m-0">Categorias</label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <ng-select 
+                              name="proveedores"
+                              [items]="CATEGORIAS"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona uno o mas proveedores"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [loadingText]="'Cargando...'" 
+                              [multiple]="true">
+                          </ng-select>
+                            <div class="text-muted fs-7">
+                              Revisa en la parte trasera de la caja
+                            </div>
+                          </div>
+                        </div>
+                
+      
+                        <div class="col-md-12"> 
+                          <div class="mb-3">
+                            <label class="form-label">Descripcion</label>
+                            <textarea
+                              class="form-control form-control-solid"
+                              rows="3"
+                              name="target_details"
+                              placeholder="Escribe la descripción del producto"
+                            ></textarea>
+                            <div class="text-muted fs-7">
+                              Podrias buscar informacion en google y pegarlo aqui
+                            </div>
+                          </div>
+                        </div>
+                
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <div class="card card-flush">
+                  <div class="card-header">
+                    <div class="card-title">
+                      <h2>Seccion DIGEMID</h2>
+                    </div>
+                  </div>
+
+                  <div class="card-body pt-0">
+                    <div class="row g-5">
+                      <div class="col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <label class="required form-label m-0">Registro Sanitario</label>
+                          <button type="button" class="btn btn-primary px-4 py-2">
+                            <i class="fa fa-search"></i>
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          name="product_name"
+                          class="form-control"
+                          placeholder="Escribe el registro sanitario"
+                        />
+                        <div class="text-muted fs-7">
+                          Revisa bien la caja
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="mb-3">
+                          <label class="form-label mb-4 mt-2">Codigo Digemid</label>
+                          <input
+                            type="text"
+                            name="product_name"
+                            class="form-control"
+                            placeholder="Escribe el registro sanitario"
+                          />
+                          <div class="text-muted fs-7">
+                            Revisa bien la caja
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="mb-3">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="required form-label m-0">Condiciones de almacenamiento</label>
+                            <button type="button" class="btn btn-primary px-4 py-2">
+                                +
+                            </button>
+                          </div>
+                          <select class="form-select">
+                            <option></option>
+                            <option value="0">Tax Free</option>
+                            <option value="1">Taxable Goods</option>
+                            <option value="2">Downloadable Product</option>
+                          </select>
+                          <div class="text-muted fs-7">
+                            Revisa en la parte trasera de la caja
+                          </div>
+                        </div>
+                      </div>
+                    </div>                    
+                  </div>
+                </div>
+
+                
+
+                
 
                 <div class="card card-flush py-4">
                   <div class="card-header">
@@ -281,7 +457,7 @@
                   <div class="card-body pt-0">
                     <div class="mb-10 row fv-row">
                       <div class="col-4">
-                        <label class="required form-label">Base Price</label>
+                        <label class="required form-label">Precio de venta</label>
 
                         <input
                           type="number"
@@ -292,142 +468,8 @@
                         />
 
                         <div class="text-muted fs-7">
-                          Set the product price.
+                          Recuerda que el precio es en base al laboratorio
                         </div>
-                      </div>
-                      <div class="col-4">
-                        <label class="required form-label"
-                          >Disponibilidad</label
-                        >
-                        <select class="form-select mb-2">
-                          <option value="1" selected="selected">
-                            Vender los productos sin stock
-                          </option>
-                          <option value="2">
-                            No vender los productos sin stock
-                          </option>
-                          <option value="3">
-                            Proyectar con los contratos que se tenga
-                          </option>
-                        </select>
-                      </div>
-                      <div class="col-4">
-                        <label class="required form-label"
-                          >Tiempo de abastecimiento</label
-                        >
-                        <input
-                          type="number"
-                          name="tiempo_de_abastecimiento"
-                          class="form-control mb-2"
-                          placeholder="Product price"
-                          value=""
-                        />
-                      </div>
-                    </div>
-
-                    <div class="fv-row mb-10">
-                      <label class="fs-6 fw-semibold mb-2"
-                        >Discount Type
-                        <span
-                          class="ms-1"
-                          data-bs-toggle="tooltip"
-                          title="Select a discount type that will be applied to this product"
-                        >
-                          <i
-                            class="ki-duotone ki-information-5 text-gray-500 fs-6"
-                          >
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                          </i> </span
-                      ></label>
-
-                      <div
-                        class="row row-cols-1 row-cols-md-3 row-cols-lg-1 row-cols-xl-3 g-9"
-                        data-kt-buttons="true"
-                        data-kt-buttons-target="[data-kt-button='true']"
-                      >
-                        <div class="col">
-                          <label
-                            class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex text-start p-6"
-                            [ngClass]="{ active: is_discount == 1 }"
-                            data-kt-button="true"
-                          >
-                            <span
-                              class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"
-                            >
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="discount_option"
-                                (click)="selectedDiscount(1)"
-                                checked="checked"
-                              />
-                            </span>
-
-                            <span class="ms-5">
-                              <span class="fs-4 fw-bold text-gray-800 d-block"
-                                >No Discount</span
-                              >
-                            </span>
-                          </label>
-                        </div>
-
-                        <div class="col">
-                          <label
-                            class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex text-start p-6"
-                            [ngClass]="{ active: is_discount == 2 }"
-                            data-kt-button="true"
-                          >
-                            <span
-                              class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"
-                            >
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="discount_option"
-                                (click)="selectedDiscount(2)"
-                              />
-                            </span>
-
-                            <span class="ms-5">
-                              <span class="fs-4 fw-bold text-gray-800 d-block"
-                                >Percentage %</span
-                              >
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="mb-10 row fv-row"
-                      *ngIf="is_discount == 2"
-                      id="kt_ecommerce_add_product_discount_fixed"
-                    >
-                      <div class="col-4">
-                        <label class="form-label">Descuento Minimo: </label>
-
-                        <input
-                          type="number"
-                          name="dicsounted_price"
-                          class="form-control mb-2"
-                          placeholder="Discounted price"
-                        />
-
-                        <div class="text-muted fs-7"></div>
-                      </div>
-                      <div class="col-4">
-                        <label class="form-label">Descuento Maximo:</label>
-
-                        <input
-                          type="number"
-                          name="dicsounted_price"
-                          class="form-control mb-2"
-                          placeholder="Discounted price"
-                        />
-
-                        <div class="text-muted fs-7"></div>
                       </div>
                     </div>
 
@@ -478,7 +520,7 @@
                 <div class="card card-flush py-4">
                   <div class="card-header">
                     <div class="card-title">
-                      <h2>Inventory</h2>
+                      <h2>Inventario</h2>
                     </div>
                   </div>
 
@@ -853,7 +895,7 @@
               href="apps/ecommerce/catalog/products.html"
               id="kt_ecommerce_add_product_cancel"
               class="btn btn-light me-5"
-              >Cancel</a
+              >Cancelar</a
             >
 
             <button
@@ -861,7 +903,7 @@
               id="kt_ecommerce_add_product_submit"
               class="btn btn-primary"
             >
-              <span class="indicator-label">Save Changes</span>
+              <span class="indicator-label">Registrar</span>
               <span class="indicator-progress"
                 >Please wait...
                 <span

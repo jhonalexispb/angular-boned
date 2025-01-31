@@ -1,28 +1,32 @@
-.image-input-placeholder {
-    background-image: url('/assets/media/svg/files/blank-image.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 200px;
-    width: 100%;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ccc;
-    font-size: 14px;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  [data-bs-theme="dark"] .image-input-placeholder {
-    background-image: url('/assets/media/svg/files/blank-image-dark.svg');
-  }
-  
-  .image-input-placeholder img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 8px;
-  }
+.custom-dropzone {
+  border: 2px dashed #4CAF50; /* Cambio del borde a un color más atractivo */
+  background-color: #f9f9f9;  /* Fondo suave */
+  padding: 30px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-dropzone:hover {
+  background-color: #e1f7e1; /* Fondo más claro al pasar el ratón */
+  border-color: #45a049; /* Borde más oscuro al hacer hover */
+}
+
+.custom-dropzone p {
+  color: #4CAF50; /* Color del texto */
+  font-weight: 500;
+}
+
+.custom-dropzone .dz-preview {
+  display: none; /* Ocultar el preview por defecto si no lo quieres mostrar */
+}
+
+.custom-dropzone {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.custom-dropzone.dz-started {
+  background-color: #f1f1f1; /* Color suave cuando el archivo se arrastra */
+}

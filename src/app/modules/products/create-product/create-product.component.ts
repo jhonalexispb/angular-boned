@@ -1,6 +1,11 @@
+import { CreateCategoriasComponent } from './../../configuration/atributtes-products/categorias/create-categorias/create-categorias.component';
+import { CreateFabricanteComponent } from './../../configuration/atributtes-products/fabricantes/create-fabricante/create-fabricante.component';
+import { CreateLineasFarmaceuticasComponent } from './../../configuration/atributtes-products/lineas-farmaceuticas/create-lineas-farmaceuticas/create-lineas-farmaceuticas.component';
+import { CreatePrincipioActivoComponent } from './../../configuration/atributtes-products/principios-activos/create-principio-activo/create-principio-activo.component';
+import { CreateLaboratoriosComponent } from './../../configuration/atributtes-products/laboratorios/create-laboratorios/create-laboratorios.component';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../service/product.service';
 
 @Component({
@@ -14,7 +19,14 @@ export class CreateProductComponent {
   mainImage: string | ArrayBuffer | null = null;
   secondaryImages: string[] = [];
 
+  LABORATORIOS:[]
+  PRINCIPIOS_ACTIVOS:[]
+  LINEAS_FARMACEUTICAS:[]
+  FABRICANTES:[]
   CATEGORIAS:[]
+  CONDICIONES_ALMACENAMIENTO:[]
+  UNIDADES:[]
+
   loading:boolean
 
   mainImageConfig = {
@@ -35,13 +47,26 @@ export class CreateProductComponent {
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
+    public modalService: NgbModal,
     //llamamos al servicio
-    public clienteSucursalService: ProductService
+    public productService: ProductService
   ) {}
 
   ngOnInit(): void {
+    this.loading = true
+    this.productService.obtenerRecursos().subscribe((resp: any) => {
+        this.LABORATORIOS = resp.laboratorios;
+        this.PRINCIPIOS_ACTIVOS = resp.principios_activos;
+        this.LINEAS_FARMACEUTICAS = resp.lineas_farmaceuticas;
+        this.FABRICANTES = resp.fabricantes;
+        this.CATEGORIAS = resp.categorias;
+        this.CONDICIONES_ALMACENAMIENTO = resp.condiciones_almacenamiento;
+        this.UNIDADES = resp.unidades;
+        this.loading = false
+      })
     this.productForm = this.fb.group({
       productName: [''],
+      laboratorio:[null]
     });
   }
 
@@ -89,5 +114,42 @@ export class CreateProductComponent {
 
   selectedTab(a:number){
     this.tab_selected = a
+  }
+
+
+  createLaboratorio(){
+    const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.LaboratorioC.subscribe((r:any)=>{
+      this.LABORATORIOS = [lab, ...this.LABORATORIOS];
+      this.laboratorio = [lab.id, ...this.laboratorio];
+    })
+  }
+
+  createPrincipioActivo(){
+    const modalRef = this.modalService.open(CreatePrincipioActivoComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PrincipioActivoC.subscribe((r:any)=>{
+      /* this.PRODUCT_LIST.unshift(r);  */
+    })
+  }
+
+  createLineaFarmaceutica(){
+    const modalRef = this.modalService.open(CreateLineasFarmaceuticasComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.LineaFarmaceuticaC.subscribe((r:any)=>{
+      /* this.PRODUCT_LIST.unshift(r);  */
+    })
+  }
+
+  createFabricante(){
+    const modalRef = this.modalService.open(CreateFabricanteComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.FabricanteC.subscribe((r:any)=>{
+      /* this.PRODUCT_LIST.unshift(r);  */
+    })
+  }
+
+  createCategoria(){
+    const modalRef = this.modalService.open(CreateCategoriasComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.CategoriaC.subscribe((r:any)=>{
+      /* this.PRODUCT_LIST.unshift(r);  */
+    })
   }
 }

@@ -62,4 +62,17 @@ export class ProductService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  obtenerRecursos(){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/productos/recursos";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>{
+        setTimeout(() => {
+          this.loadingService.hideLoading();
+        }, ConfigDelay.LOADING_DELAY);
+      })
+    ) 
+  }
 }

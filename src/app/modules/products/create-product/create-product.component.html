@@ -13,116 +13,9 @@
     <!--begin::Content container-->
     <div id="kt_app_content_container" class="app-container container-xxl">
       <!--begin::Form-->
-      <form
-        id="kt_ecommerce_add_product_form"
-        class="form d-flex flex-column flex-lg-row"
-      >
-        <div class="">
-          <!-- <div class="card card-flush py-4">
-            <div class="card-header">
-              <div class="card-title">
-                <h2>Imagen principal</h2>
-              </div>
-            </div>
-            <div class="card-body text-center pt-0">
-              <style>
-                .image-input-placeholder {
-                  background-image: url("assets/media/svg/files/blank-image.svg");
-                }
-                [data-bs-theme="dark"] .image-input-placeholder {
-                  background-image: url("assets/media/svg/files/blank-image-dark.svg");
-                }
-              </style>
-              <div class="form-group">
-                <label for="mainImage">Imagen Principal</label>
-                <dropzone
-                  [config]="mainImageConfig"
-                  [message]="'Arrastra la imagen principal aquí'"
-                  (success)="onMainImageUploadSuccess($event)"
-                  (error)="onMainImageUploadError($event)"
-                  class="custom-dropzone"
-                ></dropzone>
-              </div>
-              <div class="form-group">
-                <label for="secondaryImages">Imágenes Secundarias</label>
-                <dropzone
-                  [config]="secondaryImagesConfig"
-                  [message]="'Arrastra las imágenes secundarias aquí'"
-                  (success)="onSecondaryImagesUploadSuccess($event)"
-                  (error)="onSecondaryImagesUploadError($event)"
-                ></dropzone>
-              </div>
-            </div>
-          </div> -->
-
-          <!-- <div class="card card-flush py-4">
-            <div class="card-header">
-              <div class="card-title">
-                <h2>Estado</h2>
-              </div>
-
-              <div class="card-toolbar">
-                <div
-                  class="rounded-circle bg-success w-15px h-15px"
-                  id="kt_ecommerce_add_product_status"
-                ></div>
-              </div>
-            </div>
-
-            <div class="card-body pt-0">
-              <select
-                class="form-select mb-2"
-                data-control="select2"
-                data-hide-search="true"
-                data-placeholder="Select an option"
-                id="kt_ecommerce_add_product_status_select"
-              >
-                <option></option>
-                <option value="1" selected="selected">Activo (Se puede vender)</option>
-                <option value="2">Inactivo (No se puede vender)</option>
-              </select>
-
-              <div class="text-muted fs-7">Habilita o deshabilita la venta del producto.</div>
-            </div>
-          </div> -->
-        </div>
-
+      <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row">
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
-          <ul
-            class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2"
-          >
-            <li class="nav-item">
-              <a
-                class="nav-link text-active-primary pb-4"
-                [ngClass]="{ active: tab_selected == 1 }"
-                data-bs-toggle="tab"
-                href="#kt_ecommerce_add_product_general"
-                onclick="return false;"
-                (click)="selectedTab(1)"
-                >General</a
-              >
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link text-active-primary pb-4"
-                [ngClass]="{ active: tab_selected == 2 }"
-                data-bs-toggle="tab"
-                href="#kt_ecommerce_add_product_advanced"
-                onclick="return false;"
-                (click)="selectedTab(2)"
-                >Avanzado</a
-              >
-            </li>
-          </ul>
-
           <div class="tab-content">
-            <div
-              class="tab-pane fade"
-              [ngClass]="{ 'show active': tab_selected == 1 }"
-              id="kt_ecommerce_add_product_general"
-              role="tab-panel"
-            >
               <div class="d-flex flex-column gap-7 gap-lg-10">
                 
                   <div class="card card-flush">
@@ -140,8 +33,8 @@
                             <select class="form-select">
                               <option></option>
                               <option value="">Selecciona una opcion</option>
-                              <option value="1">Generico</option>
-                              <option value="2">Comercial</option>
+                              <option value="1">Comercial<option>
+                              <option value="2">Generico</option>
                             </select>
                             <div class="text-muted fs-7">
                               El producto es generico si su nombre es igual que su principio activo
@@ -168,13 +61,19 @@
                         <!-- Descripción -->
                         <div class="col-md-4"> <!-- Descripción a una sola columna -->
                           <div class="mb-3">
-                            <label class="form-label">Unidad</label>
-                            <select class="form-select">
-                              <option></option>
-                              <option value="">Selecciona una opcion</option>
-                              <option value="1">NIU</option>
-                              <option value="2">Comercial</option>
-                            </select>
+                            <label class="required form-label">Unidad</label>
+                            <ng-select 
+                              [items]="UNIDADES"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona una unidad"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [loadingText]="'Cargando...'" >
+                          </ng-select>
                             <div class="text-muted fs-7">
                               Usaremos NIU por defecto
                             </div>
@@ -255,16 +154,22 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Laboratorio </label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
                                   +
                               </button>
                             </div>
-                            <select class="form-select">
-                              <option></option>
-                              <option value="0">Tax Free</option>
-                              <option value="1">Taxable Goods</option>
-                              <option value="2">Downloadable Product</option>
-                            </select>
+                            <ng-select 
+                              [items]="LABORATORIOS"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona un laboratorio"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                           </div>
                         </div>
 
@@ -272,16 +177,23 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Principios Activos</label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createPrincipioActivo()">
                                   +
                               </button>
                             </div>
-                            <select class="form-select">
-                              <option></option>
-                              <option value="0">Tax Free</option>
-                              <option value="1">Taxable Goods</option>
-                              <option value="2">Downloadable Product</option>
-                            </select>
+                            <ng-select 
+                              [items]="PRINCIPIOS_ACTIVOS"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona uno o mas principios activos"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [multiple]="true"
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja
                             </div>
@@ -292,16 +204,22 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Linea Farmaceutica</label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createLineaFarmaceutica()">
                                   +
                               </button>
                             </div>
-                            <select class="form-select">
-                              <option></option>
-                              <option value="0">Tax Free</option>
-                              <option value="1">Taxable Goods</option>
-                              <option value="2">Downloadable Product</option>
-                            </select>
+                            <ng-select 
+                              [items]="LINEAS_FARMACEUTICAS"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona una linea farmaceutica"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                             <div class="text-muted fs-7">
                               Consultalo en google
                             </div>
@@ -312,16 +230,22 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Fabricante</label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createFabricante()">
                                   +
                               </button>
                             </div>
-                            <select class="form-select">
-                              <option></option>
-                              <option value="0">Tax Free</option>
-                              <option value="1">Taxable Goods</option>
-                              <option value="2">Downloadable Product</option>
-                            </select>
+                            <ng-select 
+                              [items]="FABRICANTES"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona un fabricante"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja
                             </div>
@@ -333,24 +257,22 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Categorias</label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createCategoria()">
                                   +
                               </button>
                             </div>
                             <ng-select 
-                              name="proveedores"
                               [items]="CATEGORIAS"
                               required
                               bindLabel="name"
                               bindValue="id"
-                              placeholder="Selecciona uno o mas proveedores"
+                              placeholder="Selecciona una categoria"
                               [searchable]="true"
                               [clearable]="true" 
                               [virtualScroll]="true"  
                               [loading]="loading"  
-                              [loadingText]="'Cargando...'" 
-                              [multiple]="true">
-                          </ng-select>
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja
                             </div>
@@ -428,12 +350,19 @@
                                 +
                             </button>
                           </div>
-                          <select class="form-select">
-                            <option></option>
-                            <option value="0">Tax Free</option>
-                            <option value="1">Taxable Goods</option>
-                            <option value="2">Downloadable Product</option>
-                          </select>
+                          <ng-select 
+                              [items]="CONDICIONES_ALMACENAMIENTO"
+                              required
+                              bindLabel="name"
+                              bindValue="id"
+                              placeholder="Selecciona una o varias condiciones"
+                              [searchable]="true"
+                              [clearable]="true" 
+                              [virtualScroll]="true"  
+                              [loading]="loading"  
+                              [multiple]="true"
+                              [loadingText]="'Cargando...'" >
+                            </ng-select>
                           <div class="text-muted fs-7">
                             Revisa en la parte trasera de la caja
                           </div>
@@ -508,410 +437,14 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div
-              class="tab-pane fade"
-              [ngClass]="{ 'show active': tab_selected == 2 }"
-              id="kt_ecommerce_add_product_advanced"
-              role="tab-panel"
-            >
-              <div class="d-flex flex-column gap-7 gap-lg-10">
-                <div class="card card-flush py-4">
-                  <div class="card-header">
-                    <div class="card-title">
-                      <h2>Inventario</h2>
-                    </div>
-                  </div>
-
-                  <div class="card-body pt-0">
-                    <div class="mb-10 fv-row row">
-                      <div class="col-6">
-                        <label class="required form-label">SKU</label>
-
-                        <input
-                          type="text"
-                          name="sku"
-                          class="form-control mb-2"
-                          placeholder="SKU Number"
-                          value=""
-                        />
-
-                        <div class="text-muted fs-7">
-                          Enter the product SKU.
-                        </div>
-                      </div>
-                      <div class="col-6">
-                        <label class="form-label">¿Es gratuito?</label>
-
-                        <div
-                          class="form-check form-check-custom form-check-solid mb-2"
-                        >
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                          />
-                          <label class="form-check-label">Yes</label>
-                        </div>
-
-                        <div class="text-muted fs-7">
-                          Es posible que el producto tenga costo 0.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-10 fv-row row">
-                      <div class="col-4">
-                        <label class="required form-label">Unidad</label>
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          placeholder="Select an option"
-                        >
-                          <option value="1">UNIDAD</option>
-                          <option value="2">CAJA</option>
-                        </select>
-
-                        <div class="text-muted fs-7">Defina unidad.</div>
-                      </div>
-                      <div class="col-4">
-                        <label class="required form-label">Almacen</label>
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          placeholder="Select an option"
-                        >
-                          <option value="1">LIMA</option>
-                          <option value="2">ANCASH</option>
-                        </select>
-
-                        <div class="text-muted fs-7">Defina Almacen.</div>
-                      </div>
-                      <div class="col-4">
-                        <label class="required form-label">Quantity</label>
-
-                        <div class="d-flex gap-3">
-                          <input
-                            type="number"
-                            name="shelf"
-                            class="form-control mb-2"
-                            placeholder="On shelf"
-                            value=""
-                          />
-                        </div>
-
-                        <div class="text-muted fs-7">
-                          Enter the product quantity.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-10 fv-row row">
-                      <div class="col-12">
-                        <div class="table-responsive">
-                          <table
-                            class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3"
-                          >
-                            <thead>
-                              <tr class="fw-bold text-muted">
-                                <th class="">Unidad</th>
-                                <th class="">Almacen</th>
-                                <th class="">Cantidad</th>
-                                <th class="">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <a
-                                    href="#"
-                                    class="text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6"
-                                    >Caja</a
-                                  >
-                                  <span
-                                    class="text-muted fw-semibold text-muted d-block fs-7"
-                                    >Code: PH</span
-                                  >
-                                </td>
-
-                                <td
-                                  class="text-gray-900 fw-bold text-hover-primary fs-6"
-                                >
-                                  LIMA
-                                </td>
-                                <td>5</td>
-                                <td class="">
-                                  <a
-                                    href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                  >
-                                    <i class="ki-duotone ki-pencil fs-2"
-                                      ><span class="path1"></span
-                                      ><span class="path2"></span
-                                    ></i>
-                                  </a>
-
-                                  <a
-                                    href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                                  >
-                                    <i class="ki-duotone ki-trash fs-2"
-                                      ><span class="path1"></span
-                                      ><span class="path2"></span
-                                      ><span class="path3"></span
-                                      ><span class="path4"></span
-                                      ><span class="path5"></span
-                                    ></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="card card-flush py-4">
-                  <div class="card-header">
-                    <div class="card-title">
-                      <h2>Price Multiple</h2>
-                    </div>
-                  </div>
-
-                  <div class="card-body pt-0">
-                    <div class="mb-10 fv-row row">
-                      <div class="col-3">
-                        <label class="required form-label">Unidad</label>
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          placeholder="Select an option"
-                        >
-                          <option value="1">UNIDAD</option>
-                          <option value="2">CAJA</option>
-                        </select>
-
-                        <div class="text-muted fs-7">Defina unidad.</div>
-                      </div>
-                      <div class="col-3">
-                        <label class="required form-label">Sucursales</label>
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          placeholder="Select an option"
-                        >
-                          <option value="1">LIMA</option>
-                          <option value="2">ANCASH</option>
-                        </select>
-
-                        <div class="text-muted fs-7">Defina Sucursales.</div>
-                      </div>
-                      <div class="col-3">
-                        <label class="required form-label"
-                          >Segmento de cliente</label
-                        >
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          placeholder="Select an option"
-                        >
-                          <option value="1">CLIENTE FINAL</option>
-                          <option value="2">CLIENTE MAYORISTA</option>
-                        </select>
-
-                        <div class="text-muted fs-7">
-                          Defina Segmento de cliente.
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <label class="required form-label">Precio</label>
-
-                        <div class="d-flex gap-3">
-                          <input
-                            type="number"
-                            name="shelf"
-                            class="form-control mb-2"
-                            placeholder="On shelf"
-                            value=""
-                          />
-                        </div>
-
-                        <div class="text-muted fs-7">
-                          Enter the product price.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-10 fv-row row">
-                      <div class="col-12">
-                        <div class="table-responsive">
-                          <table
-                            class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3"
-                          >
-                            <thead>
-                              <tr class="fw-bold text-muted">
-                                <th class="">Unidad</th>
-                                <th class="">Sucursal</th>
-                                <th class="">Segmento de cliente</th>
-                                <th class="">Precio</th>
-                                <th class="">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <a
-                                    href="#"
-                                    class="text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6"
-                                    >Caja</a
-                                  >
-                                  <span
-                                    class="text-muted fw-semibold text-muted d-block fs-7"
-                                    >Code: PH</span
-                                  >
-                                </td>
-
-                                <td
-                                  class="text-gray-900 fw-bold text-hover-primary fs-6"
-                                >
-                                  LIMA
-                                </td>
-
-                                <td>
-                                  <a
-                                    href="#"
-                                    class="text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6"
-                                    >Cliente Final</a
-                                  >
-                                </td>
-
-                                <td>500 PEN</td>
-                                <td class="">
-                                  <a
-                                    href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                  >
-                                    <i class="ki-duotone ki-pencil fs-2"
-                                      ><span class="path1"></span
-                                      ><span class="path2"></span
-                                    ></i>
-                                  </a>
-
-                                  <a
-                                    href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                                  >
-                                    <i class="ki-duotone ki-trash fs-2"
-                                      ><span class="path1"></span
-                                      ><span class="path2"></span
-                                      ><span class="path3"></span
-                                      ><span class="path4"></span
-                                      ><span class="path5"></span
-                                    ></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="card card-flush py-4">
-                  <div class="card-header">
-                    <div class="card-title">
-                      <h2>Shipping</h2>
-                    </div>
-                  </div>
-
-                  <div class="card-body pt-0">
-                    <div id="kt_ecommerce_add_product_shipping" class="">
-                      <div class="mb-10 fv-row">
-                        <label class="form-label">Weight</label>
-
-                        <input
-                          type="text"
-                          name="weight"
-                          class="form-control mb-2"
-                          placeholder="Product weight"
-                          value=""
-                        />
-
-                        <div class="text-muted fs-7">
-                          Set a product weight in kilograms (kg).
-                        </div>
-                      </div>
-
-                      <div class="fv-row">
-                        <label class="form-label">Dimension</label>
-
-                        <div class="d-flex flex-wrap flex-sm-nowrap gap-3">
-                          <input
-                            type="number"
-                            name="width"
-                            class="form-control mb-2"
-                            placeholder="Width (w)"
-                            value=""
-                          />
-                          <input
-                            type="number"
-                            name="height"
-                            class="form-control mb-2"
-                            placeholder="Height (h)"
-                            value=""
-                          />
-                          <input
-                            type="number"
-                            name="length"
-                            class="form-control mb-2"
-                            placeholder="Lengtn (l)"
-                            value=""
-                          />
-                        </div>
-
-                        <div class="text-muted fs-7">
-                          Enter the product dimensions in centimeters (cm).
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div class="d-flex justify-content-end">
-            <a
-              href="apps/ecommerce/catalog/products.html"
-              id="kt_ecommerce_add_product_cancel"
-              class="btn btn-light me-5"
-              >Cancelar</a
-            >
-
-            <button
-              type="submit"
-              id="kt_ecommerce_add_product_submit"
-              class="btn btn-primary"
-            >
-              <span class="indicator-label">Registrar</span>
-              <span class="indicator-progress"
-                >Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span
-              ></span>
+          <div class="text-center pt-15">
+            <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+            <button type="button" class="btn btn-primary" data-kt-users-modal-action="submit">
+                <span class="indicator-label">Registrar</span>
             </button>
-          </div>
+        </div>
         </div>
       </form>
     </div>

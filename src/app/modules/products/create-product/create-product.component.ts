@@ -19,13 +19,13 @@ export class CreateProductComponent {
   mainImage: string | ArrayBuffer | null = null;
   secondaryImages: string[] = [];
 
-  LABORATORIOS:[]
-  PRINCIPIOS_ACTIVOS:[]
-  LINEAS_FARMACEUTICAS:[]
-  FABRICANTES:[]
-  CATEGORIAS:[]
-  CONDICIONES_ALMACENAMIENTO:[]
-  UNIDADES:[]
+  LABORATORIOS:any[] = [];
+  PRINCIPIOS_ACTIVOS:any[] = []
+  LINEAS_FARMACEUTICAS:any[] = []
+  FABRICANTES:any[] = []
+  CATEGORIAS:any[] = []
+  CONDICIONES_ALMACENAMIENTO:any[] = []
+  UNIDADES:any[] = []
 
   loading:boolean
 
@@ -119,10 +119,10 @@ export class CreateProductComponent {
 
   createLaboratorio(){
     const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.LaboratorioC.subscribe((r:any)=>{
-      this.LABORATORIOS = [lab, ...this.LABORATORIOS];
-      this.laboratorio = [lab.id, ...this.laboratorio];
-    })
+    modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
+      this.LABORATORIOS = [r, ...this.LABORATORIOS];
+      this.productForm.patchValue({ laboratorio: r.id });
+    });
   }
 
   createPrincipioActivo(){

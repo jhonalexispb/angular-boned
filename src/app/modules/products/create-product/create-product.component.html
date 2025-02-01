@@ -13,7 +13,7 @@
     <!--begin::Content container-->
     <div id="kt_app_content_container" class="app-container container-xxl">
       <!--begin::Form-->
-      <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row">
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="form d-flex flex-column flex-lg-row">
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
           <div class="tab-content">
               <div class="d-flex flex-column gap-7 gap-lg-10">
@@ -161,6 +161,7 @@
                             <ng-select 
                               [items]="LABORATORIOS"
                               required
+                              formControlName="laboratorio"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona un laboratorio"
@@ -441,7 +442,7 @@
 
           <div class="text-center pt-15">
             <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
-            <button type="button" class="btn btn-primary" data-kt-users-modal-action="submit">
+            <button type="button" class="btn btn-primary">
                 <span class="indicator-label">Registrar</span>
             </button>
         </div>

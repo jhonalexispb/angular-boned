@@ -65,6 +65,7 @@
                             <ng-select 
                               [items]="UNIDADES"
                               required
+                              formControlName="unidad_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona una unidad"
@@ -161,7 +162,7 @@
                             <ng-select 
                               [items]="LABORATORIOS"
                               required
-                              formControlName="laboratorio"
+                              formControlName="laboratorio_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona un laboratorio"
@@ -177,14 +178,14 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                              <label class="required form-label m-0">Principios Activos</label>
+                              <label class="form-label m-0">Principios Activos</label>
                               <button type="button" class="btn btn-primary px-4 py-2" (click)="createPrincipioActivo()">
                                   +
                               </button>
                             </div>
                             <ng-select 
                               [items]="PRINCIPIOS_ACTIVOS"
-                              required
+                              formControlName="principio_activo_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona uno o mas principios activos"
@@ -212,6 +213,7 @@
                             <ng-select 
                               [items]="LINEAS_FARMACEUTICAS"
                               required
+                              formControlName="linea_farmaceutica_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona una linea farmaceutica"
@@ -237,7 +239,7 @@
                             </div>
                             <ng-select 
                               [items]="FABRICANTES"
-                              required
+                              formControlName="fabricante_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona un fabricante"
@@ -264,7 +266,7 @@
                             </div>
                             <ng-select 
                               [items]="CATEGORIAS"
-                              required
+                              formControlName="categoria_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona una categoria"
@@ -353,7 +355,7 @@
                           </div>
                           <ng-select 
                               [items]="CONDICIONES_ALMACENAMIENTO"
-                              required
+                              formControlName="condiciones_almacenamiento_id"
                               bindLabel="name"
                               bindValue="id"
                               placeholder="Selecciona una o varias condiciones"

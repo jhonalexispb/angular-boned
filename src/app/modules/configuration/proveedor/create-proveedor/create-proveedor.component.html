@@ -32,6 +32,28 @@
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+
+                <div class="fv-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2">RUC del proveedor</label>
+                    <div class="input-group">
+                        <input
+                        id="ruc"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="ruc"
+                        name="ruc"
+                        maxlength="11"
+                        placeholder="Ingrese el RUC"
+                        autocomplete="off"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        />
+                        <button class="btn btn-primary" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="!ruc || ruc.length !== 11">
+                        <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
                     <!--begin::Label-->
@@ -71,7 +93,12 @@
                 </div>
 
                 <div class="v-row mb-7">
-                    <label class="fw-bold fs-6 mb-2">Representante: </label>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label m-0">Representante</label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createRepresentante()">
+                            +
+                        </button>
+                    </div>
                     <ng-select 
                         name="representante"
                         [items]="REPRESENTANTES"
@@ -82,7 +109,7 @@
                         [searchable]="true"
                         [clearable]="true" 
                         [virtualScroll]="true"  
-                         
+                        [loading]="loading"  
                         [loadingText]="'Cargando...'" 
                         [bindLabel]="'name'"  
                         [bindValue]="'id'">
@@ -101,7 +128,7 @@
                         [searchable]="true"
                         [clearable]="true" 
                         [virtualScroll]="true"  
-                        
+                        [loading]="loading"  
                         [loadingText]="'Cargando...'" 
                         [bindLabel]="'distrito_provincia_department_name'"  
                         [bindValue]="'id'">

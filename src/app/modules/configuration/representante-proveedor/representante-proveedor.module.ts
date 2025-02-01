@@ -11,6 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
+import { ComunicationRepresentanteComponent } from './comunication-representante/comunication-representante.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ListRepresentanteProveedorComponent,
     EditRepresentanteProveedorComponent,
     CreateRepresentanteProveedorComponent,
+    ComunicationRepresentanteComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +31,8 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule
+    PaginationModule,
+    ButtonsGroupListModule
   ],
 })
 export class RepresentanteProveedorModule { }

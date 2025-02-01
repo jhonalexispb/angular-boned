@@ -66,24 +66,71 @@
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            <th class="min-w-150px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
                                 colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Fecha de registro</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
-                                aria-label="Actions">
+                            <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
                                 <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                             </th>
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
                         
-                            <tr *ngFor="let PROV of PROVEEDORES">
+                            <tr *ngFor="let PROV of PROVEEDORES; let index = index">
                                 <td>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ PROV.name }}</span>
+                                    <div class="d-flex justify-content-start align-items-center gap-2">
+                                        <div class="d-md-none d-flex align-items-center">
+                                            <app-buttons-group-list
+                                            [index]="index"
+                                            [activeDropdownIndex]="activeDropdownIndex"
+                                            (dropdownToggle)="handleDropdownToggle($event)">
+                                            <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                              <li>
+                                                <button (click)="editProveedor(PROV)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                                    Editar
+                                                  </div>
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <button (click)="deleteProveedor(PROV)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                    Eliminar
+                                                  </div>
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <button (click)="comunicationClienteSucursal([PROV.representante_celular ? 1 : 0,PROV.representante_celular,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                                    Comunicarse
+                                                  </div>  
+                                                </button>
+                                              </li>
+                                              <!-- <li>
+                                                <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                                    Mandar correo
+                                                  </div> 
+                                                </button>
+                                              </li> -->
+                                            </ul>
+                                            </app-buttons-group-list>
+                                        </div>
+                                        <!-- Aquí se muestra el RUC -->
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ PROV.name }}</span>
+                                                </div>
+                                          </div>
+                                        </div>
                                     </div>
                                 </td>
                                 
@@ -100,7 +147,7 @@
                                     <ng-template #representante_celular>
                                         <div class="badge-light-warning p-2 rounded">
                                             <i class="fa-solid fa-exclamation-triangle text-warning"></i>
-                                            <span class="fs-7 fw-bold"> {{ PROV.representante }}</span>
+                                            <span class="fs-7 fw-bold"> Sin numero</span>
                                         </div>
                                     </ng-template>
                                 </td>
@@ -132,18 +179,43 @@
                                 <td>
                                     {{ PROV.created_at }}
                                 </td>
-                                <td class="">
-                                    <a href="#" onclick="return false" (click)="editProveedor(PROV)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                    </a>
-                                    <a  href="#" onclick="return false" (click)="deleteProveedor(PROV)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                    </a>
-                                    <!-- <app-buttons-group-list
-                                    (editAction)="editRepresentanteProveedor(item)"
-                                    (deleteAction)="deleteRepresentanteProveedor(item)">
-                                    </app-buttons-group-list> -->
-                                </td>
+
+                                <td class="d-none d-md-table-cell acciones-container">
+                                    <ul class="pt-3 px-3 d-flex gap-2">
+                                        <li>
+                                          <button (click)="editProveedor(PROV)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                              Editar
+                                            </div>
+                                          </button>
+                                        </li>
+                                        <li>
+                                          <button (click)="deleteProveedor(PROV)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                              Eliminar
+                                            </div>
+                                          </button>
+                                        </li>
+                                        <li>
+                                          <button (click)="comunicationClienteSucursal([PROV.representante_celular ? 1 : 0,PROV.representante_celular,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                            <div class="d-flex gap-2">
+                                              <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                              Comunicarse
+                                            </div>  
+                                          </button>
+                                        </li>
+                                        <!-- <li>
+                                          <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                              Mandar correo
+                                            </div> 
+                                          </button>
+                                        </li> -->
+                                      </ul>
+                                  </td>
                             </tr>
                         
                     </tbody>

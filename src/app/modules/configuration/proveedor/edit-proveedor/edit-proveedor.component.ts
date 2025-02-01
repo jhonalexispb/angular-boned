@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
+import { CreateRepresentanteProveedorComponent } from '../../representante-proveedor/create-representante-proveedor/create-representante-proveedor.component';
 
 @Component({
   selector: 'app-edit-proveedor',
@@ -19,7 +20,7 @@ export class EditProveedorComponent {
   correo:string = '';
   state:string;
   distrito:null;
-  representate:null;
+  representante:null;
 
   sweet:any = new SweetalertService
 
@@ -27,6 +28,7 @@ export class EditProveedorComponent {
 
   constructor(
     public modal: NgbActiveModal,
+    public modalService: NgbModal,
     //llamamos al servicio
     public ProveedorService: ServiceProveedorService,
   ){
@@ -40,7 +42,7 @@ export class EditProveedorComponent {
     this.correo = this.PROVEEDOR_SELECTED.email,
     this.state = this.PROVEEDOR_SELECTED.state,
     this.distrito = this.PROVEEDOR_SELECTED.iddistrito,
-    this.representate = this.PROVEEDOR_SELECTED.idrepresentante,
+    this.representante = this.PROVEEDOR_SELECTED.idrepresentante,
     this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
       this.DISTRITOS = data.distritos;
       this.REPRESENTANTES = data.representantes;
@@ -65,7 +67,7 @@ export class EditProveedorComponent {
       'email':this.correo,
       'address':this.address,
       'iddistrito':this.distrito,
-      'idrepresentante':this.representate,
+      'idrepresentante':this.representante,
       'state':this.state
     };
 
@@ -86,6 +88,14 @@ export class EditProveedorComponent {
         }
       },
     });
+  }
+
+  createRepresentante(){
+    const modalRef = this.modalService.open(CreateRepresentanteProveedorComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.RepresentanteProveedorC.subscribe((r:any)=>{
+      this.REPRESENTANTES = [r, ...this.REPRESENTANTES];
+      this.representante = r.id
+    })
   }
 
   restaurar(cat:any){

@@ -66,7 +66,13 @@ export class CreateProductComponent {
       })
     this.productForm = this.fb.group({
       productName: [''],
-      laboratorio:[null]
+      laboratorio_id:[null],
+      principio_activo_id:[null],
+      linea_farmaceutica_id:[null],
+      fabricante_id:[null],
+      categoria_id:[null],
+      condiciones_almacenamiento_id:[null],
+      unidad_id:[null]
     });
   }
 
@@ -121,35 +127,39 @@ export class CreateProductComponent {
     const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
       this.LABORATORIOS = [r, ...this.LABORATORIOS];
-      this.productForm.patchValue({ laboratorio: r.id });
+      this.productForm.patchValue({ laboratorio_id: r.id });
     });
   }
 
   createPrincipioActivo(){
     const modalRef = this.modalService.open(CreatePrincipioActivoComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.PrincipioActivoC.subscribe((r:any)=>{
-      /* this.PRODUCT_LIST.unshift(r);  */
+      this.PRINCIPIOS_ACTIVOS = [r, ...this.PRINCIPIOS_ACTIVOS];
+      this.productForm.patchValue({ principio_activo_id: r.id });
     })
   }
 
   createLineaFarmaceutica(){
     const modalRef = this.modalService.open(CreateLineasFarmaceuticasComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.LineaFarmaceuticaC.subscribe((r:any)=>{
-      /* this.PRODUCT_LIST.unshift(r);  */
+      this.LINEAS_FARMACEUTICAS = [r, ...this.LINEAS_FARMACEUTICAS];
+      this.productForm.patchValue({ linea_farmaceutica_id: r.id });
     })
   }
 
   createFabricante(){
     const modalRef = this.modalService.open(CreateFabricanteComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.FabricanteC.subscribe((r:any)=>{
-      /* this.PRODUCT_LIST.unshift(r);  */
+      this.FABRICANTES = [r, ...this.FABRICANTES];
+      this.productForm.patchValue({ fabricante_id: r.id });
     })
   }
 
   createCategoria(){
     const modalRef = this.modalService.open(CreateCategoriasComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.CategoriaC.subscribe((r:any)=>{
-      /* this.PRODUCT_LIST.unshift(r);  */
+      this.CATEGORIAS = [r, ...this.CATEGORIAS];
+      this.productForm.patchValue({ categoria_id: r.id });
     })
   }
 }

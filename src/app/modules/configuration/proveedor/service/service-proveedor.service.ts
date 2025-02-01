@@ -74,9 +74,19 @@ export class ServiceProveedorService {
 
   //solicitamos los distritos y representantes de venta
   obtenerRecursos(){
-    this.loadingService.showLoading('Solicitando recursos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/proveedor/recursos/";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //solicitamos la razon social del ruc en el backend
+  obtenerRazonSocial(ruc:any){
+    this.loadingService.showLoading('Solicitando razón social')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/servicio_consulta/get_razon_social?ruc="+ruc;
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

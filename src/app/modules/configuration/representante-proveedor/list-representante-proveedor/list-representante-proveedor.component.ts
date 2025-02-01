@@ -5,6 +5,8 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { RepresentanteProveedorService } from '../service/representante-proveedor-service.service';
 import { CreateRepresentanteProveedorComponent } from '../create-representante-proveedor/create-representante-proveedor.component';
 import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
+import { ComunicationPersonEmailComponent } from 'src/app/components/comunication-person-email/comunication-person-email.component';
+import { ComunicationRepresentanteComponent } from '../comunication-representante/comunication-representante.component';
 
 @Component({
   selector: 'app-list-representante-proveedor',
@@ -18,6 +20,8 @@ export class ListRepresentanteProveedorComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1;
+
+  activeDropdownIndex: number | null = null;
   
   constructor(
     public modalService: NgbModal,
@@ -82,11 +86,15 @@ export class ListRepresentanteProveedorComponent {
     });
   }
 
-  comunicationRepresentanteProveedor(DATOS_REP:any){
-    const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
-      phone: DATOS_REP[0],  // Celular
-      persona: DATOS_REP[1]    // Nombre
+  comunicationClienteSucursal(DATOS:any){
+    const modalRef = this.modalService.open(ComunicationRepresentanteComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.NUMBER_SELECTED = {
+      valor: DATOS[0],  // Celular
+      persona: DATOS[1],    // Nombre
     };
+  }
+
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 }

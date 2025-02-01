@@ -1,5 +1,6 @@
+import { CreateRepresentanteProveedorComponent } from './../../representante-proveedor/create-representante-proveedor/create-representante-proveedor.component';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
 
@@ -18,11 +19,14 @@ export class CreateProveedorComponent{
   correo:string = '';
   distrito:null;
   representante:null;
+  ruc:string;
+  loading:boolean
 
   sweet:any = new SweetalertService
 
   constructor(
     public modal: NgbActiveModal,
+    public modalService: NgbModal,
     //llamamos al servicio
     public ProveedorService: ServiceProveedorService,
   ){
@@ -30,9 +34,11 @@ export class CreateProveedorComponent{
   }
 
   ngOnInit(): void {
+    this.loading = true
     this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
       this.DISTRITOS = data.distritos;
       this.REPRESENTANTES = data.representantes;
+      this.loading = false
     });
   }
 
@@ -73,6 +79,26 @@ export class CreateProveedorComponent{
         }
       },
     });
+  }
+
+  createRepresentante(){
+      const modalRef = this.modalService.open(CreateRepresentanteProveedorComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.RepresentanteProveedorC.subscribe((r:any)=>{
+        this.REPRESENTANTES = [r, ...this.REPRESENTANTES];
+        this.representante = r.id
+      })
+    }
+
+  buscarRazonSocial() {
+    this.razonSocial = '';
+    this.address = '';
+    this.ProveedorService.obtenerRazonSocial(this.ruc).subscribe({
+      next: (resp: any) => {
+        this.sweet.success('¡Bien!',`dale un saludo a ${resp.razonSocial}`);
+        this.razonSocial = resp.razonSocial;
+        this.address = resp.response.direccion;
+      },
+    })
   }
 
   restaurar(cat:any){

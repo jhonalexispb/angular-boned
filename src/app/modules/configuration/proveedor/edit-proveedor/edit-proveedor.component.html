@@ -71,13 +71,18 @@
                 </div>
 
                 <div class="v-row mb-7">
-                    <label class="fw-bold fs-6 mb-2">Representante: </label>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label m-0">Representante</label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createRepresentante()">
+                            +
+                        </button>
+                    </div>
                     <ng-select 
                         name="representante"
                         [items]="REPRESENTANTES"
                         bindLabel="name"
                         bindValue="id"
-                        [(ngModel)]="representate"
+                        [(ngModel)]="representante"
                         placeholder="Selecciona un representante"
                         [searchable]="true"
                         [clearable]="true" 

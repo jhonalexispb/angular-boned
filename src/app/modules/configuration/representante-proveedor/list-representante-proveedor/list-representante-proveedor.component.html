@@ -36,64 +36,104 @@
                     style="width: 100%">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                            <th class="min-w-125px">
                                 <span class="dt-column-title" role="button">Nombre</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Celular o Telefono</span><span
-                                    class="dt-column-order"></span>
-                            </th>
-
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
+                            <th class="min-w-125px">
                                 <span class="dt-column-title" role="button">Correo</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1"
-                                colspan="1" aria-label="Email: Activate to sort" tabindex="0">
+                            <th class="min-w-60px">
                                 <span class="dt-column-title" role="button">Estado</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
-                                colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                            <th class="min-w-150px">
                                 <span class="dt-column-title" role="button">Fecha de registro</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
-                                aria-label="Actions">
+                            <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
                                 <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                             </th>
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
                         
-                            <tr *ngFor="let REP of REPRESENTANTES">
+                            <tr *ngFor="let REP of REPRESENTANTES; let index = index">
                                 <td>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ REP.name }}</span>
-                                    </div>
-                                </td>
-                                
-                                <td>
-                                    <div style="display: flex; flex-direction: column; align-items: flex-start; ">
-                                        <div *ngIf="REP.celular">
-                                            <div class="badge-light-success p-2 rounded" (click)="comunicationRepresentanteProveedor([REP.celular,REP.name])">
-                                                <i class="fa-brands fa-whatsapp text-success"></i>
-                                                <span class="fs-7 fw-bold"> {{ REP.celular }}</span>
-                                            </div>
+                                    <div class="d-flex justify-content-start align-items-center gap-2">
+                                        <div class="d-md-none d-flex align-items-center">
+                                            <app-buttons-group-list
+                                            [index]="index"
+                                            [activeDropdownIndex]="activeDropdownIndex"
+                                            (dropdownToggle)="handleDropdownToggle($event)">
+                                            <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                              <li>
+                                                <button (click)="editRepresentanteProveedor(REP)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                                    Editar
+                                                  </div>
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <button (click)="deleteRepresentanteProveedor(REP)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                    Eliminar
+                                                  </div>
+                                                </button>
+                                              </li>
+                                              
+                                              <li>
+                                                <button (click)="comunicationClienteSucursal([REP.celular.length,REP.celular,REP.name])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                                    Comunicarse
+                                                  </div>  
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-primary">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                                    <a [href]="'mailto:' + REP.email">Enviar Correo</a>
+                                                  </div>   
+                                                </button>
+                                              </li>
+                                            </ul>
+                                            </app-buttons-group-list>
                                         </div>
-                                      </div>
+                                        <!-- Aquí se muestra el RUC -->
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ REP.name }}</span>
+                                                </div>
+                                          </div>
+                                        </div>
+                                    </div>
                                 </td>
 
                                 <td>
-                                    {{ REP.email }}
+                                  <div *ngIf="REP.email else representante_email">
+                                    <div style="display: flex;">
+                                      <div class="badge-light-success p-2 rounded d-flex gap-2 align-items-center">
+                                          <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                          <a [href]="'mailto:' + REP.email">{{ REP.email }}</a>
+                                      </div>    
+                                    </div>
+                                  </div>
+                                    <ng-template #representante_email>
+                                      <div class="badge-light-warning p-2 rounded">
+                                          <i class="fa-solid fa-exclamation-triangle text-warning"></i>
+                                          <span class="fs-7 fw-bold"> Sin correo</span>
+                                      </div>
+                                  </ng-template>
                                 </td>
 
                                 <td>
@@ -104,18 +144,44 @@
                                 <td>
                                     {{ REP.created_at }}
                                 </td>
-                                <td class="">
-                                    <a href="#" onclick="return false" (click)="editRepresentanteProveedor(REP)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                    </a>
-                                    <a  href="#" onclick="return false" (click)="deleteRepresentanteProveedor(REP)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                    </a>
-                                    <!-- <app-buttons-group-list
-                                    (editAction)="editRepresentanteProveedor(item)"
-                                    (deleteAction)="deleteRepresentanteProveedor(item)">
-                                    </app-buttons-group-list> -->
-                                </td>
+
+                                <td class="d-none d-md-table-cell acciones-container">
+                                    <ul class="pt-3 px-3 d-flex gap-2">
+                                        <li>
+                                          <button (click)="editRepresentanteProveedor(REP)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                              Editar
+                                            </div>
+                                          </button>
+                                        </li>
+                                        <li>
+                                          <button (click)="deleteRepresentanteProveedor(REP)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                              Eliminar
+                                            </div>
+                                          </button>
+                                        </li>
+                                        
+                                        <li>
+                                          <button (click)="comunicationClienteSucursal([REP.celular,REP.name])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                            <div class="d-flex gap-2">
+                                              <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                              Comunicarse
+                                            </div>  
+                                          </button>
+                                        </li>
+                                        <li>
+                                          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-primary">
+                                            <div class="d-flex gap-2">
+                                              <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                              <a [href]="'mailto:' + REP.email">Enviar Correo</a>
+                                            </div> 
+                                          </button>
+                                        </li>
+                                      </ul>
+                                  </td>
                             </tr>
                         
                     </tbody>

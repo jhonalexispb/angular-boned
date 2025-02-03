@@ -13,6 +13,9 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 import { ComprobantesComponent } from './comprobantes/comprobantes.component';
+import { CreateRelacionBancoComprobanteComponent } from './create-relacion-banco-comprobante/create-relacion-banco-comprobante.component';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -22,6 +25,7 @@ import { ComprobantesComponent } from './comprobantes/comprobantes.component';
     EditBankComponent,
     CreateBankComponent,
     ComprobantesComponent,
+    CreateRelacionBancoComprobanteComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +38,8 @@ import { ComprobantesComponent } from './comprobantes/comprobantes.component';
     NgbModalModule,
     PaginationModule,
     ButtonsGroupListModule,
+    DropzoneModule,
+    NgSelectModule,
   ]
 })
 export class BankModule { }

@@ -1,0 +1,15 @@
+.custom-dropzone {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Ajusta según el tamaño deseado */
+    height: 100%;
+    border: 2px dashed #ccc; /* Línea discontinua */
+    border-radius: 12px; /* Bordes redondeados */
+    background-color: #f9f9f9; /* Fondo claro */
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  

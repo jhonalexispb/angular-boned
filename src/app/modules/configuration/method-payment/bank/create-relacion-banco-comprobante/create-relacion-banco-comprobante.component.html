@@ -1,0 +1,120 @@
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Asignar nuevo comprobante a {{BANK_RELATION_SELECTED.name}}</h2>
+
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body scroll-y mx-5 my-7">
+        <!--begin::Form-->
+        <form [formGroup]="relacionBancoComprobanteForm" (ngSubmit)="onSubmit()">
+            <!--begin::Scroll-->
+            <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
+                data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
+                data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="required form-label m-0">Comprobante </label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createComprobante()">
+                            +
+                        </button>
+                      </div>
+                    <ng-select 
+                        [items]="COMPROBANTES"
+                        required
+                        formControlName="id_comprobante_pago"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="Selecciona un comprobante"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [loading]="loading"  
+                        [loadingText]="'Cargando...'" >
+                    </ng-select>
+                </div>
+
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2" for="tipo_caracter">Tipo de caracter</label>
+                    <select
+                        class="form-control form-select-solid fw-bolder"
+                        name="state"
+                        formControlName="tipo_caracter"
+                    >
+                        <option value="" disabled>Seleccion una opcion</option>
+                        <option value="1">Solo números</option>
+                        <option value="2">Números y letras</option>
+                    </select>
+                </div>
+
+                <div class="fv-row mb-7">
+                    <label class="required fw-bold fs-6 mb-2" for="ncaracteres">Número de caracteres</label>
+                    <input
+                      type="number"
+                      class="form-control mb-3 mb-lg-0"
+                      formControlName="ncaracteres"
+                      placeholder="Ingresa un numero"
+                      autocomplete="off"
+                    />
+                </div>
+
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2" for="ubicacion_codigo">Ubicacion del codigo</label>
+                    <input
+                      type="text"
+                      class="form-control mb-3 mb-lg-0"
+                      formControlName="ubicacion_codigo"
+                      placeholder="Ejemplo: AP, ASIENTO, etc"
+                      autocomplete="off"
+                    />
+                </div>
+
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2" for="mainImage">Imagen de ejemplo</label>
+                    <dropzone
+                      [config]="mainImageConfig"
+                      [message]="'Arrastra la imagen principal aquí'"
+                      (success)="onMainImageUploadSuccess($event)"
+                      (error)="onMainImageUploadError($event)"
+                      class="custom-dropzone"
+                    >
+                    </dropzone>
+                  </div>
+            </div>
+            <!--end::Scroll-->
+
+            <!--begin::Actions-->
+            <div class="text-center pt-15">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="relacionBancoComprobanteForm.invalid">Registrar</button>
+            </div>
+            <!--end::Actions-->
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->

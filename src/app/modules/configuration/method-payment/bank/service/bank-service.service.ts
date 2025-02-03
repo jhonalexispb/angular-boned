@@ -61,4 +61,28 @@ export class BankService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //Obtenemos los comprobantes creados
+  obtenerRecursos(){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/banco/recursos";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>{
+        setTimeout(() => {
+          this.loadingService.hideLoading();
+        }, ConfigDelay.LOADING_DELAY);
+      })
+    ) 
+  }
+
+  registrarRelacionBancoComprobante(data:any){
+    this.loadingService.showLoading('Registrando relacion')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/banco/relacion_banco_comprobante";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

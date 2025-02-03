@@ -45,9 +45,20 @@ export class EditProveedorComponent {
     this.distrito = this.PROVEEDOR_SELECTED.iddistrito,
     this.representante = this.PROVEEDOR_SELECTED.idrepresentante,
     this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
-      this.DISTRITOS = data.distritos;
-      this.REPRESENTANTES = data.representantes;
-      this.loading = false
+    this.DISTRITOS = data.distritos;
+    this.REPRESENTANTES = data.representantes;
+
+    if(this.representante != null){
+      const representanteSeleccionado = this.REPRESENTANTES.find((r: any) => r.id === this.representante);
+      if (!representanteSeleccionado) {
+        const representanteExistente = {
+          id: this.representante,
+          name: this.PROVEEDOR_SELECTED.representante,
+        };
+        this.REPRESENTANTES.push(representanteExistente);
+      }
+    }
+    this.loading = false
     });
   }
 

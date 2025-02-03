@@ -10,8 +10,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { AsignarComprobanteComponent } from './asignar-comprobante/asignar-comprobante.component';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
+import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
+import { ComprobantesComponent } from './comprobantes/comprobantes.component';
 
 
 @NgModule({
@@ -20,7 +21,7 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ListBankComponent,
     EditBankComponent,
     CreateBankComponent,
-    AsignarComprobanteComponent,
+    ComprobantesComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +32,8 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
     ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule
+    PaginationModule,
+    ButtonsGroupListModule,
   ]
 })
 export class BankModule { }

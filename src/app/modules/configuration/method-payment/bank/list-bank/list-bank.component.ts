@@ -4,6 +4,7 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { BankService } from '../service/bank-service.service';
 import { EditBankComponent } from '../edit-bank/edit-bank.component';
 import { CreateBankComponent } from '../create-bank/create-bank.component';
+import { ComprobantesComponent } from '../comprobantes/comprobantes.component';
 
 @Component({
   selector: 'app-list-bank',
@@ -17,6 +18,8 @@ export class ListBankComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1;
+
+  activeDropdownIndex: number | null = null;
 
   constructor(
     public modalService: NgbModal,
@@ -71,5 +74,14 @@ export class ListBankComponent {
         })
       }
     });
+  }
+
+  listarComprobantes(BANCO:any){
+    const modalRef = this.modalService.open(ComprobantesComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.BANK_TO_SELECTED = BANCO
+  }
+
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 }

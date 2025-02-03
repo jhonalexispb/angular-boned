@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
+import { ConfigDelayFormulario } from 'src/app/config/config';
 
 @Component({
   selector: 'app-gestionar-sucursales',
@@ -33,35 +34,37 @@ export class GestionarSucursalesComponent {
       linea_credito: [this.CLIENTE_SUCURSAL_TO_SELECTED.linea_credito, [Validators.required, Validators.min(0)]],
     });
 
-    this.clienteSucursalService.obtenerRecursosParaGestionar(this.CLIENTE_SUCURSAL_TO_SELECTED.id).subscribe((data: any) => {
-      this.T_FACTURACION = data.modos_facturacion;
+    setTimeout(() => {
+      this.clienteSucursalService.obtenerRecursosParaGestionar(this.CLIENTE_SUCURSAL_TO_SELECTED.id).subscribe((data: any) => {
+        this.T_FACTURACION = data.modos_facturacion;
 
-      if(data.datos_sucursal.forma_pago == 2){
-        this.seccionCredito = false;
-      } else {
-        this.seccionCredito = true;
-      }
-
-      this.actualizarModoFacturacionConDias(data.datos_sucursal.modo_facturacion, data.datos_sucursal.dias);
-
-      this.diasIniciales = data.datos_sucursal.dias;
-
-      this.clienteGestionarSucursalForm.get('formaPago')?.reset(data.datos_sucursal.forma_pago);
-      this.clienteGestionarSucursalForm.get('dias')?.reset(data.datos_sucursal.dias);
-      this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.reset(data.datos_sucursal.modo_facturacion);
-
-      this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.valueChanges.subscribe((estado: number) => {
-        this.actualizarDiasPorModoFacturacion(estado);
-      });
-
-      this.clienteGestionarSucursalForm.get('formaPago')?.valueChanges.subscribe((estado: number) => {
-        if (estado == 2) {
+        if(data.datos_sucursal.forma_pago == 2){
           this.seccionCredito = false;
         } else {
           this.seccionCredito = true;
         }
+
+        this.actualizarModoFacturacionConDias(data.datos_sucursal.modo_facturacion, data.datos_sucursal.dias);
+
+        this.diasIniciales = data.datos_sucursal.dias;
+
+        this.clienteGestionarSucursalForm.get('formaPago')?.reset(data.datos_sucursal.forma_pago);
+        this.clienteGestionarSucursalForm.get('dias')?.reset(data.datos_sucursal.dias);
+        this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.reset(data.datos_sucursal.modo_facturacion);
+
+        this.clienteGestionarSucursalForm.get('modo_facturacion_id')?.valueChanges.subscribe((estado: number) => {
+          this.actualizarDiasPorModoFacturacion(estado);
+        });
+
+        this.clienteGestionarSucursalForm.get('formaPago')?.valueChanges.subscribe((estado: number) => {
+          if (estado == 2) {
+            this.seccionCredito = false;
+          } else {
+            this.seccionCredito = true;
+          }
+        });
       });
-    });
+    }, ConfigDelayFormulario.LOADING_DELAY);
   }
 
   actualizarModoFacturacionConDias(modoFacturacionId: number, dias: number): void {

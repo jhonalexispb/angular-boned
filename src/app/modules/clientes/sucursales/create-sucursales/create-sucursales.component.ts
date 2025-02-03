@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { SucursalClienteService } from '../service/sucursalCliente.service';
+import { ConfigDelayFormulario } from 'src/app/config/config';
 import * as L from 'leaflet';
 
 L.Marker.prototype.options.icon = L.icon({
@@ -57,11 +58,13 @@ export class CreateSucursalesComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-      this.clienteSucursalService.obtenerRecursosParaCrear().subscribe((data: any) => {
-        this.DISTRITOS = data.distritos;
-        this.CATEGORIAS_DIGEMID = data.categorias_digemid;
-        this.ESTADOS_DIGEMID = data.estados_digemid;
-      });
+      setTimeout(() => {
+        this.clienteSucursalService.obtenerRecursosParaCrear().subscribe((data: any) => {
+          this.DISTRITOS = data.distritos;
+          this.CATEGORIAS_DIGEMID = data.categorias_digemid;
+          this.ESTADOS_DIGEMID = data.estados_digemid;
+        });
+      }, ConfigDelayFormulario.LOADING_DELAY);
 
       this.clienteSucursalForm = this.fb.group({
         ruc: [

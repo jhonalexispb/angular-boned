@@ -46,30 +46,58 @@
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            <th class="min-w-80px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
                                 colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Estado</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            <th class="min-w-150px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
                                 colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Fecha de registro</span><span
                                     class="dt-column-order"></span>
                             </th>
 
-                            <th class="text-end min-w-70px dt-orderable-none" data-dt-column="6" rowspan="1" colspan="1"
+                            <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1"
                                 aria-label="Actions">
                                 <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
                             </th>
                         </tr>
                     </thead>
                     <tbody *ngIf="COMPROBANTES.length > 0; else noData" class="fw-semibold text-gray-600">
-                        <tr *ngFor="let C of COMPROBANTES">
+                        <tr *ngFor="let C of COMPROBANTES; let index = index">
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ C.name }}</span>
+                                <div class="d-flex justify-content-start align-items-center gap-2">
+                                    <div class="d-md-none d-flex align-items-center">
+                                        <app-buttons-group-list
+                                        [index]="index"
+                                        [activeDropdownIndex]="activeDropdownIndex"
+                                        (dropdownToggle)="handleDropdownToggle($event)">
+                                        <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                          <li>
+                                            <button (click)="editComprobante(C)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                              <div class="d-flex gap-2">
+                                                <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                                Editar
+                                              </div>
+                                            </button>
+                                          </li>
+                                          <li>
+                                            <button (click)="deleteComprobante(C)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                              <div class="d-flex gap-2">
+                                                <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                Eliminar
+                                              </div>
+                                            </button>
+                                          </li>
+                                        </ul>
+                                        </app-buttons-group-list>
+                                    </div>
+                                    <!-- Aquí se muestra el RUC -->
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex justify-content-start flex-column">
+                                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ C.name }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -86,13 +114,25 @@
                             <td>
                                 {{ C.created_at }}
                             </td>
-                            <td class="">
-                                <a href="#" onclick="return false" (click)="editComprobante(C)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                </a>
-                                <a  href="#" onclick="return false" (click)="deleteComprobante(C)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                </a>
+                            <td class="d-none d-md-table-cell acciones-container">
+                                <ul class="pt-3 px-3 d-flex gap-2">
+                                    <li>
+                                      <button (click)="editComprobante(C)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <div class="d-flex gap-2">
+                                          <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                          Editar
+                                        </div>
+                                      </button>
+                                    </li>
+                                    <li>
+                                      <button (click)="deleteComprobante(C)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <div class="d-flex gap-2">
+                                          <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                          Eliminar
+                                        </div>
+                                      </button>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                     </tbody>

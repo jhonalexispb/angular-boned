@@ -6,6 +6,9 @@ export const URL_FRONTED = environment.URL_FRONTED
 export const ConfigDelay = {
   LOADING_DELAY: 500  // El valor por defecto para el tiempo de espera (en milisegundos)
 };
+export const ConfigDelayFormulario = {
+  LOADING_DELAY: 100  // El valor por defecto para el tiempo de espera cuando se llama un recurso(solucion al porblema de ng loading screen)
+};
 
 
 export const SIDEBAR:any = [

@@ -17,6 +17,7 @@ export class ListComprobanteComponent {
 
   totalPages:number = 0; 
   currentPage:number = 1;
+  activeDropdownIndex: number | null = null;
   
   constructor(
     public modalService: NgbModal,
@@ -71,5 +72,9 @@ export class ListComprobanteComponent {
         })
       }
     });
+  }
+
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 }

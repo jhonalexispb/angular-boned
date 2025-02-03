@@ -3,7 +3,7 @@
     <!--begin::Modal header-->
     <div class="modal-header" id="kt_modal_add_user_header">
         <!--begin::Modal title-->
-        <h2 class="fw-bolder">{{user}} comuniquémonos con {{NUMBER_SELECTED.persona}}</h2>
+        <h2 class="fw-bolder">{{user}} comuniquémonos con {{NUMBER_REPRESENTANTE_SELECTED.proveedor}}</h2>
         <!--end::Modal title-->
         <!--begin::Close-->
         <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
@@ -28,16 +28,17 @@
             <div class="d-flex flex-column">
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div *ngIf="NUMBER_SELECTED.valor;  else none">
+                    <div style="display: flex; flex-direction: column; align-items: center; ">
+                        <div *ngIf="NUMBER_REPRESENTANTE_SELECTED.phone;  else none">
+                        <span class="fs-3 mx-auto">Actualmente el representante de ventas de {{NUMBER_REPRESENTANTE_SELECTED.proveedor}} es {{NUMBER_REPRESENTANTE_SELECTED.persona}}</span>
                           <div class="d-flex flex-column gap-2">
-                            <a [href]="'https://wa.me/' + NUMBER_SELECTED.valor" class="badge-light-success p-4 rounded fs-5 text-center" target="_blank" style="text-decoration: none;">
+                            <a [href]="'https://wa.me/' + NUMBER_REPRESENTANTE_SELECTED.phone" class="badge-light-success p-4 rounded fs-5 text-center" target="_blank" style="text-decoration: none;">
                                 <i class="fa-brands fa-whatsapp text-success"></i>
-                                Enviar mensaje de whatsapp a {{ NUMBER_SELECTED.valor }}
+                                Enviar mensaje de whatsapp a {{ NUMBER_REPRESENTANTE_SELECTED.phone }}
                             </a>
-                            <a [href]="'tel:' + NUMBER_SELECTED.valor" class="badge-light-success p-2 rounded fs-5 text-center" target="_blank" style="text-decoration: none;">
+                            <a [href]="'tel:' + NUMBER_REPRESENTANTE_SELECTED.phone" class="badge-light-success p-2 rounded fs-5 text-center" target="_blank" style="text-decoration: none;">
                                 <i class="fa-solid fa-phone text-success"></i>
-                                Llamar a {{ NUMBER_SELECTED.valor}}
+                                Llamar a {{ NUMBER_REPRESENTANTE_SELECTED.phone}}
                             </a>
                           </div>
                         </div>
@@ -45,13 +46,18 @@
                     <ng-template #none>
                         <div class="display: flex; flex-direction: column; align-items: center;">
                             <div class="badge-light-warning p-2 rounded fs-2 text-center">
-                                Upss! {{NUMBER_SELECTED.persona}} no tiene ningun celular registrado
+                                Upss! {{NUMBER_REPRESENTANTE_SELECTED.proveedor}} no tiene ningun celular registrado
                             </div>
-                            <div class="w-100 d-flex justify-content-center py-2">
-                                <button class="btn btn-primary">
-                                    Asignar celular
-                                </button>
+                            <div *ngIf="NUMBER_REPRESENTANTE_SELECTED.persona != 'Sin representante';  else noperson">
+                                <div class="badge-light-warning p-2 rounded fs-2 text-center">
+                                    <span class="fs-3 mx-auto">Probablemente {{NUMBER_REPRESENTANTE_SELECTED.persona}} no tenga ningun numero de celular asignado</span>
+                                </div>
                             </div>
+                            <ng-template #noperson>
+                                <div class="badge-light-warning p-2 rounded fs-2 text-center">
+                                    <span>Uyy {{NUMBER_REPRESENTANTE_SELECTED.proveedor}} no tienen ningun representante de ventas asignado</span>
+                                </div>
+                            </ng-template>
                         </div>
                     </ng-template>
                 </div>
@@ -67,3 +73,4 @@
     <!--end::Modal body-->
 </div>
 <!--end::Modal content CREATE-->
+

@@ -44,12 +44,6 @@
 
                             <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
                                 colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
-                                <span class="dt-column-title" role="button">Representante</span><span
-                                    class="dt-column-order"></span>
-                            </th>
-
-                            <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1"
-                                colspan="1" aria-label="Customer Name: Activate to sort" tabindex="0">
                                 <span class="dt-column-title" role="button">Direccion</span><span
                                     class="dt-column-order"></span>
                             </th>
@@ -105,21 +99,21 @@
                                                 </button>
                                               </li>
                                               <li>
-                                                <button (click)="comunicationClienteSucursal([PROV.representante_celular ? 1 : 0,PROV.representante_celular,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                                <button (click)="comunicationRepresentanteProveedor([PROV.representante_celular,PROV.name,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
                                                   <div class="d-flex gap-2">
                                                     <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                                                     Comunicarse
                                                   </div>  
                                                 </button>
                                               </li>
-                                              <!-- <li>
-                                                <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                              <li *ngIf="PROV.email">
+                                                <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-primary">
                                                   <div class="d-flex gap-2">
                                                     <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-                                                    Mandar correo
-                                                  </div> 
+                                                    <a [href]="'mailto:' + PROV.email">Enviar Correo</a>
+                                                  </div>   
                                                 </button>
-                                              </li> -->
+                                              </li>
                                             </ul>
                                             </app-buttons-group-list>
                                         </div>
@@ -132,24 +126,6 @@
                                           </div>
                                         </div>
                                     </div>
-                                </td>
-                                
-                                <td>
-                                    <div style="display: flex; flex-direction: column; align-items: flex-start; ">
-                                        <div *ngIf="PROV.representante_celular else representante_celular">
-                                            <div class="badge-light-success p-2 rounded" (click)="comunicationRepresentanteProveedor([PROV.representante_celular,PROV.representante])">
-                                                <i class="fa-brands fa-whatsapp text-success"></i>
-                                                <span class="fs-7 fw-bold"> {{ PROV.representante }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <ng-template #representante_celular>
-                                        <div class="badge-light-warning p-2 rounded">
-                                            <i class="fa-solid fa-exclamation-triangle text-warning"></i>
-                                            <span class="fs-7 fw-bold"> Sin numero</span>
-                                        </div>
-                                    </ng-template>
                                 </td>
 
                                 <td>
@@ -168,7 +144,20 @@
                                 </td>
 
                                 <td>
-                                    {{ PROV.email }}
+                                    <div *ngIf="PROV.email else proveedor_email">
+                                      <div style="display: flex;">
+                                        <div class="badge-light-success p-2 rounded d-flex gap-2 align-items-center">
+                                            <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            <a [href]="'mailto:' + PROV.email">{{ PROV.email }}</a>
+                                        </div>    
+                                      </div>
+                                    </div>
+                                      <ng-template #proveedor_email>
+                                        <div class="badge-light-warning p-2 rounded">
+                                            <i class="fa-solid fa-exclamation-triangle text-warning"></i>
+                                            <span class="fs-7 fw-bold"> Sin correo</span>
+                                        </div>
+                                    </ng-template>
                                 </td>
 
                                 <td>
@@ -199,25 +188,24 @@
                                           </button>
                                         </li>
                                         <li>
-                                          <button (click)="comunicationClienteSucursal([PROV.representante_celular ? 1 : 0,PROV.representante_celular,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
+                                          <button (click)="comunicationRepresentanteProveedor([PROV.representante_celular,PROV.name,PROV.representante])" class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-success">
                                             <div class="d-flex gap-2">
                                               <i class="fa-brands fa-whatsapp fs-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                                               Comunicarse
                                             </div>  
                                           </button>
                                         </li>
-                                        <!-- <li>
-                                          <button (click)="comunicationClienteSucursalEmail([S.correos.length,S.correos,S.nombre_comercial])" class="btn btn-bg-light btn-active-color-primary text-primary btn-sm me-1 w-100">
+                                        <li *ngIf="PROV.email">
+                                          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100 text-primary">
                                             <div class="d-flex gap-2">
                                               <i class="fa-solid fa-envelope fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-                                              Mandar correo
-                                            </div> 
+                                              <a [href]="'mailto:' + PROV.email">Enviar Correo</a>
+                                            </div>   
                                           </button>
-                                        </li> -->
+                                        </li>
                                       </ul>
                                   </td>
                             </tr>
-                        
                     </tbody>
                     <tfoot></tfoot>
                 </table>

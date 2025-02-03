@@ -36,6 +36,7 @@ export class EditProveedorComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true
     this.name = this.PROVEEDOR_SELECTED.name,
     this.razonSocial = this.PROVEEDOR_SELECTED.razonSocial,
     this.address = this.PROVEEDOR_SELECTED.address,
@@ -46,6 +47,7 @@ export class EditProveedorComponent {
     this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
       this.DISTRITOS = data.distritos;
       this.REPRESENTANTES = data.representantes;
+      this.loading = false
     });
   }
 

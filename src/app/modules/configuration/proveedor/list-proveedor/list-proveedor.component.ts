@@ -4,8 +4,7 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { ServiceProveedorService } from '../service/service-proveedor.service';
 import { CreateProveedorComponent } from '../create-proveedor/create-proveedor.component';
 import { EditProveedorComponent } from '../edit-proveedor/edit-proveedor.component';
-import { ComunicationPersonComponent } from 'src/app/components/comunication-person/comunication-person.component';
-import { ComunicationPersonEmailComponent } from 'src/app/components/comunication-person-email/comunication-person-email.component';
+import { ComunicationProveedorComponent } from '../comunication-proveedor/comunication-proveedor.component';
 
 @Component({
   selector: 'app-list-proveedor',
@@ -93,34 +92,15 @@ export class ListProveedorComponent {
   }
 
   comunicationRepresentanteProveedor(DATOS_REP:any){
-    const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
+    const modalRef = this.modalService.open(ComunicationProveedorComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.NUMBER_REPRESENTANTE_SELECTED = {
       phone: DATOS_REP[0],
-      persona: DATOS_REP[1]
+      proveedor: DATOS_REP[1],
+      persona: DATOS_REP[2]
     };
   }
 
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
-
-  comunicationClienteSucursal(DATOS:any){
-      const modalRef = this.modalService.open(ComunicationPersonComponent,{centered:true, size: 'md'})
-      console.log(DATOS)
-      modalRef.componentInstance.NUMBER_SELECTED = {
-        n_datos: DATOS[0],    // Nombre
-        valor: DATOS[1],  // Celular
-        persona: DATOS[2],    // Nombre
-      };
-    }
-  
-    comunicationClienteSucursalEmail(DATOS:any){
-      const modalRef = this.modalService.open(ComunicationPersonEmailComponent,{centered:true, size: 'md'})
-      console.log(DATOS)
-      modalRef.componentInstance.EMAIL_SELECTED = {
-        n_datos: DATOS[0],    // Nombre
-        valor: DATOS[1],  // Celular
-        persona: DATOS[2],    // Nombre
-      };
-    }
 }

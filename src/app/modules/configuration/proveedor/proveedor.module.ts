@@ -13,6 +13,7 @@ import { ProveedorComponent } from './proveedor.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
+import { ComunicationProveedorComponent } from './comunication-proveedor/comunication-proveedor.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/bu
     EditProveedorComponent,
     CreateProveedorComponent,
     ProveedorComponent,
+    ComunicationProveedorComponent,
   ],
   imports: [
     CommonModule,

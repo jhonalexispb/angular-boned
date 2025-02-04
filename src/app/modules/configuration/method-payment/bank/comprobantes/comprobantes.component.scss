@@ -1,0 +1,37 @@
+ul {
+    list-style-type: none !important;  /* Remueve los puntos de la lista con mayor prioridad */
+  }
+  
+  .mi-custom-option {
+    border: 1px solid #ddd;          /* Borde suave alrededor de cada opción */
+    border-radius: 5px;              /* Bordes redondeados */
+               /* Separación entre las opciones */
+    padding: 10px;                   /* Espaciado interno para que el contenido no quede pegado al borde */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra difusa para un borde más suave */
+    transition: box-shadow 0.3s ease; /* Transición suave al pasar el ratón */
+    word-wrap: break-word;           /* Ajusta las palabras largas */
+    overflow: hidden;                /* Esconde cualquier contenido desbordado */
+  }
+  
+  /* Estilo cuando el ratón pasa sobre una opción */
+  .mi-custom-option:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra al pasar el ratón */
+    background-color: #3288ff;  /* Fondo suave al hacer hover */
+  }
+  
+  
+  /* Si se desea separar los elementos internos dentro del div */
+  .mi-custom-option h6,
+  .mi-custom-option small {
+    display: block;    /* Asegura que cada elemento se muestre en una línea separada */
+  }
+  
+  app-buttons-group-list {
+    position: absolute;
+    z-index: 10;
+    left: -10px;
+  }
+  
+  button {
+    white-space: nowrap; /* Esto evita que el texto se divida en varias líneas */
+  }

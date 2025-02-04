@@ -1,16 +1,17 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
-import { BankService } from '../service/bank-service.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateComprobanteComponent } from '../../comprobante/create-comprobante/create-comprobante.component';
+import { BankService } from '../service/bank-service.service';
+
 @Component({
-  selector: 'app-create-relacion-banco-comprobante',
-  templateUrl: './create-relacion-banco-comprobante.component.html',
-  styleUrls: ['./create-relacion-banco-comprobante.component.scss']
+  selector: 'app-edit-relacion-banco-comprobante',
+  templateUrl: './edit-relacion-banco-comprobante.component.html',
+  styleUrls: ['./edit-relacion-banco-comprobante.component.scss']
 })
-export class CreateRelacionBancoComprobanteComponent {
-  @Output() relacionBancoComprobanteC:EventEmitter<any> = new EventEmitter();
+export class EditRelacionBancoComprobanteComponent {
+  @Output() relacionBancoComprobanteE:EventEmitter<any> = new EventEmitter();
   @Input() BANK_RELATION_SELECTED:any;
   COMPROBANTES:any = []
   name:string = '';
@@ -44,6 +45,7 @@ export class CreateRelacionBancoComprobanteComponent {
       ubicacion_codigo: [''],
       img_ejemplo_relation: [null]
     });
+    console.log(this.BANK_RELATION_SELECTED)
   }
 
   createComprobante(){
@@ -67,7 +69,7 @@ export class CreateRelacionBancoComprobanteComponent {
       this.bankService.registrarRelacionBancoComprobante(formData).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-            this.relacionBancoComprobanteC.emit(resp.relacionBancoComprobante);
+            this.relacionBancoComprobanteE.emit(resp.relacionBancoComprobante);
             this.modal.close();
             this.sweet.success(
               '¡Éxito!',

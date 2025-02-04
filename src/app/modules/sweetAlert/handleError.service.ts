@@ -57,14 +57,13 @@ export class HandleErrorService {
                   this.sweet.alerta('Ups', error.error.message_text);
                 }
               } else {
-                const errorMessages = error.error.errors;
+                const errorMessages = error.error; // Aquí accedemos directamente a `error.error`
                 const formattedErrors: { field: string, message: string }[] = [];
 
-                // Formatear los errores para enviarlos como parámetros
-                for (let field in errorMessages) {
-                  errorMessages[field].forEach((message: string) => {
-                    formattedErrors.push({ field: field, message: message });
-                  });
+                // Verificar si el mensaje de error está presente
+                if (errorMessages && errorMessages.error) {
+                  // Si es un error con un solo mensaje
+                  formattedErrors.push({ field: 'general', message: errorMessages.error });
                 }
 
                 // Crear una cadena de texto con los errores formateados

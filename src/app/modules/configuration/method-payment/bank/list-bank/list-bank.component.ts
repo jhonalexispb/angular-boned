@@ -77,7 +77,7 @@ export class ListBankComponent {
   }
 
   listarComprobantes(BANCO:any){
-    const modalRef = this.modalService.open(ComprobantesComponent,{centered:true, size: 'md'})
+    const modalRef = this.modalService.open(ComprobantesComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.BANK_TO_SELECTED = BANCO
   }
 

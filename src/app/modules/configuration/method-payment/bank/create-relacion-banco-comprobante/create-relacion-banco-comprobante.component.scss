@@ -1,15 +1,69 @@
-.custom-dropzone {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%; /* Ajusta según el tamaño deseado */
-    height: 100%;
-    border: 2px dashed #ccc; /* Línea discontinua */
-    border-radius: 12px; /* Bordes redondeados */
-    background-color: #f9f9f9; /* Fondo claro */
-    cursor: pointer;
-    overflow: hidden;
-    transition: background-color 0.3s, border-color 0.3s;
-  }
+/* Estilo general para el contenedor de la imagen */
+.image-upload-container {
+  width: 100%;
+  min-height: 100px; /* Puedes ajustar este valor según el diseño */
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  background-color: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.image-upload-container:hover {
+  background-color: #e0efff;
+}
+
+/* Estilos del mensaje cuando no hay imagen */
+.upload-message {
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+}
+
+/* Estilos para la vista previa de la imagen */
+.image-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+}
+
+.image-preview-img {
+  /* Aquí se asegura que la imagen se adapte de la mejor forma */
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+/* Estilo del botón de eliminar */
+.delete-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10; /* Asegura que el botón esté encima de la imagen */
+  transition: background-color 0.3s ease;
+}
+
+.delete-image-btn:hover {
+  background-color: darkred;
+}
+
+/* Mostrar el botón de eliminar cuando hay imagen */
+.image-upload-container:hover .delete-image-btn {
+  display: block;
+}
   

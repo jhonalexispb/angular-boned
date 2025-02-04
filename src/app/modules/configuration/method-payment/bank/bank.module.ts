@@ -16,6 +16,8 @@ import { ComprobantesComponent } from './comprobantes/comprobantes.component';
 import { CreateRelacionBancoComprobanteComponent } from './create-relacion-banco-comprobante/create-relacion-banco-comprobante.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { EditRelacionBancoComprobanteComponent } from './edit-relacion-banco-comprobante/edit-relacion-banco-comprobante.component';
+import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
 
 
 @NgModule({
@@ -26,6 +28,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CreateBankComponent,
     ComprobantesComponent,
     CreateRelacionBancoComprobanteComponent,
+    EditRelacionBancoComprobanteComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +43,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ButtonsGroupListModule,
     DropzoneModule,
     NgSelectModule,
+    DropImageModule
   ]
 })
 export class BankModule { }

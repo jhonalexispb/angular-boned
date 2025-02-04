@@ -79,7 +79,7 @@ export class BankService {
   registrarRelacionBancoComprobante(data:any){
     this.loadingService.showLoading('Registrando relacion')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/banco/relacion_banco_comprobante";
+    let URL = URL_SERVICIO+"/banco/gestionar_relacion/banco_comprobante";
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

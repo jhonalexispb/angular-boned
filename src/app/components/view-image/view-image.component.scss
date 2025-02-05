@@ -1,0 +1,116 @@
+.image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  img {
+    width: 100%; /* Asegúrate de que la imagen tenga el tamaño adecuado */
+    height: auto;
+    display: block;
+  }
+  
+  .zoom-area {
+    position: absolute;
+    width: 150px;  /* Tamaño del área de zoom */
+    height: 150px; /* Tamaño del área de zoom */
+    border: 2px solid red; /* Borde para el área de zoom */
+    pointer-events: none; /* Para evitar interferencia con la interacción del mouse */
+    background-repeat: no-repeat;
+    z-index: 10;
+  }
+
+  // Estilos para los controles de zoom
+.controls-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .control-label {
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+    width: 200px;
+  }
+  
+  .control-range {
+    width: 100%;
+    -webkit-appearance: none;  /* Para quitar el estilo predeterminado del navegador */
+    background: #ddd;
+    height: 8px;
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s ease;
+  
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff5733;  /* Color bonito para el botón */
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+  
+    &:hover::-webkit-slider-thumb {
+      background: #e94f2f;  /* Color más oscuro cuando el usuario pasa el mouse */
+    }
+  
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff5733;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+  
+    &:hover::-moz-range-thumb {
+      background: #e94f2f;
+    }
+  
+    &::-ms-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff5733;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+  
+    &:hover::-ms-thumb {
+      background: #e94f2f;
+    }
+  }
+  
+  // Botones en la parte inferior
+  .text-center {
+    padding: 1rem;
+  }
+  
+  .btn {
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-light {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+  }

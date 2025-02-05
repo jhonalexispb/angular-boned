@@ -112,7 +112,7 @@
                                     <!-- Aquí se muestra el RUC -->
                                     <div class="d-flex align-items-center">
                                         <div class="symbol symbol-50px me-5">
-                                            <img [src]="B.image" class="" alt="img">
+                                            <img [src]="B.image" class="" alt="img" (click)="viewImagen(B.image)">
                                         </div>
                                         <div class="d-flex justify-content-start flex-column">
                                             <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ B.name }}</span>

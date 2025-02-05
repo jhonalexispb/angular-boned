@@ -5,6 +5,7 @@ import { CreateRelacionBancoComprobanteComponent } from '../create-relacion-banc
 import { EditRelacionBancoComprobanteComponent } from '../edit-relacion-banco-comprobante/edit-relacion-banco-comprobante.component';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { BankService } from '../service/bank-service.service';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 
 @Component({
   selector: 'app-comprobantes',
@@ -67,5 +68,10 @@ export class ComprobantesComponent {
 
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
+  }
+
+  viewImagen(image:string){
+    const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.IMAGE_SELECTED = image
   }
 }

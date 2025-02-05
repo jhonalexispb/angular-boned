@@ -1,0 +1,42 @@
+<div class="modal-content">
+    <div class="modal-body scroll-y">
+      <div class="image-container w-100" 
+           (mousemove)="onMouseMove($event)" 
+           (mouseenter)="onMouseEnter()" 
+           (mouseleave)="onMouseLeave()">
+        <img #zoomImage [src]="IMAGE_SELECTED"
+             [ngStyle]="{ 'transform': 'rotate(' + rotation + 'deg)' }" alt="Vista previa de imagen">
+  
+        <!-- Área de zoom que se mueve con el mouse -->
+        <div *ngIf="isZooming" class="zoom-area" 
+            [ngStyle]="{
+            'background-image': 'url(' + IMAGE_SELECTED + ')',
+            'background-size': zoomLevel * 300 + '%',
+            'background-position': zoomPosition,
+            'top': zoomAreaStyle.top,
+            'left': zoomAreaStyle.left,
+            'width': zoomAreaSize + 'px',
+            'height': zoomAreaSize + 'px',
+            'transform': zoomAreaStyle.transform
+            }">
+        </div>
+      </div>
+      <div class="controls-container">
+        <div class="control-group">
+          <label for="zoom-size" class="control-label">Tamaño del Cuadrado:</label>
+          <input type="range" id="zoom-size" min="50" max="300" [(ngModel)]="zoomAreaSize" class="control-range">
+        </div>
+        <div class="control-group">
+          <label for="zoom-level" class="control-label">Nivel de Zoom:</label>
+          <input type="range" id="zoom-level" min="1" max="5" [(ngModel)]="zoomLevel" class="control-range">
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-center p-3">
+      <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+      <button class="btn btn-info" (click)="rotateImage()">Rotar</button>
+    </div>
+  </div>
+
+  

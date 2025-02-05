@@ -3,11 +3,13 @@
     <div class="upload-message">
       <span>Arrastra o haz clic para cargar una imagen</span>
     </div>
-  </div>
+</div>
   
-  <div class="image-preview" *ngIf="imageSrc">
-    <img [src]="imageSrc" alt="Vista previa" class="image-preview-img">
-    <button class="btn btn-icon btn-danger delete-image-btn" (click)="deleteImage($event)">
-      <i class="fa-solid fa-trash"></i>
-    </button>
-  </div>
+  
+<div class="image-preview" *ngIf="imageSrc">
+  <img [src]="imageSrc" alt="Vista previa" class="image-preview-img">
+  <button class="btn btn-icon btn-danger delete-image-btn" (click)="deleteImage($event)">
+    <i class="fa-solid fa-trash fs-2"></i>
+  </button>
+</div>
+  

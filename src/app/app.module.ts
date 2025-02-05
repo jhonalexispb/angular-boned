@@ -17,7 +17,8 @@ import { FakeAPIService } from './_fake/fake-api.service';
 import { ToastrModule } from 'ngx-toastr';
 import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
-import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component';
+import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component'; 
+import { ViewImageModule } from './components/view-image/view-image.module';
 // #fake-end#
 
 
@@ -53,6 +54,7 @@ function appInitializer(authService: AuthService) {
     ToastrModule.forRoot(),
     NgbPaginationModule,  
     LottieModule.forRoot(appConfig),
+    ViewImageModule
   ],
   providers: [
     {

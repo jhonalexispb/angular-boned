@@ -26,12 +26,12 @@ export class ComprobantesComponent {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.BANK_TO_SELECTED)
   }
 
   crearRelacionBancoComprobante(BANK:any){
     const modalRef = this.modalService.open(CreateRelacionBancoComprobanteComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.BANK_RELATION_SELECTED = BANK
-    modalRef.componentInstance.BANK_RELATION_SELECTED.name = this.BANK_TO_SELECTED.name;
     modalRef.componentInstance.relacionBancoComprobanteC.subscribe((bank:any)=>{
       this.BANK_TO_SELECTED.comprobantes.push(bank); //integra el nuevo valor al inicio de la tabla
     })
@@ -40,11 +40,14 @@ export class ComprobantesComponent {
   editRelacion(BANK:any){
       const modalRef = this.modalService.open(EditRelacionBancoComprobanteComponent,{centered:true, size: 'md'})
       modalRef.componentInstance.BANK_RELATION_SELECTED = BANK;
+      modalRef.componentInstance.BANK_RELATION_SELECTED.name = this.BANK_TO_SELECTED.name;
+      modalRef.componentInstance.BANK_RELATION_SELECTED.id_bank = this.BANK_TO_SELECTED.id;
       modalRef.componentInstance.relacionBancoComprobanteE.subscribe((bank:any)=>{
-        let INDEX = this.BANK_TO_SELECTED.findIndex((b:any) => b.id == BANK.id);
+        let INDEX = this.BANK_TO_SELECTED.comprobantes.findIndex((b:any) => b.id_relacion == BANK.id_relacion);
         if(INDEX != -1){
-          this.BANK_TO_SELECTED[INDEX] = bank
+          this.BANK_TO_SELECTED.comprobantes[INDEX] = bank
         }
+        console.log(this.BANK_TO_SELECTED[INDEX])
       })
     }
 

@@ -17,7 +17,7 @@ export class EditRelacionBancoComprobanteComponent {
   name:string = '';
   loading:boolean = false
 
-  imageSrc: string | ArrayBuffer | null = null;
+  miImagenActual: string | ArrayBuffer | null = null;
   relacionBancoComprobanteForm: FormGroup;
   sweet:any = new SweetalertService
 
@@ -38,13 +38,16 @@ export class EditRelacionBancoComprobanteComponent {
       this.loading = false
     });
     this.relacionBancoComprobanteForm = this.fb.group({
-      id_banco:[this.BANK_RELATION_SELECTED.id, [Validators.required]],
-      id_comprobante_pago:[null, [Validators.required]],
-      tipo_caracter: ['1', [Validators.required]],
-      ncaracteres: ['', [Validators.required]],
-      ubicacion_codigo: [''],
-      img_ejemplo_relation: [null]
+      id_banco:[this.BANK_RELATION_SELECTED.id_bank, [Validators.required]],
+      id_comprobante_pago:[this.BANK_RELATION_SELECTED.comprobante.id, [Validators.required]],
+      tipo_caracter: [this.BANK_RELATION_SELECTED.tipo_caracter, [Validators.required]],
+      ncaracteres: [this.BANK_RELATION_SELECTED.ncaracteres, [Validators.required]],
+      ubicacion_codigo: [this.BANK_RELATION_SELECTED.ubicacion_codigo],
+      state: [this.BANK_RELATION_SELECTED.state_relacion],
+      img_ejemplo_relation: [null],
+      keep_existing_image: ["true"],
     });
+    this.miImagenActual = this.BANK_RELATION_SELECTED.img_ejemplo
     console.log(this.BANK_RELATION_SELECTED)
   }
 
@@ -66,14 +69,14 @@ export class EditRelacionBancoComprobanteComponent {
         }
       }
 
-      this.bankService.registrarRelacionBancoComprobante(formData).subscribe({
+      this.bankService.updateRelacionBancoComprobante(this.BANK_RELATION_SELECTED.id_relacion,formData).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
             this.relacionBancoComprobanteE.emit(resp.relacionBancoComprobante);
             this.modal.close();
             this.sweet.success(
               '¡Éxito!',
-              'la relacion se registró correctamente'
+              'la relacion se actulizo correctamente'
             );
         },
       })
@@ -83,7 +86,7 @@ export class EditRelacionBancoComprobanteComponent {
   onImageSelected(file: File): void {
     const reader = new FileReader();
     reader.onload = () => {
-      this.imageSrc = reader.result;
+      this.miImagenActual = reader.result;
       this.relacionBancoComprobanteForm.patchValue({
         img_ejemplo_relation: file
       });
@@ -92,9 +95,11 @@ export class EditRelacionBancoComprobanteComponent {
   }
 
   onImageDeleted(): void {
-    this.imageSrc = null;
-    this.relacionBancoComprobanteForm.patchValue({
-      img_ejemplo_relation: null
+    this.miImagenActual = null;
+    this.relacionBancoComprobanteForm.setValue({
+      ...this.relacionBancoComprobanteForm.value, // Mantiene los valores actuales
+      img_ejemplo_relation: null,
+      keep_existing_image: "false"
     });
   }
 }

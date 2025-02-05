@@ -3,7 +3,7 @@
     <!--begin::Modal header-->
     <div class="modal-header" id="kt_modal_add_user_header">
         <!--begin::Modal title-->
-        <h2 class="fw-bolder">Editar lugar de pago a {{BANK_RELATION_SELECTED.name}}</h2>
+        <h2 class="fw-bolder">Editar lugar de pago "{{BANK_RELATION_SELECTED.comprobante.name}}" para {{BANK_RELATION_SELECTED.name}}</h2>
 
         <!--end::Modal title-->
         <!--begin::Close-->
@@ -92,8 +92,16 @@
                     />
                 </div>
                 <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2" for="state_relacion">Estado</label>
+                    <select formControlName="state" class="form-control">
+                        <option value="1">Activo</option>
+                        <option value="2">Inactivo</option>
+                    </select>
+                </div>
+                <div class="fv-row mb-7">
                     <label class="fw-bold fs-6 mb-2" for="mainImage">Imagen de ejemplo</label>
                     <app-drop-image 
+                      [imageUrl]="miImagenActual" 
                       (imageSelected)="onImageSelected($event)"
                       (imageDeleted)="onImageDeleted()">
                     </app-drop-image>

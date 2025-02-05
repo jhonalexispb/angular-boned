@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-drop-image',
@@ -6,11 +6,27 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./drop-image.component.scss']
 })
 export class DropImageComponent {
+  @Input() imageUrl: string | ArrayBuffer | null = null;
   @Output() imageSelected: EventEmitter<File> = new EventEmitter<File>();  // Emitir imagen seleccionada
   @Output() imageDeleted: EventEmitter<void> = new EventEmitter<void>();  // Emitir evento de eliminación
 
   imageSrc: string | ArrayBuffer | null = null;
   file: File | null = null;  // Para almacenar el archivo de imagen
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['imageUrl'] && changes['imageUrl'].currentValue) {
+      if (this.imageUrl instanceof ArrayBuffer) {
+        // Convertir ArrayBuffer a Base64
+        const reader = new FileReader();
+        reader.readAsDataURL(new Blob([this.imageUrl]));
+        reader.onloadend = () => {
+          this.imageSrc = reader.result;
+        };
+      } else {
+        this.imageSrc = this.imageUrl;
+      }
+    }
+  }
 
   // Método para manejar la carga de imagen
   onImageSelect(event: Event): void {

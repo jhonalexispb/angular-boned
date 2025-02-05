@@ -65,6 +65,7 @@ export class CreateProductComponent {
         this.loading = false
       })
     this.productForm = this.fb.group({
+      
       productName: [''],
       laboratorio_id:[null],
       principio_activo_id:[null],

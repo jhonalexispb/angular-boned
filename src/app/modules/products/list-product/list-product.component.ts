@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditSucursalesComponent } from '../../clientes/sucursales/edit-sucursales/edit-sucursales.component';
-import { SucursalClienteService } from '../../clientes/sucursales/service/sucursalCliente.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProductComponent } from '../create-product/create-product.component';
+import { ProductService } from '../service/product.service';
 
 @Component({
   selector: 'app-list-product',
@@ -21,7 +21,7 @@ export class ListProductComponent {
   
     constructor(
       public modalService: NgbModal,
-      public sucursalesService: SucursalClienteService,
+      public productService: ProductService,
     ){
   
     }
@@ -41,11 +41,11 @@ export class ListProductComponent {
     }
   
     listProductos(page = 1){
-      /* this.sucursalesService.listSucursalCliente(page,this.search).subscribe((resp: any) => {
-        this.PRODUCT_LIST = resp.cliente_sucursales;
+      this.productService.listProductos(page,this.search).subscribe((resp: any) => {
+        this.PRODUCT_LIST = resp.products;
         this.totalPages = resp.total;
         this.currentPage = page;
-      }) */
+      })
     }
   
     loadPage(page: number) {
@@ -77,7 +77,7 @@ export class ListProductComponent {
       this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la sucursal: ${SUC_CL.nombre_comercial} de ${SUC_CL.ruc} ${SUC_CL.razon_social}?`).then((result:any) => {
         if (result.isConfirmed) {
           // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-          this.sucursalesService.deleteSucursalCliente(SUC_CL.id).subscribe({
+          this.productService.deleteProducto(SUC_CL.id).subscribe({
             next: (resp: any) => {
               this.PRODUCT_LIST = this.PRODUCT_LIST.filter((sucurs:any) => sucurs.id !== SUC_CL.id); // Eliminamos el rol de la lista
               this.sweet.success('Eliminado', 'La sucursal ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');

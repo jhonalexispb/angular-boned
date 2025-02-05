@@ -35,3 +35,7 @@ ul {
   button {
     white-space: nowrap; /* Esto evita que el texto se divida en varias líneas */
   }
+
+  img {
+    object-fit:contain;
+  }

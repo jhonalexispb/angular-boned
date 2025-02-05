@@ -20,9 +20,9 @@ export class ProductService {
   ) {}
 
   registerProducto(data:any){
-    this.loadingService.showLoading('Registrando sucursal')
+    this.loadingService.showLoading('Registrando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente_sucursal";
+    let URL = URL_SERVICIO+"/productos";
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
@@ -30,9 +30,9 @@ export class ProductService {
   }
 
   listProductos(page = 1, search:string = ''){
-    this.loadingService.showLoading('Listando sucursales')
+    this.loadingService.showLoading('Listando productos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente_sucursal?page="+page+"&search="+search;
+    let URL = URL_SERVICIO+"/productos?page="+page+"&search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
@@ -43,20 +43,20 @@ export class ProductService {
     ) 
   }
 
-  updateProductos(ID_SUCURSAL:string,data:any){
-    this.loadingService.showLoading('Actualizando sucursal')
+  updateProducto(ID_SUCURSAL:string,data:any){
+    this.loadingService.showLoading('Actualizando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente_sucursal/"+ID_SUCURSAL;
+    let URL = URL_SERVICIO+"/productos/"+ID_SUCURSAL;
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
 
-  deleteProductos(ID_SUCURSAL:string){
-    this.loadingService.showLoading('Eliminando sucursal')
+  deleteProducto(ID_SUCURSAL:string){
+    this.loadingService.showLoading('Eliminando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/cliente_sucursal/"+ID_SUCURSAL;
+    let URL = URL_SERVICIO+"/productos/"+ID_SUCURSAL;
     return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

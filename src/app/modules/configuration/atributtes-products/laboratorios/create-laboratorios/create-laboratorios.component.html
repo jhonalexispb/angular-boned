@@ -32,6 +32,19 @@
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2">Codigo del laboratorio</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <input type="text" name="codigo" class="form-control mb-3 mb-lg-0"
+                        placeholder="Cargando codigo..." [(ngModel)]="codigo" autocomplete="off" #codLaboratorio="ngModel" required
+                        [ngClass]="{'is-invalid': codLaboratorio.invalid && codLaboratorio.touched}" disabled/>
+                    <div *ngIf="codLaboratorio.invalid && codLaboratorio.touched" class="invalid-feedback">
+                        El nombre es requerido
+                    </div>
+                    <!--end::Input-->
+                </div>
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
                     <!--begin::Label-->

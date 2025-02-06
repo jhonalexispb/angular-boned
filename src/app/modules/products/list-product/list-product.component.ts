@@ -54,7 +54,7 @@ export class ListProductComponent {
   
     createProducto(){
       const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
-      modalRef.componentInstance.ClienteSucursalC.subscribe((r:any)=>{
+      modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
         this.PRODUCT_LIST.unshift(r); //integra el nuevo valor al inicio de la tabla
       })
     }

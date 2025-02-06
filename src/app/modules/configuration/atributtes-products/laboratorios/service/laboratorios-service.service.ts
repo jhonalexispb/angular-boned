@@ -81,4 +81,14 @@ export class LaboratoriosServiceService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //solicitamos el codigo que sigue para el laboratorio
+  obtenerRecursosParaCrear(){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/laboratorio/recurso_para_crear/";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

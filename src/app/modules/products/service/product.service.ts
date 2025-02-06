@@ -75,4 +75,14 @@ export class ProductService {
       })
     ) 
   }
+
+  //solicitamos el codigo que sigue para el siguiente producto
+  obtenerRecursosParaCrear(ID_LAB:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/productos/recursos_para_crear?laboratorio_id="+ID_LAB
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

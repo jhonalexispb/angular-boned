@@ -17,9 +17,11 @@ export class CreateLaboratoriosComponent {
   imagen_previzualizade:any;
   color:string = '#58BF53';
   margen_minimo:number = 20;
+  codigo:number
   proveedores:any[] = [];
 
   loading: boolean = false;
+  loading_codigo: boolean = false;
 
   sweet:any = new SweetalertService
 
@@ -34,9 +36,14 @@ export class CreateLaboratoriosComponent {
 
   ngOnInit(): void {
     this.loading = true;
+    this.loading_codigo = true;
     this.laboratorioService.obtenerRecursos().subscribe((data: any) => {
       this.PROVEEDORES = data.proveedores;
       this.loading = false;
+    });
+    this.laboratorioService.obtenerRecursosParaCrear().subscribe((data: any) => {
+      this.codigo = data.codigo;
+      this.loading_codigo = false;
     });
   }
 
@@ -49,6 +56,11 @@ export class CreateLaboratoriosComponent {
   }
 
   store(){
+    if(!this.codigo){
+      this.sweet.formulario_invalido("Validacion","el codigo del laboratorio es requerido");
+      return false;
+    }
+
     if(!this.name){
       this.sweet.formulario_invalido("Validacion","el nombre del laboratorio es requerido");
       return false;

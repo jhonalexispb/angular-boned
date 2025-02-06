@@ -29,8 +29,7 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <label class="required form-label">Tipo</label>
-                            <select class="form-select">
-                              <option value="" disabled>Selecciona una opcion</option>
+                            <select class="form-select" formControlName="tproducto">
                               <option value="1">Comercial<option>
                               <option value="2">Generico</option>
                             </select>
@@ -46,7 +45,7 @@
                             <label class="form-label">Codigo de barra</label>
                             <input
                               type="text"
-                              name="product_name"
+                              formControlName="codigobarra"
                               class="form-control"
                               placeholder="Escribe el nombre del producto"
                             />
@@ -81,13 +80,41 @@
 
                         <div class="col-md-4">
                           <label class="form-label">¿Sale en boleta?</label>
-                          <div class="form-check form-check-custom form-check-solid mb-3">
-                            <input class="form-check-input" type="checkbox" value=""/>
-                            <label class="form-check-label">Si</label>
+                          <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                              <label class="form-check-label">No</label>
+                              <input class="form-check-input" type="checkbox" formControlName="sale_boleta"/>
+                              <label class="form-check-label">Sí</label>
                           </div>
   
                           <div class="text-muted fs-7">
                             Importante para determinar el documento de venta
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">¿Maneja lotes?</label>
+                          <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                              <label class="form-check-label">No</label>
+                              <input class="form-check-input" type="checkbox" formControlName="maneja_lotes" />
+                              <label class="form-check-label">Sí</label>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">¿Maneja escalas?</label>
+                          <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                              <label class="form-check-label">No</label>
+                              <input class="form-check-input" type="checkbox" formControlName="maneja_escalas" />
+                              <label class="form-check-label">Sí</label>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">¿Es promocionable?</label>
+                          <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                              <label class="form-check-label">No</label>
+                              <input class="form-check-input" type="checkbox" formControlName="promocionable" />
+                              <label class="form-check-label">Sí</label>
                           </div>
                         </div>
 
@@ -101,18 +128,9 @@
                     <div class="card-header">
                       <div class="w-100">
                         <div class="card-title m-0">
-                          <div class="w-100 d-md-flex justify-content-between">
-                            <h2>Informacion</h2>
-                            <div class="d-md-flex align-items-center gap-2 mt-5 mt-md-0">
-                              <label class="form-label fs-4 m-0">SKU:</label>
-                              <input
-                                type="text"
-                                name="product_name"
-                                class="form-control w-100"
-                                placeholder="Codigo del producto"
-                              />
-                            </div>
-                          </div>
+                          
+                          <h2>Informacion</h2>
+                          
                         </div>
                       </div>
                     </div>
@@ -124,7 +142,7 @@
                             <label class="required form-label mb-4 mt-2">Nombre</label>
                             <input
                               type="text"
-                              name="product_name"
+                              formControlName="nombre"
                               class="form-control"
                               placeholder="Escribe el nombre del producto"
                             />
@@ -136,10 +154,10 @@
 
                         <div class="col-md-4"> 
                           <div class="mb-3">
-                            <label class="required form-label mb-4 mt-2">Caracteristicas</label>
+                            <label class="form-label mb-4 mt-2">Caracteristicas</label>
                             <input
                             type="text"
-                            name="product_name"
+                            formControlName="caracteristicas"
                             class="form-control"
                             placeholder="Escribe las caracteristicas del producto"
                             />
@@ -168,8 +186,34 @@
                               [clearable]="true" 
                               [virtualScroll]="true"  
                               [loading]="loading"  
-                              [loadingText]="'Cargando...'" >
+                              [loadingText]="'Cargando...'" 
+                              (change)="onLaboratorioChange()">
                             </ng-select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <label class="required form-label mb-4 mt-2">SKU</label>
+                              <div class="input-group">
+                                <input
+                                  type="text"
+                                  formControlName="sku_manual" 
+                                  (input)="onSkuChange()"
+                                  class="form-control"
+                                  placeholder="Codigo del producto"
+                                  maxlength="8"
+                                  pattern="\d*"
+                                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                />
+                                <button class="btn btn-primary" type="button" id="button-addon2" (click)="callCodigoProducto(productForm.get('laboratorio_id')?.value)" [disabled]="!productForm.get('laboratorio_id')?.value">
+                                <i class="fa fa-search"></i>
+                                </button>
+                              </div>
+                              <div *ngIf="productForm.get('sku_manual')?.dirty && productForm.get('sku_manual')?.invalid" class="text-danger">
+                                <span *ngIf="productForm.get('sku_manual')?.errors?.['minlength']">El SKU debe tener 8 dígitos.</span>
+                                <span *ngIf="productForm.get('sku_manual')?.errors?.['maxlength']">El SKU no puede exceder los 8 dígitos.</span>
+                              </div>
                           </div>
                         </div>
 
@@ -184,7 +228,7 @@
                             <ng-select 
                               [items]="PRINCIPIOS_ACTIVOS"
                               formControlName="principio_activo_id"
-                              bindLabel="name"
+                              bindLabel="name_complete"
                               bindValue="id"
                               placeholder="Selecciona uno o mas principios activos"
                               [searchable]="true"
@@ -238,7 +282,7 @@
                             <ng-select 
                               [items]="FABRICANTES"
                               formControlName="fabricante_id"
-                              bindLabel="name"
+                              bindLabel="name_complete"
                               bindValue="id"
                               placeholder="Selecciona un fabricante"
                               [searchable]="true"
@@ -287,7 +331,7 @@
                             <textarea
                               class="form-control form-control-solid"
                               rows="3"
-                              name="target_details"
+                              formControlName="descripcion"
                               placeholder="Escribe la descripción del producto"
                             ></textarea>
                             <div class="text-muted fs-7">
@@ -312,14 +356,14 @@
                     <div class="row g-5">
                       <div class="col-md-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                          <label class="required form-label m-0">Registro Sanitario</label>
+                          <label class="form-label m-0">Registro Sanitario</label>
                           <button type="button" class="btn btn-primary px-4 py-2">
                             <i class="fa fa-search"></i>
                           </button>
                         </div>
                         <input
                           type="text"
-                          name="product_name"
+                          formControlName="registro_sanitario"
                           class="form-control"
                           placeholder="Escribe el registro sanitario"
                         />
@@ -330,15 +374,21 @@
 
                       <div class="col-md-4">
                         <div class="mb-3">
-                          <label class="form-label mb-4 mt-2">Codigo Digemid</label>
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label m-0">Codigo Digemid</label>
+                            <button type="button" class="btn btn-success px-4 py-2">
+                              <i class="fa-regular fa-file-excel fs-2"></i>
+                              Actualizar excel
+                            </button>
+                          </div>
                           <input
                             type="text"
-                            name="product_name"
+                            formControlName="codigo_digemid"
                             class="form-control"
                             placeholder="Escribe el registro sanitario"
                           />
                           <div class="text-muted fs-7">
-                            Revisa bien la caja
+                            Este codigo viene de un excel de la digemid
                           </div>
                         </div>
                       </div>
@@ -346,7 +396,7 @@
                       <div class="col-md-4">
                         <div class="mb-3">
                           <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="required form-label m-0">Condiciones de almacenamiento</label>
+                            <label class="form-label m-0">Condiciones de almacenamiento</label>
                             <button type="button" class="btn btn-primary px-4 py-2">
                                 +
                             </button>
@@ -385,55 +435,68 @@
                   </div>
 
                   <div class="card-body pt-0">
-                    <div class="mb-10 row fv-row">
-                      <div class="col-4">
+                    <div class="row g-5">  
+                      <!-- <div class="col-md-4">
                         <label class="required form-label">Precio de venta</label>
 
                         <input
                           type="number"
-                          name="price"
+                          formControlName="pventa"
                           class="form-control mb-2"
                           placeholder="Product price"
-                          value=""
+                        />
+
+                        <div class="text-muted fs-7">
+                          Recuerda que el precio es en base al laboratorio
+                        </div>
+                      </div> -->
+
+                      <div class="col-md-4">
+                        <label class="required form-label">Stock seguridad</label>
+
+                        <input
+                          type="number"
+                          formControlName="stock_seguridad"
+                          class="form-control mb-2"
+                          placeholder="Product price"
                         />
 
                         <div class="text-muted fs-7">
                           Recuerda que el precio es en base al laboratorio
                         </div>
                       </div>
-                    </div>
-
-                    <div class="d-flex flex-wrap gap-5">
-                      <div class="fv-row w-100 flex-md-root">
-                        <label class="required form-label">Tax Class</label>
-
-                        <select
-                          class="form-select mb-2"
-                          name="tax"
-                          data-control="select2"
-                          data-hide-search="true"
-                          data-placeholder="Select an option"
-                        >
-                          <option></option>
-                          <option value="0">Tax Free</option>
-                          <option value="1">Taxable Goods</option>
-                          <option value="2">Downloadable Product</option>
-                        </select>
-
-                        <div class="text-muted fs-7">
-                          Set the product tax class.
+  
+                      <!-- <div class="col-4">
+                          <label class="required form-label">Tax Class</label>
+  
+                          <select
+                            class="form-select mb-2"
+                            name="tax"
+                            data-control="select2"
+                            data-hide-search="true"
+                            data-placeholder="Select an option"
+                          >
+                            <option></option>
+                            <option value="0">Tax Free</option>
+                            <option value="1">Taxable Goods</option>
+                            <option value="2">Downloadable Product</option>
+                          </select>
+  
+                          <div class="text-muted fs-7">
+                            Set the product tax class.
+                          </div>
                         </div>
-                      </div>
-
-                      <div class="fv-row w-100 flex-md-root">
-                        <label class="form-label">VAT Amount (%)</label>
-
-                        <input type="text" class="form-control mb-2" value="" />
-
-                        <div class="text-muted fs-7">
-                          Set the product VAT about.
+  
+                        <div class="col-4">
+                          <label class="form-label">VAT Amount (%)</label>
+  
+                          <input type="text" class="form-control mb-2" value="" />
+  
+                          <div class="text-muted fs-7">
+                            Set the product VAT about.
+                          </div>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -442,9 +505,7 @@
 
           <div class="text-center pt-15">
             <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
-            <button type="button" class="btn btn-primary">
-                <span class="indicator-label">Registrar</span>
-            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Registrar</button>
         </div>
         </div>
       </form>

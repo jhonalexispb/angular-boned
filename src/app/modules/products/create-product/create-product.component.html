@@ -1,12 +1,24 @@
 <div class="d-flex flex-column flex-column-fluid">
-  <div id="kt_app_toolbar" class="app-toolbar pt-8">
-    <div class="app-container container-xxl d-flex flex-stack">
-      <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-        <h1 class="page-heading d-flex text-gray-900 fw-bold flex-column justify-content-center my-0 fs-1">
-          Crear producto
-        </h1>
-      </div>
+  
+  <div class="modal-header px-10 py-5">
+    <!--begin::Modal title-->
+    <h2 class="fw-bolder">Crear producto</h2>
+    <!--end::Modal title-->
+    <!--begin::Close-->
+    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+        (click)="modal.dismiss()">
+        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+        <span class="svg-icon svg-icon-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                    fill="currentColor" />
+                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                    fill="currentColor" />
+            </svg>
+        </span>
+        <!--end::Svg Icon-->
     </div>
+    <!--end::Close-->
   </div>
 
   <div id="kt_app_content" class="app-content flex-column-fluid">
@@ -187,7 +199,8 @@
                               [virtualScroll]="true"  
                               [loading]="loading"  
                               [loadingText]="'Cargando...'" 
-                              (change)="onLaboratorioChange()">
+                              (change)="onLaboratorioChange()"
+                              (search)="onSearchLaboratorio($event)">
                             </ng-select>
                           </div>
                         </div>
@@ -201,13 +214,14 @@
                                   formControlName="sku_manual" 
                                   (input)="onSkuChange()"
                                   class="form-control"
-                                  placeholder="Codigo del producto"
+                                  [placeholder]="loading_sku ? 'Buscando código...' : 'Codigo del producto'"
                                   maxlength="8"
                                   pattern="\d*"
                                   onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                 />
-                                <button class="btn btn-primary" type="button" id="button-addon2" (click)="callCodigoProducto(productForm.get('laboratorio_id')?.value)" [disabled]="!productForm.get('laboratorio_id')?.value">
-                                <i class="fa fa-search"></i>
+                                <button class="btn btn-primary" type="button" (click)="callCodigoProducto(productForm.get('laboratorio_id')?.value)" [disabled]="!productForm.get('laboratorio_id')?.value || loading_sku">
+                                <i *ngIf="!loading_sku" class="fa fa-search"></i>
+                                <span *ngIf="loading_sku" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 </button>
                               </div>
                               <div *ngIf="productForm.get('sku_manual')?.dirty && productForm.get('sku_manual')?.invalid" class="text-danger">
@@ -236,7 +250,8 @@
                               [virtualScroll]="true"  
                               [loading]="loading"  
                               [multiple]="true"
-                              [loadingText]="'Cargando...'" >
+                              [loadingText]="'Cargando...'" 
+                              (search)="onSearchPrincipioActivo($event)">
                             </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja
@@ -256,14 +271,15 @@
                               [items]="LINEAS_FARMACEUTICAS"
                               required
                               formControlName="linea_farmaceutica_id"
-                              bindLabel="name"
+                              bindLabel="nombre"
                               bindValue="id"
                               placeholder="Selecciona una linea farmaceutica"
                               [searchable]="true"
                               [clearable]="true" 
                               [virtualScroll]="true"  
                               [loading]="loading"  
-                              [loadingText]="'Cargando...'" >
+                              [loadingText]="'Cargando...'" 
+                              (search)="onSearchLineaFarmaceutica($event)">
                             </ng-select>
                             <div class="text-muted fs-7">
                               Consultalo en google
@@ -289,7 +305,8 @@
                               [clearable]="true" 
                               [virtualScroll]="true"  
                               [loading]="loading"  
-                              [loadingText]="'Cargando...'" >
+                              [loadingText]="'Cargando...'" 
+                              (search)="onSearchFabricante($event)">
                             </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja
@@ -503,7 +520,7 @@
               </div>
           </div>
 
-          <div class="text-center pt-15">
+          <div class="text-center">
             <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
             <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Registrar</button>
         </div>

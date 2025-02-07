@@ -1,1 +1,527 @@
-<p>edit-product works!</p>
+<div class="d-flex flex-column flex-column-fluid">
+  <div class="modal-header px-10 py-5">
+    <!--begin::Modal title-->
+    <h2 class="fw-bolder">Editar producto {{ PRODUCT_SELECTED.laboratorio }} - {{PRODUCT_SELECTED.nombre_completo}}</h2>
+    <!--end::Modal title-->
+    <!--begin::Close-->
+    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+        (click)="modal.dismiss()">
+        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+        <span class="svg-icon svg-icon-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                    fill="currentColor" />
+                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                    fill="currentColor" />
+            </svg>
+        </span>
+        <!--end::Svg Icon-->
+    </div>
+    <!--end::Close-->
+  </div>
+  
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+      <!--begin::Content container-->
+      <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Form-->
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="form d-flex flex-column flex-lg-row">
+          <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+            <div class="tab-content">
+                <div class="d-flex flex-column gap-7 gap-lg-10">
+                    <div class="card card-flush">
+                      <div class="card-header">
+                        <div class="card-title">
+                          <h2>General</h2>
+                        </div>
+                      </div>
+                  
+                      <div class="card-body pt-0">
+                        <div class="row g-5">
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <label class="required form-label">Tipo</label>
+                              <select class="form-select" formControlName="tproducto">
+                                <option value="1">Comercial<option>
+                                <option value="2">Generico</option>
+                              </select>
+                              <div class="text-muted fs-7">
+                                El producto es generico si su nombre es igual que su principio activo
+                              </div>
+                            </div>
+                          </div>
+                  
+                          <!-- Laboratorio -->
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <label class="form-label">Codigo de barra</label>
+                              <input
+                                type="text"
+                                formControlName="codigobarra"
+                                class="form-control"
+                                placeholder="Escribe el nombre del producto"
+                              />
+                              <div class="text-muted fs-7">
+                                Procura usar la pistolita para capturar el valor
+                              </div>
+                            </div>
+                          </div>
+                  
+                          <!-- Descripción -->
+                          <div class="col-md-4"> <!-- Descripción a una sola columna -->
+                            <div class="mb-3">
+                              <label class="required form-label">Unidad</label>
+                              <ng-select 
+                                [items]="UNIDADES"
+                                required
+                                formControlName="unidad_id"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Selecciona una unidad"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" >
+                            </ng-select>
+                              <div class="text-muted fs-7">
+                                Usaremos NIU por defecto
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <label class="form-label">¿Sale en boleta?</label>
+                            <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                                <label class="form-check-label">No</label>
+                                <input class="form-check-input" type="checkbox" formControlName="sale_boleta"/>
+                                <label class="form-check-label">Sí</label>
+                            </div>
+    
+                            <div class="text-muted fs-7">
+                              Importante para determinar el documento de venta
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <label class="form-label">¿Maneja lotes?</label>
+                            <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                                <label class="form-check-label">No</label>
+                                <input class="form-check-input" type="checkbox" formControlName="maneja_lotes" />
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <label class="form-label">¿Maneja escalas?</label>
+                            <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                                <label class="form-check-label">No</label>
+                                <input class="form-check-input" type="checkbox" formControlName="maneja_escalas" />
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <label class="form-label">¿Es promocionable?</label>
+                            <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                                <label class="form-check-label">No</label>
+                                <input class="form-check-input" type="checkbox" formControlName="promocionable" />
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                    
+                  </div>
+  
+                  <div class="d-flex flex-column gap-7 gap-lg-10">
+                    <div class="card card-flush pt-10">
+                      <div class="card-header">
+                        <div class="w-100">
+                          <div class="card-title m-0">
+                            
+                            <h2>Informacion</h2>
+                            
+                          </div>
+                        </div>
+                      </div>
+                  
+                      <div class="card-body pt-0">
+                        <div class="row g-5"> 
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <label class="required form-label mb-4 mt-2">Nombre</label>
+                              <input
+                                type="text"
+                                formControlName="nombre"
+                                class="form-control"
+                                placeholder="Escribe el nombre del producto"
+                              />
+                              <div class="text-muted fs-7">
+                                Coloca solo el nombre, por ejemplo "FARMOXYL CL"
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4"> 
+                            <div class="mb-3">
+                              <label class="form-label mb-4 mt-2">Caracteristicas</label>
+                              <input
+                              type="text"
+                              formControlName="caracteristicas"
+                              class="form-control"
+                              placeholder="Escribe las caracteristicas del producto"
+                              />
+                              <div class="text-muted fs-7">
+                                Ejemplo: "CJA X 100 TAB REC"
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="required form-label m-0">Laboratorio </label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="LABORATORIOS"
+                                required
+                                formControlName="laboratorio_id"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Selecciona un laboratorio"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" 
+                                (change)="onLaboratorioChange()"
+                                (search)="onSearchLaboratorio($event)">
+                              </ng-select>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <label class="required form-label mb-4 mt-2">SKU</label>
+                                
+                                <input
+                                type="text"
+                                formControlName="sku_manual" 
+                                class="form-control"
+                                placeholder="Codigo del producto"
+                                maxlength="8"
+                                pattern="\d*"
+                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                />
+                                
+                                <div *ngIf="productForm.get('sku_manual')?.dirty && productForm.get('sku_manual')?.invalid" class="text-danger">
+                                  <span *ngIf="productForm.get('sku_manual')?.errors?.['minlength']">El SKU debe tener 8 dígitos.</span>
+                                  <span *ngIf="productForm.get('sku_manual')?.errors?.['maxlength']">El SKU no puede exceder los 8 dígitos.</span>
+                                </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label m-0">Principios Activos</label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createPrincipioActivo()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="PRINCIPIOS_ACTIVOS"
+                                formControlName="principio_activo_id"
+                                bindLabel="name_complete"
+                                bindValue="id"
+                                placeholder="Selecciona uno o mas principios activos"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [multiple]="true"
+                                [loadingText]="'Cargando...'" 
+                                (search)="onSearchPrincipioActivo($event)">
+                              </ng-select>
+                              <div class="text-muted fs-7">
+                                Revisa en la parte trasera de la caja
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="required form-label m-0">Linea Farmaceutica</label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createLineaFarmaceutica()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="LINEAS_FARMACEUTICAS"
+                                required
+                                formControlName="linea_farmaceutica_id"
+                                bindLabel="nombre"
+                                bindValue="id"
+                                placeholder="Selecciona una linea farmaceutica"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" 
+                                (search)="onSearchLineaFarmaceutica($event)">
+                              </ng-select>
+                              <div class="text-muted fs-7">
+                                Consultalo en google
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="required form-label m-0">Fabricante</label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createFabricante()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="FABRICANTES"
+                                formControlName="fabricante_id"
+                                bindLabel="name_complete"
+                                bindValue="id"
+                                placeholder="Selecciona un fabricante"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" 
+                                (search)="onSearchFabricante($event)">
+                              </ng-select>
+                              <div class="text-muted fs-7">
+                                Revisa en la parte trasera de la caja
+                              </div>
+                            </div>
+                          </div>
+  
+  
+                          <!-- <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="required form-label m-0">Categorias</label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createCategoria()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="CATEGORIAS"
+                                formControlName="categoria_id"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Selecciona una categoria"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" >
+                              </ng-select>
+                              <div class="text-muted fs-7">
+                                Revisa en la parte trasera de la caja
+                              </div>
+                            </div>
+                          </div> -->
+                  
+        
+                          <div class="col-md-12"> 
+                            <div class="mb-3">
+                              <label class="form-label">Descripcion</label>
+                              <textarea
+                                class="form-control form-control-solid"
+                                rows="3"
+                                formControlName="descripcion"
+                                placeholder="Escribe la descripción del producto"
+                              ></textarea>
+                              <div class="text-muted fs-7">
+                                Podrias buscar informacion en google y pegarlo aqui
+                              </div>
+                            </div>
+                          </div>
+                  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div class="card card-flush">
+                    <div class="card-header">
+                      <div class="card-title">
+                        <h2>Seccion DIGEMID</h2>
+                      </div>
+                    </div>
+  
+                    <div class="card-body pt-0">
+                      <div class="row g-5">
+                        <div class="col-md-4">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label m-0">Registro Sanitario</label>
+                            <button type="button" class="btn btn-primary px-4 py-2">
+                              <i class="fa fa-search"></i>
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            formControlName="registro_sanitario"
+                            class="form-control"
+                            placeholder="Escribe el registro sanitario"
+                          />
+                          <div class="text-muted fs-7">
+                            Revisa bien la caja
+                          </div>
+                        </div>
+  
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="form-label m-0">Codigo Digemid</label>
+                              <button type="button" class="btn btn-success px-4 py-2">
+                                <i class="fa-regular fa-file-excel fs-2"></i>
+                                Actualizar excel
+                              </button>
+                            </div>
+                            <input
+                              type="text"
+                              formControlName="codigo_digemid"
+                              class="form-control"
+                              placeholder="Escribe el registro sanitario"
+                            />
+                            <div class="text-muted fs-7">
+                              Este codigo viene de un excel de la digemid
+                            </div>
+                          </div>
+                        </div>
+  
+                        <div class="col-md-4">
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <label class="form-label m-0">Condiciones de almacenamiento</label>
+                              <button type="button" class="btn btn-primary px-4 py-2">
+                                  +
+                              </button>
+                            </div>
+                            <ng-select 
+                                [items]="CONDICIONES_ALMACENAMIENTO"
+                                formControlName="condiciones_almacenamiento_id"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Selecciona una o varias condiciones"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [multiple]="true"
+                                [loadingText]="'Cargando...'" >
+                              </ng-select>
+                            <div class="text-muted fs-7">
+                              Revisa en la parte trasera de la caja
+                            </div>
+                          </div>
+                        </div>
+                      </div>                    
+                    </div>
+                  </div>
+  
+                  
+  
+                  
+  
+                  <div class="card card-flush py-4">
+                    <div class="card-header">
+                      <div class="card-title">
+                        <h2>Adicionales</h2>
+                      </div>
+                    </div>
+  
+                    <div class="card-body pt-0">
+                      <div class="row g-5">  
+                        <!-- <div class="col-md-4">
+                          <label class="required form-label">Precio de venta</label>
+  
+                          <input
+                            type="number"
+                            formControlName="pventa"
+                            class="form-control mb-2"
+                            placeholder="Product price"
+                          />
+  
+                          <div class="text-muted fs-7">
+                            Recuerda que el precio es en base al laboratorio
+                          </div>
+                        </div> -->
+  
+                        <div class="col-md-4">
+                          <label class="required form-label">Stock seguridad</label>
+  
+                          <input
+                            type="number"
+                            formControlName="stock_seguridad"
+                            class="form-control mb-2"
+                            placeholder="Product price"
+                          />
+  
+                          <div class="text-muted fs-7">
+                            Recuerda que el precio es en base al laboratorio
+                          </div>
+                        </div>
+    
+                        <!-- <div class="col-4">
+                            <label class="required form-label">Tax Class</label>
+    
+                            <select
+                              class="form-select mb-2"
+                              name="tax"
+                              data-control="select2"
+                              data-hide-search="true"
+                              data-placeholder="Select an option"
+                            >
+                              <option></option>
+                              <option value="0">Tax Free</option>
+                              <option value="1">Taxable Goods</option>
+                              <option value="2">Downloadable Product</option>
+                            </select>
+    
+                            <div class="text-muted fs-7">
+                              Set the product tax class.
+                            </div>
+                          </div>
+    
+                          <div class="col-4">
+                            <label class="form-label">VAT Amount (%)</label>
+    
+                            <input type="text" class="form-control mb-2" value="" />
+    
+                            <div class="text-muted fs-7">
+                              Set the product VAT about.
+                            </div>
+                          </div>
+                        </div> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+  
+            <div class="text-center">
+              <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Registrar</button>
+          </div>
+          </div>
+        </form>
+      </div>
+      <!--end::Content container-->
+    </div>
+    <!--end::Content-->
+  </div>

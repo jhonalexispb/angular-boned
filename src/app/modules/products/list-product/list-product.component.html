@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center w-100 my-1">
                 <ng-select 
                   [items]="PRODUCT_LIST"
-                  bindLabel="sucursal_name_complete"
+                  bindLabel="nombre_completo"
                   bindValue="id"
                   placeholder="Buscar por nombre"
                   [searchable]="true"
@@ -21,10 +21,11 @@
                   class="w-100">
                   <ng-template ng-option-tmp let-item="item">
                     <div class="mi-custom-option d-flex flex-column gap-2">
-                      <h6 style="font-size: 1rem;">{{ item.ruc }} {{ item.nombre_comercial }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">R. Social: {{ item.razon_social }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.direccion }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.distrito }}/{{ item.provincia }}/{{ item.departamento }}</h6>
+                      <h6 style="font-size: 1rem;"><span class="badge badge-light-primary fs-7 fw-bold">{{ item.laboratorio }}</span></h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.nombre_completo }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">Precio: S/ {{ item.pventa }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">Stock: {{ item.stock }}</h6>
+                      <h6 style="font-size: 1rem; font-weight: 50;">SKU: {{ item.sku }}</h6>
                     </div>
                   </ng-template>
                 </ng-select>
@@ -54,7 +55,7 @@
                 <table class="table table-auto align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
                       <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-200px">
+                        <th class="min-w-350px">
                           <span class="dt-column-title" role="button">Nombre</span><span class="dt-column-order"></span>
                         </th>
 
@@ -62,12 +63,18 @@
                           <span class="dt-column-title" role="button">Laboratorio</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-200px">
-                          <span class="dt-column-title" role="button">Categoria</span><span class="dt-column-order"></span>
+                        <th class="min-w-100px">
+                          <span class="dt-column-title" role="button">Precio venta</span><span class="dt-column-order"></span>
                         </th>
 
                         <th class="min-w-80px">
-                          <span class="dt-column-title" role="button">Precio venta</span><span class="dt-column-order"></span>
+                          <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
+                        </th>
+
+                        <th class="min-w-150px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1"
+                            colspan="1" aria-label="Created Date: Activate to sort" tabindex="0">
+                            <span class="dt-column-title" role="button">Fecha de registro</span><span
+                                class="dt-column-order"></span>
                         </th>
                   
                         <!-- Columna Acciones: Visible solo en pantallas grandes -->
@@ -78,7 +85,7 @@
                     </thead>
                   
                     <tbody class="fw-semibold text-gray-600">
-                      <tr *ngFor="let S of PRODUCT_LIST; let index = index">
+                      <tr *ngFor="let P of PRODUCT_LIST; let index = index">
                         <td>
                             <div class="d-flex justify-content-start align-items-center gap-2">
                                 <div class="d-md-none d-flex align-items-center">
@@ -88,7 +95,7 @@
                                     (dropdownToggle)="handleDropdownToggle($event)">
                                     <ul class="pt-3 px-3 d-flex flex-column gap-2">
                                       <li>
-                                        <button (click)="editProducto(S)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="editProducto(P)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                             Editar
@@ -96,7 +103,7 @@
                                         </button>
                                       </li>
                                       <li>
-                                        <button (click)="deleteProducto(S)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                             Eliminar
@@ -109,9 +116,13 @@
                                 <!-- Aquí se muestra el RUC -->
                                 <div class="d-flex align-items-center">
                                     <div class="d-flex align-items-center">
+                                      <div class="symbol symbol-50px me-5">
+                                        <img [src]="P.imagen" class="" alt="img" (click)="viewImagen(P.imagen)">
+                                      </div>
                                       <div class="d-flex justify-content-start flex-column">
-                                          <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.ruc }}</span>
-                                          <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.razon_social }}</span>
+                                          <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.nombre }}</span>
+                                          <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
+                                          <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
                                       </div>
                                   </div>
                                 </div>
@@ -121,9 +132,8 @@
                         <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.nombre_comercial }}</span>
-                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.categoria_digemid }}</span>
-                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.nombre_estado_digemid }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.laboratorio }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.linea_farmaceutica }}</span>
                             </div>
                           </div>
                         </td>
@@ -131,33 +141,27 @@
                         <td>
                           <div class="d-flex align-items-center">
                             <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ S.direccion }}</span>
-                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ S.distrito }}/{{ S.provincia }}/{{ S.departamento }} </span>
-                            </div>
-                          </div>
-                        </td>
-
-              
-
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ S.deuda }}</span>
+                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">Stock: {{ P.stock }}</span>
                             </div>
                           </div>
                         </td>
 
                   
                         <td>
-                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="S.state == 1">Activo</span>
-                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="S.state == 2">Inactivo</span>
+                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.state == 1">Activo</span>
+                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.state == 2">Inactivo</span>
+                        </td>
+
+                        <td>
+                          {{ P.created_at }}
                         </td>
                   
                         <!-- Columna Acciones visible solo en pantallas grandes -->
                         <td class="d-none d-md-table-cell acciones-container">
                           <ul class="pt-3 px-3 d-flex gap-2">
                             <li>
-                              <button (click)="editProducto(S)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                              <button (click)="editProducto(P)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                   <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                   Editar
@@ -165,7 +169,7 @@
                               </button>
                             </li>
                             <li>
-                              <button (click)="deleteProducto(S)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                              <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                   <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                   Eliminar

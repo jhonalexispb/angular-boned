@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
@@ -11,10 +11,12 @@ import { LineasFarmaceuticasService } from '../service/lineas-farmaceuticas.serv
 })
 export class CreateLineasFarmaceuticasComponent {
   @Output() LineaFarmaceuticaC: EventEmitter<any> = new EventEmitter();
+  @Input() nombre_externo: any = '';
   lineaFarmaceuticaForm: FormGroup;
   sweet:any = new SweetalertService
   imagen_previzualizade:any;
   file_name:any;
+
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +27,7 @@ export class CreateLineasFarmaceuticasComponent {
 
   ngOnInit(): void {
     this.lineaFarmaceuticaForm = this.fb.group({
-      nombre: ['', [Validators.required]],
+      nombre: [this.nombre_externo, [Validators.required]],
       imagen_linea_farmaceutica: [null]
     });
   }

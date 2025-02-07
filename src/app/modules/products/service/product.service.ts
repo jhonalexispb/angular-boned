@@ -43,20 +43,20 @@ export class ProductService {
     ) 
   }
 
-  updateProducto(ID_SUCURSAL:string,data:any){
+  updateProducto(ID_PRODUCTO:string,data:any){
     this.loadingService.showLoading('Actualizando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/productos/"+ID_SUCURSAL;
-    return this.http.post(URL,data,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/productos/"+ID_PRODUCTO;
+    return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
 
-  deleteProducto(ID_SUCURSAL:string){
+  deleteProducto(ID_PRODUCTO:string){
     this.loadingService.showLoading('Eliminando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/productos/"+ID_SUCURSAL;
+    let URL = URL_SERVICIO+"/productos/"+ID_PRODUCTO;
     return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

@@ -11,6 +11,7 @@ import { FabricantesService } from '../service/fabricantes.service';
 })
 export class CreateFabricanteComponent {
   @Output() FabricanteC: EventEmitter<any> = new EventEmitter();
+  @Input() nombre_externo: any = '';
   PAISES:any[] = [];
   fabricanteForm: FormGroup;
     sweet:any = new SweetalertService
@@ -28,7 +29,7 @@ export class CreateFabricanteComponent {
     ngOnInit(): void {
       this.loading = true;
       this.fabricanteForm = this.fb.group({
-        nombre: ['', [Validators.required]],
+        nombre: [this.nombre_externo, [Validators.required]],
         pais: [null],
         imagen_fabricante_producto: [null]
       });

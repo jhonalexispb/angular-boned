@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { PrincipiosActivosServiceService } from '../service/principios-activos-service.service';
@@ -10,9 +10,10 @@ import { PrincipiosActivosServiceService } from '../service/principios-activos-s
 })
 export class CreatePrincipioActivoComponent {
   @Output() PrincipioActivoC:EventEmitter<any> = new EventEmitter();
+  @Input() nombre_externo: any = '';
   PRINCIPIOS_ACTIVOS:any[] = [];
   concentracion:string = '';
-  principio_activo:string;
+  principio_activo:string
   loading: boolean = false;
 
   sweet:any = new SweetalertService
@@ -25,6 +26,7 @@ export class CreatePrincipioActivoComponent {
   }
 
   ngOnInit(): void {
+    this.principio_activo = this.nombre_externo
     this.loading = true;
     this.principioActivoService.obtenerRecursos().subscribe((data: any) => {
       this.PRINCIPIOS_ACTIVOS = data.nombres_principios_activos;

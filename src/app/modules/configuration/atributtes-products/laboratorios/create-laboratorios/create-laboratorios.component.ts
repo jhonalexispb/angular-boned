@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
@@ -11,8 +11,9 @@ import { CreateProveedorComponent } from '../../../proveedor/create-proveedor/cr
 })
 export class CreateLaboratoriosComponent {
   @Output() LaboratorioC:EventEmitter<any> = new EventEmitter();
+  @Input() nombre_externo: any = '';
   PROVEEDORES:any[] = [];
-  name:string = '';
+  name:string
   file_name:any
   imagen_previzualizade:any;
   color:string = '#58BF53';
@@ -35,6 +36,7 @@ export class CreateLaboratoriosComponent {
   }
 
   ngOnInit(): void {
+    this.name = this.nombre_externo
     this.loading = true;
     this.loading_codigo = true;
     this.laboratorioService.obtenerRecursos().subscribe((data: any) => {

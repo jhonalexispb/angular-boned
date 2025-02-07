@@ -29,6 +29,11 @@ export class CreateProductComponent {
   loading:boolean
   loading_sku:boolean
 
+  searchTermLaboratorio: string = '';
+  searchTermPrincipioActivo: string = '';
+  searchTermLineaFarmaceutica: string = '';
+  searchTermFabricante: string = '';
+
   isSkuManual: boolean = false;
   sweet:any = new SweetalertService
 
@@ -77,6 +82,22 @@ export class CreateProductComponent {
     });
   }
 
+  onSearchLineaFarmaceutica(event: any) {
+    this.searchTermLineaFarmaceutica = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchLaboratorio(event: any) {
+    this.searchTermLaboratorio = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchPrincipioActivo(event: any) {
+    this.searchTermPrincipioActivo = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchFabricante(event: any) {
+    this.searchTermFabricante = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
   // Enviar el formulario
   onSubmit() {
     if(this.isSkuManual && !this.productForm.get('sku_manual')?.value){
@@ -90,16 +111,8 @@ export class CreateProductComponent {
           sku_manual: null
         });
       }
-
-      const formData = new FormData();
-
-      for (const key in this.productForm.value) {
-        if (this.productForm.value[key]) {
-          formData.append(key, this.productForm.value[key]);
-        }
-      }
       
-      this.productService.registerProducto(formData).subscribe({
+      this.productService.registerProducto(this.productForm.value).subscribe({
         next: (resp: any) => {
           // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
           if (resp.message == 409) {
@@ -112,7 +125,6 @@ export class CreateProductComponent {
                 }
               });
           } else {
-            console.log(resp)
             this.ProductoC.emit(resp);
             this.modal.close();
             this.sweet.success(
@@ -128,21 +140,21 @@ export class CreateProductComponent {
 
   callCodigoProducto(ID_LAB:any){
     this.loading_sku = true
+    this.productForm.get('sku_manual')?.disable();
     this.productService.obtenerRecursosParaCrear(ID_LAB).subscribe((resp: any) => {
       this.loading_sku = false
+      this.productForm.get('sku_manual')?.enable();
       this.productForm.patchValue({
         sku_manual: resp.codigo
       });
       this.isSkuManual = false; 
       this.loading = false
-      console.log(this.isSkuManual)
     })
   }
 
   onSkuChange() {
     // Si el usuario cambia el SKU manualmente, marcamos como manual
     this.isSkuManual = true;
-    console.log(this.isSkuManual)
   }
 
   onLaboratorioChange() {
@@ -150,11 +162,11 @@ export class CreateProductComponent {
       sku_manual: ''  // Limpiamos el valor de sku_manual
     });
     this.isSkuManual = true;  // Marcamos que el SKU es manual porque el usuario cambiará el laboratorio
-    console.log(this.isSkuManual)
   }
   
   createLaboratorio(){
     const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermLaboratorio;
     modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
       this.LABORATORIOS = [r, ...this.LABORATORIOS];
       this.productForm.patchValue({ laboratorio_id: r.id });
@@ -163,6 +175,7 @@ export class CreateProductComponent {
 
   createPrincipioActivo(){
     const modalRef = this.modalService.open(CreatePrincipioActivoComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermPrincipioActivo;
     modalRef.componentInstance.PrincipioActivoC.subscribe((r:any)=>{
       this.PRINCIPIOS_ACTIVOS = [r, ...this.PRINCIPIOS_ACTIVOS];
       const principio_activo_id = this.productForm.get('principio_activo_id')?.value || [];
@@ -174,6 +187,7 @@ export class CreateProductComponent {
 
   createLineaFarmaceutica(){
     const modalRef = this.modalService.open(CreateLineasFarmaceuticasComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermLineaFarmaceutica;
     modalRef.componentInstance.LineaFarmaceuticaC.subscribe((r:any)=>{
       this.LINEAS_FARMACEUTICAS = [r, ...this.LINEAS_FARMACEUTICAS];
       this.productForm.patchValue({ linea_farmaceutica_id: r.id });
@@ -182,6 +196,7 @@ export class CreateProductComponent {
 
   createFabricante(){
     const modalRef = this.modalService.open(CreateFabricanteComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermFabricante;
     modalRef.componentInstance.FabricanteC.subscribe((r:any)=>{
       this.FABRICANTES = [r, ...this.FABRICANTES];
       this.productForm.patchValue({ fabricante_id: r.id });

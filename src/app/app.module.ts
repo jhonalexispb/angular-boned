@@ -19,6 +19,7 @@ import { LottieModule } from 'ngx-lottie';
 import { appConfig } from './app.config';
 import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component'; 
 import { ViewImageModule } from './components/view-image/view-image.module';
+import { ButtonDropdownOptionComponent } from './components/button-dropdown-option/button-dropdown-option.component';
 // #fake-end#
 
 

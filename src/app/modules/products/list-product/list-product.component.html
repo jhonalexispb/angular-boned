@@ -35,11 +35,28 @@
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
-            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+            <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
                 <button type="button" class="btn btn-primary" (click)="createProducto()">
                     Crear producto
                 </button>
+                <div>
+                  <app-button-dropdown-option class="d-md-none d-flex align-items-center h-100">
+                    <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                      <li>
+                        <button class="badge-light-success btn btn-sm w-100 text-success" (click)="downloadProducts()">
+                          <i class="fa-regular fa-file-excel fs-2 text-success"></i>
+                          Exportar
+                        </button>
+                      </li>
+                    </ul>
+                  </app-button-dropdown-option>
+
+                  <button (click)="downloadProducts()" class="badge-light-success btn btn-sm w-100 d-none text-success h-100 d-md-flex flex-column align-items-center gap-2">
+                    <i class="fa-regular fa-file-excel fs-2 text-success"></i>
+                    Exportar
+                  </button>
+                </div>
                 <!--end::Add customer-->
             </div>
             <!--end::Toolbar-->
@@ -93,7 +110,7 @@
                                     [index]="index"
                                     [activeDropdownIndex]="activeDropdownIndex"
                                     (dropdownToggle)="handleDropdownToggle($event)">
-                                    <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                                    <ul class="list pt-3 px-3 d-flex flex-column gap-2">
                                       <li>
                                         <button (click)="editProducto(P)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
@@ -159,7 +176,7 @@
                   
                         <!-- Columna Acciones visible solo en pantallas grandes -->
                         <td class="d-none d-md-table-cell acciones-container">
-                          <ul class="pt-3 px-3 d-flex gap-2">
+                          <ul class="list pt-3 px-3 d-flex gap-2">
                             <li>
                               <button (click)="editProducto(P)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                 <div class="d-flex flex-column align-items-center gap-1">

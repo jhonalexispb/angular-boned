@@ -1,0 +1,35 @@
+/* Contenedor del dropdown */
+.dropdown {
+    position: relative;
+  }
+  
+  /* El dropdown (menú flotante) */
+  .dropdown-menu {
+    border: 1px solid #cccccc00;  /* Borde del menú */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Sombra */
+    display: none;  /* Se oculta por defecto */
+    padding: 0;  /* Sin padding para la lista */
+    box-sizing: border-box;
+  }
+  
+  /* Muestra el dropdown solo cuando buttonsVisible es true */
+  .dropdown-menu.show {
+    display: block;
+    position: absolute;
+    top: 20%;
+    left: 100%;
+    width: fit-content;  /* El ancho se ajusta al contenido */
+  }
+  
+  /* Estilo para cada item de la lista */
+  .dropdown-menu li {
+    width: 1500%;  /* Cada elemento ocupará el 100% del ancho disponible */
+    margin: 5px 0;  /* Espaciado entre los elementos */
+  }
+  
+  /* Estilo para los botones */
+  .dropdown-menu button {
+    width: 100%;  /* Los botones ocuparán el 100% del ancho disponible */
+    padding: 10px 15px;  /* Espaciado dentro de los botones */
+    text-align: left;  /* Alineación del texto */
+  }

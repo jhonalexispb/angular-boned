@@ -5,6 +5,7 @@ import { CreateProductComponent } from '../create-product/create-product.compone
 import { ProductService } from '../service/product.service';
 import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 import { EditProductComponent } from '../edit-product/edit-product.component';
+import { URL_SERVICIO } from 'src/app/config/config';
 
 @Component({
   selector: 'app-list-product',
@@ -67,11 +68,12 @@ export class ListProductComponent {
       modalRef.componentInstance.ProductoE.subscribe((r:any)=>{
         const { producto, isRestored } = r; 
         if (isRestored) {
-          this.PRODUCT_LIST.unshift(producto);
+          this.PRODUCT_LIST.unshift(producto.data);
         } else {
+          console.log(r)
           let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == R.id);
           if(INDEX != -1){
-            this.PRODUCT_LIST[INDEX] = r
+            this.PRODUCT_LIST[INDEX] = producto.data
           }
         }
       })
@@ -99,5 +101,9 @@ export class ListProductComponent {
     viewImagen(image:string){
       const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
       modalRef.componentInstance.IMAGE_SELECTED = image
+    }
+
+    downloadProducts(){
+      window.open(URL_SERVICIO+"/excel/export-products","_blank")
     }
 }

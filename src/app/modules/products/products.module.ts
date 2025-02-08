@@ -15,6 +15,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { ButtonDropdownOptionModule } from 'src/app/components/button-dropdown-option/button-dropdown-option.module';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
     NgSelectModule,
     ButtonsGroupListModule,
     PaginationModule,
-    DropzoneModule
+    DropzoneModule,
+    ButtonDropdownOptionModule
   ]
 })
 export class ProductsModule { }

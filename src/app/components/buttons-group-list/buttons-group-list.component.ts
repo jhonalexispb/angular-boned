@@ -11,6 +11,16 @@ export class ButtonsGroupListComponent {
   @Output() dropdownToggle = new EventEmitter<number>();  // Evento para cambiar el estado
 
   toggleButtonsVisibility(index: number) {
+    console.log(this.activeDropdownIndex)
     this.dropdownToggle.emit(index);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    console.log(this.index)
+    const clickedInside = (event.target as HTMLElement).closest('.dropdown');
+    if (!clickedInside) {
+      this.activeDropdownIndex = null; 
+    }
   }
 }

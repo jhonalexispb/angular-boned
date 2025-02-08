@@ -113,8 +113,7 @@ export class EditProductComponent {
                 }
               });
           } else {
-            console.log(resp)
-            this.ProductoE.emit({producto:resp.producto, isRestored: false});
+            this.ProductoE.emit({producto:resp, isRestored: false});
             this.modal.close();
             this.sweet.success(
               '¡Éxito!',

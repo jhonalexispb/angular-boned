@@ -1,0 +1,10 @@
+<div class="dropdown" (click)="toggleButtonsVisibility()">
+    <button class="btn btn-info px-2 h-100" aria-expanded="false">
+      <i class="ki-solid ki-dots-vertical fs-1 p-0"></i>
+    </button>
+  
+    <!-- Lista de botones que se muestran u ocultan en un dropdown -->
+    <div *ngIf="activeDropdown" class="dropdown-menu show">
+      <ng-content></ng-content> <!-- Aquí se proyectan los botones como contenido -->
+    </div>
+</div>

@@ -6,6 +6,7 @@ import { ProductService } from '../service/product.service';
 import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import { URL_SERVICIO } from 'src/app/config/config';
+import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
 
 @Component({
   selector: 'app-list-product',
@@ -13,13 +14,16 @@ import { URL_SERVICIO } from 'src/app/config/config';
   styleUrls: ['./list-product.component.scss']
 })
 export class ListProductComponent {
-  search:any;
+  producto_id:any;
+  laboratorio_id:any
     PRODUCT_LIST:any = [];
+    LABORATORIOS_LIST:any = [];
     sweet:any = new SweetalertService
   
     totalPages:number = 0; 
     currentPage:number = 1;
     activeDropdownIndex: number | null = null;
+    loading:boolean = false;
   
     constructor(
       public modalService: NgbModal,
@@ -33,25 +37,47 @@ export class ListProductComponent {
     }
   
     onSearchChange() {
-      if (this.search === null) {
-        this.search = ''; // Convertir null a cadena vacía
+      if (this.producto_id === null) {
+        this.producto_id = ''; // Convertir null a cadena vacía
       }
       this.listProductos(); // Llamar a tu función para actualizar la lista
-      if(this.search === ''){
-        this.search = null
+      if(this.producto_id === ''){
+        this.producto_id = null
       }
     }
   
     listProductos(page = 1){
-      this.productService.listProductos(page,this.search).subscribe((resp: any) => {
+      let data = {
+        producto_id: this.producto_id,
+        laboratorio_id: this.laboratorio_id
+      }
+      this.loading = true
+      this.productService.listProductos(page,data).subscribe((resp: any) => {
         this.PRODUCT_LIST = resp.products.data;
+        this.LABORATORIOS_LIST = resp.laboratorios;
         this.totalPages = resp.total;
         this.currentPage = page;
+        this.loading = false
       })
     }
   
     loadPage(page: number) {
       this.listProductos(page);
+    }
+
+    resetFiltro(){
+      this.producto_id = null
+      this.laboratorio_id = null
+      this.listProductos()
+    }
+
+    importProduct(){
+      const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.nameModule = "productos"
+      modalRef.componentInstance.route = "/productos/import"
+      modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
+        
+      })
     }
   
     createProducto(){
@@ -70,7 +96,6 @@ export class ListProductComponent {
         if (isRestored) {
           this.PRODUCT_LIST.unshift(producto.data);
         } else {
-          console.log(r)
           let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == R.id);
           if(INDEX != -1){
             this.PRODUCT_LIST[INDEX] = producto.data
@@ -104,6 +129,15 @@ export class ListProductComponent {
     }
 
     downloadProducts(){
-      window.open(URL_SERVICIO+"/excel/export-products","_blank")
+      let link = ""
+      if(this.producto_id){
+        link += "&producto_id="+this.producto_id
+      }
+
+      if(this.laboratorio_id){
+        link += "&laboratorio_id="+this.laboratorio_id
+      }
+      
+      window.open(URL_SERVICIO+"/excel/export-products?k=1"+link,"_blank")
     }
 }

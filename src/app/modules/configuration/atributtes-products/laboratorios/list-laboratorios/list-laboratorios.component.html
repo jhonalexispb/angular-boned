@@ -15,10 +15,17 @@
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
-            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+            <div class="d-flex justify-content-end gap-2 align-items-center h-100">
                 <!--begin::Add customer-->
-                <button type="button" class="btn btn-primary" (click)="createLaboratorio()">
+                <button type="button" class="btn btn-primary h-100" (click)="createLaboratorio()">
                     Crear laboratorio
+                </button>
+                <button (click)="importLaboratorio()" class="badge-light-warning btn btn-sm text-warning d-flex flex-column align-items-center gap-2">
+                    <i class="ki-duotone ki-update-folder fs-2 text-warning">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    Importar Excel
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -104,7 +111,7 @@
                                         <!-- Aquí se muestra el RUC -->
                                         <div class="d-flex align-items-center">
                                             <div class="symbol symbol-80px me-5">
-                                                <img [src]="LAB.image" class="image" alt="img">
+                                                <img [src]="LAB.image" class="image" alt="img" (click)="viewImagen(LAB.image)">
                                             </div>
                                             <div class="d-flex justify-content-start flex-column">
                                                 <span class="text-gray-700 fw-bold text-hover-primary mb-1 fs-6">{{ LAB.name }}</span>

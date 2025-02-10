@@ -4,6 +4,8 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { LaboratoriosServiceService } from '../service/laboratorios-service.service';
 import { CreateLaboratoriosComponent } from '../create-laboratorios/create-laboratorios.component';
 import { EditLaboratoriosComponent } from '../edit-laboratorios/edit-laboratorios.component';
+import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 
 @Component({
   selector: 'app-list-laboratorios',
@@ -84,5 +86,19 @@ export class ListLaboratoriosComponent {
 
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
+  }
+
+  importLaboratorio(){
+    const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nameModule = "laboratorios"
+    modalRef.componentInstance.route = "/laboratorio/tool/import"
+    modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
+      
+    })
+  }
+
+  viewImagen(image:string){
+    const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.IMAGE_SELECTED = image
   }
 }

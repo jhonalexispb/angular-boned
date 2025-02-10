@@ -1,52 +1,95 @@
 <div class="card">
     <!--begin::Card header-->
-    <div class="card-header border-0 pt-6 cabecera">
+    
         <!--begin::Card title-->
-        <div class="card-title w-100 w-md-50">
-            <!--begin::Search-->
-            <div class="d-flex align-items-center w-100 my-1">
-                <ng-select 
-                  [items]="PRODUCT_LIST"
-                  bindLabel="nombre_completo"
-                  bindValue="id"
-                  placeholder="Buscar por nombre"
-                  [searchable]="true"
-                  [clearable]="true" 
-                  [virtualScroll]="true"  
-                  [multiple]="false"
-                  [loadingText]="'Cargando...'"
-                  [(ngModel)]="search" 
-                  (change)="onSearchChange()"
-                  name="search"
-                  class="w-100">
-                  <ng-template ng-option-tmp let-item="item">
-                    <div class="mi-custom-option d-flex flex-column gap-2">
-                      <h6 style="font-size: 1rem;"><span class="badge badge-light-primary fs-7 fw-bold">{{ item.laboratorio }}</span></h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">{{ item.nombre_completo }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">Precio: S/ {{ item.pventa }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">Stock: {{ item.stock }}</h6>
-                      <h6 style="font-size: 1rem; font-weight: 50;">SKU: {{ item.sku }}</h6>
-                    </div>
-                  </ng-template>
-                </ng-select>
-            </div>
-            <!--end::Search-->
-        </div>
+        <div class="card-title w-100 p-5">
+          <!--begin::Search-->
+          <div class="row">
+              <!-- Primer select: Buscar por nombre -->
+              <div class="col-md-6 col-12 mb-3">
+                  <div class="d-flex align-items-center w-100">
+                      <ng-select 
+                        [items]="PRODUCT_LIST"
+                        bindLabel="nombre_completo"
+                        bindValue="id"
+                        placeholder="Buscar por nombre"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [multiple]="false"
+                        [loadingText]="'Cargando...'"
+                        [(ngModel)]="producto_id" 
+                        [loading]="loading"
+                        (change)="onSearchChange()"
+                        name="search"
+                        class="w-100">
+                        <ng-template ng-option-tmp let-item="item">
+                          <div class="mi-custom-option d-flex flex-column gap-2">
+                            <h6 style="font-size: 1rem;"><span class="badge badge-light-primary fs-7 fw-bold">{{ item.laboratorio }}</span></h6>
+                            <h6 style="font-size: 1rem; font-weight: 50;">{{ item.nombre_completo }}</h6>
+                            <h6 style="font-size: 1rem; font-weight: 50;">Precio: S/ {{ item.pventa }}</h6>
+                            <h6 style="font-size: 1rem; font-weight: 50;">Stock: {{ item.stock }}</h6>
+                            <h6 style="font-size: 1rem; font-weight: 50;">SKU: {{ item.sku }}</h6>
+                          </div>
+                        </ng-template>
+                      </ng-select>
+                  </div>
+              </div>
+      
+              <!-- Segundo select: Buscar por laboratorio -->
+              <div class="col-md-6 col-12 mb-3">
+                  <div class="d-flex align-items-center w-100">
+                    <ng-select 
+                      [items]="LABORATORIOS_LIST"
+                      bindLabel="name"
+                      bindValue="id"
+                      placeholder="Buscar por laboratorio"
+                      [searchable]="true"
+                      [clearable]="true" 
+                      [virtualScroll]="true"  
+                      [multiple]="false"
+                      [loadingText]="'Cargando...'"
+                      [(ngModel)]="laboratorio_id" 
+                      (change)="onSearchChange()"
+                      [loading]="loading" 
+                      name="search"
+                      class="w-100">
+                    </ng-select>
+                </div>
+              </div>
+          </div>
+          <!--end::Search-->
+      
         <!--begin::Card toolbar-->
         <div class="card-toolbar">
             <!--begin::Toolbar-->
-            <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
+            <div class="d-flex justify-content-start gap-2">
                 <!--begin::Add customer-->
                 <button type="button" class="btn btn-primary" (click)="createProducto()">
                     Crear producto
                 </button>
-                <div>
-                  <app-button-dropdown-option class="d-md-none d-flex align-items-center h-100">
-                    <ul class="pt-3 px-3 d-flex flex-column gap-2">
+                <div class="d-flex justify-content-start align-items-center gap-2">
+                  <app-button-dropdown-option class="d-md-none">
+                    <ul class="list pt-3 px-3 d-flex flex-column gap-2">
                       <li>
                         <button class="badge-light-success btn btn-sm w-100 text-success" (click)="downloadProducts()">
                           <i class="fa-regular fa-file-excel fs-2 text-success"></i>
                           Exportar
+                        </button>
+                      </li>
+                      <li>
+                        <button (click)="resetFiltro()" class="badge-light-info btn btn-sm w-100 text-info">
+                          <i class="bi bi-x-circle fs-2 text-info"></i>
+                          Reset filtro
+                        </button>
+                      </li>
+                      <li>
+                        <button (click)="importProduct()" class="badge-light-warning btn btn-sm w-100 text-warning">
+                          <i class="ki-duotone ki-update-folder fs-2 text-warning">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                          </i>
+                          Importar Excel
                         </button>
                       </li>
                     </ul>
@@ -55,6 +98,19 @@
                   <button (click)="downloadProducts()" class="badge-light-success btn btn-sm w-100 d-none text-success h-100 d-md-flex flex-column align-items-center gap-2">
                     <i class="fa-regular fa-file-excel fs-2 text-success"></i>
                     Exportar
+                  </button>
+
+                  <button (click)="resetFiltro()" class="badge-light-info btn btn-sm w-100 d-none text-info h-100 d-md-flex flex-column align-items-center gap-2">
+                    <i class="bi bi-x-circle fs-2 text-info"></i>
+                    Reset filtro
+                  </button>
+
+                  <button (click)="importProduct()" class="badge-light-warning btn btn-sm w-100 d-none text-warning h-100 d-md-flex flex-column align-items-center gap-2">
+                    <i class="ki-duotone ki-update-folder fs-2 text-warning">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    Importar Excel
                   </button>
                 </div>
                 <!--end::Add customer-->

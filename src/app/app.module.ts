@@ -20,6 +20,7 @@ import { appConfig } from './app.config';
 import { LoadingScreenComponent } from './modules/loadingScreen/loading-screen/loading-screen.component'; 
 import { ViewImageModule } from './components/view-image/view-image.module';
 import { ButtonDropdownOptionComponent } from './components/button-dropdown-option/button-dropdown-option.component';
+import { ImportExcelComponent } from './components/import-excel/import-excel.component';
 // #fake-end#
 
 
@@ -33,7 +34,7 @@ function appInitializer(authService: AuthService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, LoadingScreenComponent],
+  declarations: [AppComponent, LoadingScreenComponent, ImportExcelComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

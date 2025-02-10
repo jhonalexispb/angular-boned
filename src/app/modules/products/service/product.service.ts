@@ -29,11 +29,11 @@ export class ProductService {
     )
   }
 
-  listProductos(page = 1, search:string = ''){
+  listProductos(page = 1, data:any = null){
     this.loadingService.showLoading('Listando productos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/productos?page="+page+"&search="+search;
-    return this.http.get(URL,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/productos/index?page="+page;
+    return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
         setTimeout(() => {

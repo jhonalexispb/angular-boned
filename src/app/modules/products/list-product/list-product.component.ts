@@ -16,128 +16,163 @@ import { ImportExcelComponent } from 'src/app/components/import-excel/import-exc
 export class ListProductComponent {
   producto_id:any;
   laboratorio_id:any
-    PRODUCT_LIST:any = [];
-    LABORATORIOS_LIST:any = [];
-    sweet:any = new SweetalertService
-  
-    totalPages:number = 0; 
-    currentPage:number = 1;
-    activeDropdownIndex: number | null = null;
-    loading:boolean = false;
-  
-    constructor(
-      public modalService: NgbModal,
-      public productService: ProductService,
-    ){
-  
-    }
-  
-    ngOnInit(): void {
-      this.listProductos();
-    }
-  
-    onSearchChange() {
-      if (this.producto_id === null) {
-        this.producto_id = ''; // Convertir null a cadena vacía
-      }
-      this.listProductos(); // Llamar a tu función para actualizar la lista
-      if(this.producto_id === ''){
-        this.producto_id = null
-      }
-    }
-  
-    listProductos(page = 1){
-      let data = {
-        producto_id: this.producto_id,
-        laboratorio_id: this.laboratorio_id
-      }
-      this.loading = true
-      this.productService.listProductos(page,data).subscribe((resp: any) => {
-        this.PRODUCT_LIST = resp.products.data;
-        this.LABORATORIOS_LIST = resp.laboratorios;
-        this.totalPages = resp.total;
-        this.currentPage = page;
-        this.loading = false
-      })
-    }
-  
-    loadPage(page: number) {
-      this.listProductos(page);
-    }
+  PRODUCT_LIST:any = [];
+  LABORATORIOS_LIST:any = [];
+  ALMACENES_LIST:any = [];
+  state_stock:string
+  sweet:any = new SweetalertService
 
-    resetFiltro(){
+  totalPages:number = 0; 
+  currentPage:number = 1;
+  activeDropdownIndex: number | null = null;
+  loading:boolean = false;
+  num_products_disponible:number = 0
+  num_products_por_agotar:number = 0
+  num_products_agotado:number = 0
+  warehouse_id:any;
+
+  constructor(
+    public modalService: NgbModal,
+    public productService: ProductService,
+  ){
+
+  }
+
+  ngOnInit(): void {
+    this.listProductos();
+  }
+
+  onSearchChange() {
+    if (this.producto_id === null) {
+      this.producto_id = ''; // Convertir null a cadena vacía
+    }
+    this.listProductos(); // Llamar a tu función para actualizar la lista
+    if(this.producto_id === ''){
       this.producto_id = null
-      this.laboratorio_id = null
-      this.listProductos()
     }
+  }
 
-    importProduct(){
-      const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
-      modalRef.componentInstance.nameModule = "productos"
-      modalRef.componentInstance.route = "/productos/import"
-      modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
-        
-      })
+  listProductos(page = 1){
+    let data = {
+      producto_id: this.producto_id,
+      laboratorio_id: this.laboratorio_id,
+      state_stock: this.state_stock,
+      warehouse_id: this.warehouse_id
     }
-  
-    createProducto(){
-      const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
-      modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
-        this.PRODUCT_LIST.unshift(r.data); //integra el nuevo valor al inicio de la tabla
-      })
-    }
-  
-    editProducto(R:any){
-      const modalRef = this.modalService.open(EditProductComponent,{centered:true, size: 'xl'})
-      modalRef.componentInstance.PRODUCT_SELECTED = R;
-      //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
-      modalRef.componentInstance.ProductoE.subscribe((r:any)=>{
-        const { producto, isRestored } = r; 
-        if (isRestored) {
-          this.PRODUCT_LIST.unshift(producto.data);
-        } else {
-          let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == R.id);
-          if(INDEX != -1){
-            this.PRODUCT_LIST[INDEX] = producto.data
-          }
-        }
-      })
-    }
-  
-    deleteProducto(PROD:any){
-      this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el producto: ${PROD.laboratorio} ${PROD.nombre_completo}?`).then((result:any) => {
-        if (result.isConfirmed) {
-          // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-          this.productService.deleteProducto(PROD.id).subscribe({
-            next: (resp: any) => {
-              this.PRODUCT_LIST = this.PRODUCT_LIST.filter((sucurs:any) => sucurs.id !== PROD.id); // Eliminamos el rol de la lista
-              this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
-            },
-          })
-        }
-      });
-    }
-  
-    // Método que se ejecuta cuando un dropdown es activado o desactivado
-    handleDropdownToggle(index: number) {
-      this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
-    }
+    this.loading = true
+    this.productService.listProductos(page,data).subscribe((resp: any) => {
+      this.PRODUCT_LIST = resp.products.data;
+      this.LABORATORIOS_LIST = resp.laboratorios;
+      this.ALMACENES_LIST = resp.warehouses;
+      this.num_products_disponible = resp.num_products_disponible
+      this.num_products_por_agotar = resp.num_products_por_agotar
+      this.num_products_agotado = resp.num_products_agotado
+      this.totalPages = resp.total;
+      this.currentPage = page;
+      this.loading = false
+    })
+  }
 
-    viewImagen(image:string){
-      const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
-      modalRef.componentInstance.IMAGE_SELECTED = image
-    }
+  selectDisponible(){
+    this.state_stock = '1'
+    this.listProductos()
+  }
+  selectPorAgotar(){
+    this.state_stock = '2'
+    this.listProductos()
+  }
+  selectAgotado(){
+    this.state_stock = '3'
+    this.listProductos()
+  }
 
-    downloadProducts(){
-      let link = ""
-      if(this.producto_id){
-        link += "&producto_id="+this.producto_id
-      }
+  loadPage(page: number) {
+    this.listProductos(page);
+  }
 
-      if(this.laboratorio_id){
-        link += "&laboratorio_id="+this.laboratorio_id
-      }
+  resetFiltro(){
+    this.producto_id = null
+    this.laboratorio_id = null
+    this.warehouse_id = null
+    this.state_stock = ''
+    this.listProductos()
+  }
+
+  importProduct(){
+    const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nameModule = "productos"
+    modalRef.componentInstance.route = "/productos/import"
+    modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
       
-      window.open(URL_SERVICIO+"/excel/export-products?k=1"+link,"_blank")
+    })
+  }
+
+  createProducto(){
+    const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
+      this.PRODUCT_LIST.unshift(r.data); //integra el nuevo valor al inicio de la tabla
+    })
+  }
+
+  editProducto(R:any){
+    const modalRef = this.modalService.open(EditProductComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.PRODUCT_SELECTED = R;
+    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
+    modalRef.componentInstance.ProductoE.subscribe((r:any)=>{
+      const { producto, isRestored } = r; 
+      if (isRestored) {
+        this.PRODUCT_LIST.unshift(producto.data);
+      } else {
+        let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == R.id);
+        if(INDEX != -1){
+          this.PRODUCT_LIST[INDEX] = producto.data
+        }
+      }
+    })
+  }
+
+  deleteProducto(PROD:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el producto: ${PROD.laboratorio} ${PROD.nombre_completo}?`).then((result:any) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
+        this.productService.deleteProducto(PROD.id).subscribe({
+          next: (resp: any) => {
+            this.PRODUCT_LIST = this.PRODUCT_LIST.filter((sucurs:any) => sucurs.id !== PROD.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
+          },
+        })
+      }
+    });
+  }
+
+  // Método que se ejecuta cuando un dropdown es activado o desactivado
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
+  }
+
+  viewImagen(image:string){
+    const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.IMAGE_SELECTED = image
+  }
+
+  downloadProducts(){
+    let link = ""
+    if(this.producto_id){
+      link += "&producto_id="+this.producto_id
     }
+
+    if(this.laboratorio_id){
+      link += "&laboratorio_id="+this.laboratorio_id
+    }
+
+    if(this.state_stock){
+      link += "&state_stock="+this.state_stock
+    }
+
+    if(this.warehouse_id){
+      link += "&warehouse_id="+this.warehouse_id
+    }
+    
+    window.open(URL_SERVICIO+"/excel/export-products?k=1"+link,"_blank")
+  }
 }

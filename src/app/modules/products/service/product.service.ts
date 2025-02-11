@@ -85,4 +85,15 @@ export class ProductService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //solicitamos el codigo digemid
+  obtenerCodigoDigemid(REG_SAN:any){
+    this.loadingService.showLoading('Buscando registro sanitario')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/productos/obtener_codigo_digemid?registro_sanitario="+REG_SAN
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

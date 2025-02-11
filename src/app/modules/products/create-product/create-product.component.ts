@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../service/product.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
+import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
 
 @Component({
   selector: 'app-create-product',
@@ -96,6 +97,29 @@ export class CreateProductComponent {
 
   onSearchFabricante(event: any) {
     this.searchTermFabricante = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  importListadoDigemid(){
+    const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nameModule = "listado digemid"
+    modalRef.componentInstance.route = "/productos/import/externos/catalogo_digemid"
+    modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
+      
+    })
+  }
+
+  buscarCodigoDigemid(){
+    this.productService.obtenerCodigoDigemid(this.productForm.get('registro_sanitario')?.value).subscribe({
+      next: (resp: any) => {
+        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
+        console.log(resp)
+        /* this.modal.close();
+        this.sweet.success(
+          '¡Éxito!',
+          'el producto se registró correctamente'
+        ); */
+      },
+    })
   }
 
   // Enviar el formulario

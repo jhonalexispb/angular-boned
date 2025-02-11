@@ -21,7 +21,6 @@ export class ImportExcelService {
     this.loadingService.showLoading('Importando...')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+route;
-    console.log(URL)
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

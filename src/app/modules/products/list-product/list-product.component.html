@@ -57,6 +57,27 @@
                     </ng-select>
                 </div>
               </div>
+
+              <div class="col-md-6 col-12 mb-3">
+                <div class="d-flex align-items-center w-100">
+                  <ng-select 
+                    [items]="ALMACENES_LIST"
+                    bindLabel="name"
+                    bindValue="id"
+                    placeholder="Buscar por almacen"
+                    [searchable]="true"
+                    [clearable]="true" 
+                    [virtualScroll]="true"  
+                    [multiple]="false"
+                    [loadingText]="'Cargando...'"
+                    [(ngModel)]="warehouse_id" 
+                    (change)="onSearchChange()"
+                    [loading]="loading" 
+                    name="search"
+                    class="w-100">
+                  </ng-select>
+              </div>
+            </div>
           </div>
           <!--end::Search-->
       
@@ -92,6 +113,33 @@
                           Importar Excel
                         </button>
                       </li>
+                      <li *ngIf="num_products_disponible > 0">
+                        <button (click)="selectDisponible()" class="badge-light-primary btn btn-sm w-100 text-primary">
+                          <i class="fas fa-check-circle fs-2 text-primary"></i>
+                          Disponible
+                          <span class="badge rounded-sm bg-primary text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_disponible }}
+                          </span>
+                        </button>
+                      </li>
+                      <li *ngIf="num_products_por_agotar > 0">
+                        <button (click)="selectPorAgotar()" class="badge-light-warning btn btn-sm w-100 text-warning ">
+                          <i class="fas fa-exclamation-triangle fs-2 text-warning"></i>
+                          Por agotar
+                          <span class="badge rounded-sm bg-warning text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_por_agotar }}
+                          </span>
+                        </button>
+                      </li>
+                      <li *ngIf="num_products_agotado > 0">
+                        <button (click)="selectAgotado()" class="badge-light-danger btn btn-sm w-100 text-danger">
+                          <i class="fas fa-times-circle fs-2 text-danger"></i>
+                          Agotado
+                          <span class="badge rounded-sm bg-danger text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_agotado }}
+                          </span>
+                        </button>
+                      </li>
                     </ul>
                   </app-button-dropdown-option>
 
@@ -105,13 +153,46 @@
                     Reset filtro
                   </button>
 
-                  <button (click)="importProduct()" class="badge-light-warning btn btn-sm w-100 d-none text-warning h-100 d-md-flex flex-column align-items-center gap-2">
+                  <button (click)="selectDisponible()" class="badge-light-warning btn btn-sm w-100 d-none text-warning h-100 d-md-flex flex-column align-items-center gap-2">
                     <i class="ki-duotone ki-update-folder fs-2 text-warning">
                       <span class="path1"></span>
                       <span class="path2"></span>
                     </i>
                     Importar Excel
                   </button>
+
+                  <app-button-dropdown-option class="d-none d-md-block">
+                    <ul class="list pt-3 px-3 d-flex flex-column gap-2">
+                      <li *ngIf="num_products_disponible > 0">
+                        <button (click)="selectDisponible()" class="badge-light-primary btn btn-sm w-100 d-none text-primary h-100 d-md-flex flex-column align-items-center gap-2">
+                          <i class="fas fa-check-circle fs-2 text-primary"></i>
+                          Disponible ({{ num_products_disponible }})
+                          <span class="badge rounded-sm bg-primary text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_disponible }}
+                          </span>
+                        </button>
+                      </li>
+                      <li *ngIf="num_products_por_agotar > 0">
+                        <button (click)="selectPorAgotar()" class="badge-light-warning btn btn-sm w-100 d-none text-warning h-100 d-md-flex flex-column align-items-center gap-2">
+                          <i class="fas fa-exclamation-triangle fs-2 text-warning"></i>
+                          Por agotar
+                          <span class="badge rounded-sm bg-warning text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_por_agotar }}
+                          </span>
+                        </button>
+                      </li>
+                      <li *ngIf="num_products_agotado > 0">
+                        <button (click)="selectAgotado()" class="badge-light-danger btn btn-sm w-100 d-none text-danger h-100 d-md-flex align-items-center gap-2">
+                          <i class="fas fa-times-circle fs-2 text-danger"></i>
+                          Agotado 
+                          <span class="badge rounded-sm bg-danger text-white ms-2 px-2 py-1 fs-6">
+                            {{ num_products_agotado }}
+                          </span>
+                        </button>
+                      </li>                      
+                    </ul>
+                  </app-button-dropdown-option>
+                  
                 </div>
                 <!--end::Add customer-->
             </div>
@@ -160,7 +241,7 @@
                     <tbody class="fw-semibold text-gray-600">
                       <tr *ngFor="let P of PRODUCT_LIST; let index = index">
                         <td>
-                            <div class="d-flex justify-content-start align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-2">
                                 <div class="d-md-none d-flex align-items-center">
                                     <app-buttons-group-list
                                     [index]="index"
@@ -186,17 +267,19 @@
                                     </ul>
                                     </app-buttons-group-list>
                                 </div>
-                                <!-- Aquí se muestra el RUC -->
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center">
-                                      <div class="symbol symbol-50px me-5">
-                                        <img [src]="P.imagen" class="" alt="img" (click)="viewImagen(P.imagen)">
-                                      </div>
-                                      <div class="d-flex justify-content-start flex-column">
-                                          <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.nombre }}</span>
-                                          <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
-                                          <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
-                                      </div>
+                                <div class="d-flex">
+                                  <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-50px me-5 d-flex flex-column gap-2">
+                                      <img [src]="P.imagen" class="" alt="img" (click)="viewImagen(P.imagen)">
+                                      <span class="badge badge-light-primary" *ngIf="P.state_stock == 1">Disponible</span>
+                                      <span class="badge badge-light-warning" *ngIf="P.state_stock == 2">Por agotar</span>
+                                      <span class="badge badge-light-danger" *ngIf="P.state_stock == 3">Agotado</span>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.nombre }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
+                                    </div>
                                   </div>
                                 </div>
                             </div>

@@ -52,6 +52,14 @@ export class ImportExcelComponent {
   }
 
   processFile($event:any){
-    this.file_excel = $event.target.files[0]
+    const file  = $event.target.files[0]
+    const fileType = file.type;
+    if (fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
+      this.sweet.formulario_invalido('Error', 'Por favor sube un archivo Excel válido');
+      this.file_excel = null;  // Limpiar el archivo si no es válido
+      return false;  // Detener el proceso
+    }else{
+      this.file_excel = file;
+    }
   }
 }

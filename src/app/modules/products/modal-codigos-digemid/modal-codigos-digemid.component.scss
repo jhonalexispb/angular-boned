@@ -1,0 +1,28 @@
+/* Efecto hover: Azul fuerte y letras blancas */
+.table tbody tr:hover {
+    background-color: #007bff !important; /* Azul fuerte */
+    color: white !important; /* Letras blancas */
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Aplicar color blanco a todo el texto dentro de la fila al hacer hover */
+.table tbody tr:hover td,
+.table tbody tr:hover th,
+.table tbody tr:hover span {
+    color: white !important;
+}
+
+/* Mantiene el efecto en la fila seleccionada */
+.table tbody tr.selected {
+    background-color: #0056b3 !important; /* Azul más oscuro */
+    color: white !important; /* Letras blancas */
+    font-weight: bold;
+}
+
+/* Aplicar color blanco a todo el texto dentro de la fila seleccionada */
+.table tbody tr.selected td,
+.table tbody tr.selected th,
+.table tbody tr.selected span {
+    color: white !important;
+}

@@ -1,0 +1,98 @@
+<!-- Modal content -->
+<div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header">
+        <h2 class="fw-bolder">{{ user }} hay {{ CODIGOS_LIST.length }} coincidencias encontradas, mira bien las opciones y haz clic en la que te parezca</h2>
+        <button type="button" class="btn btn-icon btn-sm btn-active-icon-primary" (click)="modal.dismiss()">
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+        </button>
+    </div>
+    <!-- Modal body -->
+    <div class="modal-body"> 
+        <ng-container *ngIf="CODIGOS_LIST.length > 0; else noResults">
+            <div class="table-responsive">
+                <table class="table table-row-dashed table-row-gray-300 align-middle ">
+                    <!--begin::Table head-->
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Concentración</th>
+                            <th>Forma Farmaceutica</th>
+                            <th>Presentación</th>
+                            <th>Fracción</th>
+                            <th>Titular</th>
+                            <th>Fabricante</th>
+                            <th>Principio activo</th>
+                            <th>Rubro</th>
+                            <th>Situación</th>
+                            <th>Registro Sanitario</th>
+                        </tr>
+                    </thead>
+                    <!--end::Table head-->
+    
+                    <!--begin::Table body-->
+                    <tbody>
+                        <tr *ngFor="let cod of CODIGOS_LIST"
+                            (click)="seleccionarCodigo(cod.cod_prod)">
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.cod_prod }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_prod }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.concent }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_form_farm }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.presentac }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.fraccion }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_titular }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_fabricante }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_ifa }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.nom_rubro }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.situacion }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted fw-semibold text-muted d-block fs-7">{{ cod.num_regsan }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+            </div>
+        </ng-container>
+        <ng-template #noResults>
+            <div class="alert alert-warning text-center mt-3">
+                <strong>No se encontraron coincidencias</strong>
+            </div>
+        </ng-template>
+        
+        <!-- Botón de cierre -->
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-light" (click)="modal.dismiss()">Cerrar</button>
+        </div>
+    </div>
+</div>

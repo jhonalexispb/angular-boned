@@ -16,6 +16,7 @@ import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/bu
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { ButtonDropdownOptionModule } from 'src/app/components/button-dropdown-option/button-dropdown-option.module';
 import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
+import { ModalCodigosDigemidComponent } from './modal-codigos-digemid/modal-codigos-digemid.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { DropImageModule } from 'src/app/components/drop-image/drop-image.module
     CreateProductComponent,
     EditProductComponent,
     ListProductComponent,
+    ModalCodigosDigemidComponent,
   ],
   imports: [
     CommonModule,

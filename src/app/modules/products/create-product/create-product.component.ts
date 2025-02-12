@@ -9,6 +9,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../service/product.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
+import { ModalCodigosDigemidComponent } from '../modal-codigos-digemid/modal-codigos-digemid.component';
 
 @Component({
   selector: 'app-create-product',
@@ -109,16 +110,29 @@ export class CreateProductComponent {
   }
 
   buscarCodigoDigemid(){
+    this.productForm.patchValue({
+      'codigo_digemid': ''
+    })
     this.productService.obtenerCodigoDigemid(this.productForm.get('registro_sanitario')?.value).subscribe({
       next: (resp: any) => {
-        // Lógica cuando se recibe un valor (respuesta exitosa o fallida)
-        console.log(resp)
-        /* this.modal.close();
-        this.sweet.success(
-          '¡Éxito!',
-          'el producto se registró correctamente'
-        ); */
+        if(resp.codigos.length > 0){
+          const modalRef = this.modalService.open(ModalCodigosDigemidComponent,{centered:true, size: 'xl'})
+          modalRef.componentInstance.CODIGOS_LIST = resp.codigos
+          modalRef.componentInstance.CodigoS.subscribe((r:any)=>{
+            this.productForm.patchValue({
+              'codigo_digemid': r
+            })
+          })
+        }else{
+          this.sweet.success('Ups','Nose encontraron coincidencias en el catálogo digemid','/assets/animations/general/ojitos.json')
+        }
       },
+    })
+  }
+
+  resetCodigoDigemid(){
+    this.productForm.patchValue({
+      'codigo_digemid': ''
     })
   }
 

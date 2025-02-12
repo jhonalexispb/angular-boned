@@ -13,7 +13,7 @@ export class CreatePrincipioActivoComponent {
   @Input() nombre_externo: any = '';
   PRINCIPIOS_ACTIVOS:any[] = [];
   concentracion:string = '';
-  principio_activo:string
+  principio_activo:any
   loading: boolean = false;
 
   sweet:any = new SweetalertService
@@ -26,7 +26,12 @@ export class CreatePrincipioActivoComponent {
   }
 
   ngOnInit(): void {
-    this.principio_activo = this.nombre_externo
+    console.log(this.nombre_externo)
+    if(this.nombre_externo == null || this.nombre_externo == ''){
+      this.principio_activo = null
+    }else{
+      this.principio_activo = this.nombre_externo
+    }
     this.loading = true;
     this.principioActivoService.obtenerRecursos().subscribe((data: any) => {
       this.PRINCIPIOS_ACTIVOS = data.nombres_principios_activos;

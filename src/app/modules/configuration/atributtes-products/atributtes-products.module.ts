@@ -7,11 +7,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { PresentacionesComponent } from './presentaciones/presentaciones.component';
+import { CondicionesAlmacenamientoComponent } from './condiciones-almacenamiento/condiciones-almacenamiento.component';
 
 
 @NgModule({
   declarations: [
-    AtributtesProductsComponent
+    AtributtesProductsComponent,
+    PresentacionesComponent,
+    CondicionesAlmacenamientoComponent
   ],
   imports: [
     CommonModule,

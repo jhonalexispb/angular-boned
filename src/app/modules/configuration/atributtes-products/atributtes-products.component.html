@@ -55,6 +55,26 @@
             </a>
         </li>
         <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item col d-flex justify-content-center p-0">
+            <a class="d-flex border-0 justify-content-center align-items-center gap-2 nav-item" routerLinkActive="active" routerLink="/configuraciones/atributos-producto/presentaciones/list">
+                <i class="fas fa-box fa-lg fs-1"></i>
+                <span class="nav-text fw-bold fs-6 text-center">
+                    Presentaciones
+                </span>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item col d-flex justify-content-center p-0">
+            <a class="d-flex border-0 justify-content-center align-items-center gap-2 nav-item" routerLinkActive="active" routerLink="/configuraciones/atributos-producto/condiciones-almacenamiento/list">
+                <i class="fas fa-temperature-low fa-lg fs-1"></i>
+                <span class="nav-text fw-bold fs-6 text-center">
+                    Condiciones de almacenamiento
+                </span>
+            </a>
+        </li>
+        <!--end::Item-->
     </ul>
     <!--end::Nav-->
 
@@ -118,6 +138,26 @@
                        [ngClass]="{'active': selectedSection === 'Lineas Farmaceuticas'}">
                         <i class="fas fa-pills fa-lg fs-3"></i>
                         Lineas Farmaceuticas
+                    </a>
+                </li>
+
+
+                <li class="nav-item-peque">
+                    <a class="nav-item-peque shadow-sm" 
+                       [routerLink]="'/configuraciones/atributos-producto/presentaciones/list'" 
+                       (click)="setSelectedSection('Presentaciones')"
+                       [ngClass]="{'active': selectedSection === 'Presentaciones'}">
+                       <i class="fas fa-box fa-lg fs-1"></i>
+                        Presentaciones
+                    </a>
+                </li>
+                <li class="nav-item-peque">
+                    <a class="nav-item-peque shadow-sm" 
+                       [routerLink]="'/configuraciones/atributos-producto/condiciones-almacenamiento/list'" 
+                       (click)="setSelectedSection('Condiciones Almacenamiento')"
+                       [ngClass]="{'active': selectedSection === 'Condiciones Almacenamiento'}">
+                       <i class="fas fa-temperature-low fa-lg fs-1"></i>
+                        Condiciones de almacenamiento
                     </a>
                 </li>
             </ul>

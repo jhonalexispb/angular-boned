@@ -6,6 +6,8 @@ import { PrincipiosActivosComponent } from './principios-activos/principios-acti
 import { CategoriasComponent } from './categorias/categorias.component';
 import { FabricantesComponent } from './fabricantes/fabricantes.component';
 import { LineasFarmaceuticasComponent } from './lineas-farmaceuticas/lineas-farmaceuticas.component';
+import { PresentacionesComponent } from './presentaciones/presentaciones.component';
+import { CondicionesAlmacenamientoComponent } from './condiciones-almacenamiento/condiciones-almacenamiento.component';
 
 const routes: Routes = [
   {
@@ -36,6 +38,16 @@ const routes: Routes = [
         path: 'lineas-farmaceuticas',
         component: LineasFarmaceuticasComponent,
         loadChildren: () => import('./lineas-farmaceuticas/lineas-farmaceuticas.module').then(m => m.LineasFarmaceuticasModule)
+      },
+      {
+        path: 'presentaciones',
+        component: PresentacionesComponent,
+        loadChildren: () => import('./presentaciones/presentaciones.module').then(m => m.PresentacionesModule)
+      },
+      {
+        path: 'condiciones-almacenamiento',
+        component: CondicionesAlmacenamientoComponent,
+        loadChildren: () => import('./condiciones-almacenamiento/condiciones-almacenamiento.module').then(m => m.CondicionesAlmacenamientoModule)
       },
     ]
   }

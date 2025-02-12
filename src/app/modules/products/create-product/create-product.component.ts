@@ -1,3 +1,4 @@
+import { CreatePresentacionesComponent } from './../../configuration/atributtes-products/presentaciones/create-presentaciones/create-presentaciones.component';
 import { CreateCategoriasComponent } from './../../configuration/atributtes-products/categorias/create-categorias/create-categorias.component';
 import { CreateFabricanteComponent } from './../../configuration/atributtes-products/fabricantes/create-fabricante/create-fabricante.component';
 import { CreateLineasFarmaceuticasComponent } from './../../configuration/atributtes-products/lineas-farmaceuticas/create-lineas-farmaceuticas/create-lineas-farmaceuticas.component';
@@ -10,6 +11,7 @@ import { ProductService } from '../service/product.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
 import { ModalCodigosDigemidComponent } from '../modal-codigos-digemid/modal-codigos-digemid.component';
+import { CreateCondicionesAlmacenamientoComponent } from '../../configuration/atributtes-products/condiciones-almacenamiento/create-condiciones-almacenamiento/create-condiciones-almacenamiento.component';
 
 @Component({
   selector: 'app-create-product',
@@ -27,6 +29,7 @@ export class CreateProductComponent {
   CATEGORIAS:any[] = []
   CONDICIONES_ALMACENAMIENTO:any[] = []
   UNIDADES:any[] = []
+  PRESENTACIONES:any[] = []
 
   loading:boolean
   loading_sku:boolean
@@ -35,6 +38,8 @@ export class CreateProductComponent {
   searchTermPrincipioActivo: string = '';
   searchTermLineaFarmaceutica: string = '';
   searchTermFabricante: string = '';
+  searchTermPresentacion: string = '';
+  searchTermCondicionAlmacenamiento: string = '';
 
   isSkuManual: boolean = false;
   sweet:any = new SweetalertService
@@ -57,6 +62,7 @@ export class CreateProductComponent {
         this.CATEGORIAS = resp.categorias;
         this.CONDICIONES_ALMACENAMIENTO = resp.condiciones_almacenamiento;
         this.UNIDADES = resp.unidades;
+        this.PRESENTACIONES = resp.presentaciones;
         this.loading = false
     })
 
@@ -77,9 +83,10 @@ export class CreateProductComponent {
 
       laboratorio_id:[null,[Validators.required]],
       principio_activo_id:[null],
+      presentacion_id:[null],
       linea_farmaceutica_id:[null,[Validators.required]],
       fabricante_id:[null,[Validators.required]],
-      condiciones_almacenamiento_id:[null],
+      cond_almac_id:[null],
       unidad_id:[1]
     });
   }
@@ -100,6 +107,14 @@ export class CreateProductComponent {
     this.searchTermFabricante = event.term;  // Acceder al término de búsqueda desde el evento
   }
 
+  onSearchPresentacion(event: any) {
+    this.searchTermPresentacion = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchCondicionAlmacenamiento(event: any) {
+    this.searchTermCondicionAlmacenamiento = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
   importListadoDigemid(){
     const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.nameModule = "listado digemid"
@@ -110,10 +125,14 @@ export class CreateProductComponent {
   }
 
   buscarCodigoDigemid(){
+    const registroSanitario = this.productForm.get('registro_sanitario')?.value;
+
+    const codigoLimpio = registroSanitario.replace(/[^a-zA-Z0-9]/g, '');
+
     this.productForm.patchValue({
       'codigo_digemid': ''
     })
-    this.productService.obtenerCodigoDigemid(this.productForm.get('registro_sanitario')?.value).subscribe({
+    this.productService.obtenerCodigoDigemid(codigoLimpio).subscribe({
       next: (resp: any) => {
         if(resp.codigos.length > 0){
           const modalRef = this.modalService.open(ModalCodigosDigemidComponent,{centered:true, size: 'xl'})
@@ -246,6 +265,27 @@ export class CreateProductComponent {
     modalRef.componentInstance.CategoriaC.subscribe((r:any)=>{
       this.CATEGORIAS = [r, ...this.CATEGORIAS];
       this.productForm.patchValue({ categoria_id: r.id });
+    })
+  }
+
+  createPresentacion(){
+    const modalRef = this.modalService.open(CreatePresentacionesComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermPresentacion;
+    modalRef.componentInstance.PresentacionC.subscribe((r:any)=>{
+      this.PRESENTACIONES = [r, ...this.PRESENTACIONES];
+      this.productForm.patchValue({ presentacion_id: r.id });
+    })
+  }
+
+  createCondicionAlmacenamiento(){
+    const modalRef = this.modalService.open(CreateCondicionesAlmacenamientoComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermPresentacion;
+    modalRef.componentInstance.CondicionC.subscribe((r:any)=>{
+      this.CONDICIONES_ALMACENAMIENTO = [r, ...this.CONDICIONES_ALMACENAMIENTO];
+      const condicion_id = this.productForm.get('cond_almac_id')?.value || [];
+      this.productForm.patchValue({
+        cond_almac_id: [r.id, ...condicion_id]
+      });
     })
   }
 

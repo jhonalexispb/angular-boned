@@ -36,6 +36,10 @@ export class AtributtesProductsComponent {
         return 'Fabricantes';
       case 'lineas-farmaceuticas':
         return 'Lineas Farmaceuticas';
+      case 'presentaciones':
+        return 'Presentaciones';
+      case 'condiciones-almacenamiento':
+        return 'Condiciones Almacenamiento';
       default:
         return 'Laboratorios'; // Por defecto
     }
@@ -58,6 +62,10 @@ export class AtributtesProductsComponent {
         return 'fas fa-industry'; // Icono de Fabricantes
       case 'Lineas Farmaceuticas':
         return 'fas fa-pills'; // Icono de Líneas Farmacéuticas
+      case 'Presentaciones':
+        return 'fas fa-box';
+      case 'Condiciones Almacenamiento':
+        return 'fas fa-temperature-low';
       default:
         return 'fas fa-question'; // Ícono por defecto
     }

@@ -100,7 +100,7 @@ export class ProductService {
   gestionarProducto(ID_PRODUCTO:any,data:any){
     this.loadingService.showLoading('Gestionando producto')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/productos/gestionar/"+ID_PRODUCTO;
+    let URL = URL_SERVICIO+"/atributtes/productos/gestionar/"+ID_PRODUCTO;
     return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

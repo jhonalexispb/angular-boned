@@ -20,6 +20,8 @@ import { ModalCodigosDigemidComponent } from './modal-codigos-digemid/modal-codi
 import { ModalGestionarComponent } from './modal-gestionar/modal-gestionar.component';
 import { ModalLotesComponent } from './modal-lotes/modal-lotes.component';
 import { ModalEscalasComponent } from './modal-escalas/modal-escalas.component';
+import { CreateEscalasComponent } from './create-escalas/create-escalas.component';
+import { EditEscalasComponent } from './edit-escalas/edit-escalas.component';
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import { ModalEscalasComponent } from './modal-escalas/modal-escalas.component';
     ModalGestionarComponent,
     ModalLotesComponent,
     ModalEscalasComponent,
+    CreateEscalasComponent,
+    EditEscalasComponent,
   ],
   imports: [
     CommonModule,

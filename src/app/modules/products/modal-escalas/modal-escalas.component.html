@@ -1,1 +1,125 @@
-<p>modal-escalas works!</p>
+<!-- Modal content -->
+<div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header">
+        <h2 class="fw-bolder">{{ user }} configuremos escalas para: <br>
+            <span class="text-success">{{PRODUCT_ID.laboratorio}}</span><br>
+            {{PRODUCT_ID.nombre_completo}}</h2>
+        <button type="button" class="btn btn-icon btn-sm btn-active-icon-primary" (click)="modal.dismiss()">
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+        </button>
+    </div>
+    <!-- Modal body -->
+    <div class="modal-body pb-2"> 
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button type="button" class="btn btn-info">
+                Numero de escalas: {{ESCALAS_LIST.length}}
+            </button>
+            <button type="button" class="btn btn-primary" (click)="createEscala()">
+                Crear escala
+            </button>
+        </div>
+        
+        <div class="d-flex mb-10 gap-3">
+            <button type="button" class="btn btn-success w-50">
+                Escalas activas: {{ escalas_activas }}
+            </button>
+            <button type="button" class="btn btn-danger w-50">
+                Escalas inactivas: {{ escalas_inactivas }}
+            </button>
+        </div>
+        
+        
+        <ng-container *ngIf="ESCALAS_LIST.length > 0; else noResults">
+            <div class="table-responsive">
+                <table class="table table-row-dashed table-row-gray-300 align-middle">
+                    <!--begin::Table head-->
+                    <thead>
+                        <tr>
+                            <th class="text-center min-w-60px">Cantidad</th>
+                            <th class="text-center min-w-80px">Precio</th>
+                            <th class="text-center min-w-60px">Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <!--end::Table head-->
+    
+                    <!--begin::Table body-->
+                    <tbody>
+                        <tr *ngFor="let e of ESCALAS_LIST; let index = index">
+                            <td class="text-center">
+                                <span class="text-gray-900 fw-bold fs-6">{{ e.cantidad }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="text-gray-900 fw-bold fs-6">S/ {{ e.precio }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="e.state == 1">Activo</span>
+                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="e.state == 0">Inactivo</span>
+                            </td>
+                            <td class="d-table-cell acciones-container">
+                                <ul class="d-flex gap-2 mb-0 justify-content-center">
+                                  <li>
+                                    <button 
+                                    (click)="stateEscalaDesactiveActivate(e)" 
+                                    [ngClass]="{
+                                        'text-warning': e.state == 1,
+                                        'text-success': e.state == 0
+                                    }" 
+                                    class="btn btn-bg-light btn-active-color-primary btn-sm w-100">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <i *ngIf="e.state == 0" class="ki-duotone ki-like text-success fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+
+                                        <i *ngIf="e.state == 1" class="ki-duotone ki-dislike text-warning fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <span class="fs-7" *ngIf="e.state == 1">Desactivar</span>
+                                        <span class="fs-7" *ngIf="e.state == 0">Activar</span>
+                                    </div>
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button (click)="editEscala(e)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm w-100">
+                                      <div class="d-flex flex-column align-items-center gap-1">
+                                        <i class="ki-duotone ki-pencil fs-3 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                        <span class="fs-7">Editar</span>
+                                      </div>
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button (click)="deleteEscala(e)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm w-100">
+                                      <div class="d-flex flex-column align-items-center gap-1 fs-3">
+                                        <i class="ki-duotone ki-trash fs-3 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                        <span class="fs-7">Eliminar</span>
+                                      </div>
+                                    </button>
+                                  </li>
+                                </ul>
+                              </td>
+                        </tr>
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+            </div>
+        </ng-container>
+        <ng-template #noResults>
+            <div class="alert alert-warning text-center mt-3">
+                <strong>El producto no cuenta con escalas</strong>
+            </div>
+        </ng-template>
+    </div>
+    <div class="modal-footer d-flex justify-content-center">
+        <button type="reset" class="btn btn-light" (click)="modal.dismiss()">Cerrar</button>
+    </div>
+</div>

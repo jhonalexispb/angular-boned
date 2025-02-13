@@ -8,6 +8,7 @@ import { EditProductComponent } from '../edit-product/edit-product.component';
 import { URL_SERVICIO } from 'src/app/config/config';
 import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
 import { ModalGestionarComponent } from '../modal-gestionar/modal-gestionar.component';
+import { ModalEscalasComponent } from '../modal-escalas/modal-escalas.component';
 
 @Component({
   selector: 'app-list-product',
@@ -184,5 +185,10 @@ export class ListProductComponent {
     }
     
     window.open(URL_SERVICIO+"/excel/export-products?k=1"+link,"_blank")
+  }
+
+  configurarEscalas(PROD:any){
+    const modalRef = this.modalService.open(ModalEscalasComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PRODUCT_ID = PROD
   }
 }

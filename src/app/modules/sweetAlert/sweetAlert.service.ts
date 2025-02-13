@@ -101,6 +101,10 @@ export class SweetalertService {
     return this.createAlert(title, text, image, 'Sí, eliminemoslo', true);
   }
 
+  confirmar_habilitado_deshabilitado(title: string, text: string, image: string = '/assets/animations/general/alerta.json', text_confirm: string) {
+    return this.createAlert(title, text, image, text_confirm, true);
+  }
+
   confirmar_restauracion(title: string, text: string, image: string = '/assets/animations/general/ojitos.json') {
     return this.createAlert(title, text, image, 'Sí, restauremoslo', true).then((result) => {
       this.restaurarSubject.next(result.isConfirmed);

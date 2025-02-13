@@ -16,8 +16,8 @@
     </div>
     <!-- Modal body -->
     <div class="modal-body"> 
-        <div class="row">
-            <form [formGroup]="productGestionForm" (ngSubmit)="onSubmit()" class="form d-flex flex-column flex-lg-row">
+        <form [formGroup]="productGestionForm" (ngSubmit)="onSubmit()">
+            <div class="row">
                 <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
                     <label class="form-label">¿Sale en boleta?</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
@@ -27,11 +27,11 @@
                     </div>
         
                     <div class="text-muted fs-7">
-                      Importante para determinar el documento de venta
+                        Importante para determinar el documento de venta
                     </div>
-                  </div>
+                </div>
         
-                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
                     <label class="form-label">¿Permitir venta?</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                         <label class="form-check-label">No</label>
@@ -41,9 +41,9 @@
                     <div class="text-muted fs-7">
                         Activa o desactiva todas la venta de este producto
                     </div>
-                  </div>
+                </div>
         
-                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
                     <label class="form-label">¿Maneja escalas?</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                         <label class="form-check-label">No</label>
@@ -53,9 +53,9 @@
                     <div class="text-muted fs-7">
                         Activa o desactiva todas las escalas
                     </div>
-                  </div>
+                </div>
         
-                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
                     <label class="form-label">¿Es promocionable?</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                         <label class="form-check-label">No</label>
@@ -65,12 +65,12 @@
                     <div class="text-muted fs-7">
                         Activa o desactiva todas las promociones
                     </div>
-                  </div>
-            </form>
-        </div>
-    </div>
-    <div class="modal-footer d-flex justify-content-center">
-        <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
-        <button type="submit" class="btn btn-primary" [disabled]="productGestionForm.invalid">Registrar</button>
+                </div>
+            </div>
+            <div class=" d-flex justify-content-center mt-10">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="productGestionForm.invalid">Registrar</button>
+            </div>
+        </form>
     </div>
 </div>

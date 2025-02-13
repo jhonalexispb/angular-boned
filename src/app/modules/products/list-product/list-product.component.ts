@@ -148,7 +148,10 @@ export class ListProductComponent {
     const modalRef = this.modalService.open(ModalGestionarComponent,{centered:true, size: 'lg'})
     modalRef.componentInstance.PRODUCT_OPTION = PROD;
     modalRef.componentInstance.productGestionS.subscribe((r:any)=>{
-      
+      let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == PROD.id);
+      if(INDEX != -1){
+        this.PRODUCT_LIST[INDEX] = r.data
+      }
     })
   }
 

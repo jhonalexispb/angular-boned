@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserLocalStorageService } from '../../users/service/userLocalStorage.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProductService } from '../service/product.service';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-modal-gestionar',
@@ -13,11 +15,13 @@ export class ModalGestionarComponent {
   @Output() productGestionS:EventEmitter<any> = new EventEmitter();
   user:any = ''
   productGestionForm: FormGroup;
+  sweet:any = new SweetalertService
 
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
     public getUserService: UserLocalStorageService,
+    public productService: ProductService
   ){
     
   }
@@ -33,7 +37,15 @@ export class ModalGestionarComponent {
   }
 
   onSubmit() {
-    console.log(this.productGestionForm.value)
-    this.modal.close();
+    this.productService.gestionarProducto(this.PRODUCT_OPTION.id,this.productGestionForm.value).subscribe({
+      next: (resp: any) => {
+        this.productGestionS.emit(resp);
+        this.modal.close();
+        this.sweet.success(
+          '¡Éxito!',
+          'el producto se gestiono correctamente'
+        );
+      },
+    })
   }
 }

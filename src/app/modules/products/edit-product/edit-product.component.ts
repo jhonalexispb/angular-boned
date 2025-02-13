@@ -8,6 +8,10 @@ import { CreateLineasFarmaceuticasComponent } from '../../configuration/atributt
 import { CreatePrincipioActivoComponent } from '../../configuration/atributtes-products/principios-activos/create-principio-activo/create-principio-activo.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { ProductService } from '../service/product.service';
+import { CreatePresentacionesComponent } from '../../configuration/atributtes-products/presentaciones/create-presentaciones/create-presentaciones.component';
+import { ModalCodigosDigemidComponent } from '../modal-codigos-digemid/modal-codigos-digemid.component';
+import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
+import { CreateCondicionesAlmacenamientoComponent } from '../../configuration/atributtes-products/condiciones-almacenamiento/create-condiciones-almacenamiento/create-condiciones-almacenamiento.component';
 
 @Component({
   selector: 'app-edit-product',
@@ -26,6 +30,7 @@ export class EditProductComponent {
   CATEGORIAS:any[] = []
   CONDICIONES_ALMACENAMIENTO:any[] = []
   UNIDADES:any[] = []
+  PRESENTACIONES:any[] = []
 
   loading:boolean
 
@@ -33,6 +38,8 @@ export class EditProductComponent {
   searchTermPrincipioActivo: string = '';
   searchTermLineaFarmaceutica: string = '';
   searchTermFabricante: string = '';
+  searchTermPresentacion:string = '';
+  searchTermCondicionAlmacenamiento:string = '';
 
   sweet:any = new SweetalertService
 
@@ -54,6 +61,7 @@ export class EditProductComponent {
         this.CATEGORIAS = resp.categorias;
         this.CONDICIONES_ALMACENAMIENTO = resp.condiciones_almacenamiento;
         this.UNIDADES = resp.unidades;
+        this.PRESENTACIONES = resp.presentaciones;
         this.loading = false
     })
 
@@ -65,10 +73,9 @@ export class EditProductComponent {
       caracteristicas:[this.PRODUCT_SELECTED.caracteristicas],
       descripcion:[this.PRODUCT_SELECTED.descripcion],
       registro_sanitario:[this.PRODUCT_SELECTED.registro_sanitario],
-      codigo_digemid:[this.PRODUCT_SELECTED.codigo_digemid],
+      codigo_digemid:[{ value: this.PRODUCT_SELECTED.codigo_digemid, disabled: true }],
       stock_seguridad:[this.PRODUCT_SELECTED.stock_seguridad,[Validators.required]],
       sale_boleta:[this.PRODUCT_SELECTED.sale_boleta,[Validators.required]],
-      maneja_lotes:[this.PRODUCT_SELECTED.maneja_lotes,[Validators.required]],
       maneja_escalas:[this.PRODUCT_SELECTED.maneja_escalas,[Validators.required]],
       promocionable:[this.PRODUCT_SELECTED.promocionable,[Validators.required]],
 
@@ -76,7 +83,8 @@ export class EditProductComponent {
       principio_activo_id:[this.PRODUCT_SELECTED.principios_activos],
       linea_farmaceutica_id:[this.PRODUCT_SELECTED.linea_farmaceutica_id,[Validators.required]],
       fabricante_id:[this.PRODUCT_SELECTED.fabricante_id,[Validators.required]],
-      condiciones_almacenamiento_id:[this.PRODUCT_SELECTED.condicion_almacenamiento],
+      presentacion_id:[this.PRODUCT_SELECTED.presentacion_id],
+      cond_almac_id:[this.PRODUCT_SELECTED.condicion_almacenamiento],
       unidad_id:[this.PRODUCT_SELECTED.unidad_id]
     });
   }
@@ -95,6 +103,54 @@ export class EditProductComponent {
 
   onSearchFabricante(event: any) {
     this.searchTermFabricante = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchPresentacion(event: any) {
+    this.searchTermPresentacion = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchCondicionAlmacenamiento(event: any) {
+    this.searchTermCondicionAlmacenamiento = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  importListadoDigemid(){
+    const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nameModule = "listado digemid"
+    modalRef.componentInstance.route = "/productos/import/externos/catalogo_digemid"
+    modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
+      
+    })
+  }
+
+  buscarCodigoDigemid(){
+    const registroSanitario = this.productForm.get('registro_sanitario')?.value;
+
+    const codigoLimpio = registroSanitario.replace(/[^a-zA-Z0-9]/g, '');
+
+    this.productForm.patchValue({
+      'codigo_digemid': ''
+    })
+    this.productService.obtenerCodigoDigemid(codigoLimpio).subscribe({
+      next: (resp: any) => {
+        if(resp.codigos.length > 0){
+          const modalRef = this.modalService.open(ModalCodigosDigemidComponent,{centered:true, size: 'xl'})
+          modalRef.componentInstance.CODIGOS_LIST = resp.codigos
+          modalRef.componentInstance.CodigoS.subscribe((r:any)=>{
+            this.productForm.patchValue({
+              'codigo_digemid': r
+            })
+          })
+        }else{
+          this.sweet.success('Ups','Nose encontraron coincidencias en el catálogo digemid','/assets/animations/general/ojitos.json')
+        }
+      },
+    })
+  }
+
+  resetCodigoDigemid(){
+    this.productForm.patchValue({
+      'codigo_digemid': ''
+    })
   }
 
   // Enviar el formulario
@@ -169,6 +225,27 @@ export class EditProductComponent {
       this.productForm.patchValue({ fabricante_id: r.id });
     })
   }
+
+  createPresentacion(){
+    const modalRef = this.modalService.open(CreatePresentacionesComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermPresentacion;
+    modalRef.componentInstance.PresentacionC.subscribe((r:any)=>{
+      this.PRESENTACIONES = [r, ...this.PRESENTACIONES];
+      this.productForm.patchValue({ presentacion_id: r.id });
+    })
+  }
+
+  createCondicionAlmacenamiento(){
+      const modalRef = this.modalService.open(CreateCondicionesAlmacenamientoComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.nombre_externo = this.searchTermCondicionAlmacenamiento;
+      modalRef.componentInstance.CondicionC.subscribe((r:any)=>{
+        this.CONDICIONES_ALMACENAMIENTO = [r, ...this.CONDICIONES_ALMACENAMIENTO];
+        const condicion_id = this.productForm.get('cond_almac_id')?.value || [];
+        this.productForm.patchValue({
+          cond_almac_id: [r.id, ...condicion_id]
+        });
+      })
+    }
 
   createCategoria(){
     const modalRef = this.modalService.open(CreateCategoriasComponent,{centered:true, size: 'xl'})

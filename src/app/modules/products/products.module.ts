@@ -17,6 +17,9 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
 import { ButtonDropdownOptionModule } from 'src/app/components/button-dropdown-option/button-dropdown-option.module';
 import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
 import { ModalCodigosDigemidComponent } from './modal-codigos-digemid/modal-codigos-digemid.component';
+import { ModalGestionarComponent } from './modal-gestionar/modal-gestionar.component';
+import { ModalLotesComponent } from './modal-lotes/modal-lotes.component';
+import { ModalEscalasComponent } from './modal-escalas/modal-escalas.component';
 
 
 @NgModule({
@@ -26,6 +29,9 @@ import { ModalCodigosDigemidComponent } from './modal-codigos-digemid/modal-codi
     EditProductComponent,
     ListProductComponent,
     ModalCodigosDigemidComponent,
+    ModalGestionarComponent,
+    ModalLotesComponent,
+    ModalEscalasComponent,
   ],
   imports: [
     CommonModule,

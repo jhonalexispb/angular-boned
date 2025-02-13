@@ -1,0 +1,76 @@
+<!-- Modal content -->
+<div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header">
+        <h2 class="fw-bolder">{{ user }} gestionemos a: {{ PRODUCT_OPTION.laboratorio }} {{ PRODUCT_OPTION.nombre_completo }}</h2>
+        <button type="button" class="btn btn-icon btn-sm btn-active-icon-primary" (click)="modal.dismiss()">
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+        </button>
+    </div>
+    <!-- Modal body -->
+    <div class="modal-body"> 
+        <div class="row">
+            <form [formGroup]="productGestionForm" (ngSubmit)="onSubmit()" class="form d-flex flex-column flex-lg-row">
+                <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                    <label class="form-label">¿Sale en boleta?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="sale_boleta"/>
+                        <label class="form-check-label">Sí</label>
+                    </div>
+        
+                    <div class="text-muted fs-7">
+                      Importante para determinar el documento de venta
+                    </div>
+                  </div>
+        
+                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                    <label class="form-label">¿Permitir venta?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="state"/>
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                    <div class="text-muted fs-7">
+                        Activa o desactiva todas la venta de este producto
+                    </div>
+                  </div>
+        
+                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                    <label class="form-label">¿Maneja escalas?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="maneja_escalas" />
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                    <div class="text-muted fs-7">
+                        Activa o desactiva todas las escalas
+                    </div>
+                  </div>
+        
+                  <div class="col-md-6 mb-3 d-flex flex-column align-items-center">
+                    <label class="form-label">¿Es promocionable?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="promocionable" />
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                    <div class="text-muted fs-7">
+                        Activa o desactiva todas las promociones
+                    </div>
+                  </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer d-flex justify-content-center">
+        <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="productGestionForm.invalid">Registrar</button>
+    </div>
+</div>

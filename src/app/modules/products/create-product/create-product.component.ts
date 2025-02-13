@@ -74,10 +74,9 @@ export class CreateProductComponent {
       caracteristicas:[''],
       descripcion:[''],
       registro_sanitario:[''],
-      codigo_digemid:[''],
+      codigo_digemid:[{ value: '', disabled: true }],
       stock_seguridad:['10',[Validators.required]],
       sale_boleta:[0,[Validators.required]],
-      maneja_lotes:[1,[Validators.required]],
       maneja_escalas:[0,[Validators.required]],
       promocionable:[0,[Validators.required]],
 
@@ -279,7 +278,7 @@ export class CreateProductComponent {
 
   createCondicionAlmacenamiento(){
     const modalRef = this.modalService.open(CreateCondicionesAlmacenamientoComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.nombre_externo = this.searchTermPresentacion;
+    modalRef.componentInstance.nombre_externo = this.searchTermCondicionAlmacenamiento;
     modalRef.componentInstance.CondicionC.subscribe((r:any)=>{
       this.CONDICIONES_ALMACENAMIENTO = [r, ...this.CONDICIONES_ALMACENAMIENTO];
       const condicion_id = this.productForm.get('cond_almac_id')?.value || [];

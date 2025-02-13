@@ -103,14 +103,14 @@
                           </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                           <label class="form-label">¿Maneja lotes?</label>
                           <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                               <label class="form-check-label">No</label>
                               <input class="form-check-input" type="checkbox" formControlName="maneja_lotes" />
                               <label class="form-check-label">Sí</label>
                           </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-4">
                           <label class="form-label">¿Maneja escalas?</label>
@@ -468,7 +468,7 @@
                               [loading]="loading"  
                               [multiple]="true"
                               [loadingText]="'Cargando...'" 
-                              (search)="onSearchPresentacion($event)">
+                              (search)="onSearchCondicionAlmacenamiento($event)">
                             </ng-select>
                           <div class="text-muted fs-7">
                             Revisa en la parte trasera de la caja

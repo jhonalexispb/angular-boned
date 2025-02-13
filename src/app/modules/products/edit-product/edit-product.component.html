@@ -102,14 +102,14 @@
                             </div>
                           </div>
   
-                          <div class="col-md-4">
+                          <!-- <div class="col-md-4">
                             <label class="form-label">¿Maneja lotes?</label>
                             <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                                 <label class="form-check-label">No</label>
                                 <input class="form-check-input" type="checkbox" formControlName="maneja_lotes" />
                                 <label class="form-check-label">Sí</label>
                             </div>
-                          </div>
+                          </div> -->
   
                           <div class="col-md-4">
                             <label class="form-label">¿Maneja escalas?</label>
@@ -307,6 +307,33 @@
                               </div>
                             </div>
                           </div>
+
+                          <div class="col-md-4">
+                            <div class="mb-3">
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="required form-label m-0">Presentacion</label>
+                                <button type="button" class="btn btn-primary px-4 py-2" (click)="createPresentacion()">
+                                    +
+                                </button>
+                              </div>
+                              <ng-select 
+                                [items]="PRESENTACIONES"
+                                formControlName="presentacion_id"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="Selecciona una presentacion"
+                                [searchable]="true"
+                                [clearable]="true" 
+                                [virtualScroll]="true"  
+                                [loading]="loading"  
+                                [loadingText]="'Cargando...'" 
+                                (search)="onSearchPresentacion($event)">
+                              </ng-select>
+                              <div class="text-muted fs-7">
+                                Ejm: tableta recubierta, ampolla, vial IM, etc
+                              </div>
+                            </div>
+                          </div>
   
   
                           <!-- <div class="col-md-4">
@@ -368,7 +395,7 @@
                         <div class="col-md-4">
                           <div class="d-flex justify-content-between align-items-center mb-2">
                             <label class="form-label m-0">Registro Sanitario</label>
-                            <button type="button" class="btn btn-primary px-4 py-2">
+                            <button type="button" class="btn btn-primary px-4 py-2" (click)="buscarCodigoDigemid()">
                               <i class="fa fa-search"></i>
                             </button>
                           </div>
@@ -377,6 +404,7 @@
                             formControlName="registro_sanitario"
                             class="form-control"
                             placeholder="Escribe el registro sanitario"
+                            (input)="resetCodigoDigemid()"
                           />
                           <div class="text-muted fs-7">
                             Revisa bien la caja
@@ -387,7 +415,7 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="form-label m-0">Codigo Digemid</label>
-                              <button type="button" class="btn btn-success px-4 py-2">
+                              <button (click)="importListadoDigemid()" type="button" class="btn btn-success px-4 py-2">
                                 <i class="fa-regular fa-file-excel fs-2"></i>
                                 Actualizar excel
                               </button>
@@ -408,13 +436,13 @@
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                               <label class="form-label m-0">Condiciones de almacenamiento</label>
-                              <button type="button" class="btn btn-primary px-4 py-2">
+                              <button type="button" class="btn btn-primary px-4 py-2" (click)="createCondicionAlmacenamiento()">
                                   +
                               </button>
                             </div>
                             <ng-select 
                                 [items]="CONDICIONES_ALMACENAMIENTO"
-                                formControlName="condiciones_almacenamiento_id"
+                                formControlName="cond_almac_id"
                                 bindLabel="name"
                                 bindValue="id"
                                 placeholder="Selecciona una o varias condiciones"
@@ -423,7 +451,8 @@
                                 [virtualScroll]="true"  
                                 [loading]="loading"  
                                 [multiple]="true"
-                                [loadingText]="'Cargando...'" >
+                                [loadingText]="'Cargando...'" 
+                                (search)="onSearchCondicionAlmacenamiento($event)">
                               </ng-select>
                             <div class="text-muted fs-7">
                               Revisa en la parte trasera de la caja

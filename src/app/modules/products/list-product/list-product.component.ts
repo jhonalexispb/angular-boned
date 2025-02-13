@@ -7,6 +7,7 @@ import { ViewImageComponent } from 'src/app/components/view-image/view-image.com
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import { URL_SERVICIO } from 'src/app/config/config';
 import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
+import { ModalGestionarComponent } from '../modal-gestionar/modal-gestionar.component';
 
 @Component({
   selector: 'app-list-product',
@@ -18,7 +19,6 @@ export class ListProductComponent {
   laboratorio_id:any
   PRODUCT_LIST:any = [];
   LABORATORIOS_LIST:any = [];
-  ALMACENES_LIST:any = [];
   state_stock:string
   sweet:any = new SweetalertService
 
@@ -63,7 +63,6 @@ export class ListProductComponent {
     this.productService.listProductos(page,data).subscribe((resp: any) => {
       this.PRODUCT_LIST = resp.products.data;
       this.LABORATORIOS_LIST = resp.laboratorios;
-      this.ALMACENES_LIST = resp.warehouses;
       this.num_products_disponible = resp.num_products_disponible
       this.num_products_por_agotar = resp.num_products_por_agotar
       this.num_products_agotado = resp.num_products_agotado
@@ -143,6 +142,14 @@ export class ListProductComponent {
         })
       }
     });
+  }
+
+  gestionarProdcuto(PROD:any){
+    const modalRef = this.modalService.open(ModalGestionarComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.PRODUCT_OPTION = PROD;
+    modalRef.componentInstance.productGestionS.subscribe((r:any)=>{
+      
+    })
   }
 
   // Método que se ejecuta cuando un dropdown es activado o desactivado

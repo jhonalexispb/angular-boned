@@ -61,8 +61,10 @@ export class AtributteProductsService {
   updateState(productoId: any, escalaId: any, state:any){
     this.loadingService.showLoading('Actualizando estado de la escala')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/atributtes/productos/config_escalas/"+productoId+"/"+escalaId;;
-    return this.http.post(URL,state,{headers: headers}).pipe(
+    let URL = escalaId 
+        ? `${URL_SERVICIO}/atributtes/productos/config_escalas/state_escala/${productoId}/${escalaId}`
+        : `${URL_SERVICIO}/atributtes/productos/config_escalas/general/state/all_escalas/${productoId}`; 
+    return this.http.put(URL,state,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

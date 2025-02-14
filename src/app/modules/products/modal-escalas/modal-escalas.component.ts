@@ -78,24 +78,62 @@ export class ModalEscalasComponent {
     });
   }
 
-  stateEscalaDesactiveActivate(e: any) {
-    const mensajeConfirmacion = e.state === 1 
-      ? `¿Deseas desactivar la escala de ${e.cantidad} a S/ ${e.precio}?`
-      : `¿Deseas activar la escala de ${e.cantidad} a S/ ${e.precio}?`;
+  stateEscalaDesactiveActivate(e: any = null, general: boolean = false) {
+    let mensajeConfirmacion: any;
+    let iconoAnimacion: any;
+    let textoBotonConfirmar: any;
+    let data: any = {};
+    let mensajeConformidad: any;
   
-    const iconoAnimacion = '/assets/animations/general/alerta.json';
-    const textoBotonConfirmar = e.state === 1 ? 'Si, desactivemoslo' : 'Si, activémoslo';
-    const estadoNuevo = e.state === 1 ? 0 : 1;  // Si está activo (1), desactivamos (0), y viceversa
+    // Si se está tratando de una operación general
+    if (general) {
+      mensajeConfirmacion = e === 1 
+        ? `¿Deseas activar todas las escalas para el producto ${this.PRODUCT_ID.laboratorio} ${this.PRODUCT_ID.nombre_completo}?`
+        : `¿Deseas desactivar todas las escalas para el producto ${this.PRODUCT_ID.laboratorio} ${this.PRODUCT_ID.nombre_completo}?`;
   
-    // Mostrar la confirmación de SweetAlert
+      iconoAnimacion = '/assets/animations/general/alerta.json';
+      textoBotonConfirmar = e === 1 ? 'Si, activemoslo' : 'Si, desactivemoslo';
+      mensajeConformidad = `Las escalas han sido ${e === 1 ? 'activadas' : 'desactivadas'} correctamente`;
+      data = { 'state': e };
+    } else {
+      // Operación para una escala específica
+      if (e == null) {
+        return;
+      }
+      
+      mensajeConfirmacion = e.state === 1 
+        ? `¿Deseas desactivar la escala de ${e.cantidad} a S/ ${e.precio} para el producto ${this.PRODUCT_ID.laboratorio} ${this.PRODUCT_ID.nombre_completo}?`
+        : `¿Deseas activar la escala de ${e.cantidad} a S/ ${e.precio} para el producto ${this.PRODUCT_ID.laboratorio} ${this.PRODUCT_ID.nombre_completo}?`;
+  
+      iconoAnimacion = '/assets/animations/general/alerta.json';
+      textoBotonConfirmar = e.state === 1 ? 'Si, desactivemoslo' : 'Si, activémoslo';
+      const estadoNuevo = e.state === 1 ? 0 : 1;
+      mensajeConformidad = `La escala ha sido ${estadoNuevo === 1 ? 'activada' : 'desactivada'} correctamente`;
+      data = { 'state': estadoNuevo };
+    }
+  
+    // Confirmación de SweetAlert
     this.sweet.confirmar_habilitado_deshabilitado('¿Estás seguro?', mensajeConfirmacion, iconoAnimacion, textoBotonConfirmar).then((result: any) => {
       if (result.isConfirmed) {
-        // Hacer la llamada al servicio para actualizar el estado de la escala
-        this.productAtributtesService.updateState(this.PRODUCT_ID.id, e.id, estadoNuevo).subscribe({
+        // Llamada al servicio para actualizar el estado de la escala (general o específica)
+        this.productAtributtesService.updateState(this.PRODUCT_ID.id, e ? e.id : null, data).subscribe({
           next: (resp: any) => {
-            // Actualizar el estado de la escala en la lista local
-            e.state = estadoNuevo;  // Actualizar el estado de la escala en la lista
-            this.sweet.success('Éxito', `La escala ha sido ${estadoNuevo === 1 ? 'activada' : 'desactivada'} correctamente`, '/assets/animations/general/confirmacion_exitoso.json');
+            if (general) {
+              // Actualización a nivel general (todos)
+              this.ESCALAS_LIST = resp.escalas
+              this.escalas_activas = resp.escalas_activas;
+              this.escalas_inactivas = resp.escalas_inactivas;
+              this.sweet.success('Éxito', mensajeConformidad);
+            } else {
+              // Actualización a nivel específico
+              let INDEX = this.ESCALAS_LIST.findIndex((b: any) => b.id == e.id);
+              if (INDEX != -1) {
+                this.ESCALAS_LIST[INDEX] = resp.escala;
+              }
+              this.escalas_activas = resp.escalas_activas;
+              this.escalas_inactivas = resp.escalas_inactivas;
+              this.sweet.success('Éxito', mensajeConformidad);
+            }
           }
         });
       }

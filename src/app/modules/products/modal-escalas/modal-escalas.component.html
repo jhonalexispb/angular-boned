@@ -4,7 +4,9 @@
     <div class="modal-header">
         <h2 class="fw-bolder">{{ user }} configuremos escalas para: <br>
             <span class="text-success">{{PRODUCT_ID.laboratorio}}</span><br>
-            {{PRODUCT_ID.nombre_completo}}</h2>
+            {{PRODUCT_ID.nombre_completo}}<br><br>
+            Precio actual: S/{{PRODUCT_ID.pventa}}
+        </h2>
         <button type="button" class="btn btn-icon btn-sm btn-active-icon-primary" (click)="modal.dismiss()">
             <span class="svg-icon svg-icon-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -28,10 +30,10 @@
         </div>
         
         <div class="d-flex mb-10 gap-3">
-            <button type="button" class="btn btn-success w-50">
+            <button type="button" class="btn btn-success w-50" [disabled]="escalas_activas === ESCALAS_LIST.length" (click)="stateEscalaDesactiveActivate(1, true)">
                 Escalas activas: {{ escalas_activas }}
             </button>
-            <button type="button" class="btn btn-danger w-50">
+            <button type="button" class="btn btn-danger w-50" [disabled]="escalas_inactivas === ESCALAS_LIST.length"  (click)="stateEscalaDesactiveActivate(0, true)">
                 Escalas inactivas: {{ escalas_inactivas }}
             </button>
         </div>
@@ -90,7 +92,7 @@
                                     </button>
                                   </li>
                                   <li>
-                                    <button (click)="editEscala(e)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm w-100">
+                                    <button (click)="editEscala(e)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm w-100" [disabled]="e.state == 0">
                                       <div class="d-flex flex-column align-items-center gap-1">
                                         <i class="ki-duotone ki-pencil fs-3 text-info"><span class="path1"></span><span class="path2"></span></i>
                                         <span class="fs-7">Editar</span>

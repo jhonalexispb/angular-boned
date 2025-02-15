@@ -44,9 +44,28 @@ export class ModalEscalasComponent {
     const modalRef = this.modalService.open(CreateEscalasComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.PRODUCT_ID = this.PRODUCT_ID
     modalRef.componentInstance.EscalaC.subscribe((r:any)=>{
-      this.ESCALAS_LIST.unshift(r.escala); //integra el nuevo valor al inicio de la tabla
-      this.escalas_activas = r.escalas_activas;
-      this.escalas_inactivas = r.escalas_inactivas;
+      // Asegúrate de que ESCALAS_LIST esté ordenada de mayor a menor por 'cantidad'.
+    this.ESCALAS_LIST.sort((a:any, b:any) => b.cantidad - a.cantidad);
+
+    // Obtén la nueva escala que se desea insertar.
+    const newEscala = r.escala;
+
+    // Encuentra el primer índice donde la cantidad de la escala es menor que la nueva escala.
+    let insertIndex = this.ESCALAS_LIST.findIndex((escala: any) => escala.cantidad < newEscala.cantidad);
+
+    // Si no se encuentra ningún índice (es decir, si la nueva escala es la más pequeña), insertarla al final.
+    if (insertIndex === -1) {
+      insertIndex = 0;
+    }
+
+    // Insertar la nueva escala en el lugar correcto.
+    this.ESCALAS_LIST.splice(insertIndex, 0, newEscala);
+
+    // Actualizamos las listas activas e inactivas
+    this.escalas_activas = r.escalas_activas;
+    this.escalas_inactivas = r.escalas_inactivas;
+
+    this.ESCALAS_LIST.sort((a:any, b:any) => a.cantidad - b.cantidad);
     })
   }
 
@@ -56,7 +75,19 @@ export class ModalEscalasComponent {
     modalRef.componentInstance.PRODUCT_SELECTED = this.PRODUCT_ID
     modalRef.componentInstance.EscalaE.subscribe((r:any)=>{
       this.ESCALAS_LIST = this.ESCALAS_LIST.filter((esc:any) => esc.id !== e.id);
-      this.ESCALAS_LIST.unshift(r.escala); //integra el nuevo valor al inicio de la tabla
+      const newEscala = r.escala;
+      // Aquí estamos insertando el nuevo valor en el lugar adecuado
+      let insertIndex = this.ESCALAS_LIST.findIndex((escala: any) => escala.cantidad > newEscala.cantidad);
+      
+      // Si no se encuentra un índice, eso significa que la nueva escala tiene la menor cantidad
+      if (insertIndex === -1) {
+        insertIndex = this.ESCALAS_LIST.length; // Inserta al final si no hay elementos con menor cantidad
+      }
+      
+      // Insertamos la nueva escala en el índice encontrado
+      this.ESCALAS_LIST.splice(insertIndex, 0, newEscala);
+      this.ESCALAS_LIST.sort((a:any, b:any) => a.cantidad - b.cantidad);
+
       this.escalas_activas = r.escalas_activas;
       this.escalas_inactivas = r.escalas_inactivas;
     })

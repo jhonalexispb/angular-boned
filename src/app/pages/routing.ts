@@ -74,6 +74,11 @@ const Routing: Routes = [
   },
 
   {
+    path: 'compras',
+    loadChildren: () => import('../modules/compras/compras.module').then((m) => m.ComprasModule),
+  },
+
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full',

@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./create-compra.component.scss']
 })
 export class CreateCompraComponent {
+  PRODUCT_LIST:any = [];
+  LABORATORIOS_LIST:any = [];
+  laboratorio_id:any
+  loading:any
 
+  onSearchChange(){
+
+  }
 }

@@ -1,4 +1,4 @@
-<div class="w-100 flex-lg-row-auto w-lg-300px mb-7 me-7 me-lg-10">
+
         
     <!--begin::Order details-->
     <div class="card card-flush py-4">
@@ -24,8 +24,72 @@
                     <!--end::Input-->
                 </div>
                 <!--end::Input group-->
+                <div class="row">
+                    <div class="col-md-6 col-12 mb-3">
+                        <label class="form-label">Proveedor</label>
+                        <div class="d-flex align-items-center w-100">
+                          <ng-select 
+                            [items]="LABORATORIOS_LIST"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="Seleccione proveedor"
+                            [searchable]="true"
+                            [clearable]="true" 
+                            [virtualScroll]="true"  
+                            [multiple]="false"
+                            [loadingText]="'Cargando...'"
+                            [(ngModel)]="laboratorio_id" 
+                            (change)="onSearchChange()"
+                            [loading]="loading" 
+                            name="search"
+                            class="w-100">
+                          </ng-select>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-12 mb-3">
+                        <label class="form-label">Laboratorio</label>
+                        <div class="d-flex align-items-center w-100">
+                          <ng-select 
+                            [items]="LABORATORIOS_LIST"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="Buscar por laboratorio"
+                            [searchable]="true"
+                            [clearable]="true" 
+                            [virtualScroll]="true"  
+                            [multiple]="false"
+                            [loadingText]="'Cargando...'"
+                            [(ngModel)]="laboratorio_id" 
+                            (change)="onSearchChange()"
+                            [loading]="loading" 
+                            name="search"
+                            class="w-100">
+                          </ng-select>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-12 mb-3">
+                        <label class="form-label">Laboratorio</label>
+                        <div class="d-flex align-items-center w-100">
+                          <ng-select 
+                            [items]="LABORATORIOS_LIST"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="Selecciona un producto"
+                            [searchable]="true"
+                            [clearable]="true" 
+                            [virtualScroll]="true"  
+                            [multiple]="false"
+                            [loadingText]="'Cargando...'"
+                            [(ngModel)]="laboratorio_id" 
+                            (change)="onSearchChange()"
+                            [loading]="loading" 
+                            name="search"
+                            class="w-100">
+                          </ng-select>
+                      </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!--end::Card header-->
     </div>
-    <!--end::Order details-->    </div>

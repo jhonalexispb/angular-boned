@@ -57,22 +57,30 @@ export class HandleErrorService {
                   this.sweet.alerta('Ups', error.error.message_text);
                 }
               } else {
-                const errorMessages = error.error; // Aquí accedemos directamente a `error.error`
+                const errorMessages = error.error; 
                 const formattedErrors: { field: string, message: string }[] = [];
 
-                // Verificar si el mensaje de error está presente
-                if (errorMessages && errorMessages.error) {
-                  // Si es un error con un solo mensaje
-                  formattedErrors.push({ field: 'general', message: errorMessages.error });
+                if (errorMessages && errorMessages.errors) {
+                  // Verificar si `errors` es un objeto con múltiples mensajes
+                  if (typeof errorMessages.errors === 'object') {
+                    for (const key in errorMessages.errors) {
+                      if (errorMessages.errors.hasOwnProperty(key)) {
+                        formattedErrors.push({ field: key, message: errorMessages.errors[key] });
+                      }
+                    }
+                  } else {
+                    // Si es un solo mensaje
+                    formattedErrors.push({ field: 'general', message: errorMessages.errors });
+                  }
                 }
 
-                // Crear una cadena de texto con los errores formateados
+                // Convertir los errores en una cadena de texto legible
                 const errorText = formattedErrors
                   .map(error => `${error.message}`)
-                  .join(', '); // Unir todos los errores en una sola cadena separada por comas
+                  .join(', ');
 
-                // Mostrar el mensaje de los errores
-                this.sweet.formulario_invalido('Opps!', `Por favor, corrige los siguientes errores de validación: ${errorText}`);
+                // Mostrar el mensaje con SweetAlert
+                this.sweet.formulario_invalido('Oops!', `Por favor, corrige los siguientes errores de validación: ${errorText}`);
               }
               break;
           

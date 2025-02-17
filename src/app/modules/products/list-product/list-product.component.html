@@ -249,6 +249,18 @@
                                           </div>
                                         </button>
                                       </li>
+                                      <li>
+                                        <button (click)="gestionarProdcuto(P)" class="text-success btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
+                                            <i class="ki-duotone ki-tag fs-2 text-success">
+                                              <span class="path1"></span>
+                                              <span class="path2"></span>
+                                              <span class="path3"></span>
+                                            </i>
+                                            Precios
+                                          </div>
+                                        </button>
+                                      </li>
                                       <li *ngIf="P.maneja_escalas == 1">
                                         <button (click)="configurarEscalas(P)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
@@ -264,7 +276,7 @@
                                         </button>
                                       </li>
                                       <li>
-                                        <button (click)="deleteProducto(P)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <button (click)="configurarLotes(P)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                           <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
                                               <span class="path1"></span>
@@ -362,6 +374,18 @@
                                 </div>
                               </button>
                             </li>
+                            <li>
+                              <button (click)="gestionarProdcuto(P)" class="text-success btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-tag fs-2 text-success">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                  </i>
+                                  Precios
+                                </div>
+                              </button>
+                            </li>
                             <li *ngIf="P.maneja_escalas == 1">
                               <button (click)="configurarEscalas(P)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                 <div class="d-flex flex-column align-items-center gap-1">
@@ -377,7 +401,7 @@
                               </button>
                             </li>
                             <li>
-                              <button (click)="deleteProducto(P)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                              <button (click)="configurarLotes(P)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                   <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
                                     <span class="path1"></span>

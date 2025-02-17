@@ -9,6 +9,7 @@ import { URL_SERVICIO } from 'src/app/config/config';
 import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
 import { ModalGestionarComponent } from '../modal-gestionar/modal-gestionar.component';
 import { ModalEscalasComponent } from '../modal-escalas/modal-escalas.component';
+import { ModalLotesComponent } from '../modal-lotes/modal-lotes.component';
 
 @Component({
   selector: 'app-list-product',
@@ -189,6 +190,11 @@ export class ListProductComponent {
 
   configurarEscalas(PROD:any){
     const modalRef = this.modalService.open(ModalEscalasComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PRODUCT_ID = PROD
+  }
+
+  configurarLotes(PROD:any){
+    const modalRef = this.modalService.open(ModalLotesComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.PRODUCT_ID = PROD
   }
 }

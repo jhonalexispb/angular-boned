@@ -22,6 +22,10 @@ import { ModalLotesComponent } from './modal-lotes/modal-lotes.component';
 import { ModalEscalasComponent } from './modal-escalas/modal-escalas.component';
 import { CreateEscalasComponent } from './create-escalas/create-escalas.component';
 import { EditEscalasComponent } from './edit-escalas/edit-escalas.component';
+import { ModalPreciosComponent } from './modal-precios/modal-precios.component';
+import { CreateLotesComponent } from './create-lotes/create-lotes.component';
+import { EditLotesComponent } from './edit-lotes/edit-lotes.component';
+import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.module';
 
 
 @NgModule({
@@ -36,6 +40,9 @@ import { EditEscalasComponent } from './edit-escalas/edit-escalas.component';
     ModalEscalasComponent,
     CreateEscalasComponent,
     EditEscalasComponent,
+    ModalPreciosComponent,
+    CreateLotesComponent,
+    EditLotesComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +60,8 @@ import { EditEscalasComponent } from './edit-escalas/edit-escalas.component';
     ButtonsGroupListModule,
     PaginationModule,
     ButtonDropdownOptionModule,
-    DropImageModule
+    DropImageModule,
+    DivLoadingModule
   ]
 })
 export class ProductsModule { }

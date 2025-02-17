@@ -69,5 +69,55 @@ export class AtributteProductsService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+
+  listLotes(ID_PRODUCTO:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/productos/config_lotes/"+ID_PRODUCTO;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  registerLotes(ID_PRODUCTO:any,data:any){
+    this.loadingService.showLoading('Registrando lote')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/productos/config_lotes/"+ID_PRODUCTO;
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  updateLote(productoId: any, escalaId: any, data: any) {
+    this.loadingService.showLoading('Actualizando lote');
+    let headers = new HttpHeaders({'Authorization': 'Bearer ' + this.authservice.token});
+    let URL = `${URL_SERVICIO}/atributtes/productos/config_lotes/${productoId}/${escalaId}`;
+    return this.http.put(URL, data, { headers: headers }).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(() => this.loadingService.hideLoading())
+    );
+  }
+
+  deleteLote(productoId: any, escalaId: any){
+    this.loadingService.showLoading('Eliminando lote')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/productos/config_lotes/"+productoId+"/"+escalaId;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  updateStateLote(productoId: any, escalaId: any, state:any){
+    this.loadingService.showLoading('Actualizando estado del lote')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = `${URL_SERVICIO}/atributtes/productos/config_lotes/state_escala/${productoId}/${escalaId}`
+    return this.http.put(URL,state,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
   
 }

@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreateLaboratoriosComponent } from '../../configuration/atributtes-products/laboratorios/create-laboratorios/create-laboratorios.component';
+import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
+import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
+import { CompraService } from '../service/compra.service';
 
 @Component({
   selector: 'app-create-compra',
@@ -6,12 +12,88 @@ import { Component } from '@angular/core';
   styleUrls: ['./create-compra.component.scss']
 })
 export class CreateCompraComponent {
-  PRODUCT_LIST:any = [];
-  LABORATORIOS_LIST:any = [];
-  laboratorio_id:any
-  loading:any
+  @Output() OrdenCompraC:EventEmitter<any> = new EventEmitter();
+  productForm: FormGroup;
 
-  onSearchChange(){
+  LABORATORIOS_LIST:any[] = [];
+  PROVEEDORES_LIST:any[] = [];
+  PRODUCT_LIST:any[] = [];
 
+  loading:boolean
+
+  searchTermLaboratorio: string = '';
+  searchTermProveedores: string = '';
+
+  sweet:any = new SweetalertService
+
+  constructor(
+    private fb: FormBuilder,
+    public modalService: NgbModal,
+    //llamamos al servicio
+    public compraService: CompraService
+  ) {}
+
+  ngOnInit(): void {
+    this.loading = true
+    this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
+        this.LABORATORIOS_LIST = resp.laboratorios;
+        this.PROVEEDORES_LIST = resp.laboratorios;
+        this.PRODUCT_LIST = resp.laboratorios;
+        this.loading = false
+    })
+
+    this.productForm = this.fb.group({
+      proveedor_id:[null,[Validators.required]],
+      laboratorio_id:[null,[Validators.required]],
+      producto_id:[null,[Validators.required]],
+      forma_pago_id:["",[Validators.required]],
+      type_comprobante_compra_id:["",[Validators.required]],
+      igv:[1],
+    });
+  }
+
+  onSearchLaboratorio(event: any) {
+    this.searchTermLaboratorio = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  onSearchProveedor(event: any) {
+    this.searchTermProveedores = event.term;  // Acceder al término de búsqueda desde el evento
+  }
+
+  // Enviar el formulario
+  onSubmit() {
+    if (this.productForm.valid) {
+      /* this.compraService.registerProducto(this.productForm.value).subscribe({
+        next: (resp: any) => {
+          this.OrdenCompraC.emit(resp);
+          this.sweet.success(
+            '¡Éxito!',
+            'el producto se registró correctamente'
+          );
+        },
+      }) */
+    }
+
+  }
+  
+  createLaboratorio(){
+    const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermLaboratorio;
+    modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
+      this.LABORATORIOS_LIST = [r, ...this.LABORATORIOS_LIST];
+      const laboratorio_id = this.productForm.get('laboratorio_id')?.value || [];
+      this.productForm.patchValue({
+        laboratorio_id: [r.id, ...laboratorio_id]
+      });
+    });
+  }
+
+  createProveedor(){
+    const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.nombre_externo = this.searchTermProveedores;
+    modalRef.componentInstance.ProveedorC.subscribe((r: any) => {
+      this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
+      this.productForm.patchValue({ proveedor_id: r.id });
+    });
   }
 }

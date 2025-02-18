@@ -1,5 +1,5 @@
 import { CreateRepresentanteProveedorComponent } from './../../representante-proveedor/create-representante-proveedor/create-representante-proveedor.component';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { ServiceProveedorService } from '../service/service-proveedor.service';
@@ -11,6 +11,7 @@ import { ServiceProveedorService } from '../service/service-proveedor.service';
 })
 export class CreateProveedorComponent{
   @Output() ProveedorC:EventEmitter<any> = new EventEmitter();
+  @Input() nombre_externo:any = '';
   DISTRITOS:any = []
   REPRESENTANTES:any = []
   name:string = '';
@@ -35,6 +36,7 @@ export class CreateProveedorComponent{
 
   ngOnInit(): void {
     this.loading = true
+    this.name = this.nombre_externo
     this.ProveedorService.obtenerRecursos().subscribe((data: any) => {
       this.DISTRITOS = data.distritos;
       this.REPRESENTANTES = data.representantes;

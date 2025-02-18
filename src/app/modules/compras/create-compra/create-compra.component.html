@@ -1,11 +1,150 @@
 
-        
-    <!--begin::Order details-->
+      
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="card card-flush py-4 mb-3">
+      <!--begin::Card header-->
+      <div class="card-header">
+          <div class="card-title">
+              <h2>Crear orden de compra</h2>
+          </div>
+      </div>
+      <!--end::Card header-->
+  
+      <!--begin::Card body-->
+      <div class="card-body pt-0">
+          <div class="d-flex flex-column gap-10">
+              <!--begin::Input group-->
+              <div class="d-flex align-items-center gap-2">
+                  <!--begin::Label-->
+                  <label class="form-label fs-3 mb-0">Orden</label>
+                  <!--end::Label-->
+  
+                  <!--begin::Auto-generated ID-->
+                  <div class="fw-bold fs-3">#13764</div>
+                  <!--end::Input-->
+              </div>
+              <!--end::Input group-->
+              <div class="row">
+                  <div class="col-md-4 col-12 mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="required form-label m-0">Proveedor</label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createProveedor()">
+                            +
+                        </button>
+                      </div>
+                      <div class="d-flex align-items-center w-100">
+                        <ng-select 
+                          [items]="PROVEEDORES_LIST"
+                          bindLabel="name"
+                          bindValue="id"
+                          formControlName="proveedor_id"
+                          placeholder="Seleccione proveedor"
+                          [searchable]="true"
+                          [clearable]="true" 
+                          [virtualScroll]="true"  
+                          [multiple]="true"
+                          [loadingText]="'Cargando...'"
+                          (search)="onSearchProveedor($event)"
+                          [loading]="loading" 
+                          name="search"
+                          class="w-100">
+                        </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-12 mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="required form-label m-0">Laboratorio</label>
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
+                            +
+                        </button>
+                      </div>
+                      <div class="d-flex align-items-center w-100">
+                        <ng-select 
+                          [items]="LABORATORIOS_LIST"
+                          bindLabel="name"
+                          bindValue="id"
+                          formControlName="laboratorio_id"
+                          placeholder="Buscar por laboratorio"
+                          [searchable]="true"
+                          [clearable]="true" 
+                          [virtualScroll]="true"  
+                          [multiple]="true"
+                          [loadingText]="'Cargando...'"
+                          (search)="onSearchLaboratorio($event)"
+                          [loading]="loading" 
+                          name="search"
+                          class="w-100">
+                        </ng-select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="required form-label mt-2 mb-3">Forma de pago</label>
+                    <select name="" id="" class="form-control" formControlName="forma_pago_id">
+                      <option value="" disabled>Selecciona una forma de pago</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="required form-label mt-2 mb-3">Tipo de comprobante</label>
+                    <select name="" id="" class="form-control" formControlName="type_comprobante_compra_id">
+                      <option value="" disabled>Selecciona un comprobante</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox"/>
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label m-0">Producto</label>
+                        <button type="button" class="btn btn-primary px-4 py-2">
+                            +
+                        </button>
+                      </div>
+                      <div class="d-flex align-items-center w-100">
+                        <ng-select 
+                          [items]="PRODUCT_LIST"
+                          bindLabel="nombre_completo"
+                          bindValue="id"
+                          placeholder="Buscar por nombre"
+                          [searchable]="true"
+                          [clearable]="true" 
+                          [virtualScroll]="true"  
+                          [multiple]="false"
+                          [loadingText]="'Cargando...'"
+                          [loading]="loading"
+                          name="search"
+                          class="w-100">
+                          <ng-template ng-option-tmp let-item="item">
+                            <div class="mi-custom-option d-flex flex-column gap-2">
+                              <h6 style="font-size: 1rem;"><span class="badge badge-light-primary fs-7 fw-bold">{{ item.laboratorio }}</span></h6>
+                              <h6 style="font-size: 1rem; font-weight: 50;">{{ item.nombre_completo }}</h6>
+                              <h6 style="font-size: 1rem; font-weight: 50;">Precio: S/ {{ item.pventa }}</h6>
+                              <h6 style="font-size: 1rem; font-weight: 50;">Stock: {{ item.stock }}</h6>
+                              <h6 style="font-size: 1rem; font-weight: 50;">SKU: {{ item.sku }}</h6>
+                            </div>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--end::Card header-->
+    </div>
+
     <div class="card card-flush py-4">
         <!--begin::Card header-->
         <div class="card-header">
             <div class="card-title">
-                <h2>Crear orden de compra</h2>
+                <h2>Lista de mercaderia</h2>
             </div>
         </div>
         <!--end::Card header-->
@@ -14,82 +153,59 @@
         <div class="card-body pt-0">
             <div class="d-flex flex-column gap-10">
                 <!--begin::Input group-->
-                <div class="fv-row">
-                    <!--begin::Label-->
-                    <label class="form-label">Order ID</label>
-                    <!--end::Label-->
-    
-                    <!--begin::Auto-generated ID-->
-                    <div class="fw-bold fs-3">#13764</div>
-                    <!--end::Input-->
+                <div>
+                    <div class="fw-bold fs-4">
+                        Costo total:
+                        <span class="text-success">S/ 0.00</span>
+                    </div>
+                    <!--end::Total price-->
                 </div>
                 <!--end::Input group-->
-                <div class="row">
-                    <div class="col-md-6 col-12 mb-3">
-                        <label class="form-label">Proveedor</label>
-                        <div class="d-flex align-items-center w-100">
-                          <ng-select 
-                            [items]="LABORATORIOS_LIST"
-                            bindLabel="name"
-                            bindValue="id"
-                            placeholder="Seleccione proveedor"
-                            [searchable]="true"
-                            [clearable]="true" 
-                            [virtualScroll]="true"  
-                            [multiple]="false"
-                            [loadingText]="'Cargando...'"
-                            [(ngModel)]="laboratorio_id" 
-                            (change)="onSearchChange()"
-                            [loading]="loading" 
-                            name="search"
-                            class="w-100">
-                          </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-12 mb-3">
-                        <label class="form-label">Laboratorio</label>
-                        <div class="d-flex align-items-center w-100">
-                          <ng-select 
-                            [items]="LABORATORIOS_LIST"
-                            bindLabel="name"
-                            bindValue="id"
-                            placeholder="Buscar por laboratorio"
-                            [searchable]="true"
-                            [clearable]="true" 
-                            [virtualScroll]="true"  
-                            [multiple]="false"
-                            [loadingText]="'Cargando...'"
-                            [(ngModel)]="laboratorio_id" 
-                            (change)="onSearchChange()"
-                            [loading]="loading" 
-                            name="search"
-                            class="w-100">
-                          </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-12 mb-3">
-                        <label class="form-label">Laboratorio</label>
-                        <div class="d-flex align-items-center w-100">
-                          <ng-select 
-                            [items]="LABORATORIOS_LIST"
-                            bindLabel="name"
-                            bindValue="id"
-                            placeholder="Selecciona un producto"
-                            [searchable]="true"
-                            [clearable]="true" 
-                            [virtualScroll]="true"  
-                            [multiple]="false"
-                            [loadingText]="'Cargando...'"
-                            [(ngModel)]="laboratorio_id" 
-                            (change)="onSearchChange()"
-                            [loading]="loading" 
-                            name="search"
-                            class="w-100">
-                          </ng-select>
-                      </div>
-                    </div>
-                </div>
+    
+                <!--begin::Separator-->
+                <div class="separator"></div>
+                <!--end::Separator-->
+    
+                <div class="dt-container">
+                  <div class="table-responsive mb-5">
+                      <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
+                          <thead>
+                            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Producto</span><span class="dt-column-order"></span>
+                              </th>
+                        
+                              <th class="min-w-100px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Cantidad</span><span class="dt-column-order"></span>
+                              </th>
+                        
+                              <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Precio de compra</span><span class="dt-column-order"></span>
+                              </th>
+                        
+                              <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Precio de venta</span><span class="dt-column-order"></span>
+                              </th>
+
+                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Fecha de vencimiento</span><span class="dt-column-order"></span>
+                              </th>
+                        
+                              <!-- Columna Acciones: Visible solo en pantallas grandes -->
+                              <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1">
+                                <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                              </th>
+                            </tr>
+                          </thead>
+                        
+                          <tbody class="fw-semibold text-gray-600">
+                            
+                          </tbody>
+                        </table>
+                  </div>
+              </div>
             </div>
         </div>
         <!--end::Card header-->
     </div>
+  </form>

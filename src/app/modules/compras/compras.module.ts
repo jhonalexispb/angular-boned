@@ -29,13 +29,12 @@ import { DropImageModule } from 'src/app/components/drop-image/drop-image.module
     CommonModule,
     ComprasRoutingModule,
 
-    HttpClientModule,
+    HttpClientModule, //peticiones
     FormsModule,
     NgbModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, //formulario reactivo
     InlineSVGModule,
     NgbModalModule,
-    PaginationModule,
     NgSelectModule,
     ButtonsGroupListModule,
     PaginationModule,

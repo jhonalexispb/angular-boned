@@ -92,4 +92,43 @@ export class ServiceProveedorService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  obtenerLaboratorios(proveedor_id:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/proveedor/recursos/laboratorios?proveedor_id="+proveedor_id;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  registrarRelacionLaboratorioProveedor(data:any){
+    this.loadingService.showLoading('Registrando relaciones')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/proveedor/recursos/create_relacion_laboratorio_proveedor";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  editarRelacionLaboratorioProveedor(data:any,idRelacion:any){
+    this.loadingService.showLoading('Actualizando relacion')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/proveedor/recursos/update_relacion_laboratorio_proveedor/"+idRelacion;
+    return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  eliminarRelacionLaboratorioProveedor(idRelacion:any){
+    this.loadingService.showLoading('Eliminando relacion')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/proveedor/recursos/relacion_laboratorio_proveedor/"+idRelacion;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

@@ -68,10 +68,10 @@ export class CreateLaboratoriosComponent {
       return false;
     }
 
-    if(this.proveedores.length < 1){
+    /* if(this.proveedores.length < 1){
       this.sweet.formulario_invalido("Validacion","el laboratorio debe de tener asociado al menos un proveedor");
       return false;
-    }
+    } */
 
     const formData = new FormData();
     formData.append("name", this.name);
@@ -81,7 +81,7 @@ export class CreateLaboratoriosComponent {
 
     formData.append("margen_minimo", this.margen_minimo.toString());
     formData.append("color", this.color);
-    formData.append("proveedores", JSON.stringify(this.proveedores));
+    /* formData.append("proveedores", JSON.stringify(this.proveedores)); */
 
     this.laboratorioService.registerLaboratorio(formData).subscribe({
       next: (resp: any) => {

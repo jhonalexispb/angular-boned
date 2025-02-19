@@ -1,0 +1,113 @@
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <div>
+            <label class="fw-bold fs-1 mb-2">Laboratorios que trabajan con:</label><br>
+            <span class="badge-light-success p-2 fs-1 rounded text-center">{{name}}</span>
+        </div>
+
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-7">
+        <app-div-loading *ngIf="loading; else showData">
+        </app-div-loading>
+        <ng-template #showData>
+        <!--begin::Scroll-->
+        <div class="d-flex flex-column me-n7 pe-7">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button type="button" class="btn btn-info">
+                    Numero de relaciones: {{LABORATORIOS_PROVEEDOR_LIST.length}}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="createLaboratorioProveedor()">
+                    Crear relacion
+                </button>
+            </div>
+            <div *ngIf="LABORATORIOS_PROVEEDOR_LIST.length>0; else noLaboratorio" class="v-row mb-7">
+                <div class="table-responsive mb-5">
+                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable"
+                        style="width: 100%">
+                        <thead>
+                            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase">
+                                <th class="min-w-100px text-center">
+                                Laboratorio
+                                </th>
+    
+                                <th class="min-w-80px text-center">
+                                Margen
+                                </th>
+    
+                                <th class="text-center min-w-70px">
+                                    <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="fw-semibold text-gray-600">
+                            
+                                <tr *ngFor="let PROV of LABORATORIOS_PROVEEDOR_LIST; let index = index">
+                                    <td class="text-center">
+                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ PROV.name }}</span>      
+                                    </td>
+    
+                                    <td class="text-center">
+                                        {{ PROV.margen_minimo }} %
+                                    </td>
+    
+                                    <td>
+                                        <ul class="pt-3 px-3 d-flex gap-2">
+                                            <li>
+                                                <button (click)="editLaboratorioOfProveedor(PROV)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                    <div class="d-flex flex-column align-items-center gap-2">
+                                                    <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                                    Editar
+                                                    </div>
+                                                </button>
+                                                </li>
+                                            <li>
+                                                <button (click)="deleteLaboratorioOfProveedor(PROV)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                <div class="d-flex flex-column align-items-center gap-2">
+                                                    <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                    Eliminar
+                                                </div>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <ng-template #noLaboratorio>
+                <div class="display: flex; flex-direction: column; align-items: center;">
+                    <div class="badge-light-warning p-2 rounded fs-3 text-center">
+                        Uyyy! {{name}} no esta trabajando con ningun laboratorio
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+        <!--end::Scroll-->
+        <!--end::Actions-->
+        </ng-template>
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->

@@ -5,6 +5,7 @@ import { ServiceProveedorService } from '../service/service-proveedor.service';
 import { CreateProveedorComponent } from '../create-proveedor/create-proveedor.component';
 import { EditProveedorComponent } from '../edit-proveedor/edit-proveedor.component';
 import { ComunicationProveedorComponent } from '../comunication-proveedor/comunication-proveedor.component';
+import { GestionarLaboratorioComponent } from '../gestionar-laboratorio/gestionar-laboratorio.component';
 
 @Component({
   selector: 'app-list-proveedor',
@@ -98,6 +99,11 @@ export class ListProveedorComponent {
       proveedor: DATOS_REP[1],
       persona: DATOS_REP[2]
     };
+  }
+
+  gestionarLaboratorios(proveedorId:any){
+    const modalRef = this.modalService.open(GestionarLaboratorioComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PROVEEDOR_ID = proveedorId
   }
 
   handleDropdownToggle(index: number) {

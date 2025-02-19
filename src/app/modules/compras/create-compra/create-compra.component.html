@@ -28,9 +28,14 @@
                   <div class="col-md-4 col-12 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="required form-label m-0">Proveedor</label>
-                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createProveedor()">
+                        <div class="d-flex gap-2">
+                          <button *ngIf="productForm.get('proveedor_id')?.value" type="button" class="btn btn-success btn-sm w-100" (click)="editProveedor(productForm.get('proveedor_id')?.value)">
+                            <i class="ki-duotone ki-pencil fs-3"><span class="path1"></span><span class="path2"></span></i>
+                          </button>
+                          <button type="button" class="btn btn-primary px-4 py-2" (click)="createProveedor()">
                             +
-                        </button>
+                          </button>
+                        </div>
                       </div>
                       <div class="d-flex align-items-center w-100">
                         <ng-select 

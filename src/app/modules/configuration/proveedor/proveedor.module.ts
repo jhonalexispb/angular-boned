@@ -14,6 +14,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 import { ComunicationProveedorComponent } from './comunication-proveedor/comunication-proveedor.component';
+import { GestionarLaboratorioComponent } from './gestionar-laboratorio/gestionar-laboratorio.component';
+import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.module';
+import { EditProveedorLaboratorioComponent } from './edit-proveedor-laboratorio/edit-proveedor-laboratorio.component';
+import { CreateProveedorLaboratorioComponent } from './create-proveedor-laboratorio/create-proveedor-laboratorio.component';
 
 
 @NgModule({
@@ -23,6 +27,9 @@ import { ComunicationProveedorComponent } from './comunication-proveedor/comunic
     CreateProveedorComponent,
     ProveedorComponent,
     ComunicationProveedorComponent,
+    GestionarLaboratorioComponent,
+    EditProveedorLaboratorioComponent,
+    CreateProveedorLaboratorioComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +43,7 @@ import { ComunicationProveedorComponent } from './comunication-proveedor/comunic
     NgSelectModule,
     PaginationModule,
     ButtonsGroupListModule,
+    DivLoadingModule
   ]
 })
 export class ProveedorModule { }

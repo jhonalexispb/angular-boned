@@ -5,6 +5,7 @@ import { CreateLaboratoriosComponent } from '../../configuration/atributtes-prod
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
 import { CompraService } from '../service/compra.service';
+import { EditProveedorComponent } from '../../configuration/proveedor/edit-proveedor/edit-proveedor.component';
 
 @Component({
   selector: 'app-create-compra',
@@ -126,6 +127,15 @@ export class CreateCompraComponent {
     const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.nombre_externo = this.searchTermProveedores;
     modalRef.componentInstance.ProveedorC.subscribe((r: any) => {
+      this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
+      this.productForm.patchValue({ proveedor_id: r.id });
+    });
+  }
+
+  editProveedor(idProveedor:any){
+    const modalRef = this.modalService.open(EditProveedorComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PROVEEDOR_SELECTED = idProveedor;
+    modalRef.componentInstance.ProveedorE.subscribe((r: any) => {
       this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
       this.productForm.patchValue({ proveedor_id: r.id });
     });

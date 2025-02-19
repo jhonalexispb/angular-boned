@@ -91,6 +91,17 @@
                                                 </button>
                                               </li>
                                               <li>
+                                                <button (click)="gestionarLaboratorios(PROV.id)" class="text-warning btn btn-bg-light btn-active-color-warning btn-sm me-1 w-100">
+                                                  <div class="d-flex gap-2">
+                                                    <i class="ki-duotone ki-flask text-warning">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                    </i>
+                                                    Gestionar laboratorios
+                                                  </div>
+                                                </button>
+                                              </li>
+                                              <li>
                                                 <button (click)="deleteProveedor(PROV)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                                   <div class="d-flex gap-2">
                                                     <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
@@ -177,6 +188,17 @@
                                             <div class="d-flex gap-2">
                                               <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                               Editar
+                                            </div>
+                                          </button>
+                                        </li>
+                                        <li>
+                                          <button (click)="gestionarLaboratorios(PROV.id)" class="text-warning btn btn-bg-light btn-active-color-warning btn-sm me-1 w-100">
+                                            <div class="d-flex gap-2">
+                                              <i class="ki-duotone ki-flask text-warning">
+                                              <span class="path1"></span>
+                                              <span class="path2"></span>
+                                              </i>
+                                              Gestionar laboratorios
                                             </div>
                                           </button>
                                         </li>

@@ -20,7 +20,7 @@
                   <!--end::Label-->
   
                   <!--begin::Auto-generated ID-->
-                  <div class="fw-bold fs-3">#13764</div>
+                  <div class="fw-bold fs-3">{{codigo}}</div>
                   <!--end::Input-->
               </div>
               <!--end::Input group-->
@@ -42,16 +42,16 @@
                           [searchable]="true"
                           [clearable]="true" 
                           [virtualScroll]="true"  
-                          [multiple]="true"
+                          [multiple]="false"
                           [loadingText]="'Cargando...'"
                           (search)="onSearchProveedor($event)"
+                          (change)="onProveedorSeleccionado($event?.id)"
                           [loading]="loading" 
-                          name="search"
                           class="w-100">
                         </ng-select>
                     </div>
                   </div>
-                  <div class="col-md-4 col-12 mb-3">
+                  <div *ngIf="productForm.get('proveedor_id')?.value" class="col-md-4 col-12 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="required form-label m-0">Laboratorio</label>
                         <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
@@ -71,8 +71,8 @@
                           [multiple]="true"
                           [loadingText]="'Cargando...'"
                           (search)="onSearchLaboratorio($event)"
+                          (change)="callProductos()"
                           [loading]="loading" 
-                          name="search"
                           class="w-100">
                         </ng-select>
                     </div>
@@ -82,6 +82,9 @@
                     <label class="required form-label mt-2 mb-3">Forma de pago</label>
                     <select name="" id="" class="form-control" formControlName="forma_pago_id">
                       <option value="" disabled>Selecciona una forma de pago</option>
+                      <option *ngFor="let forma of FORMA_PAGO_LIST" [value]="forma.id">
+                        {{ forma.name }}
+                      </option>
                     </select>
                   </div>
 
@@ -89,6 +92,9 @@
                     <label class="required form-label mt-2 mb-3">Tipo de comprobante</label>
                     <select name="" id="" class="form-control" formControlName="type_comprobante_compra_id">
                       <option value="" disabled>Selecciona un comprobante</option>
+                      <option *ngFor="let comp of TIPO_COMPROBANTE_LIST" [value]="comp.id">
+                        {{ comp.name }}
+                      </option>
                     </select>
                   </div>
 
@@ -101,7 +107,7 @@
                     </div>
                   </div>
 
-                  <div class="col-12 mb-3">
+                  <div *ngIf="productForm.get('laboratorio_id')?.value" class="col-12 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label m-0">Producto</label>
                         <button type="button" class="btn btn-primary px-4 py-2">
@@ -119,7 +125,7 @@
                           [virtualScroll]="true"  
                           [multiple]="false"
                           [loadingText]="'Cargando...'"
-                          [loading]="loading"
+                          [loading]="loadingProducts"
                           name="search"
                           class="w-100">
                           <ng-template ng-option-tmp let-item="item">

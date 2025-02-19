@@ -81,8 +81,17 @@ export class CompraService {
   //solicitamos el codigo que sigue para el siguiente producto
   obtenerRecursosParaCrear(){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/recursos_para_crear"
+    let URL = URL_SERVICIO+"/orden_compra/recursos_crear"
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  callProductsByLaboratorio(laboratorioIds: number[]){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos_crear/productos"
+    return this.http.post(URL,{ laboratorio_id: laboratorioIds },{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

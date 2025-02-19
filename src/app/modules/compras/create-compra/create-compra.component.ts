@@ -18,8 +18,12 @@ export class CreateCompraComponent {
   LABORATORIOS_LIST:any[] = [];
   PROVEEDORES_LIST:any[] = [];
   PRODUCT_LIST:any[] = [];
+  codigo:string = "Calculando codigo..."
+  FORMA_PAGO_LIST:any[] = [];
+  TIPO_COMPROBANTE_LIST:any[] = [];
 
-  loading:boolean
+  loading:boolean = true
+  loadingProducts:boolean = true
 
   searchTermLaboratorio: string = '';
   searchTermProveedores: string = '';
@@ -34,12 +38,13 @@ export class CreateCompraComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loading = true
     this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
-        this.LABORATORIOS_LIST = resp.laboratorios;
-        this.PROVEEDORES_LIST = resp.laboratorios;
-        this.PRODUCT_LIST = resp.laboratorios;
+        this.PROVEEDORES_LIST = resp.proveedores;
+        this.FORMA_PAGO_LIST = resp.forma_pago;
+        this.TIPO_COMPROBANTE_LIST = resp.tipo_comprobante;
+        this.codigo = resp.codigo
         this.loading = false
+        this.loadingProducts = false
     })
 
     this.productForm = this.fb.group({
@@ -74,6 +79,35 @@ export class CreateCompraComponent {
       }) */
     }
 
+  }
+
+  onProveedorSeleccionado(proveedorId: number) {
+    this.LABORATORIOS_LIST = [];
+    // Buscar el proveedor seleccionado en la lista de proveedores
+    const proveedorSeleccionado = this.PROVEEDORES_LIST.find(p => p.id === proveedorId);
+
+    // Si encuentra el proveedor, extrae sus laboratorios
+    if (proveedorSeleccionado) {
+        this.LABORATORIOS_LIST = proveedorSeleccionado.laboratorios;
+    }
+  }
+
+  callProductos(){
+    this.loadingProducts = true;
+    this.PRODUCT_LIST = [];
+
+    // Obtener los laboratorios seleccionados
+    const laboratorioSeleccionado = this.productForm.value.laboratorio_id; 
+
+    if (!laboratorioSeleccionado || laboratorioSeleccionado.length === 0) {
+      this.loadingProducts = false;
+      return;
+    }
+
+    this.compraService.callProductsByLaboratorio(laboratorioSeleccionado).subscribe((resp: any) => {
+      this.PRODUCT_LIST = resp.productos;
+      this.loadingProducts = false;
+    });
   }
   
   createLaboratorio(){

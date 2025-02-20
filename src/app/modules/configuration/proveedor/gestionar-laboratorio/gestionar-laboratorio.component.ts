@@ -12,7 +12,7 @@ import { EditProveedorLaboratorioComponent } from '../edit-proveedor-laboratorio
   styleUrls: ['./gestionar-laboratorio.component.scss']
 })
 export class GestionarLaboratorioComponent {
-  @Output() LaboratorioC:EventEmitter<any> = new EventEmitter();
+  @Output() LIST_LABORATORIOS_ACTUALIZADO:EventEmitter<any> = new EventEmitter();
   @Input() PROVEEDOR_ID: any = '';
   LABORATORIOS_LIST:any[] = [];
   LABORATORIOS_PROVEEDOR_LIST:any[] = [];
@@ -57,6 +57,7 @@ export class GestionarLaboratorioComponent {
           next: (resp: any) => {
             this.LABORATORIOS_PROVEEDOR_LIST = this.LABORATORIOS_PROVEEDOR_LIST.filter((sucurs:any) => sucurs.id !== LAB.id); // Eliminamos el rol de la lista
             this.sweet.success('Eliminado', 'La relacion ha sido eliminada correctamente','/assets/animations/general/borrado_exitoso.json');
+            this.LIST_LABORATORIOS_ACTUALIZADO.emit(this.LABORATORIOS_PROVEEDOR_LIST)
           },
         })
       }
@@ -74,7 +75,9 @@ export class GestionarLaboratorioComponent {
       if(INDEX != -1){
         this.LABORATORIOS_PROVEEDOR_LIST[INDEX] = r
       }
+      this.LIST_LABORATORIOS_ACTUALIZADO.emit(this.LABORATORIOS_PROVEEDOR_LIST)
     })
+    
   }
 
   createLaboratorioProveedor(){
@@ -84,6 +87,7 @@ export class GestionarLaboratorioComponent {
     modalRef.componentInstance.LABORATORIOS_LIST = this.LABORATORIOS_LIST
     modalRef.componentInstance.LaboratorioProveedorC.subscribe((r:any)=>{
       this.LABORATORIOS_PROVEEDOR_LIST.unshift(r);
+      this.LIST_LABORATORIOS_ACTUALIZADO.emit(this.LABORATORIOS_PROVEEDOR_LIST)
     })
   }
 }

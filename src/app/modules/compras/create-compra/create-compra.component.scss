@@ -1,0 +1,6 @@
+.custom-img {
+    width: 100%;        /* La imagen ocupará el ancho del contenedor */
+    max-height: 110px;      /* Altura fija para que todas las imágenes sean uniformes */
+    object-fit: cover;  /* Recorta la imagen para llenar el espacio sin distorsionarla */
+    border-radius: 10px; /* Bordes redondeados */
+  }

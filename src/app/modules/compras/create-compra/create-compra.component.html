@@ -29,8 +29,11 @@
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="required form-label m-0">Proveedor</label>
                         <div class="d-flex gap-2">
-                          <button *ngIf="productForm.get('proveedor_id')?.value" type="button" class="btn btn-success btn-sm w-100" (click)="editProveedor(productForm.get('proveedor_id')?.value)">
-                            <i class="ki-duotone ki-pencil fs-3"><span class="path1"></span><span class="path2"></span></i>
+                          <button *ngIf="productForm.get('proveedor_id')?.value" type="button" class="btn btn-success btn-sm w-100" (click)="gestionarLaboratoriosProveedor(productForm.get('proveedor_id')?.value)">
+                            <i class="ki-duotone ki-flask fs-3">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                              </i>
                           </button>
                           <button type="button" class="btn btn-primary px-4 py-2" (click)="createProveedor()">
                             +
@@ -57,16 +60,13 @@
                     </div>
                   </div>
                   <div *ngIf="productForm.get('proveedor_id')?.value" class="col-md-4 col-12 mb-3">
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="required form-label m-0">Laboratorio</label>
-                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
-                            +
-                        </button>
-                      </div>
+                      
+                      <label class="required form-label mt-2 mb-4">Laboratorio</label>
+                        
                       <div class="d-flex align-items-center w-100">
                         <ng-select 
                           [items]="LABORATORIOS_LIST"
-                          bindLabel="name"
+                          bindLabel="name_margen"
                           bindValue="id"
                           formControlName="laboratorio_id"
                           placeholder="Buscar por laboratorio"
@@ -112,10 +112,10 @@
                     </div>
                   </div>
 
-                  <div *ngIf="productForm.get('laboratorio_id')?.value" class="col-12 mb-3">
+                  <div *ngIf="productForm.get('laboratorio_id')?.value" class="col-md-6 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label m-0">Producto</label>
-                        <button type="button" class="btn btn-primary px-4 py-2">
+                        <button type="button" class="btn btn-primary px-4 py-2" (click)="createProducto()">
                             +
                         </button>
                       </div>
@@ -129,17 +129,38 @@
                           [clearable]="true" 
                           [virtualScroll]="true"  
                           [multiple]="false"
+                          formControlName = "product_id"
                           [loadingText]="'Cargando...'"
                           [loading]="loadingProducts"
                           name="search"
                           class="w-100">
                           <ng-template ng-option-tmp let-item="item">
-                            <div class="mi-custom-option d-flex flex-column gap-2">
-                              <h6 style="font-size: 1rem;"><span class="badge badge-light-primary fs-7 fw-bold">{{ item.laboratorio }}</span></h6>
-                              <h6 style="font-size: 1rem; font-weight: 50;">{{ item.nombre_completo }}</h6>
-                              <h6 style="font-size: 1rem; font-weight: 50;">Precio: S/ {{ item.pventa }}</h6>
-                              <h6 style="font-size: 1rem; font-weight: 50;">Stock: {{ item.stock }}</h6>
-                              <h6 style="font-size: 1rem; font-weight: 50;">SKU: {{ item.sku }}</h6>
+                            <div class="row align-items-center">
+                              <!-- Imagen -->
+                              <div class="col-4">
+                                <img [src]="item.cachedImage" class="img-fluid w-100 rounded custom-img" alt="img" loading="lazy">
+                              </div>
+                            
+                              <!-- Información del producto -->
+                              <div class="col-8">
+                                <div class="mi-custom-option d-flex flex-column gap-1">
+                                  <!-- Laboratorio (etiqueta) -->
+                                  <span class="badge-light-primary rounded text-center fs-7 fw-bold w-auto">{{ item.laboratorio }}</span>
+                            
+                                  <!-- Nombre del producto -->
+                                  <div class="d-flex flex-column">
+                                    <span class="fw-bold mb-1">{{ item.nombre }}</span>
+                                    <span class="fw-bold mb-1">{{ item.caracteristicas }}</span>
+                                  </div>
+                            
+                                  <!-- Precio y Stock en una sola fila -->
+                                  <p class="mb-0 text-muted">💰 <strong>Precio de venta:</strong> S/ {{ item.pventa }}</p>
+                                  <p class="mb-0 text-muted">📦 <strong>Stock:</strong> {{ item.stock }}</p>
+                            
+                                  <!-- SKU -->
+                                  <p class="mb-0 text-muted">🔖 <strong>SKU:</strong> {{ item.sku }}</p>
+                                </div>
+                              </div>
                             </div>
                         </ng-template>
                       </ng-select>

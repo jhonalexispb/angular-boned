@@ -5,7 +5,9 @@ import { CreateLaboratoriosComponent } from '../../configuration/atributtes-prod
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
 import { CompraService } from '../service/compra.service';
-import { EditProveedorComponent } from '../../configuration/proveedor/edit-proveedor/edit-proveedor.component';
+import { GestionarLaboratorioComponent } from '../../configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
+import { CreateProductComponent } from '../../products/create-product/create-product.component';
 
 @Component({
   selector: 'app-create-compra',
@@ -22,12 +24,15 @@ export class CreateCompraComponent {
   codigo:string = "Calculando codigo..."
   FORMA_PAGO_LIST:any[] = [];
   TIPO_COMPROBANTE_LIST:any[] = [];
+  product_id:any = null
 
   loading:boolean = true
   loadingProducts:boolean = true
 
   searchTermLaboratorio: string = '';
   searchTermProveedores: string = '';
+
+  imageCache: Map<string, string> = new Map();
 
   sweet:any = new SweetalertService
 
@@ -49,9 +54,9 @@ export class CreateCompraComponent {
     })
 
     this.productForm = this.fb.group({
-      proveedor_id:[null,[Validators.required]],
       laboratorio_id:[null,[Validators.required]],
-      producto_id:[null,[Validators.required]],
+      proveedor_id:[null,[Validators.required]],
+      product_id:[null,[Validators.required]],
       forma_pago_id:["",[Validators.required]],
       type_comprobante_compra_id:["",[Validators.required]],
       igv:[1],
@@ -90,6 +95,10 @@ export class CreateCompraComponent {
     // Si encuentra el proveedor, extrae sus laboratorios
     if (proveedorSeleccionado) {
         this.LABORATORIOS_LIST = proveedorSeleccionado.laboratorios;
+        this.productForm.patchValue({
+          laboratorio_id: []
+        });
+        this.callProductos()
     }
   }
 
@@ -105,9 +114,19 @@ export class CreateCompraComponent {
       return;
     }
 
-    this.compraService.callProductsByLaboratorio(laboratorioSeleccionado).subscribe((resp: any) => {
+    const laboratorioIds = laboratorioSeleccionado
+    .map((id:any) => this.LABORATORIOS_LIST.find(lab => lab.id === id)?.laboratorio_id)
+    .filter((labId:any) => labId !== undefined); // Filtrar valores `undefined` por seguridad
+
+    if (laboratorioIds.length === 0) {
+      this.loadingProducts = false;
+      return;
+    }
+
+    this.compraService.callProductsByLaboratorio(laboratorioIds).subscribe((resp: any) => {
       this.PRODUCT_LIST = resp.productos;
       this.loadingProducts = false;
+      this.cacheImages()
     });
   }
   
@@ -120,6 +139,7 @@ export class CreateCompraComponent {
       this.productForm.patchValue({
         laboratorio_id: [r.id, ...laboratorio_id]
       });
+      this.onProveedorSeleccionado(r.id)
     });
   }
 
@@ -129,15 +149,73 @@ export class CreateCompraComponent {
     modalRef.componentInstance.ProveedorC.subscribe((r: any) => {
       this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
       this.productForm.patchValue({ proveedor_id: r.id });
+      this.productForm.patchValue({
+        laboratorio_id: []
+      });
     });
   }
 
-  editProveedor(idProveedor:any){
-    const modalRef = this.modalService.open(EditProveedorComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.PROVEEDOR_SELECTED = idProveedor;
-    modalRef.componentInstance.ProveedorE.subscribe((r: any) => {
-      this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
-      this.productForm.patchValue({ proveedor_id: r.id });
+  gestionarLaboratoriosProveedor(idProveedor:any){
+    const modalRef = this.modalService.open(GestionarLaboratorioComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PROVEEDOR_ID = idProveedor
+    modalRef.componentInstance.LIST_LABORATORIOS_ACTUALIZADO.subscribe((nuevaLista: any[]) => {
+      if (Array.isArray(nuevaLista)) {
+        const selectedIds: number[] = this.productForm.get('laboratorio_id')?.value || [];
+  
+        const mapActual = new Map(this.LABORATORIOS_LIST.map(lab => [lab.id, lab]));
+        const mapNuevo = new Map(nuevaLista.map(lab => [lab.id, lab]));
+  
+        this.LABORATORIOS_LIST = this.LABORATORIOS_LIST.filter(lab => mapNuevo.has(lab.id));
+  
+        nuevaLista.forEach(lab => {
+          if (!mapActual.has(lab.id)) {
+            this.LABORATORIOS_LIST.push(lab);
+          }
+        });
+  
+        this.LABORATORIOS_LIST = this.LABORATORIOS_LIST.map(lab => 
+          mapNuevo.has(lab.id) ? { ...mapNuevo.get(lab.id) } : lab
+        );
+
+        let updatedSelectedIds = selectedIds.filter(id => mapNuevo.has(id));
+
+        nuevaLista.forEach(lab => {
+          if (!selectedIds.includes(lab.id)) {
+            updatedSelectedIds.push(lab.id);
+          }
+        });
+
+        this.productForm.patchValue({ laboratorio_id: updatedSelectedIds });
+      }
+    });
+  }
+
+  createProducto(){
+    const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
+      this.PRODUCT_LIST = [r.data, ...this.PRODUCT_LIST];
+      this.productForm.patchValue({ product_id: r.data.id })
+    })
+  }
+
+  cacheImages() {
+    this.PRODUCT_LIST.forEach(product => {
+      if (!this.imageCache.has(product.id)) { // Solo cachear si no existe
+        fetch(product.imagen)
+          .then(response => response.blob())
+          .then(blob => {
+            // Liberar memoria de la imagen anterior si ya estaba cacheada
+            if (this.imageCache.has(product.id)) {
+              URL.revokeObjectURL(this.imageCache.get(product.id)!);
+            }
+  
+            const objectURL = URL.createObjectURL(blob);
+            this.imageCache.set(product.id, objectURL);
+            product.cachedImage = objectURL;
+          });
+      } else {
+        product.cachedImage = this.imageCache.get(product.id)!; // Usar imagen cacheada
+      }
     });
   }
 }

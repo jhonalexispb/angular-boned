@@ -220,6 +220,10 @@
                               </th>
 
                               <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
+                                <span class="dt-column-title" role="button">Condicion</span><span class="dt-column-order"></span>
+                              </th>
+
+                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
                                 <span class="dt-column-title" role="button">Fecha de vencimiento</span><span class="dt-column-order"></span>
                               </th>
                         
@@ -231,9 +235,100 @@
                           </thead>
                         
                           <tbody class="fw-semibold text-gray-600">
-                            
+                            <tr *ngFor="let P of PRODUCT_LIST_ORDER_COMPRA; let index = index">
+                              <td>
+                                  <div class="d-flex align-items-center gap-2">
+                                      <div class="d-md-none d-flex align-items-center">
+                                          <app-buttons-group-list
+                                          [index]="index"
+                                          [activeDropdownIndex]="activeDropdownIndex"
+                                          (dropdownToggle)="handleDropdownToggle($event)">
+                                          <ul class="list pt-3 px-3 d-flex flex-column gap-2">
+                                            <li>
+                                              <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                                <div class="d-flex gap-2">
+                                                  <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                  Eliminar
+                                                </div>
+                                              </button>
+                                            </li>
+                                          </ul>
+                                          </app-buttons-group-list>
+                                      </div>
+                                      <div class="d-flex">
+                                        <div class="d-flex align-items-center">
+                                          <div class="d-flex flex-column">
+                                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.laboratorio }}</span>
+                                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.nombre }}</span>
+                                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
+                                              <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                              </td>
+
+                              <td>
+                                <div class="d-flex align-items-center gap-2">
+                                  <button class="btn btn-sm btn-light" (click)="decreaseQuantity(P)">-</button>
+                                  <input type="number" class="form-control" [(ngModel)]="P.cantidad" (change)="updateQuantity(P)" min="1" />
+                                  <button class="btn btn-sm btn-light" (click)="increaseQuantity(P)">+</button>
+                                </div>
+                              </td>
+      
+                              <td>
+                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
+                              </td>
+
+                              <td>
+                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.compra }}</span>
+                              </td>
+
+                              <td>
+                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion == 1">Igual a</span>
+                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.condicion == 2">Mayor o igual a</span>
+                              </td>
+      
+                              <td>
+                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.fecha_vencimiento }}</span>
+                              </td>
+                        
+                              <!-- Columna Acciones visible solo en pantallas grandes -->
+                              <td class="d-none d-md-table-cell acciones-container">
+                                <ul class="list pt-3 px-3 d-flex gap-2">
+                                  <li>
+                                    <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                      <div class="d-flex flex-column align-items-center gap-1">
+                                        <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                        Eliminar
+                                      </div>
+                                    </button>
+                                  </li>
+                                </ul>
+                              </td>
+                            </tr>
                           </tbody>
-                        </table>
+                      </table>
+                  </div>
+
+                  <div class="d-flex flex-stack bg-success rounded-3 p-6 mb-11">  
+                    <!--begin::Content-->
+                    <div class="fs-6 fw-bold text-white">
+                      <span class="d-block lh-1 mb-2">Subtotal</span>
+                      <span class="d-block lh-1 mb-2">Descuentos</span>
+                      <span class="d-block lh-1 mb-2">Impuesto (18%)</span>
+                      <span class="d-block lh-1 fs-2qx mb-3">Total</span>
+                    </div> 
+                    <!--end::Content--> 
+                    
+                    <!--begin::Content-->
+                    <div class="fs-6 fw-bold text-white text-end">
+                      <span class="d-block lh-1 mb-2" data-kt-pos-element="total">S/ {{ subtotal | number: '1.2-2' }}</span>
+                      <span class="d-block lh-1 mb-2" data-kt-pos-element="discount">-S/ {{ descuento | number: '1.2-2' }}</span>
+                      <span class="d-block lh-1 mb-2" data-kt-pos-element="tax">S/ {{ impuesto | number: '1.2-2' }}</span>
+                      <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ totalCarrito | number: '1.2-2' }}</span>
+                    </div> 
+                    <!--end::Content--> 
                   </div>
               </div>
             </div>

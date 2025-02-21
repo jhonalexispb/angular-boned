@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateLaboratoriosComponent } from '../../configuration/atributtes-products/laboratorios/create-laboratorios/create-laboratorios.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
 import { CompraService } from '../service/compra.service';
 import { GestionarLaboratorioComponent } from '../../configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
-import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 import { CreateProductComponent } from '../../products/create-product/create-product.component';
 import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto-seleccionado.component';
 
@@ -22,10 +20,17 @@ export class CreateCompraComponent {
   LABORATORIOS_LIST:any[] = [];
   PROVEEDORES_LIST:any[] = [];
   PRODUCT_LIST:any[] = [];
+  PRODUCT_LIST_ORDER_COMPRA:any[] = [];
   codigo:string = "Calculando codigo..."
   FORMA_PAGO_LIST:any[] = [];
   TIPO_COMPROBANTE_LIST:any[] = [];
   product_id:any = null
+  activeDropdownIndex: number | null = null;
+
+  subtotal: number = 0;
+  descuento: number = 0;
+  impuesto: number = 0;
+  totalCarrito: number = 0;
 
   loading:boolean = true
   loadingProducts:boolean = true
@@ -45,6 +50,7 @@ export class CreateCompraComponent {
   ) {}
 
   ngOnInit(): void {
+    this.loadCart();
     this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
         this.PROVEEDORES_LIST = resp.proveedores;
         this.FORMA_PAGO_LIST = resp.forma_pago;
@@ -72,6 +78,17 @@ export class CreateCompraComponent {
     this.searchTermProveedores = event.term;  // Acceder al término de búsqueda desde el evento
   }
 
+  loadCart() {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      this.PRODUCT_LIST_ORDER_COMPRA = JSON.parse(storedCart);
+    }
+  }
+
+  saveCart() {
+    localStorage.setItem('cart', JSON.stringify(this.PRODUCT_LIST_ORDER_COMPRA));
+  }
+
   // Enviar el formulario
   onSubmit() {
     if (this.productForm.valid) {
@@ -86,6 +103,10 @@ export class CreateCompraComponent {
       }) */
     }
 
+  }
+
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 
   onProveedorSeleccionado(proveedorId: number) {
@@ -133,19 +154,6 @@ export class CreateCompraComponent {
       this.cacheImages()
     });
   }
-  
-  createLaboratorio(){
-    const modalRef = this.modalService.open(CreateLaboratoriosComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.nombre_externo = this.searchTermLaboratorio;
-    modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
-      this.LABORATORIOS_LIST = [r, ...this.LABORATORIOS_LIST];
-      const laboratorio_id = this.productForm.get('laboratorio_id')?.value || [];
-      this.productForm.patchValue({
-        laboratorio_id: [r.id, ...laboratorio_id]
-      });
-      this.onProveedorSeleccionado(r.id)
-    });
-  }
 
   createProveedor(){
     const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
@@ -178,7 +186,7 @@ export class CreateCompraComponent {
         nuevaLista.forEach(lab => {
           if (!mapActual.has(lab.id)) {
             this.LABORATORIOS_LIST.push(lab);
-            selectedIds.push(lab.id); // Si es nuevo, lo seleccionamos
+            selectedIds.push(lab.id);
           }
         });
 
@@ -187,8 +195,11 @@ export class CreateCompraComponent {
           mapNuevo.has(lab.id) ? { ...mapNuevo.get(lab.id) } : lab
         );
 
+        this.LABORATORIOS_LIST = nuevaLista
+
         // Aplicar los IDs actualizados al formulario
         this.productForm.patchValue({ laboratorio_id: selectedIds });
+        this.callProductos()
       }
     });
   }
@@ -198,26 +209,47 @@ export class CreateCompraComponent {
     modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
       this.PRODUCT_LIST = [r.data, ...this.PRODUCT_LIST];
       this.productForm.patchValue({ product_id: r.data.id })
+      this.cacheImages()
     })
   }
 
   cacheImages() {
     this.PRODUCT_LIST.forEach(product => {
-      if (!this.imageCache.has(product.id)) { // Solo cachear si no existe
-        fetch(product.imagen)
-          .then(response => response.blob())
-          .then(blob => {
-            // Liberar memoria de la imagen anterior si ya estaba cacheada
-            if (this.imageCache.has(product.id)) {
-              URL.revokeObjectURL(this.imageCache.get(product.id)!);
-            }
+      // Verificar si la imagen ya está en el cache
+      if (!this.imageCache.has(product.id)) {
+        // Si la imagen es la predeterminada, no intentamos cargarla
+        if (product.imagen === 'http://127.0.0.1:8000/storage/default/default_boned.webp') {
+          product.cachedImage = product.imagen; // Usar imagen predeterminada directamente
+          this.imageCache.set(product.id, product.imagen); // Cachear imagen predeterminada
+        } else {
+          // Intentar cargar la imagen
+          fetch(product.imagen)
+            .then(response => {
+              if (!response.ok) {
+                // Si la respuesta no es exitosa, establecer imagen predeterminada
+                throw new Error(`Failed to fetch image: ${response.status}`);
+              }
+              return response.blob();
+            })
+            .then(blob => {
+              if (this.imageCache.has(product.id)) {
+                URL.revokeObjectURL(this.imageCache.get(product.id)!);
+              }
   
-            const objectURL = URL.createObjectURL(blob);
-            this.imageCache.set(product.id, objectURL);
-            product.cachedImage = objectURL;
-          });
+              const objectURL = URL.createObjectURL(blob);
+              this.imageCache.set(product.id, objectURL);
+              product.cachedImage = objectURL;
+            })
+            .catch(error => {
+              console.error(error);
+              // Si hay error al cargar la imagen, usar la imagen por defecto
+              product.cachedImage = 'http://127.0.0.1:8000/storage/default/default_boned.webp';
+              this.imageCache.set(product.id, product.cachedImage); // Cachear la imagen predeterminada
+            });
+        }
       } else {
-        product.cachedImage = this.imageCache.get(product.id)!; // Usar imagen cacheada
+        // Si la imagen ya está en cache, usar la versión cacheada
+        product.cachedImage = this.imageCache.get(product.id)!;
       }
     });
   }
@@ -226,6 +258,7 @@ export class CreateCompraComponent {
     if(producto_id == undefined){
       return
     }
+    this.productForm.patchValue({product_id: null})
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
     const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
 
@@ -234,8 +267,61 @@ export class CreateCompraComponent {
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
     modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
     modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
-      this.productForm.patchValue({product_id: null})
       console.log("Producto recibido:", producto);
     })
+  }
+
+  increaseQuantity(product: any) {
+    product.cantidad++;
+    this.updateQuantity(product);
+  }
+  
+  // Disminuir la cantidad de un producto
+  decreaseQuantity(product: any) {
+    if (product.cantidad > 1) {
+      product.cantidad--;
+      this.updateQuantity(product);
+    }
+  }
+  
+  // Actualizar la cantidad en el carrito
+  updateQuantity(product: any) {
+    // Aquí puedes actualizar el carrito completo
+    this.saveCart();
+  }
+  
+  // Eliminar un producto del carrito
+  deleteProducto(product: any) {
+    const index = this.PRODUCT_LIST_ORDER_COMPRA.indexOf(product);
+    if (index > -1) {
+      this.PRODUCT_LIST_ORDER_COMPRA.splice(index, 1);
+      this.saveCart();
+    }
+  }
+
+  calcularSubtotal(): void {
+    this.subtotal = this.PRODUCT_LIST_ORDER_COMPRA.reduce((total, producto) => {
+      return total + (producto.cantidad * producto.pventa); // Cantidad * Precio de venta
+    }, 0);
+  }
+
+  calcularDescuento(): void {
+    // Aquí, puedes aplicar cualquier lógica de descuento que desees
+    this.descuento = 8;  // Un ejemplo, en este caso un descuento fijo de 8
+  }
+
+  calcularImpuesto(): void {
+    this.impuesto = this.subtotal * 0.18;  // Impuesto al 18%
+  }
+
+  calcularTotalCarrito(): void {
+    this.totalCarrito = this.subtotal - this.descuento + this.impuesto;  // Subtotal - Descuento + Impuesto
+  }
+
+  actualizarTotales(): void {
+    this.calcularSubtotal();
+    this.calcularDescuento();
+    this.calcularImpuesto();
+    this.calcularTotalCarrito();
   }
 }

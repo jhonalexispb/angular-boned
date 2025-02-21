@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { RucService } from '../../clientes/ruc/service/ruc.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CompraService } from '../service/compra.service';
+import { ModalEscalasComponent } from '../../products/modal-escalas/modal-escalas.component';
+import { ModalLotesComponent } from '../../products/modal-lotes/modal-lotes.component';
 
 @Component({
   selector: 'app-producto-seleccionado',
@@ -15,7 +16,15 @@ export class ProductoSeleccionadoComponent {
   @Input() PRODUCTO_ID:any
   @Input() PRODUCT_SELECTED:any
   @Input() LABORATORIO_ID:any
-  DATA_PRODUCT_SELECTED:any
+  DATA_PRODUCT_SELECTED:any = {
+    'stock' : 0,
+    'pventa' : 0.0,
+    'pcompra' : 0.0,
+    'lotes' : [],
+    'escalas' :[]
+  }
+
+  isLoading:boolean = true
 
   tipoSeleccionado:any = 'menorIgual';
   precioMinimo: number;
@@ -25,14 +34,14 @@ export class ProductoSeleccionadoComponent {
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
-    //llamamos al servicio
-    public rucService: RucService,
+    public modalService: NgbModal,
     public compraService: CompraService
   ) {}
 
   ngOnInit(): void {
     this.compraService.obtenerDetalleProducto(this.PRODUCTO_ID).subscribe((resp: any) => {
       this.DATA_PRODUCT_SELECTED = resp
+      this.isLoading = false
     });
     this.productoInsertForm = this.fb.group({
       cantidad: [
@@ -41,14 +50,15 @@ export class ProductoSeleccionadoComponent {
       ],      
       pcompra: [
         '',
-        [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/)]
+        [Validators.required, Validators.min(0.01)]
       ],      
       pventa: [
-        '',
-        [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/),this.validarPrecioMinimo.bind(this)]
+        { value: '', disabled: true },
+        [Validators.required, Validators.min(0.01),this.validarPrecioMinimo.bind(this)]
       ],      
-      fecha_vencimiento: ['', Validators.required], 
-      meses: [{ value: '', disabled: false }] 
+      fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
+      meses: [{ value: '', disabled: false }],
+      margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/)]] 
     });
 
     this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
@@ -59,10 +69,13 @@ export class ProductoSeleccionadoComponent {
   calcularPrecioVenta(pcompra: any) {
     // Verificar si pcompra es un número válido
     if (!pcompra || isNaN(Number(pcompra))) {
+      this.productoInsertForm.patchValue({pventa: null})
+      this.productoInsertForm.get('pventa')?.disable();
       return;
     }
-  
-    const margen = this.LABORATORIO_ID?.margen_minimo || 0; // Asegurar que haya un margen válido
+
+    this.productoInsertForm.get('pventa')?.enable();
+    const margen = this.productoInsertForm.get('margen_minimo')?.value || 0; // Asegurar que haya un margen válido
     this.precioMinimo = Number(pcompra) + (Number(pcompra) * margen / 100); // Convertir pcompra a número
   
     this.productoInsertForm.patchValue({ pventa: this.precioMinimo.toFixed(2) });
@@ -119,42 +132,25 @@ export class ProductoSeleccionadoComponent {
       this.productoInsertForm.get('meses')?.disable();
     }
   }
-  
-
-  cambiarEstadoFecha() {
-    if (this.tipoSeleccionado === 'menorIgual') {
-      this.productoInsertForm.get('fecha_vencimiento')?.disable();
-    } else {
-      this.productoInsertForm.get('fecha_vencimiento')?.enable(); 
-    }
-  }
 
   calcularFecha() {
     const meses = this.productoInsertForm.get('meses')?.value;
-  
     if (!meses || meses < 1) {
       this.productoInsertForm.patchValue({ fecha_vencimiento: null });
       return;
     }
-  
     let fechaActual = new Date();
-    let mesDestino = fechaActual.getMonth() + meses; // Sumamos los meses
+    let mesDestino = fechaActual.getMonth() + meses;
     let añoDestino = fechaActual.getFullYear();
-  
-    // Ajustamos el año si el mes supera diciembre
     if (mesDestino > 11) {
       añoDestino += Math.floor(mesDestino / 12);
       mesDestino = mesDestino % 12;
     }
-  
-    // Obtener el último día del mes calculado
     let fechaVencimiento = new Date(añoDestino, mesDestino + 1, 0);
-  
-    // Formatear manualmente la fecha (universal)
     const año = fechaVencimiento.getFullYear();
-    const mes = String(fechaVencimiento.getMonth() + 1).padStart(2, '0'); // Asegura dos dígitos
-    const dia = String(fechaVencimiento.getDate()).padStart(2, '0'); // Asegura dos dígitos
-    const fechaFormateada = `${año}-${mes}-${dia}`; // yyyy-MM-dd
+    const mes = String(fechaVencimiento.getMonth() + 1).padStart(2, '0');
+    const dia = String(fechaVencimiento.getDate()).padStart(2, '0')
+    const fechaFormateada = `${año}-${mes}-${dia}`;
     this.productoInsertForm.patchValue({ fecha_vencimiento: fechaFormateada });
   }
 
@@ -165,7 +161,7 @@ export class ProductoSeleccionadoComponent {
     }
   }
 
-  validarPrecio(event: any) {
+  validarPrecio(event: any, input:any) {
     let valor = event.target.value;
   
     // Reemplazar caracteres no numéricos excepto puntos
@@ -192,38 +188,16 @@ export class ProductoSeleccionadoComponent {
     event.target.value = valor;
   
     // Actualizar el formulario
-    this.productoInsertForm.patchValue({ pcompra: valor });
+    this.productoInsertForm.patchValue({ input: valor });
+  }
+  
+  mostrarLotes(){
+    const modalRef = this.modalService.open(ModalLotesComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.PRODUCT_ID = this.PRODUCT_SELECTED
   }
 
-  validarPrecioVenta(event: any) {
-    let valor = event.target.value;
-  
-    // Reemplazar caracteres no numéricos excepto puntos
-    valor = valor.replace(/[^0-9.]/g, '');
-  
-    // Evitar más de un punto decimal
-    let partes = valor.split('.');
-    if (partes.length > 2) {
-      valor = partes[0] + '.' + partes.slice(1).join('');
-    }
-  
-    // Evitar que empiece con un punto
-    if (valor.startsWith('.')) {
-      valor = '0' + valor;
-    }
-  
-    // Limitar a dos decimales
-    if (partes.length === 2) {
-      partes[1] = partes[1].substring(0, 2); // Solo 2 decimales
-      valor = partes.join('.');
-    }
-  
-    // Actualizar el valor en el input
-    event.target.value = valor;
-  
-    // Actualizar el formulario
-    this.productoInsertForm.patchValue({ pventa: valor });
+  mostrarEscalas(){
+    const modalRef = this.modalService.open(ModalEscalasComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PRODUCT_ID = this.PRODUCT_SELECTED
   }
-  
-  
 }

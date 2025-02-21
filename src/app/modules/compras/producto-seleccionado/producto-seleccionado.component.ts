@@ -17,7 +17,7 @@ export class ProductoSeleccionadoComponent {
   @Input() LABORATORIO_ID:any
   DATA_PRODUCT_SELECTED:any
 
-  tipoSeleccionado:any;
+  tipoSeleccionado:any = 'menorIgual';
   precioMinimo: number;
   productoInsertForm: FormGroup;
   sweet:any = new SweetalertService
@@ -45,10 +45,10 @@ export class ProductoSeleccionadoComponent {
       ],      
       pventa: [
         '',
-        [Validators.required, this.validarPrecioMinimo.bind(this)]
+        [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/),this.validarPrecioMinimo.bind(this)]
       ],      
       fecha_vencimiento: ['', Validators.required], 
-      meses: [{ value: '', disabled: true }] 
+      meses: [{ value: '', disabled: false }] 
     });
 
     this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
@@ -70,6 +70,7 @@ export class ProductoSeleccionadoComponent {
 
   validarPrecioMinimo(control: any) {
     if (!this.productoInsertForm) return null; // Evitar errores en la inicialización
+    if (!control.value) return null;
   
     const pcompra = Number(this.productoInsertForm.get('pcompra')?.value);
     const margen = this.LABORATORIO_ID?.margen_minimo || 0;
@@ -108,6 +109,7 @@ export class ProductoSeleccionadoComponent {
 
   seleccionarTipo(tipo: string) {
     this.tipoSeleccionado = tipo;
+    this.productoInsertForm.patchValue({fecha_vencimiento: null})
   
     if (tipo === 'menorIgual') {
       this.productoInsertForm.get('fecha_vencimiento')?.disable();
@@ -191,6 +193,36 @@ export class ProductoSeleccionadoComponent {
   
     // Actualizar el formulario
     this.productoInsertForm.patchValue({ pcompra: valor });
+  }
+
+  validarPrecioVenta(event: any) {
+    let valor = event.target.value;
+  
+    // Reemplazar caracteres no numéricos excepto puntos
+    valor = valor.replace(/[^0-9.]/g, '');
+  
+    // Evitar más de un punto decimal
+    let partes = valor.split('.');
+    if (partes.length > 2) {
+      valor = partes[0] + '.' + partes.slice(1).join('');
+    }
+  
+    // Evitar que empiece con un punto
+    if (valor.startsWith('.')) {
+      valor = '0' + valor;
+    }
+  
+    // Limitar a dos decimales
+    if (partes.length === 2) {
+      partes[1] = partes[1].substring(0, 2); // Solo 2 decimales
+      valor = partes.join('.');
+    }
+  
+    // Actualizar el valor en el input
+    event.target.value = valor;
+  
+    // Actualizar el formulario
+    this.productoInsertForm.patchValue({ pventa: valor });
   }
   
   

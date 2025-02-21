@@ -116,6 +116,7 @@
               formControlName="pventa"
               placeholder="Ingrese un precio"
               autocomplete="off"
+              (input)="validarPrecioVenta($event)"
             />
             <div *ngIf="productoInsertForm.get('pventa')?.touched && productoInsertForm.get('pventa')?.invalid" class="text-danger">
               <span *ngIf="productoInsertForm.get('pventa')?.errors?.['required']">

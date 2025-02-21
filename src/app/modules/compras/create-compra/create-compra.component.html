@@ -132,7 +132,7 @@
                           formControlName = "product_id"
                           [loadingText]="'Cargando...'"
                           [loading]="loadingProducts"
-                          name="search"
+                          (ngModelChange)="callProductDetail($event)"
                           class="w-100">
                           <ng-template ng-option-tmp let-item="item">
                             <div class="row align-items-center">

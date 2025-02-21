@@ -16,6 +16,7 @@ import { ButtonDropdownOptionModule } from 'src/app/components/button-dropdown-o
 import { ButtonsGroupListModule } from 'src/app/components/buttons-group-list/buttons-group-list.module';
 import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.module';
 import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
+import { ProductoSeleccionadoComponent } from './producto-seleccionado/producto-seleccionado.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { DropImageModule } from 'src/app/components/drop-image/drop-image.module
     ComprasComponent,
     ListCompraComponent,
     CreateCompraComponent,
-    EditCompraComponent
+    EditCompraComponent,
+    ProductoSeleccionadoComponent
   ],
   imports: [
     CommonModule,

@@ -8,6 +8,7 @@ import { CompraService } from '../service/compra.service';
 import { GestionarLaboratorioComponent } from '../../configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
 import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 import { CreateProductComponent } from '../../products/create-product/create-product.component';
+import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto-seleccionado.component';
 
 @Component({
   selector: 'app-create-compra',
@@ -105,6 +106,9 @@ export class CreateCompraComponent {
   callProductos(){
     this.loadingProducts = true;
     this.PRODUCT_LIST = [];
+    this.productForm.patchValue({
+      product_id: null
+    });
 
     // Obtener los laboratorios seleccionados
     const laboratorioSeleccionado = this.productForm.value.laboratorio_id; 
@@ -160,32 +164,31 @@ export class CreateCompraComponent {
     modalRef.componentInstance.PROVEEDOR_ID = idProveedor
     modalRef.componentInstance.LIST_LABORATORIOS_ACTUALIZADO.subscribe((nuevaLista: any[]) => {
       if (Array.isArray(nuevaLista)) {
-        const selectedIds: number[] = this.productForm.get('laboratorio_id')?.value || [];
-  
+        // Obtener los laboratorios actualmente seleccionados
+        let selectedIds: number[] = this.productForm.get('laboratorio_id')?.value || [];
+
+        // Crear mapas para manejar la lista actual y la nueva lista eficientemente
         const mapActual = new Map(this.LABORATORIOS_LIST.map(lab => [lab.id, lab]));
         const mapNuevo = new Map(nuevaLista.map(lab => [lab.id, lab]));
-  
-        this.LABORATORIOS_LIST = this.LABORATORIOS_LIST.filter(lab => mapNuevo.has(lab.id));
-  
+
+        // Filtrar laboratorios eliminados
+        selectedIds = selectedIds.filter(id => mapNuevo.has(id));
+
+        // Agregar los laboratorios nuevos a la lista
         nuevaLista.forEach(lab => {
           if (!mapActual.has(lab.id)) {
             this.LABORATORIOS_LIST.push(lab);
+            selectedIds.push(lab.id); // Si es nuevo, lo seleccionamos
           }
         });
-  
+
+        // Actualizar la lista de laboratorios con los cambios
         this.LABORATORIOS_LIST = this.LABORATORIOS_LIST.map(lab => 
           mapNuevo.has(lab.id) ? { ...mapNuevo.get(lab.id) } : lab
         );
 
-        let updatedSelectedIds = selectedIds.filter(id => mapNuevo.has(id));
-
-        nuevaLista.forEach(lab => {
-          if (!selectedIds.includes(lab.id)) {
-            updatedSelectedIds.push(lab.id);
-          }
-        });
-
-        this.productForm.patchValue({ laboratorio_id: updatedSelectedIds });
+        // Aplicar los IDs actualizados al formulario
+        this.productForm.patchValue({ laboratorio_id: selectedIds });
       }
     });
   }
@@ -217,5 +220,22 @@ export class CreateCompraComponent {
         product.cachedImage = this.imageCache.get(product.id)!; // Usar imagen cacheada
       }
     });
+  }
+
+  callProductDetail(producto_id:any) {
+    if(producto_id == undefined){
+      return
+    }
+    const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
+    const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
+
+    const modalRef = this.modalService.open(ProductoSeleccionadoComponent,{centered:true, size: 'xl'})
+    modalRef.componentInstance.PRODUCTO_ID = producto_id
+    modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
+    modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
+    modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
+      this.productForm.patchValue({product_id: null})
+      console.log("Producto recibido:", producto);
+    })
   }
 }

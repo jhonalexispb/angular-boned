@@ -1,0 +1,164 @@
+<div class="card">
+  <div class="row">
+    <div class="col-md-5 card-body">
+      <div class="px-9 pt-7 card-rounded h-275px w-100 bg-primary">
+        <div class="d-flex flex-stack">
+            <h3 class="m-0 text-white fw-bold fs-3">Stock actual: </h3>
+            <div class="btn btn-icon btn-sm btn-active-icon-light" data-kt-users-modal-action="close" (click)="modal.dismiss()">
+              <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="white" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="white" />
+                </svg>
+              </span>
+            </div>
+        </div>
+  
+        <div class="d-flex text-center flex-column text-white pt-8">
+            <span class="fw-bold fs-2x pt-1">{{PRODUCT_SELECTED.nombre}}</span>
+            <span class="fw-semi-bold fs-2">{{PRODUCT_SELECTED.caracteristicas}}</span>
+        </div>
+      </div>
+            
+      <div class="bg-body shadow-sm card-rounded mx-5 mb-5 px-6 py-9 position-relative z-index-1" style="margin-top: -100px">
+        <form [formGroup]="productoInsertForm" (ngSubmit)="onSubmit()">
+          <div class="fv-row mb-7">
+            <label class="required fw-bold fs-6 mb-2">Cantidad</label>
+            <input
+              type="text"
+              class="form-control mb-3 mb-lg-0"
+              formControlName="cantidad"
+              placeholder="Ingrese un valor"
+              autocomplete="off"
+              (keypress)="validarNumero($event)"
+            />
+
+            <!-- Mostrar errores -->
+            <div *ngIf="productoInsertForm.get('cantidad')?.touched && productoInsertForm.get('cantidad')?.invalid" class="text-danger">
+              <span *ngIf="productoInsertForm.get('cantidad')?.errors?.['required']">La cantidad es obligatoria.</span>
+              <span *ngIf="productoInsertForm.get('cantidad')?.errors?.['pattern']">Debe ser un número entero mayor a 0.</span>
+            </div>
+          </div>
+      
+          <div class="fv-row mb-7">
+            <label class="required fw-bold fs-6 mb-2">Precio de compra</label>
+            <input
+              type="text"
+              class="form-control mb-3 mb-lg-0"
+              formControlName="pcompra"
+              placeholder="Ingrese un precio"
+              autocomplete="off"
+              (input)="validarPrecio($event)"
+            />
+            <div *ngIf="productoInsertForm.get('pcompra')?.touched && productoInsertForm.get('pcompra')?.invalid" class="text-danger">
+              <span *ngIf="productoInsertForm.get('pcompra')?.errors?.['required']">El precio de compra es obligatorio</span>
+              <span *ngIf="productoInsertForm.get('pcompra')?.errors?.['min']">El precio debe ser mayor a 0</span>
+              <span *ngIf="productoInsertForm.get('pcompra')?.errors?.['pattern']">Ingrese un número válido</span>
+            </div>
+          </div>
+  
+          <!-- Botones para seleccionar la condición -->
+          <div class="fv-row mb-7">
+            <label class="required fw-bold fs-6 mb-2">Condición de Vencimiento</label>
+            <div class="d-flex align-items-center gap-2">
+              <!-- Botones -->
+              <button 
+                type="button" 
+                class="btn btn-sm bg-light" 
+                [ngClass]="{'btn-primary active': tipoSeleccionado === 'igual', 'btn-outline-primary': tipoSeleccionado !== 'igual'}"
+                (click)="seleccionarTipo('igual')"
+              >
+                Igual
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-sm bg-light" 
+                [ngClass]="{'btn-primary active': tipoSeleccionado === 'menorIgual', 'btn-outline-primary': tipoSeleccionado !== 'menorIgual'}"
+                (click)="seleccionarTipo('menorIgual')"
+              >
+                Mayor o igual a
+              </button>
+              
+              <input
+                type="number"
+                *ngIf="tipoSeleccionado === 'menorIgual'"
+                class="form-control form-control-sm w-150px"
+                min="1"
+                placeholder="Número de meses"
+                formControlName="meses"
+                (input)="calcularFecha()"
+              />
+            </div>
+          </div>
+
+          <!-- Input de fecha (se usa para ambas opciones) -->
+          <div class="fv-row mb-7">
+            <label class="required fw-bold fs-6 mb-2">Fecha de Vencimiento</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="fecha_vencimiento"
+            />
+            <div *ngIf="tipoSeleccionado === 'menorIgual'" class="text-muted fs-7">
+              No se cuenta el mes actual
+            </div>
+          </div>
+  
+          <div class="fv-row mb-7">
+            <label class="required fw-bold fs-6 mb-2">
+              Precio de venta ({{ LABORATORIO_ID.margen_minimo }} %)
+            </label>
+            <input
+              type="text"
+              class="form-control mb-3 mb-lg-0"
+              formControlName="pventa"
+              placeholder="Ingrese un precio"
+              autocomplete="off"
+            />
+            <div *ngIf="productoInsertForm.get('pventa')?.touched && productoInsertForm.get('pventa')?.invalid" class="text-danger">
+              <span *ngIf="productoInsertForm.get('pventa')?.errors?.['required']">
+                El precio de venta es obligatorio
+              </span>
+              <span *ngIf="productoInsertForm.get('pventa')?.errors?.['precioInvalido']">
+                El precio de venta debe ser mayor o igual a {{ precioMinimo }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="text-center">
+              <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="productoInsertForm.invalid">Registrar</button>
+          </div>
+        </form>
+      </div>   
+    </div>
+   
+    <div class="col-md-7 card-body">
+      <div class="card shadow-lg border-0">
+        <div class="card-body">
+          <h4 class="fw-bold">Análisis del producto</h4>
+  
+          <div class="mt-4">
+            <h6 class="fw-bold text-muted">Historial de precios:</h6>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar bg-success" style="width: 70%;"></div>
+            </div>
+            <p class="small text-muted mt-1">Último cambio: $12.50 → $14.00</p>
+          </div>
+  
+          <div class="mt-4">
+            <h6 class="fw-bold text-muted">Cantidad vendida en el último mes:</h6>
+            <h2 class="text-primary fw-bold">250</h2>
+          </div>
+  
+          <div class="mt-4">
+            <h6 class="fw-bold text-muted">Tendencia del producto:</h6>
+            <span class="badge bg-success">Alta demanda</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

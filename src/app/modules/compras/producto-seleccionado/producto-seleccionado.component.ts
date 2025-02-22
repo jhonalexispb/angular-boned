@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
@@ -16,6 +16,7 @@ export class ProductoSeleccionadoComponent {
   @Input() PRODUCTO_ID:any
   @Input() PRODUCT_SELECTED:any
   @Input() LABORATORIO_ID:any
+  @ViewChild('cantidad') cantidadInput: ElementRef
   DATA_PRODUCT_SELECTED:any = {
     'stock' : 0,
     'pventa' : 0.0,
@@ -30,6 +31,7 @@ export class ProductoSeleccionadoComponent {
   precioMinimo: string;
   productoInsertForm: FormGroup;
   sweet:any = new SweetalertService
+  errorMargen:boolean = false
 
   constructor(
     private fb: FormBuilder,
@@ -58,17 +60,24 @@ export class ProductoSeleccionadoComponent {
       ],      
       fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
       meses: [{ value: '', disabled: false }, Validators.required],
-      margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/)]],
+      margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required,this.validarMargenMinimo.bind(this)]],
       condicion_vencimiento: [0] 
     });
-
-    this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
+    /* this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
       this.calcularPrecioVenta();
     });
 
     this.productoInsertForm.get('margen_minimo')?.valueChanges.subscribe((valor) => {
       this.calcularPrecioVenta();
     });
+
+    this.productoInsertForm.get('pventa')?.valueChanges.subscribe((valor) => {
+      this.calcularMargenMinimo();
+    }); */
+  }
+
+  ngAfterViewInit(): void {
+    this.cantidadInput.nativeElement.focus();
   }
 
   calcularPrecioVenta() {
@@ -91,8 +100,28 @@ export class ProductoSeleccionadoComponent {
     );
   }
 
+  calcularMargenMinimo() {
+    const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
+    const pventa = Number(this.productoInsertForm.get('pventa')?.value) || 0;
+  
+    if (pcompra <= 0 || pventa <= 0) {
+      this.productoInsertForm.patchValue({ margen_minimo: null }, { emitEvent: false });
+      return;
+    }
+
+    const margen = ((pventa - pcompra) / pcompra) * 100;
+
+    const precioMinimo = pcompra + (pcompra * margen / 100);
+    this.precioMinimo = precioMinimo.toFixed(2);
+    
+    this.productoInsertForm.patchValue(
+      { margen_minimo: margen.toFixed(2) },
+      { emitEvent: false }
+    );
+  }
+
   validarPrecioMinimo(control: any) {
-    if (!this.productoInsertForm) return null;
+    /* if (!this.productoInsertForm) return null;
     if (!control.value) return null;
   
     const pcompra = Number(this.productoInsertForm.get('pcompra')?.value);
@@ -101,17 +130,24 @@ export class ProductoSeleccionadoComponent {
     const precioMinimoFormateado = precioMinimo.toFixed(2);
     const precioMinimoNumero = parseFloat(precioMinimoFormateado)
   
-    return control.value < precioMinimoNumero ? { precioInvalido: true } : null;
+    return control.value < precioMinimoNumero ? { precioInvalido: true } : null; */
+  }
+
+  validarMargenMinimo(control: any) {
+    this.errorMargen = false
+    if (!control.value) return null; 
+    if(control.value < 0){
+      this.errorMargen = true
+    }
   }
 
   onSubmit(): void {
+    if(this.errorMargen){
+      this.sweet.er
+    }
     if (this.productoInsertForm.valid) {
       this.ProductoComprado.emit(this.productoInsertForm.getRawValue());
       this.modal.close();
-      this.sweet.success(
-        '¡Éxito!',
-        'producto agregado'
-      );
     } else {
       this.sweet.formulario_invalido(
         'Validacion',
@@ -182,6 +218,18 @@ export class ProductoSeleccionadoComponent {
     }
     event.target.value = valor;
     this.productoInsertForm.patchValue({ input: valor });
+
+    switch(input){
+      case 'pcompra':
+        this.calcularPrecioVenta()
+        break
+      case 'pventa':
+        this.calcularMargenMinimo()
+        break
+      case 'margen_minimo':
+        this.calcularPrecioVenta()
+        break
+    }
   }
   
   mostrarLotes(){

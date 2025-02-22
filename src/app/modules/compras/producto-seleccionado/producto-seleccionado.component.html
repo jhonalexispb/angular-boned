@@ -49,6 +49,7 @@
           <div class="fv-row mb-7">
             <label class="required fw-bold fs-6 mb-2">Cantidad</label>
             <input
+              #cantidad
               type="text"
               class="form-control mb-3 mb-lg-0"
               formControlName="cantidad"
@@ -166,6 +167,11 @@
                     autocomplete="off"
                     (input)="validarPrecio($event,'margen_minimo')"
                   />
+                </div>
+                <div *ngIf="errorMargen" class="text-danger">
+                  <span>
+                    El margen no puede ser negativo
+                  </span>
                 </div>
               </div>
 

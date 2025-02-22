@@ -42,6 +42,7 @@
                       </div>
                       <div class="d-flex align-items-center w-100">
                         <ng-select 
+                          #proveedorSelect
                           [items]="PROVEEDORES_LIST"
                           bindLabel="name"
                           bindValue="id"
@@ -103,15 +104,6 @@
                     </select>
                   </div>
 
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
-                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
-                        <label class="form-check-label">No</label>
-                        <input class="form-check-input" type="checkbox"/>
-                        <label class="form-check-label">Sí</label>
-                    </div>
-                  </div>
-
                   <div *ngIf="productForm.get('laboratorio_id')?.value" class="col-md-6 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label m-0">Producto</label>
@@ -164,6 +156,15 @@
                             </div>
                         </ng-template>
                       </ng-select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox"/>
+                        <label class="form-check-label">Sí</label>
                     </div>
                   </div>
               </div>
@@ -231,7 +232,7 @@
                           </thead>
                         
                           <tbody class="fw-semibold text-gray-600">
-                            <tr *ngFor="let P of PRODUCT_LIST_ORDER_COMPRA; let index = index">
+                            <tr *ngFor="let P of COMPRA_DETAILS; let index = index">
                               <td>
                                   <div class="d-flex align-items-center gap-2">
                                       <div class="d-md-none d-flex align-items-center">
@@ -267,7 +268,7 @@
                               <td>
                                 <div class="d-flex align-items-center gap-2">
                                   <button class="btn btn-sm btn-light">-</button>
-                                  <input type="number" class="form-control" [value]="P.cantidad" min="1" />
+                                  <input type="number" class="form-control" value="{{P.cantidad}}"/>
                                   <button class="btn btn-sm btn-light">+</button>
                                 </div>
                               </td>
@@ -277,12 +278,18 @@
                               </td>
 
                               <td>
-                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
+                                <div class="d-flex flex-column align-items-center gap-2">
+                                  <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
+                                  <span class="badge badge-light-success fs-7 fw-bold">{{ P.margen_minimo }} %</span>
+                                </div>
                               </td>
 
                               <td>
-                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 1">Igual a</span> {{ P.fecha_vencimiento }}
-                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 2">Mayor o igual a</span> {{ P.fecha_vencimiento }}
+                                <div class="d-flex flex-column align-items-center gap-2">
+                                  <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 1">Igual a</span>
+                                  <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 0">Mayor o igual a</span>
+                                  {{ P.fecha_vencimiento }}
+                                </div>
                               </td>
                         
                               <!-- Columna Acciones visible solo en pantallas grandes -->

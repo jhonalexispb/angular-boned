@@ -81,9 +81,44 @@ export class SweetalertService {
     });
   }
 
+  private createAlertTimmer(
+    title: string, 
+    text: string, 
+    image: string, 
+    showCancelButton: boolean = false, 
+    cancelButtonText: string = 'Cancelar'
+  ) {
+    return Swal.fire({
+      title: title,
+      cancelButtonText: cancelButtonText,
+      showCancelButton: showCancelButton,
+      showConfirmButton: false,
+      html: `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100%; text-align: center;">
+          <div id="lottie-container" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+          <p style="margin-top: 10px; word-wrap: break-word; max-width: 80%; padding: 0 10px;">${this.user ? `${this.user}, ` : ''}${text}</p>
+        </div>`,
+      didOpen: () => {
+        this.loadLottieAnimation('lottie-container', image);
+      },
+      willOpen: () => {
+        this.updateAlertStyles();
+      },
+      timer: 1000, // Cierra el modal después de 3 segundos (3000 ms)
+      timerProgressBar: true, // Muestra una barra de progreso
+      willClose: () => {
+        // Puedes agregar alguna acción adicional aquí cuando se cierre el modal
+      }
+    });
+  }
+
   // Mostrar una alerta de éxito
   success(title: string, text: string, image: string = '/assets/animations/general/confetti.json') {
     this.createAlert(title, text, image);
+  }
+
+  successTimmer(title: string, text: string, image: string = '/assets/animations/general/confetti.json') {
+    this.createAlertTimmer(title, text, image);
   }
 
   // Mostrar una alerta de error

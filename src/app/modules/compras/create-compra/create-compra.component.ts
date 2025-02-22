@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
@@ -7,6 +7,7 @@ import { CompraService } from '../service/compra.service';
 import { GestionarLaboratorioComponent } from '../../configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
 import { CreateProductComponent } from '../../products/create-product/create-product.component';
 import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto-seleccionado.component';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-create-compra',
@@ -15,12 +16,13 @@ import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto
 })
 export class CreateCompraComponent {
   @Output() OrdenCompraC:EventEmitter<any> = new EventEmitter();
+  @ViewChild('proveedorSelect') proveedorSelect: NgSelectComponent;
   productForm: FormGroup;
 
   LABORATORIOS_LIST:any[] = [];
   PROVEEDORES_LIST:any[] = [];
   PRODUCT_LIST:any[] = [];
-  PRODUCT_LIST_ORDER_COMPRA:any[] = [];
+  COMPRA_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
   FORMA_PAGO_LIST:any[] = [];
   TIPO_COMPROBANTE_LIST:any[] = [];
@@ -68,6 +70,10 @@ export class CreateCompraComponent {
       type_comprobante_compra_id:["",[Validators.required]],
       igv:[1],
     });
+  }
+
+  ngAfterViewInit() {
+    this.proveedorSelect.focus();
   }
 
   get productos(): FormArray {
@@ -251,11 +257,11 @@ export class CreateCompraComponent {
     if(producto_id == undefined){
       return
     }
-    if(this.PRODUCT_LIST_ORDER_COMPRA.find(p => p.id === producto_id)){
-      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
+    this.productForm.patchValue({product_id: null})
+    if(this.COMPRA_DETAILS.find(p => p.producto_id === producto_id)){
+      this.sweet.success('Aguanta','ya registraste ese producto en tu orden de compra')
       return
     }
-    this.productForm.patchValue({product_id: null})
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
     const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
 
@@ -264,8 +270,25 @@ export class CreateCompraComponent {
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
     modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
     modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
-      console.log("Producto recibido:", producto);
-      this.PRODUCT_LIST_ORDER_COMPRA.push(producto)
+      this.COMPRA_DETAILS.push({
+        producto_id: producto_id,
+        laboratorio: productoSeleccionado.laboratorio,
+        nombre: productoSeleccionado.nombre,
+        caracteristicas: productoSeleccionado.caracteristicas,
+        sku: productoSeleccionado.sku,
+        cantidad: Number(producto.cantidad),
+        condicion_vencimiento: producto.condicion_vencimiento,
+        fecha_vencimiento: producto.fecha_vencimiento,
+        margen_minimo: producto.margen_minimo,
+        meses: producto.meses,
+        pcompra: producto.pcompra,
+        pventa: producto.pventa,
+      })
+      this.sweet.successTimmer(
+        '¡Éxito!',
+        'producto agregado'
+      );
+      console.log(this.COMPRA_DETAILS)
     })
   }
 }

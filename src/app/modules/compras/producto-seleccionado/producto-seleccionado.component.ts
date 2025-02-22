@@ -27,7 +27,7 @@ export class ProductoSeleccionadoComponent {
   isLoading:boolean = true
 
   tipoSeleccionado:any = 'menorIgual';
-  precioMinimo: number;
+  precioMinimo: string;
   productoInsertForm: FormGroup;
   sweet:any = new SweetalertService
 
@@ -57,39 +57,51 @@ export class ProductoSeleccionadoComponent {
         [Validators.required, Validators.min(0.01),this.validarPrecioMinimo.bind(this)]
       ],      
       fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
-      meses: [{ value: '', disabled: false }],
-      margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/)]] 
+      meses: [{ value: '', disabled: false }, Validators.required],
+      margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d+)?$/)]],
+      condicion_vencimiento: [0] 
     });
 
     this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
-      this.calcularPrecioVenta(valor);
+      this.calcularPrecioVenta();
+    });
+
+    this.productoInsertForm.get('margen_minimo')?.valueChanges.subscribe((valor) => {
+      this.calcularPrecioVenta();
     });
   }
 
-  calcularPrecioVenta(pcompra: any) {
-    // Verificar si pcompra es un número válido
-    if (!pcompra || isNaN(Number(pcompra))) {
-      this.productoInsertForm.patchValue({pventa: null})
+  calcularPrecioVenta() {
+    const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
+    const margen = Number(this.productoInsertForm.get('margen_minimo')?.value) || 0;
+  
+    if (pcompra <= 0) {
+      this.productoInsertForm.patchValue({ pventa: null }, { emitEvent: false });
       this.productoInsertForm.get('pventa')?.disable();
       return;
     }
-
-    this.productoInsertForm.get('pventa')?.enable();
-    const margen = this.productoInsertForm.get('margen_minimo')?.value || 0; // Asegurar que haya un margen válido
-    this.precioMinimo = Number(pcompra) + (Number(pcompra) * margen / 100); // Convertir pcompra a número
   
-    this.productoInsertForm.patchValue({ pventa: this.precioMinimo.toFixed(2) });
+    this.productoInsertForm.get('pventa')?.enable();
+    const precioMinimo = pcompra + (pcompra * margen / 100);
+
+    this.precioMinimo = precioMinimo.toFixed(2);
+    this.productoInsertForm.patchValue(
+      { pventa: precioMinimo.toFixed(2) },
+      { emitEvent: false }
+    );
   }
 
   validarPrecioMinimo(control: any) {
-    if (!this.productoInsertForm) return null; // Evitar errores en la inicialización
+    if (!this.productoInsertForm) return null;
     if (!control.value) return null;
   
     const pcompra = Number(this.productoInsertForm.get('pcompra')?.value);
-    const margen = this.LABORATORIO_ID?.margen_minimo || 0;
+    const margen = Number(this.productoInsertForm.get('margen_minimo')?.value) || 0;
     const precioMinimo = pcompra + (pcompra * margen / 100);
+    const precioMinimoFormateado = precioMinimo.toFixed(2);
+    const precioMinimoNumero = parseFloat(precioMinimoFormateado)
   
-    return control.value < precioMinimo ? { precioInvalido: true } : null;
+    return control.value < precioMinimoNumero ? { precioInvalido: true } : null;
   }
 
   onSubmit(): void {
@@ -101,7 +113,6 @@ export class ProductoSeleccionadoComponent {
         'producto agregado'
       );
     } else {
-      console.log("Errores en el formulario:", this.obtenerErrores());
       this.sweet.formulario_invalido(
         'Validacion',
         'Existen errores en tu formulario'
@@ -109,27 +120,21 @@ export class ProductoSeleccionadoComponent {
     }
   }
 
-  obtenerErrores(): any {
-    const errores: any = {};
-    Object.keys(this.productoInsertForm.controls).forEach((campo) => {
-      const control = this.productoInsertForm.get(campo);
-      if (control?.invalid) {
-        errores[campo] = control.errors;
-      }
-    });
-    return errores;
-  }
-
   seleccionarTipo(tipo: string) {
     this.tipoSeleccionado = tipo;
-    this.productoInsertForm.patchValue({fecha_vencimiento: null})
-  
+    this.productoInsertForm.patchValue({
+      fecha_vencimiento: null,
+      condicion_vencimiento: tipo === 'igual' ? 1 : 0 // 1 para 'igual', 0 para 'menorIgual'
+    });
+
     if (tipo === 'menorIgual') {
       this.productoInsertForm.get('fecha_vencimiento')?.disable();
       this.productoInsertForm.get('meses')?.enable();
+      this.productoInsertForm.get('meses')?.setValidators([Validators.required]);
     } else {
       this.productoInsertForm.get('fecha_vencimiento')?.enable();
       this.productoInsertForm.get('meses')?.disable();
+      this.productoInsertForm.get('meses')?.clearValidators();
     }
   }
 
@@ -163,31 +168,19 @@ export class ProductoSeleccionadoComponent {
 
   validarPrecio(event: any, input:any) {
     let valor = event.target.value;
-  
-    // Reemplazar caracteres no numéricos excepto puntos
     valor = valor.replace(/[^0-9.]/g, '');
-  
-    // Evitar más de un punto decimal
     let partes = valor.split('.');
     if (partes.length > 2) {
       valor = partes[0] + '.' + partes.slice(1).join('');
     }
-  
-    // Evitar que empiece con un punto
     if (valor.startsWith('.')) {
       valor = '0' + valor;
     }
-  
-    // Limitar a dos decimales
     if (partes.length === 2) {
-      partes[1] = partes[1].substring(0, 2); // Solo 2 decimales
+      partes[1] = partes[1].substring(0, 2);
       valor = partes.join('.');
     }
-  
-    // Actualizar el valor en el input
     event.target.value = valor;
-  
-    // Actualizar el formulario
     this.productoInsertForm.patchValue({ input: valor });
   }
   

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
@@ -50,7 +50,7 @@ export class CreateCompraComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loadCart();
+
     this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
         this.PROVEEDORES_LIST = resp.proveedores;
         this.FORMA_PAGO_LIST = resp.forma_pago;
@@ -70,23 +70,16 @@ export class CreateCompraComponent {
     });
   }
 
+  get productos(): FormArray {
+    return this.productForm.get('productos') as FormArray;
+  }
+
   onSearchLaboratorio(event: any) {
     this.searchTermLaboratorio = event.term;  // Acceder al término de búsqueda desde el evento
   }
 
   onSearchProveedor(event: any) {
     this.searchTermProveedores = event.term;  // Acceder al término de búsqueda desde el evento
-  }
-
-  loadCart() {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      this.PRODUCT_LIST_ORDER_COMPRA = JSON.parse(storedCart);
-    }
-  }
-
-  saveCart() {
-    localStorage.setItem('cart', JSON.stringify(this.PRODUCT_LIST_ORDER_COMPRA));
   }
 
   // Enviar el formulario
@@ -258,6 +251,10 @@ export class CreateCompraComponent {
     if(producto_id == undefined){
       return
     }
+    if(this.PRODUCT_LIST_ORDER_COMPRA.find(p => p.id === producto_id)){
+      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
+      return
+    }
     this.productForm.patchValue({product_id: null})
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
     const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
@@ -268,60 +265,7 @@ export class CreateCompraComponent {
     modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
     modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
       console.log("Producto recibido:", producto);
+      this.PRODUCT_LIST_ORDER_COMPRA.push(producto)
     })
-  }
-
-  increaseQuantity(product: any) {
-    product.cantidad++;
-    this.updateQuantity(product);
-  }
-  
-  // Disminuir la cantidad de un producto
-  decreaseQuantity(product: any) {
-    if (product.cantidad > 1) {
-      product.cantidad--;
-      this.updateQuantity(product);
-    }
-  }
-  
-  // Actualizar la cantidad en el carrito
-  updateQuantity(product: any) {
-    // Aquí puedes actualizar el carrito completo
-    this.saveCart();
-  }
-  
-  // Eliminar un producto del carrito
-  deleteProducto(product: any) {
-    const index = this.PRODUCT_LIST_ORDER_COMPRA.indexOf(product);
-    if (index > -1) {
-      this.PRODUCT_LIST_ORDER_COMPRA.splice(index, 1);
-      this.saveCart();
-    }
-  }
-
-  calcularSubtotal(): void {
-    this.subtotal = this.PRODUCT_LIST_ORDER_COMPRA.reduce((total, producto) => {
-      return total + (producto.cantidad * producto.pventa); // Cantidad * Precio de venta
-    }, 0);
-  }
-
-  calcularDescuento(): void {
-    // Aquí, puedes aplicar cualquier lógica de descuento que desees
-    this.descuento = 8;  // Un ejemplo, en este caso un descuento fijo de 8
-  }
-
-  calcularImpuesto(): void {
-    this.impuesto = this.subtotal * 0.18;  // Impuesto al 18%
-  }
-
-  calcularTotalCarrito(): void {
-    this.totalCarrito = this.subtotal - this.descuento + this.impuesto;  // Subtotal - Descuento + Impuesto
-  }
-
-  actualizarTotales(): void {
-    this.calcularSubtotal();
-    this.calcularDescuento();
-    this.calcularImpuesto();
-    this.calcularTotalCarrito();
   }
 }

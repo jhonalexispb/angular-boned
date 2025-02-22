@@ -220,10 +220,6 @@
                               </th>
 
                               <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Condicion</span><span class="dt-column-order"></span>
-                              </th>
-
-                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
                                 <span class="dt-column-title" role="button">Fecha de vencimiento</span><span class="dt-column-order"></span>
                               </th>
                         
@@ -245,7 +241,7 @@
                                           (dropdownToggle)="handleDropdownToggle($event)">
                                           <ul class="list pt-3 px-3 d-flex flex-column gap-2">
                                             <li>
-                                              <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                              <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                                 <div class="d-flex gap-2">
                                                   <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                                   Eliminar
@@ -270,34 +266,30 @@
 
                               <td>
                                 <div class="d-flex align-items-center gap-2">
-                                  <button class="btn btn-sm btn-light" (click)="decreaseQuantity(P)">-</button>
-                                  <input type="number" class="form-control" [(ngModel)]="P.cantidad" (change)="updateQuantity(P)" min="1" />
-                                  <button class="btn btn-sm btn-light" (click)="increaseQuantity(P)">+</button>
+                                  <button class="btn btn-sm btn-light">-</button>
+                                  <input type="number" class="form-control" [value]="P.cantidad" min="1" />
+                                  <button class="btn btn-sm btn-light">+</button>
                                 </div>
                               </td>
       
+                              <td>
+                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pcompra }}</span>
+                              </td>
+
                               <td>
                                 <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
                               </td>
 
                               <td>
-                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.compra }}</span>
-                              </td>
-
-                              <td>
-                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion == 1">Igual a</span>
-                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.condicion == 2">Mayor o igual a</span>
-                              </td>
-      
-                              <td>
-                                <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.fecha_vencimiento }}</span>
+                                <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 1">Igual a</span> {{ P.fecha_vencimiento }}
+                                <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 2">Mayor o igual a</span> {{ P.fecha_vencimiento }}
                               </td>
                         
                               <!-- Columna Acciones visible solo en pantallas grandes -->
                               <td class="d-none d-md-table-cell acciones-container">
                                 <ul class="list pt-3 px-3 d-flex gap-2">
                                   <li>
-                                    <button (click)="deleteProducto(P)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                    <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                                       <div class="d-flex flex-column align-items-center gap-1">
                                         <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                         Eliminar

@@ -143,7 +143,8 @@ export class ProductoSeleccionadoComponent {
 
   onSubmit(): void {
     if(this.errorMargen){
-      this.sweet.er
+      this.sweet.formulario_invalido('Algo no cuadra','el margen no puede ser negativo')
+      return
     }
     if (this.productoInsertForm.valid) {
       this.ProductoComprado.emit(this.productoInsertForm.getRawValue());

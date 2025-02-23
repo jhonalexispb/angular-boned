@@ -11,7 +11,7 @@
       <!--end::Card header-->
   
       <!--begin::Card body-->
-      <div class="card-body pt-0">
+      <div class="card-body pt-0 pb-0">
           <div class="d-flex flex-column gap-10">
               <!--begin::Input group-->
               <div class="d-flex align-items-center gap-2">
@@ -185,15 +185,6 @@
         <!--begin::Card body-->
         <div class="card-body pt-0">
             <div class="d-flex flex-column gap-10">
-                <!--begin::Input group-->
-                <div>
-                    <div class="fw-bold fs-4">
-                        Costo total:
-                        <span class="text-success">S/ 0.00</span>
-                    </div>
-                    <!--end::Total price-->
-                </div>
-                <!--end::Input group-->
     
                 <!--begin::Separator-->
                 <div class="separator"></div>
@@ -202,36 +193,36 @@
                 <div class="dt-container">
                   <div class="table-responsive mb-5">
                       <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
-                          <thead>
+                          <thead *ngIf="COMPRA_DETAILS.length > 0">
                             <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Producto</span><span class="dt-column-order"></span>
+                              <th class="min-w-200px text-center">
+                                <span class="dt-column-title" role="button">Producto</span>
                               </th>
                         
-                              <th class="min-w-100px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Cantidad</span><span class="dt-column-order"></span>
+                              <th class="min-w-150px text-center">
+                                <span class="dt-column-title" role="button">Cantidad</span>
                               </th>
                         
-                              <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Precio de compra</span><span class="dt-column-order"></span>
+                              <th class="min-w-125px text-center">
+                                <span class="dt-column-title" role="button">Precio de compra</span>
                               </th>
                         
-                              <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Precio de venta</span><span class="dt-column-order"></span>
+                              <th class="min-w-125px text-center">
+                                <span class="dt-column-title" role="button">Precio de venta</span>
                               </th>
 
-                              <th class="min-w-200px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
-                                <span class="dt-column-title" role="button">Fecha de vencimiento</span><span class="dt-column-order"></span>
+                              <th class="min-w-200px text-center">
+                                <span class="dt-column-title" role="button">Fecha de vencimiento</span>
                               </th>
                         
                               <!-- Columna Acciones: Visible solo en pantallas grandes -->
-                              <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1">
-                                <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                              <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
+                                <span class="dt-column-title">Acciones</span>
                               </th>
                             </tr>
                           </thead>
                         
-                          <tbody class="fw-semibold text-gray-600">
+                          <tbody *ngIf="COMPRA_DETAILS.length > 0" class="fw-semibold text-gray-600">
                             <tr *ngFor="let P of COMPRA_DETAILS; let index = index">
                               <td>
                                   <div class="d-flex align-items-center gap-2">
@@ -252,40 +243,36 @@
                                           </ul>
                                           </app-buttons-group-list>
                                       </div>
-                                      <div class="d-flex">
-                                        <div class="d-flex align-items-center">
-                                          <div class="d-flex flex-column">
-                                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.laboratorio }}</span>
-                                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ P.nombre }}</span>
-                                              <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
-                                              <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
-                                          </div>
-                                        </div>
+                                      <div class="d-flex flex-column gap-2 w-100">
+                                        <span class="badge badge-light-info fs-6 fw-bold d-flex justify-content-center">{{ P.laboratorio }}</span>
+                                        <span class="text-gray-900 fw-bold text-hover-primary fs-6">{{ P.nombre }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
                                       </div>
                                   </div>
                               </td>
 
                               <td>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2 justify-content-center">
                                   <button class="btn btn-sm btn-light">-</button>
-                                  <input type="number" class="form-control" value="{{P.cantidad}}"/>
+                                  <input type="number" class="form-control text-center flex-grow-1" value="{{P.cantidad}}" style="max-width: 120px;">
                                   <button class="btn btn-sm btn-light">+</button>
                                 </div>
                               </td>
       
-                              <td>
+                              <td class="text-center">
                                 <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pcompra }}</span>
                               </td>
 
                               <td>
-                                <div class="d-flex flex-column align-items-center gap-2">
-                                  <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
+                                <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                  <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6 ">S/ {{ P.pventa }}</span>
                                   <span class="badge badge-light-success fs-7 fw-bold">{{ P.margen_minimo }} %</span>
                                 </div>
                               </td>
 
                               <td>
-                                <div class="d-flex flex-column align-items-center gap-2">
+                                <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
                                   <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 1">Igual a</span>
                                   <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 0">Mayor o igual a</span>
                                   {{ P.fecha_vencimiento }}
@@ -307,10 +294,22 @@
                               </td>
                             </tr>
                           </tbody>
+
+                          <tbody *ngIf="COMPRA_DETAILS.length === 0">
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <img src="./assets/images/carrito-vacio.png" alt="Carrito vacío" width="120">
+                                        <h5 class="mt-3 text-gray-600 fw-bold">Tu carrito está vacío</h5>
+                                        <p class="text-muted">Agrega productos para continuar con tu orden de compra.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
                       </table>
                   </div>
 
-                  <div class="d-flex flex-stack bg-success rounded-3 p-6 mb-11">  
+                  <div *ngIf="COMPRA_DETAILS.length > 0" class="d-flex flex-stack bg-success rounded-3 p-6 mb-11">  
                     <!--begin::Content-->
                     <div class="fs-6 fw-bold text-white">
                       <span class="d-block lh-1 mb-2">Subtotal</span>

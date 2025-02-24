@@ -181,7 +181,8 @@
               
                         <div class="col-md-4">
                           <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label *ngIf="!isButtonVisible" class="form-label mb-4 mt-2">Laboratorio</label>
+                            <div *ngIf="isButtonVisible" class="d-flex justify-content-between align-items-center mb-2">
                               <label class="required form-label m-0">Laboratorio </label>
                               <button type="button" class="btn btn-primary px-4 py-2" (click)="createLaboratorio()">
                                   +
@@ -379,7 +380,7 @@
                               placeholder="Escribe la descripción del producto"
                             ></textarea>
                             <div class="text-muted fs-7">
-                              Podrias buscar informacion en google y pegarlo aqui
+                              Podrias buscar informacion en google y pegarlo aqui <span class="text-warning">(Procura colocar un texto breve)</span>
                             </div>
                           </div>
                         </div>

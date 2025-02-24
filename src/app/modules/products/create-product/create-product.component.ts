@@ -4,7 +4,7 @@ import { CreateFabricanteComponent } from './../../configuration/atributtes-prod
 import { CreateLineasFarmaceuticasComponent } from './../../configuration/atributtes-products/lineas-farmaceuticas/create-lineas-farmaceuticas/create-lineas-farmaceuticas.component';
 import { CreatePrincipioActivoComponent } from './../../configuration/atributtes-products/principios-activos/create-principio-activo/create-principio-activo.component';
 import { CreateLaboratoriosComponent } from './../../configuration/atributtes-products/laboratorios/create-laboratorios/create-laboratorios.component';
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../service/product.service';
@@ -20,6 +20,8 @@ import { CreateCondicionesAlmacenamientoComponent } from '../../configuration/at
 })
 export class CreateProductComponent {
   @Output() ProductoC:EventEmitter<any> = new EventEmitter();
+  @Input() LABORATORIOS_SELECCIONADOS_POR_COMPRA:any = []
+  @Input() isButtonVisible: boolean = true;
   productForm: FormGroup;
 
   LABORATORIOS:any[] = [];
@@ -55,7 +57,11 @@ export class CreateProductComponent {
   ngOnInit(): void {
     this.loading = true
     this.productService.obtenerRecursos().subscribe((resp: any) => {
-        this.LABORATORIOS = resp.laboratorios;
+        if(this.LABORATORIOS_SELECCIONADOS_POR_COMPRA.length > 0){
+          this.LABORATORIOS = this.LABORATORIOS_SELECCIONADOS_POR_COMPRA
+        }else{
+          this.LABORATORIOS = resp.laboratorios;
+        }
         this.PRINCIPIOS_ACTIVOS = resp.principios_activos;
         this.LINEAS_FARMACEUTICAS = resp.lineas_farmaceuticas;
         this.FABRICANTES = resp.fabricantes;

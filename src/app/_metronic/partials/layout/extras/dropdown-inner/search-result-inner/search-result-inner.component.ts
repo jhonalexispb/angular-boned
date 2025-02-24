@@ -1,4 +1,6 @@
-import {ChangeDetectorRef, Component, HostBinding, OnInit} from '@angular/core';
+import { Component, HostBinding, OnInit} from '@angular/core';
+import { CompraService } from 'src/app/modules/compras/service/compra.service';
+import { UserLocalStorageService } from 'src/app/modules/users/service/userLocalStorage.service';
 
 @Component({
   selector: 'app-search-result-inner',
@@ -11,11 +13,23 @@ export class SearchResultInnerComponent implements OnInit {
 
   compra: CompraModel | null = null;
   productos: ProductoModel[] = [];
+  user:any = new UserLocalStorageService
+  user_name:string = ''
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private compraService: CompraService) {
   }
 
   ngOnInit(): void {
+    this.obtenerListCompra();
+    this.compraService.actualizaCarritoCompra$.subscribe((actualizado) => {
+      if (actualizado) {
+        this.obtenerListCompra();
+      }
+    });
+    this.user_name = this.user.getUser()?.name;
+  }
+
+  obtenerListCompra() {
     const compraDetails = localStorage.getItem('compra_details');
     const compraInfo = localStorage.getItem('compra_form');
     if (compraDetails) {
@@ -25,6 +39,7 @@ export class SearchResultInnerComponent implements OnInit {
     if (compraInfo) {
       this.compra = JSON.parse(compraInfo);
     }
+    console.log(this.compra)
   }
 }
 
@@ -46,6 +61,7 @@ interface ProductoModel {
 interface CompraModel {
   laboratorio_id: number[];
   proveedor_id: number;
+  proveedor_name: string;
   product_id: number | null;
   forma_pago_id: string;
   type_comprobante_compra_id: string;

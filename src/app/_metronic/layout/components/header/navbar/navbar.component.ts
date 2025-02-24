@@ -1,3 +1,4 @@
+import { CompraService } from 'src/app/modules/compras/service/compra.service';
 import { AuthService } from './../../../../../modules/auth/services/auth.service';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -19,12 +20,18 @@ export class NavbarComponent implements OnInit {
   cantidadProductos: number = 0;
 
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
+    private compraService: CompraService
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.user;
     this.obtenerCantidadProductos();
+    this.compraService.actualizaCarritoCompra$.subscribe((actualizado) => {
+      if (actualizado) {
+        this.obtenerCantidadProductos();
+      }
+    });
   }
 
   obtenerCantidadProductos() {

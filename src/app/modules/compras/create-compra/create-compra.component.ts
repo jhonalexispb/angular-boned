@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { ChangeDetectorRef, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
@@ -8,6 +8,7 @@ import { GestionarLaboratorioComponent } from '../../configuration/proveedor/ges
 import { CreateProductComponent } from '../../products/create-product/create-product.component';
 import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto-seleccionado.component';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { UserLocalStorageService } from '../../users/service/userLocalStorage.service';
 
 @Component({
   selector: 'app-create-compra',
@@ -37,37 +38,40 @@ export class CreateCompraComponent {
   loading:boolean = true
   loadingProducts:boolean = true
 
-  searchTermLaboratorio: string = '';
   searchTermProveedores: string = '';
+  isManualChange: boolean = false;
+  tempProveedorId: number | null = null;
+  tempProveedorName: string | null = null;
 
   imageCache: Map<string, string> = new Map();
 
   sweet:any = new SweetalertService
+  user:any = new UserLocalStorageService
 
   constructor(
     private fb: FormBuilder,
     public modalService: NgbModal,
+    private cdr: ChangeDetectorRef,
     //llamamos al servicio
     public compraService: CompraService
   ) {}
 
   ngOnInit(): void {
-    // 1️⃣ Inicializar el formulario primero
     this.compraForm = this.fb.group({
-      laboratorio_id: [null, [Validators.required]],
+      laboratorio_id: [[], [Validators.required]],
       proveedor_id: [null, [Validators.required]],
+      proveedor_name: [null, [Validators.required]],
       product_id: [null, [Validators.required]],
       forma_pago_id: ["", [Validators.required]],
       type_comprobante_compra_id: ["", [Validators.required]],
       igv: [1],
+      user: [this.user.getUser()] 
     });
 
-    // 3️⃣ Suscribirse a los cambios del formulario para guardarlos automáticamente
     this.compraForm.valueChanges.subscribe(values => {
-      localStorage.setItem('compra_form', JSON.stringify(values));
+        localStorage.setItem('compra_form', JSON.stringify(values));
     });
 
-    // 4️⃣ Llamar a la API para obtener recursos
     this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
       this.PROVEEDORES_LIST = resp.proveedores;
       this.FORMA_PAGO_LIST = resp.forma_pago;
@@ -76,7 +80,6 @@ export class CreateCompraComponent {
       this.loading = false;
       this.loadingProducts = false;
 
-      // Recuperar valores guardados del formulario
       const formGuardado = localStorage.getItem('compra_form');
       if (formGuardado) {
         const valoresRecuperados = JSON.parse(formGuardado);
@@ -84,11 +87,12 @@ export class CreateCompraComponent {
 
         const proveedorId = valoresRecuperados.proveedor_id;
         const laboratorioId = valoresRecuperados.laboratorio_id;
+        this.tempProveedorId = valoresRecuperados.proveedor_id;
+        this.tempProveedorName = valoresRecuperados.proveedor_name;
 
         if (proveedorId) {
           this.onProveedorSeleccionado(proveedorId);
 
-          // 🟢 Esperar a que LABORATORIOS_LIST se actualice y luego asignar laboratorio_id
           setTimeout(() => {
             this.compraForm.patchValue({ laboratorio_id: laboratorioId });
             this.callProductos()
@@ -97,26 +101,20 @@ export class CreateCompraComponent {
       }
     });
 
-    // 5️⃣ Restaurar la lista de productos de la compra
     const compraGuardada = localStorage.getItem('compra_details');
     if (compraGuardada) {
       this.COMPRA_DETAILS = JSON.parse(compraGuardada);
     }
-}
+  }
 
   ngAfterViewInit() {
     this.proveedorSelect.focus();
   }
 
-  onSearchLaboratorio(event: any) {
-    this.searchTermLaboratorio = event.term;  // Acceder al término de búsqueda desde el evento
-  }
-
   onSearchProveedor(event: any) {
-    this.searchTermProveedores = event.term;  // Acceder al término de búsqueda desde el evento
+    this.searchTermProveedores = event.term;
   }
 
-  // Enviar el formulario
   onSubmit() {
     if (this.compraForm.valid) {
       /* this.compraService.registerProducto(this.compraForm.value).subscribe({
@@ -136,18 +134,50 @@ export class CreateCompraComponent {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 
-  onProveedorSeleccionado(proveedorId: number) {
-    this.LABORATORIOS_LIST = [];
-    // Buscar el proveedor seleccionado en la lista de proveedores
-    const proveedorSeleccionado = this.PROVEEDORES_LIST.find(p => p.id === proveedorId);
+  onProveedorChange(proveedorId: number) {
+    this.isManualChange = true;
+    this.onProveedorSeleccionado(proveedorId);
+  }
 
-    // Si encuentra el proveedor, extrae sus laboratorios
-    if (proveedorSeleccionado) {
+  onProveedorSeleccionado(proveedorId: number) {
+    const actualizarLaboratorios = (proveedorId: number) => {
+      const proveedorSeleccionado = this.PROVEEDORES_LIST.find(p => p.id === proveedorId);
+      if (proveedorSeleccionado) {
         this.LABORATORIOS_LIST = proveedorSeleccionado.laboratorios;
         this.compraForm.patchValue({
-          laboratorio_id: []
+          laboratorio_id: [],
+          proveedor_name: proveedorSeleccionado.name
         });
-        this.callProductos()
+        this.tempProveedorId = proveedorSeleccionado.id
+        this.tempProveedorName = proveedorSeleccionado.name
+        this.callProductos();
+      }
+    };
+  
+    if (this.COMPRA_DETAILS.length > 0 && this.isManualChange && this.tempProveedorId != null) {
+      this.sweet
+        .confirmar_habilitado_deshabilitado(
+          '¿Estás seguro?',
+          `Si cambias de proveedor se eliminarán todos los productos agregados.`,
+          '/assets/animations/general/alerta.json',
+          'Sí, cambiemos de proveedor'
+        )
+        .then((result: any) => {
+          if (result.isConfirmed) {
+            this.LABORATORIOS_LIST = [];
+            actualizarLaboratorios(proveedorId);
+            this.COMPRA_DETAILS = []
+            localStorage.setItem('compra_details', JSON.stringify([]));
+            this.compraService.actualizarCarritoCompra()
+          }else{
+            this.compraForm.patchValue({
+              proveedor_id: this.tempProveedorId,
+              proveedor_name: this.tempProveedorName
+            });
+          }
+        });
+    } else {
+      actualizarLaboratorios(proveedorId);
     }
   }
 
@@ -187,7 +217,7 @@ export class CreateCompraComponent {
     modalRef.componentInstance.nombre_externo = this.searchTermProveedores;
     modalRef.componentInstance.ProveedorC.subscribe((r: any) => {
       this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
-      this.compraForm.patchValue({ proveedor_id: r.id });
+      this.compraForm.patchValue({ proveedor_id: r.id,proveedor_name: r.name });
       this.compraForm.patchValue({
         laboratorio_id: []
       });
@@ -233,6 +263,15 @@ export class CreateCompraComponent {
 
   createProducto(){
     const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
+    const laboratorios_id = this.compraForm.get('laboratorio_id')?.value;
+    const labs_selec = this.LABORATORIOS_LIST
+      .filter((lab: any) => laboratorios_id.includes(lab.id))
+      .map((lab:any) => ({
+        id: lab.laboratorio_id,
+        name:lab.name
+      }))
+    modalRef.componentInstance.LABORATORIOS_SELECCIONADOS_POR_COMPRA = labs_selec
+    modalRef.componentInstance.isButtonVisible = false;
     modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
       this.PRODUCT_LIST = [r.data, ...this.PRODUCT_LIST];
       this.compraForm.patchValue({ product_id: r.data.id })
@@ -268,7 +307,6 @@ export class CreateCompraComponent {
               product.cachedImage = objectURL;
             })
             .catch(error => {
-              console.error(error);
               // Si hay error al cargar la imagen, usar la imagen por defecto
               product.cachedImage = 'http://127.0.0.1:8000/storage/default/default_boned.webp';
               this.imageCache.set(product.id, product.cachedImage); // Cachear la imagen predeterminada
@@ -282,7 +320,7 @@ export class CreateCompraComponent {
   }
 
   callProductDetail(producto_id:any) {
-    if(producto_id == undefined){
+    if(!producto_id){
       return
     }
     this.compraForm.patchValue({product_id: null})
@@ -314,10 +352,33 @@ export class CreateCompraComponent {
       })
       localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
 
+      this.cdr.detectChanges();
+      this.compraService.actualizarCarritoCompra()
+
       this.sweet.successTimmer(
         '¡Éxito!',
         'producto agregado'
       );
     })
+  }
+
+  eliminarItem(PROD:any){
+    this.sweet.confirmar_borrado(
+      '¿Estás seguro?', 
+      `¿Deseas eliminar el producto: 
+        <span class="text-primary">${PROD.laboratorio}</span> 
+        <span class="text-success">${PROD.nombre}</span> 
+        <span class="text-warning">${PROD.caracteristicas}</span>?`
+    ).then((result: any) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, eliminamos el producto
+        this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
+        // Actualizamos el localStorage
+        localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+        this.compraService.actualizarCarritoCompra()
+        // Mostrar mensaje de éxito
+        this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
+      }
+    });
   }
 }

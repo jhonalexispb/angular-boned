@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, finalize } from 'rxjs';
+import { BehaviorSubject, catchError, finalize } from 'rxjs';
 import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 import { LoadingService } from '../../loadingScreen/loading-screen/service/loading-service.service';
@@ -12,6 +12,8 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 })
 export class CompraService {
   sweet:any = new SweetalertService  
+  private actualizaCarritoCompraSubject = new BehaviorSubject<boolean>(false); 
+  actualizaCarritoCompra$ = this.actualizaCarritoCompraSubject.asObservable();
   constructor(
     private http: HttpClient,
     public authservice: AuthService,
@@ -104,5 +106,10 @@ export class CompraService {
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
+  }
+
+  //ACTUALIZAR EL CARRITO DE COMPRAS
+  actualizarCarritoCompra() {
+    this.actualizaCarritoCompraSubject.next(true);  // Emitir la señal de actualización
   }
 }

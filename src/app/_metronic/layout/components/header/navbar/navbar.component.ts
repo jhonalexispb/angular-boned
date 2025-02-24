@@ -16,6 +16,7 @@ export class NavbarComponent implements OnInit {
   btnIconClass: string = 'fs-2 fs-md-1';
 
   user:any;
+  cantidadProductos: number = 0;
 
   constructor(
     public authService: AuthService
@@ -23,5 +24,13 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.user;
+    this.obtenerCantidadProductos();
+  }
+
+  obtenerCantidadProductos() {
+    const compraGuardada = localStorage.getItem('compra_details');
+    if (compraGuardada) {
+      this.cantidadProductos = JSON.parse(compraGuardada).length;
+    }
   }
 }

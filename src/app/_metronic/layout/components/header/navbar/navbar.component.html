@@ -7,8 +7,19 @@
     data-kt-menu-placement="bottom-end" data-kt-search="true">
     <!--begin::Search toggle-->
     <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
-      <div [ngClass]="btnClass">
-        <app-keenicon name="magnifier" [class]="btnIconClass"></app-keenicon>
+      <div [ngClass]="btnClass" class="position-relative">
+        <i class="ki-duotone ki-basket-ok fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+          <span class="path4"></span>
+        </i>
+      
+        <!-- Badge de Bootstrap para mostrar la cantidad de productos -->
+        <span *ngIf="cantidadProductos > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {{ cantidadProductos }}
+        </span>
+        <!-- <app-keenicon name="magnifier" [class]="btnIconClass"></app-keenicon> -->
       </div>
     </div>
     <!--end::Search toggle-->

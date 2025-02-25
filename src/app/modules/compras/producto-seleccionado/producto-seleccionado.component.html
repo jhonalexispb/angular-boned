@@ -49,7 +49,6 @@
           <div class="fv-row mb-7">
             <label class="required fw-bold fs-6 mb-2">Cantidad</label>
             <input
-              #cantidad
               type="text"
               class="form-control mb-3 mb-lg-0"
               formControlName="cantidad"
@@ -128,6 +127,53 @@
                 </span>
               </div>
               
+            </div>
+          </div>
+  
+          <div class="fv-row mb-7">
+            <div class="row">
+              <div class="col-6">
+                <label class="required fw-bold fs-6 mb-2 ">
+                  Total
+                </label>
+                <div class="position-relative d-flex align-items-center">
+                  <!--begin::Icon-->
+                  <i class="ki-duotone ki-bill fs-2 position-absolute mx-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                    <span class="path6"></span>
+                  </i>
+                  <input
+                    type="text"
+                    class="form-control form-control-solid ps-12 flatpickr-input"
+                    formControlName="total"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+              
+              <div class="col-6">
+                <label class="required fw-bold fs-6 mb-2 ">
+                  Ganancia
+                </label>
+                <div class="position-relative d-flex align-items-center">
+                  <!--begin::Icon-->
+                  <i class="ki-duotone ki-delivery-3 fs-2 position-absolute mx-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                  </i>
+                  <input
+                    type="text"
+                    class="form-control form-control-solid ps-12 flatpickr-input"
+                    formControlName="ganancia"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

@@ -162,7 +162,7 @@
                     <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                         <label class="form-check-label">No</label>
-                        <input class="form-check-input" type="checkbox"/>
+                        <input class="form-check-input" type="checkbox" formControlName="igv" (change)="setearIgv()"/>
                         <label class="form-check-label">Sí</label>
                     </div>
                   </div>
@@ -183,7 +183,7 @@
     
         <!--begin::Card body-->
         <div class="card-body pt-0">
-            <div class="d-flex flex-column gap-10">
+            <div class="d-flex flex-column ">
     
                 <!--begin::Separator-->
                 <div class="separator"></div>
@@ -208,6 +208,10 @@
                         
                               <th class="min-w-125px text-center">
                                 <span class="dt-column-title" role="button">Precio de venta</span>
+                              </th>
+
+                              <th class="min-w-125px text-center">
+                                <span class="dt-column-title" role="button">Total</span>
                               </th>
 
                               <th class="min-w-200px text-center">
@@ -272,6 +276,13 @@
 
                               <td>
                                 <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                  <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6 ">S/ {{ P.total }}</span>
+                                  <span class="badge badge-light-warning fs-7 fw-bold">S/ {{ P.ganancia }}</span>
+                                </div>
+                              </td>
+
+                              <td>
+                                <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
                                   <span class="badge badge-light-success fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 1">Igual a</span>
                                   <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="P.condicion_vencimiento == 0">Mayor o igual a</span>
                                   {{ P.fecha_vencimiento }}
@@ -308,7 +319,7 @@
                       </table>
                   </div>
 
-                  <div *ngIf="COMPRA_DETAILS.length > 0" class="d-flex flex-stack bg-success rounded-3 p-6 mb-11">  
+                  <div *ngIf="COMPRA_DETAILS.length > 0" class="d-flex flex-stack bg-success rounded-3 p-6">  
                     <!--begin::Content-->
                     <div class="fs-6 fw-bold text-white">
                       <span class="d-block lh-1 mb-2">Subtotal</span>

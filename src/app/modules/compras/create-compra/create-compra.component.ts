@@ -34,6 +34,7 @@ export class CreateCompraComponent {
   descuento: number = 0;
   impuesto: number = 0;
   totalCarrito: number = 0;
+  igv:number = 0.18
 
   loading:boolean = true
   loadingProducts:boolean = true
@@ -64,7 +65,10 @@ export class CreateCompraComponent {
       product_id: [null, [Validators.required]],
       forma_pago_id: ["", [Validators.required]],
       type_comprobante_compra_id: ["", [Validators.required]],
-      igv: [1],
+      igv: [false, [Validators.required]],
+      total:['0.00', [Validators.required]],
+      impuesto:['0.00', [Validators.required]],
+      sub_total:['0.00', [Validators.required]],
       user: [this.user.getUser()] 
     });
 
@@ -104,6 +108,7 @@ export class CreateCompraComponent {
     const compraGuardada = localStorage.getItem('compra_details');
     if (compraGuardada) {
       this.COMPRA_DETAILS = JSON.parse(compraGuardada);
+      this.calcularTotales()
     }
   }
 
@@ -349,9 +354,11 @@ export class CreateCompraComponent {
         meses: producto.meses,
         pcompra: producto.pcompra,
         pventa: producto.pventa,
+        total: producto.total,
+        ganancia: producto.ganancia,
       })
       localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
-
+      this.calcularTotales();
       this.cdr.detectChanges();
       this.compraService.actualizarCarritoCompra()
 
@@ -360,6 +367,25 @@ export class CreateCompraComponent {
         'producto agregado'
       );
     })
+  }
+
+  calcularTotales() {
+    this.subtotal = this.COMPRA_DETAILS.reduce((acc, item) => acc + item.total, 0);
+    /* this.descuento = this.subtotal * 0.05; */
+    this.impuesto = (this.subtotal - this.descuento) * this.igv;
+  
+    this.totalCarrito = this.subtotal - this.descuento + this.impuesto;
+    this.compraForm.patchValue({
+      total: this.totalCarrito,
+      impuesto: this.impuesto,
+      sub_total: this.subtotal
+    }, { emitEvent: false })
+  }
+
+  setearIgv(){
+    const condicion  = this.compraForm.get('igv')?.value
+    this.igv = condicion ? 0 : 0.18;
+    this.calcularTotales()
   }
 
   eliminarItem(PROD:any){
@@ -375,6 +401,7 @@ export class CreateCompraComponent {
         this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
         // Actualizamos el localStorage
         localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+        this.calcularTotales();
         this.compraService.actualizarCarritoCompra()
         // Mostrar mensaje de éxito
         this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');

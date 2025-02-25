@@ -61,23 +61,32 @@ export class ProductoSeleccionadoComponent {
       fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
       meses: [{ value: '', disabled: false }, Validators.required],
       margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required,this.validarMargenMinimo.bind(this)]],
-      condicion_vencimiento: [0] 
-    });
-    /* this.productoInsertForm.get('pcompra')?.valueChanges.subscribe((valor) => {
-      this.calcularPrecioVenta();
-    });
-
-    this.productoInsertForm.get('margen_minimo')?.valueChanges.subscribe((valor) => {
-      this.calcularPrecioVenta();
+      condicion_vencimiento: [0],
+      total:[{ value: '0.00', disabled: true }],
+      ganancia:[{ value: '0.00', disabled: true }],
     });
 
-    this.productoInsertForm.get('pventa')?.valueChanges.subscribe((valor) => {
-      this.calcularMargenMinimo();
-    }); */
+    this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {
+      this.calcularTotal_Ganancia();
+    });
   }
 
   ngAfterViewInit(): void {
     this.cantidadInput.nativeElement.focus();
+  }
+
+  calcularTotal_Ganancia(){
+    const pcompra = this.productoInsertForm.get('pcompra')?.value;
+    const cantidad = this.productoInsertForm.get('cantidad')?.value;
+    const pventa = this.productoInsertForm.get('pventa')?.value;
+
+    const total = parseFloat((pcompra * cantidad).toFixed(2));  // Convertir a número
+    this.productoInsertForm.get('total')?.setValue(total, { emitEvent: false });
+
+    const totalVenta = parseFloat((pventa * cantidad).toFixed(2));  // Convertir a número
+
+    const ganancia = parseFloat((totalVenta - total).toFixed(2));  // Asegurar que sigue siendo número
+    this.productoInsertForm.get('ganancia')?.setValue(ganancia, { emitEvent: false });
   }
 
   calcularPrecioVenta() {
@@ -213,6 +222,7 @@ export class ProductoSeleccionadoComponent {
     if (valor.startsWith('.')) {
       valor = '0' + valor;
     }
+
     if (partes.length === 2) {
       partes[1] = partes[1].substring(0, 2);
       valor = partes.join('.');
@@ -231,6 +241,8 @@ export class ProductoSeleccionadoComponent {
         this.calcularPrecioVenta()
         break
     }
+
+    this.calcularTotal_Ganancia()
   }
   
   mostrarLotes(){

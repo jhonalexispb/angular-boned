@@ -39,7 +39,6 @@ export class SearchResultInnerComponent implements OnInit {
     if (compraInfo) {
       this.compra = JSON.parse(compraInfo);
     }
-    console.log(this.compra)
   }
 }
 

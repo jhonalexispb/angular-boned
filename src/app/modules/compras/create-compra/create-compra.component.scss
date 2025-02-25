@@ -1,9 +1,7 @@
 .custom-img {
-    width: 100%;        /* La imagen ocupará el ancho del contenedor */
-    max-height: 110px;      /* Altura fija para que todas las imágenes sean uniformes */
-    object-fit: cover;  /* Recorta la imagen para llenar el espacio sin distorsionarla */
-    border-radius: 10px; /* Bordes redondeados */
-  }
+  object-fit: contain;
+  height: 130px;
+}
 
 ul {
   list-style-type: none !important;  /* Remueve los puntos de la lista con mayor prioridad */
@@ -18,6 +16,8 @@ ul {
   transition: box-shadow 0.3s ease; /* Transición suave al pasar el ratón */
   word-wrap: break-word;           /* Ajusta las palabras largas */
   overflow: hidden;                /* Esconde cualquier contenido desbordado */
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 /* Estilo cuando el ratón pasa sobre una opción */
@@ -42,3 +42,29 @@ app-buttons-group-list {
 button {
   white-space: nowrap; /* Esto evita que el texto se divida en varias líneas */
 }
+
+.product-option {
+  position: relative; /* Necesario para posicionar el mensaje en la esquina */
+}
+
+/* Mensaje "En el carrito" */
+.in-carrito-message {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #28a745; /* Color verde para indicar éxito */
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.in-carrito-message i {
+  font-size: 12px; /* Tamaño del icono */
+}
+

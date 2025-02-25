@@ -31,13 +31,13 @@ export class CreateCompraComponent {
   activeDropdownIndex: number | null = null;
 
   subtotal: number = 0;
-  descuento: number = 0;
   impuesto: number = 0;
   totalCarrito: number = 0;
   igv:number = 0.18
 
   loading:boolean = true
   loadingProducts:boolean = true
+  carritoActualizado:boolean = true
 
   searchTermProveedores: string = '';
   isManualChange: boolean = false;
@@ -94,22 +94,25 @@ export class CreateCompraComponent {
         this.tempProveedorId = valoresRecuperados.proveedor_id;
         this.tempProveedorName = valoresRecuperados.proveedor_name;
 
+        if(this.compraForm.get('igv')?.value){
+          this.igv = 0
+        }
+
         if (proveedorId) {
           this.onProveedorSeleccionado(proveedorId);
 
           setTimeout(() => {
             this.compraForm.patchValue({ laboratorio_id: laboratorioId });
             this.callProductos()
+            const compraGuardada = localStorage.getItem('compra_details');
+            if (compraGuardada) {
+              this.COMPRA_DETAILS = JSON.parse(compraGuardada);
+              this.calcularTotales();
+            }
           }, 100);
         }
       }
     });
-
-    const compraGuardada = localStorage.getItem('compra_details');
-    if (compraGuardada) {
-      this.COMPRA_DETAILS = JSON.parse(compraGuardada);
-      this.calcularTotales()
-    }
   }
 
   ngAfterViewInit() {
@@ -174,6 +177,7 @@ export class CreateCompraComponent {
             this.COMPRA_DETAILS = []
             localStorage.setItem('compra_details', JSON.stringify([]));
             this.compraService.actualizarCarritoCompra()
+            this.callProductos()
           }else{
             this.compraForm.patchValue({
               proveedor_id: this.tempProveedorId,
@@ -212,9 +216,23 @@ export class CreateCompraComponent {
 
     this.compraService.callProductsByLaboratorio(laboratorioIds).subscribe((resp: any) => {
       this.PRODUCT_LIST = resp.productos;
+      this.actualizarProductosConCarritoInicial();
       this.loadingProducts = false;
       this.cacheImages()
     });
+  }
+
+  actualizarProductosConCarritoInicial() {
+    const compraGuardada = localStorage.getItem('compra_details');
+    if (compraGuardada) {
+      this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => {
+        if (this.COMPRA_DETAILS.find(item => item.producto_id === producto.id)) {
+          return { ...producto, in_carrito: true };
+        }
+        return producto;
+      });
+    }
+    this.carritoActualizado = false
   }
 
   createProveedor(){
@@ -309,7 +327,7 @@ export class CreateCompraComponent {
   
               const objectURL = URL.createObjectURL(blob);
               this.imageCache.set(product.id, objectURL);
-              product.cachedImage = objectURL;
+              product.cachedImage = objectURL; // Asignar la imagen cargada al producto
             })
             .catch(error => {
               // Si hay error al cargar la imagen, usar la imagen por defecto
@@ -335,7 +353,6 @@ export class CreateCompraComponent {
     }
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
     const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
-
     const modalRef = this.modalService.open(ProductoSeleccionadoComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.PRODUCTO_ID = producto_id
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
@@ -344,6 +361,7 @@ export class CreateCompraComponent {
       this.COMPRA_DETAILS.push({
         producto_id: producto_id,
         laboratorio: productoSeleccionado.laboratorio,
+        color_laboratorio: laboratorio_id.color,
         nombre: productoSeleccionado.nombre,
         caracteristicas: productoSeleccionado.caracteristicas,
         sku: productoSeleccionado.sku,
@@ -366,15 +384,15 @@ export class CreateCompraComponent {
         '¡Éxito!',
         'producto agregado'
       );
+      productoSeleccionado.in_carrito = true;
     })
   }
 
   calcularTotales() {
     this.subtotal = this.COMPRA_DETAILS.reduce((acc, item) => acc + item.total, 0);
-    /* this.descuento = this.subtotal * 0.05; */
-    this.impuesto = (this.subtotal - this.descuento) * this.igv;
+    this.impuesto = this.subtotal * this.igv;
   
-    this.totalCarrito = this.subtotal - this.descuento + this.impuesto;
+    this.totalCarrito = this.subtotal + this.impuesto;
     this.compraForm.patchValue({
       total: this.totalCarrito,
       impuesto: this.impuesto,
@@ -401,6 +419,8 @@ export class CreateCompraComponent {
         this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
         // Actualizamos el localStorage
         localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+        const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
+        productoSeleccionado.in_carrito = false;
         this.calcularTotales();
         this.compraService.actualizarCarritoCompra()
         // Mostrar mensaje de éxito
@@ -418,21 +438,59 @@ export class CreateCompraComponent {
     }
   }
 
+  actualizarFecha(index: number) {
+    let item = this.COMPRA_DETAILS[index];
+    if (!item) return;
+
+    localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+  }
+
   actualizarValores(index: number) {
     let item = this.COMPRA_DETAILS[index];
     if (!item) return;
   
-    // Si cambia el precio de compra, actualizar el precio de venta
-    let nuevoPventa = item.pcompra + (item.pcompra * (item.margen_minimo / 100));
-    item.pventa = parseFloat(nuevoPventa.toFixed(2)); // Redondeo sin ceros innecesarios
+    // Verificar que pcompra y margen_minimo sean números válidos
+    let pcompra = parseFloat(item.pcompra);
+    let margen_minimo = parseFloat(item.margen_minimo);
+    
+    if (isNaN(pcompra) || isNaN(margen_minimo)) {
+      return; // Sale si los valores no son válidos
+    }
+  
+    // Realiza los cálculos si son números válidos
+    let nuevoPventa = pcompra + (pcompra * (margen_minimo / 100));
+    item.pventa = parseFloat(nuevoPventa.toFixed(2));
   
     // Calcular el total
-    let nuevoTotal = item.cantidad * item.pcompra;
-    item.total = parseFloat(nuevoTotal.toFixed(2)); // Redondeo sin ceros innecesarios
+    let nuevoTotal = item.cantidad * pcompra;
+    item.total = parseFloat(nuevoTotal.toFixed(2));
   
     // Calcular la ganancia
-    let nuevaGanancia = (item.pventa - item.pcompra) * item.cantidad;
-    item.ganancia = parseFloat(nuevaGanancia.toFixed(2)); // Redondeo sin ceros innecesarios
+    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
+    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
+
+    localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+    this.calcularTotales()
+  }
+
+  actualizarMargenGanancia(index: number){
+    let item = this.COMPRA_DETAILS[index];
+    if (!item) return;
+  
+    let pcompra = parseFloat(item.pcompra);
+    let pventa = parseFloat(item.pventa);
+    
+    if (isNaN(pcompra) || isNaN(pventa)) {
+      return;
+    }
+  
+    let nuevoMargen = ((pventa - pcompra)/pcompra)*100;
+    item.margen_minimo = parseFloat(nuevoMargen.toFixed(2));
+  
+    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
+    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
+
+    localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
   }
   
 
@@ -465,11 +523,24 @@ export class CreateCompraComponent {
 
     if (tipo === 'pcompra') {
       this.COMPRA_DETAILS[index].pcompra = parseFloat(valor) || 0;
+      this.actualizarValores(index);
     } else if (tipo === 'pventa') {
       this.COMPRA_DETAILS[index].pventa = parseFloat(valor) || 0;
+      this.actualizarMargenGanancia(index);
+    } else if (tipo === 'margen_minimo') {
+      this.COMPRA_DETAILS[index].margen_minimo = parseFloat(valor) || 0;
+      this.actualizarValores(index);
     }
-    
-    // Recalcular valores
-    this.actualizarValores(index);
+  }
+
+  toggleCondicionVencimiento(index: number) {
+    let item = this.COMPRA_DETAILS[index];
+    if (!item) return;
+  
+    // Alternar el valor de condicion_vencimiento entre 0 y 1
+    item.condicion_vencimiento = item.condicion_vencimiento === 1 ? 0 : 1;
+  
+    // Actualizar COMPRA_DETAILS en localStorage
+    localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
   }
 }

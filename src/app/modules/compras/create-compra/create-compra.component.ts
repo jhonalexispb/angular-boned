@@ -420,7 +420,56 @@ export class CreateCompraComponent {
 
   actualizarValores(index: number) {
     let item = this.COMPRA_DETAILS[index];
-    item.total = item.cantidad * item.pcompra;
-    item.ganancia = (item.pventa - item.pcompra) * item.cantidad;
+    if (!item) return;
+  
+    // Si cambia el precio de compra, actualizar el precio de venta
+    let nuevoPventa = item.pcompra + (item.pcompra * (item.margen_minimo / 100));
+    item.pventa = parseFloat(nuevoPventa.toFixed(2)); // Redondeo sin ceros innecesarios
+  
+    // Calcular el total
+    let nuevoTotal = item.cantidad * item.pcompra;
+    item.total = parseFloat(nuevoTotal.toFixed(2)); // Redondeo sin ceros innecesarios
+  
+    // Calcular la ganancia
+    let nuevaGanancia = (item.pventa - item.pcompra) * item.cantidad;
+    item.ganancia = parseFloat(nuevaGanancia.toFixed(2)); // Redondeo sin ceros innecesarios
+  }
+  
+
+  validarPrecio(event: any, index: number, tipo: string) {
+    let valor = event.target.value;
+  
+    // Reemplazar todo lo que no sea número o punto decimal
+    valor = valor.replace(/[^0-9.]/g, '');
+  
+    let partes = valor.split('.');
+  
+    // Si hay más de un punto decimal, conservar solo el primero
+    if (partes.length > 2) {
+      valor = partes[0] + '.' + partes.slice(1).join('');
+    }
+  
+    // Si empieza con un punto, agregar un '0' al inicio
+    if (valor.startsWith('.')) {
+      valor = '0' + valor;
+    }
+  
+    // Limitar a 2 decimales si hay una parte decimal
+    if (partes.length === 2) {
+      partes[1] = partes[1].substring(0, 2);
+      valor = partes.join('.');
+    }
+  
+    // **Asignar el valor corregido al input**
+    event.target.value = valor;
+
+    if (tipo === 'pcompra') {
+      this.COMPRA_DETAILS[index].pcompra = parseFloat(valor) || 0;
+    } else if (tipo === 'pventa') {
+      this.COMPRA_DETAILS[index].pventa = parseFloat(valor) || 0;
+    }
+    
+    // Recalcular valores
+    this.actualizarValores(index);
   }
 }

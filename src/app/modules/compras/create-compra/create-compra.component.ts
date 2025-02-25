@@ -408,4 +408,19 @@ export class CreateCompraComponent {
       }
     });
   }
+
+  //FUNCIONES PARA MODIFICAR LA TABLA
+
+  cambiarCantidad(index: number, cambio: number) {
+    if (this.COMPRA_DETAILS[index].cantidad + cambio > 0) {
+      this.COMPRA_DETAILS[index].cantidad += cambio;
+      this.actualizarValores(index);
+    }
+  }
+
+  actualizarValores(index: number) {
+    let item = this.COMPRA_DETAILS[index];
+    item.total = item.cantidad * item.pcompra;
+    item.ganancia = (item.pventa - item.pcompra) * item.cantidad;
+  }
 }

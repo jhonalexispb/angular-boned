@@ -1,15 +1,9 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ImportExcelComponent } from 'src/app/components/import-excel/import-excel.component';
-import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
-import { URL_SERVICIO } from 'src/app/config/config';
-import { CreateProductComponent } from '../../products/create-product/create-product.component';
-import { EditProductComponent } from '../../products/edit-product/edit-product.component';
-import { ModalEscalasComponent } from '../../products/modal-escalas/modal-escalas.component';
-import { ModalGestionarComponent } from '../../products/modal-gestionar/modal-gestionar.component';
-import { ModalLotesComponent } from '../../products/modal-lotes/modal-lotes.component';
-import { ProductService } from '../../products/service/product.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
+import { CreateRucComponent } from '../../clientes/ruc/create-ruc/create-ruc.component';
+import { EditRucComponent } from '../../clientes/ruc/edit-ruc/edit-ruc.component';
+import { RucService } from '../../clientes/ruc/service/ruc.service';
 
 @Component({
   selector: 'app-list-compra',
@@ -17,184 +11,79 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
   styleUrls: ['./list-compra.component.scss']
 })
 export class ListCompraComponent {
-  producto_id:any;
-  laboratorio_id:any
-  PRODUCT_LIST:any = [];
-  LABORATORIOS_LIST:any = [];
-  state_stock:string
-  sweet:any = new SweetalertService
-
-  totalPages:number = 0; 
-  currentPage:number = 1;
-  activeDropdownIndex: number | null = null;
-  loading:boolean = false;
-  num_products_disponible:number = 0
-  num_products_por_agotar:number = 0
-  num_products_agotado:number = 0
-  warehouse_id:any;
-
-  constructor(
-    public modalService: NgbModal,
-    public productService: ProductService,
-  ){
-
-  }
-
-  ngOnInit(): void {
-    this.listProductos();
-  }
-
-  onSearchChange() {
-    if (this.producto_id === null) {
-      this.producto_id = ''; // Convertir null a cadena vacía
+  search:string = '';
+    RUC_LIST:any = [];
+    sweet:any = new SweetalertService
+    totalPages:number = 0; 
+    currentPage:number = 1;
+  
+    activeDropdownIndex: number | null = null; // Índice del dropdown activo
+  
+    constructor(
+      public modalService: NgbModal,
+      public rucService: RucService,
+    ){
+  
     }
-    this.listProductos(); // Llamar a tu función para actualizar la lista
-    if(this.producto_id === ''){
-      this.producto_id = null
+  
+    ngOnInit(): void {
+      this.listRuc();
     }
-  }
-
-  listProductos(page = 1){
-    let data = {
-      producto_id: this.producto_id,
-      laboratorio_id: this.laboratorio_id,
-      state_stock: this.state_stock,
-      warehouse_id: this.warehouse_id
+  
+    listRuc(page = 1){
+      this.rucService.listRuc(page,this.search).subscribe((resp: any) => {
+        this.RUC_LIST = resp.clientes;
+        this.totalPages = resp.total;
+        this.currentPage = page;
+      })
     }
-    this.loading = true
-    this.productService.listProductos(page,data).subscribe((resp: any) => {
-      this.PRODUCT_LIST = resp.products.data;
-      this.LABORATORIOS_LIST = resp.laboratorios;
-      this.num_products_disponible = resp.num_products_disponible
-      this.num_products_por_agotar = resp.num_products_por_agotar
-      this.num_products_agotado = resp.num_products_agotado
-      this.totalPages = resp.total;
-      this.currentPage = page;
-      this.loading = false
-    })
-  }
-
-  selectDisponible(){
-    this.state_stock = '1'
-    this.listProductos()
-  }
-  selectPorAgotar(){
-    this.state_stock = '2'
-    this.listProductos()
-  }
-  selectAgotado(){
-    this.state_stock = '3'
-    this.listProductos()
-  }
-
-  loadPage(page: number) {
-    this.listProductos(page);
-  }
-
-  resetFiltro(){
-    this.producto_id = null
-    this.laboratorio_id = null
-    this.warehouse_id = null
-    this.state_stock = ''
-    this.listProductos()
-  }
-
-  importProduct(){
-    const modalRef = this.modalService.open(ImportExcelComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.nameModule = "productos"
-    modalRef.componentInstance.route = "/productos/import"
-    modalRef.componentInstance.ImportExcelC.subscribe((r:any)=>{
-      
-    })
-  }
-
-  createProducto(){
-    const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
-    modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
-      this.PRODUCT_LIST.unshift(r.data); //integra el nuevo valor al inicio de la tabla
-    })
-  }
-
-  editProducto(R:any){
-    const modalRef = this.modalService.open(EditProductComponent,{centered:true, size: 'xl'})
-    modalRef.componentInstance.PRODUCT_SELECTED = R;
-    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
-    modalRef.componentInstance.ProductoE.subscribe((r:any)=>{
-      const { producto, isRestored } = r; 
-      if (isRestored) {
-        this.PRODUCT_LIST.unshift(producto.data);
-      } else {
-        let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == R.id);
-        if(INDEX != -1){
-          this.PRODUCT_LIST[INDEX] = producto.data
+  
+    loadPage(page: number) {
+      this.listRuc(page);
+    }
+  
+    createRuc(){
+      const modalRef = this.modalService.open(CreateRucComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.RucC.subscribe((r:any)=>{
+        this.RUC_LIST.unshift(r); //integra el nuevo valor al inicio de la tabla
+      })
+    }
+  
+    editRuc(R:any){
+      const modalRef = this.modalService.open(EditRucComponent,{centered:true, size: 'md'})
+  
+      modalRef.componentInstance.RUC_SELECTED = R;
+  
+      //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
+      modalRef.componentInstance.RucE.subscribe((r:any)=>{
+        const { ruc, isRestored } = r; 
+        if (isRestored) {
+          this.RUC_LIST.unshift(ruc);
+        } else {
+          let INDEX = this.RUC_LIST.findIndex((b:any) => b.id == R.id);
+          if(INDEX != -1){
+            this.RUC_LIST[INDEX] = ruc
+          }
         }
-      }
-    })
-  }
-
-  deleteProducto(PROD:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el producto: ${PROD.laboratorio} ${PROD.nombre_completo}?`).then((result:any) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.productService.deleteProducto(PROD.id).subscribe({
-          next: (resp: any) => {
-            this.PRODUCT_LIST = this.PRODUCT_LIST.filter((sucurs:any) => sucurs.id !== PROD.id); // Eliminamos el rol de la lista
-            this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
-          },
-        })
-      }
-    });
-  }
-
-  gestionarProdcuto(PROD:any){
-    const modalRef = this.modalService.open(ModalGestionarComponent,{centered:true, size: 'lg'})
-    modalRef.componentInstance.PRODUCT_OPTION = PROD;
-    modalRef.componentInstance.productGestionS.subscribe((r:any)=>{
-      let INDEX = this.PRODUCT_LIST.findIndex((b:any) => b.id == PROD.id);
-      if(INDEX != -1){
-        this.PRODUCT_LIST[INDEX] = r.data
-      }
-    })
-  }
-
-  // Método que se ejecuta cuando un dropdown es activado o desactivado
-  handleDropdownToggle(index: number) {
-    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
-  }
-
-  viewImagen(image:string){
-    const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.IMAGE_SELECTED = image
-  }
-
-  downloadProducts(){
-    let link = ""
-    if(this.producto_id){
-      link += "&producto_id="+this.producto_id
+      })
     }
-
-    if(this.laboratorio_id){
-      link += "&laboratorio_id="+this.laboratorio_id
+  
+    deleteRuc(RUC:any){
+      this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el cliente: ${RUC.ruc} ${RUC.razonSocial}?`).then((result:any) => {
+        if (result.isConfirmed) {
+          // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
+          this.rucService.deleteRuc(RUC.id).subscribe({
+            next: (resp: any) => {
+              this.RUC_LIST = this.RUC_LIST.filter((sucurs:any) => sucurs.id !== RUC.id); // Eliminamos el rol de la lista
+              this.sweet.success('Eliminado', 'El cliente ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
+            },
+          })
+        }
+      });
     }
-
-    if(this.state_stock){
-      link += "&state_stock="+this.state_stock
+  
+    // Método que se ejecuta cuando un dropdown es activado o desactivado
+    handleDropdownToggle(index: number) {
+      this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
     }
-
-    if(this.warehouse_id){
-      link += "&warehouse_id="+this.warehouse_id
-    }
-    
-    window.open(URL_SERVICIO+"/excel/export-products?k=1"+link,"_blank")
-  }
-
-  configurarEscalas(PROD:any){
-    const modalRef = this.modalService.open(ModalEscalasComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.PRODUCT_ID = PROD
-  }
-
-  configurarLotes(PROD:any){
-    const modalRef = this.modalService.open(ModalLotesComponent,{centered:true, size: 'xl'})
-    modalRef.componentInstance.PRODUCT_ID = PROD
-  }
 }

@@ -9,6 +9,7 @@ import { CreateProductComponent } from '../../products/create-product/create-pro
 import { ProductoSeleccionadoComponent } from '../producto-seleccionado/producto-seleccionado.component';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { UserLocalStorageService } from '../../users/service/userLocalStorage.service';
+import { CronogramaComponent } from '../cronograma/cronograma.component';
 
 @Component({
   selector: 'app-create-compra',
@@ -542,5 +543,9 @@ export class CreateCompraComponent {
   
     // Actualizar COMPRA_DETAILS en localStorage
     localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+  }
+
+  abrirCornograma(){
+    const modalRef = this.modalService.open(CronogramaComponent,{centered:true, size: 'xl'})
   }
 }

@@ -14,7 +14,8 @@
       <div class="card-body pt-0 pb-0">
           <div class="d-flex flex-column gap-10">
               <!--begin::Input group-->
-              <div class="d-flex align-items-center gap-2">
+              <div class="d-flex justify-content-between">
+                <div class="d-flex align-items-center gap-2">
                   <!--begin::Label-->
                   <label class="form-label fs-3 mb-0">Orden</label>
                   <!--end::Label-->
@@ -22,6 +23,10 @@
                   <!--begin::Auto-generated ID-->
                   <div class="fw-bold fs-3">{{codigo}}</div>
                   <!--end::Input-->
+                </div>
+                <button class="btn btn-primary" (click)="abrirCornograma()">
+                  Cronograma
+                </button>
               </div>
               <!--end::Input group-->
               <div class="row">
@@ -168,12 +173,14 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
-                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
-                        <label class="form-check-label">No</label>
-                        <input class="form-check-input" type="checkbox" formControlName="igv" (change)="setearIgv()"/>
-                        <label class="form-check-label">Sí</label>
+                  <div class="col-md-2 mb-3">
+                    <div class="d-flex flex-column align-items-center">
+                      <label class="form-label mb-6 mt-2">¿Incluye IGV? (18 %)</label>
+                      <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                          <label class="form-check-label">No</label>
+                          <input class="form-check-input" type="checkbox" formControlName="igv" (change)="setearIgv()"/>
+                          <label class="form-check-label">Sí</label>
+                      </div>
                     </div>
                   </div>
               </div>

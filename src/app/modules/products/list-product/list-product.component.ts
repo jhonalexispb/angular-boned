@@ -10,6 +10,7 @@ import { ImportExcelComponent } from 'src/app/components/import-excel/import-exc
 import { ModalGestionarComponent } from '../modal-gestionar/modal-gestionar.component';
 import { ModalEscalasComponent } from '../modal-escalas/modal-escalas.component';
 import { ModalLotesComponent } from '../modal-lotes/modal-lotes.component';
+import { ModalImagenesComponent } from '../modal-imagenes/modal-imagenes.component';
 
 @Component({
   selector: 'app-list-product',
@@ -196,5 +197,17 @@ export class ListProductComponent {
   configurarLotes(PROD:any){
     const modalRef = this.modalService.open(ModalLotesComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.PRODUCT_ID = PROD
+  }
+
+  configurarImagenes(P:any){
+    const modalRef = this.modalService.open(ModalImagenesComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.PRODUCT = P
+    modalRef.componentInstance.imagesU.subscribe((r:any)=>{
+      console.log(r)
+      const producto_Seleccioando = this.PRODUCT_LIST.find((producto: any) => producto.id === P.id)
+      if(producto_Seleccioando){
+        producto_Seleccioando.imagen = r
+      }
+    })
   }
 }

@@ -48,7 +48,6 @@ export class EditRelacionBancoComprobanteComponent {
       keep_existing_image: ["true"],
     });
     this.miImagenActual = this.BANK_RELATION_SELECTED.img_ejemplo
-    console.log(this.BANK_RELATION_SELECTED)
   }
 
   createComprobante(){

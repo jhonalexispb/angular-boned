@@ -188,7 +188,7 @@
                 <table class="table table-auto align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
                       <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-350px">
+                        <th class="min-w-300px">
                           <span class="dt-column-title" role="button">Nombre</span><span class="dt-column-order"></span>
                         </th>
 
@@ -232,6 +232,17 @@
                                           <div class="d-flex gap-2">
                                             <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                             Editar
+                                          </div>
+                                        </button>
+                                      </li>
+                                      <li>
+                                        <button (click)="configurarImagenes(P)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                          <div class="d-flex gap-2">
+                                            <i class="ki-duotone ki-picture fs-2 text-warning">
+                                              <span class="path1"></span>
+                                              <span class="path2"></span>
+                                            </i>
+                                            Imagenes
                                           </div>
                                         </button>
                                       </li>
@@ -357,6 +368,17 @@
                                 <div class="d-flex flex-column align-items-center gap-1">
                                   <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                   Editar
+                                </div>
+                              </button>
+                            </li>
+                            <li>
+                              <button (click)="configurarImagenes(P)" class="text-warning btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-picture fs-2 text-warning">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                  </i>
+                                  Imagenes
                                 </div>
                               </button>
                             </li>

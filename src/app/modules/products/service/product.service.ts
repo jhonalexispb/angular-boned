@@ -106,4 +106,14 @@ export class ProductService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  updateImages(ID_PRODUCTO:any,data:any){
+    this.loadingService.showLoading('Subiendo imagenes')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/productos/atributtes/images/update/"+ID_PRODUCTO;
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    ) 
+  }
 }

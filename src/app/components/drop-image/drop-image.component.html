@@ -1,4 +1,4 @@
-<div class="image-upload-container" (click)="fileInput.click()" *ngIf="!imageSrc">
+<div class="image-upload-container h-100" (click)="fileInput.click()" *ngIf="!imageSrc">
     <input type="file" #fileInput (change)="onImageSelect($event)" accept="image/*" hidden>
     <div class="upload-message">
       <span>Arrastra o haz clic para cargar una imagen</span>

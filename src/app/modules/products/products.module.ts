@@ -26,6 +26,7 @@ import { ModalPreciosComponent } from './modal-precios/modal-precios.component';
 import { CreateLotesComponent } from './create-lotes/create-lotes.component';
 import { EditLotesComponent } from './edit-lotes/edit-lotes.component';
 import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.module';
+import { ModalImagenesComponent } from './modal-imagenes/modal-imagenes.component';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.mod
     ModalPreciosComponent,
     CreateLotesComponent,
     EditLotesComponent,
+    ModalImagenesComponent,
   ],
   imports: [
     CommonModule,

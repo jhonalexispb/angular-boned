@@ -15,6 +15,7 @@ export class CronogramaComponent {
     public modalService: NgbModal,
   ) {}
 
+  cuotas: any[] = [];
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, interactionPlugin], // Incluir el plugin de interacción
     initialView: 'dayGridMonth',
@@ -72,4 +73,15 @@ export class CronogramaComponent {
     console.log('Evento actualizado:', event);
     // Ejemplo: enviar el evento actualizado a un servicio o emitir el nuevo valor
   }
+
+  agregarCuota() {
+    const nuevaCuota = {
+      id: this.cuotas.length + 1,
+      monto: Math.floor(Math.random() * 1000) + 500, // Monto aleatorio
+    };
+    this.cuotas.push(nuevaCuota);
+  }
+
+
+
 }

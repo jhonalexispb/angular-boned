@@ -50,7 +50,7 @@ import { EditEventoComponent } from './cronograma/edit-evento/edit-evento.compon
     ButtonDropdownOptionModule,
     DropImageModule,
     DivLoadingModule,
-    FullCalendarModule
+    FullCalendarModule,
   ]
 })
 export class ComprasModule { }

@@ -1,4 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -7,28 +8,40 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./create-evento.component.scss']
 })
 export class CreateEventoComponent {
-  eventName: string = '';
-  eventAmount: number | null = null;
-  eventNotes: string = '';
-  eventDate: string = '';
-  sendReminder: boolean = false;
+  eventoForm: FormGroup;
 
   @Output() eventCreated = new EventEmitter<any>(); // Definir el @Output
+  @Input() eventDate:any
 
-  constructor(public modal: NgbActiveModal) {}
+  constructor(
+    public modal: NgbActiveModal,
+    private fb: FormBuilder,
+  ) {}
+
+  ngOnInit(): void {
+    this.eventoForm = this.fb.group({
+      name: ['',[Validators.required]],
+      monto: ['', [Validators.required]],
+      comentario: ['', [Validators.required]],
+      fecha_pago: [this.eventDate, [Validators.required]],
+      dias_despues: [8, [Validators.required]],
+      fecha_recordatorio: ['', [Validators.required]],
+    });
+    this.calcularRecordatorios()
+  }
 
   submitEvent() {
-    if (this.eventName && this.eventAmount !== null && this.eventDate) {
+    /* if (this.eventName && this.eventAmount !== null && this.eventDate) {
       // Formatear los datos para FullCalendar
       const eventData = {
-        title: this.eventName, // Título del evento
-        start: this.eventDate, // La fecha del evento, puedes incluir hora si es necesario
-        allDay: true, // Ya que es un evento de un solo día
-        className: 'bg-primary text-white', // Puedes cambiar esto dependiendo del color que desees
+        title: this.eventName,
+        start: this.eventDate,
+        allDay: true,
+        className: 'bg-primary text-white',
         extendedProps: {
-          amount: this.eventAmount, // Monto de la letra
-          notes: this.eventNotes, // Comentario adicional
-          reminder: this.sendReminder // Recordatorio
+          amount: this.eventAmount,
+          notes: this.eventNotes,
+          reminder: this.sendReminder
         }
       };
 
@@ -41,6 +54,32 @@ export class CreateEventoComponent {
       this.modal.close();
     } else {
       console.log('Faltan campos obligatorios');
+    } */
+  }
+
+  calcularRecordatorios() {
+    const fechaPago = this.eventoForm.get('fecha_pago')?.value;
+    const diasDespues = this.eventoForm.get('dias_despues')?.value;
+
+    if(!diasDespues){
+      this.eventoForm.patchValue({fecha_recordatorio : null})
+      return
     }
+
+    if (fechaPago) {
+        const fechaPagoDate = new Date(fechaPago);
+
+        // Recordatorio 3 (Días después)
+        const despuesDate = new Date(fechaPagoDate);
+        despuesDate.setDate(despuesDate.getDate() + parseInt(diasDespues, 10));
+        const dia_formateado = this.formatDate(despuesDate)
+        this.eventoForm.patchValue({fecha_recordatorio : dia_formateado})
+        console.log('beba')
+    }
+  }
+
+  // Función para formatear fecha en YYYY-MM-DD
+  formatDate(date: Date): string {
+      return date.toISOString().split('T')[0];
   }
 }

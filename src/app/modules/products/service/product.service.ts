@@ -116,4 +116,13 @@ export class ProductService {
       finalize(()=>this.loadingService.hideLoading())
     ) 
   }
+
+  get_images_extra(ID_PRODUCTO:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/productos/atributtes/images_extra/"+ID_PRODUCTO;
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    ) 
+  }
 }

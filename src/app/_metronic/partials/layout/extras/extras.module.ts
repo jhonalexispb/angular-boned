@@ -7,16 +7,18 @@ import {QuickLinksInnerComponent} from './dropdown-inner/quick-links-inner/quick
 import {UserInnerComponent} from './dropdown-inner/user-inner/user-inner.component';
 import {LayoutScrollTopComponent} from './scroll-top/scroll-top.component';
 import {TranslationModule} from '../../../../modules/i18n';
-import {SearchResultInnerComponent} from "./dropdown-inner/search-result-inner/search-result-inner.component";
+import {carritoComprasNotificationComponent} from "./dropdown-inner/carrito-compras-notification/carrito-compra-notification.component";
 import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {FormsModule} from "@angular/forms";
 import { SharedModule } from "../../../shared/shared.module";
+import { CarritoVentaNotificationComponent } from './dropdown-inner/carrito-ventas-notification/carrito-venta-notification.component';
 
 @NgModule({
   declarations: [
     NotificationsInnerComponent,
     QuickLinksInnerComponent,
-    SearchResultInnerComponent,
+    carritoComprasNotificationComponent,
+    CarritoVentaNotificationComponent,
     UserInnerComponent,
     LayoutScrollTopComponent,
   ],
@@ -32,7 +34,8 @@ import { SharedModule } from "../../../shared/shared.module";
   exports: [
     NotificationsInnerComponent,
     QuickLinksInnerComponent,
-    SearchResultInnerComponent,
+    carritoComprasNotificationComponent,
+    CarritoVentaNotificationComponent,
     UserInnerComponent,
     LayoutScrollTopComponent,
   ],

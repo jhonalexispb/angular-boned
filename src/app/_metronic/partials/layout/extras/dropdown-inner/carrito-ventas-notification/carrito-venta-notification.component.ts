@@ -3,15 +3,15 @@ import { CompraService } from 'src/app/modules/compras/service/compra.service';
 import { UserLocalStorageService } from 'src/app/modules/users/service/userLocalStorage.service';
 
 @Component({
-  selector: 'app-search-result-inner',
-  templateUrl: './search-result-inner.component.html',
+  selector: 'app-carrito-venta-notification',
+  templateUrl: './carrito-venta-notification.component.html',
 })
-export class SearchResultInnerComponent implements OnInit {
+export class CarritoVentaNotificationComponent implements OnInit {
   @HostBinding('class') class = 'menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px';
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
   @HostBinding('attr.data-kt-search-element') dataKtSearch = 'content';
 
-  compra: CompraModel | null = null;
+  venta: VentaModel | null = null;
   productos: ProductoModel[] = [];
   user:any = new UserLocalStorageService
   user_name:string = ''
@@ -21,23 +21,23 @@ export class SearchResultInnerComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerListCompra();
-    this.compraService.actualizaCarritoCompra$.subscribe((actualizado) => {
+    /* this.compraService.actualizaCarritoCompra$.subscribe((actualizado) => {
       if (actualizado) {
         this.obtenerListCompra();
       }
-    });
+    }); */
     this.user_name = this.user.getUser()?.name;
   }
 
   obtenerListCompra() {
-    const compraDetails = localStorage.getItem('compra_details');
-    const compraInfo = localStorage.getItem('compra_form');
-    if (compraDetails) {
-      this.productos = JSON.parse(compraDetails);
+    const ventaDetails = localStorage.getItem('venta_details');
+    const ventaInfo = localStorage.getItem('venta_form');
+    if (ventaDetails) {
+      this.productos = JSON.parse(ventaDetails);
     }
 
-    if (compraInfo) {
-      this.compra = JSON.parse(compraInfo);
+    if (ventaInfo) {
+      this.venta = JSON.parse(ventaInfo);
     }
   }
 }
@@ -57,7 +57,7 @@ interface ProductoModel {
   pventa: string;
 }
 
-interface CompraModel {
+interface VentaModel {
   laboratorio_id: number[];
   proveedor_id: number;
   proveedor_name: string;

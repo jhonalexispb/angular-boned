@@ -30,17 +30,17 @@
                 <label for="main-image" class="form-label">Imagen principal</label>
                 <app-drop-image id="main-image" [imageUrl]="imageSrc"  (imageSelected)="onImageSelected($event,'main')" (imageDeleted)="onImageDeleted('main')" class="image-principal"></app-drop-image>
             </div>
-            <div class="row gap-2">
+            <div class="row">
                 <label class="mb-2 form-label">Imagenes de detalle</label>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-2">
                     <app-drop-image [imageUrl]="imageSrc1.image" (imageSelected)="onImageSelected($event,'image1')"
                     (imageDeleted)="onImageDeleted('image1')" id="image-1" class="image-container"></app-drop-image>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-2">
                     <app-drop-image [imageUrl]="imageSrc2.image" (imageSelected)="onImageSelected($event,'image2')"
                     (imageDeleted)="onImageDeleted('image2')" id="image-2" class="image-container"></app-drop-image>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-2">
                     <app-drop-image [imageUrl]="imageSrc3.image" (imageSelected)="onImageSelected($event,'image3')"
                     (imageDeleted)="onImageDeleted('image3')" id="image-3" class="image-container"></app-drop-image>
                 </div>

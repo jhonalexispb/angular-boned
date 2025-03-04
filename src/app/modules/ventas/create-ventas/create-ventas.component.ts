@@ -2,15 +2,10 @@ import { ChangeDetectorRef, Component, EventEmitter, Output, ViewChild } from '@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { CronogramaComponent } from '../../compras/cronograma/cronograma.component';
-import { ProductoSeleccionadoComponent } from '../../compras/producto-seleccionado/producto-seleccionado.component';
-import { CompraService } from '../../compras/service/compra.service';
-import { CreateProveedorComponent } from '../../configuration/proveedor/create-proveedor/create-proveedor.component';
-import { GestionarLaboratorioComponent } from '../../configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
-import { CreateProductComponent } from '../../products/create-product/create-product.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { UserLocalStorageService } from '../../users/service/userLocalStorage.service';
 import { ProductoSelectedComponent } from '../producto-selected/producto-selected.component';
+import { VentasService } from '../service/ventas.service';
 
 @Component({
   selector: 'app-create-ventas',
@@ -19,32 +14,23 @@ import { ProductoSelectedComponent } from '../producto-selected/producto-selecte
 })
 export class CreateVentasComponent {
   @Output() OrdenCompraC:EventEmitter<any> = new EventEmitter();
-    @ViewChild('proveedorSelect') proveedorSelect: NgSelectComponent;
-    compraForm: FormGroup;
+    @ViewChild('productSelect') productSelect: NgSelectComponent;
+    ventaForm: FormGroup;
   
-    LABORATORIOS_LIST:any[] = [];
-    PROVEEDORES_LIST:any[] = [];
     PRODUCT_LIST:any[] = [];
-    COMPRA_DETAILS:any[] = [];
+    VENTA_PRODUCTS_DETAILS:any[] = [];
     codigo:string = "Calculando codigo..."
-    FORMA_PAGO_LIST:any[] = [];
-    TIPO_COMPROBANTE_LIST:any[] = [];
     product_id:any = null
-    activeDropdownIndex: number | null = null;
   
     subtotal: number = 0;
     impuesto: number = 0;
     totalCarrito: number = 0;
-    igv:number = 0.18
+
+    margen_ganancia: number = 30
   
     loading:boolean = true
     loadingProducts:boolean = true
     carritoActualizado:boolean = true
-  
-    searchTermProveedores: string = '';
-    isManualChange: boolean = false;
-    tempProveedorId: number | null = null;
-    tempProveedorName: string | null = null;
   
     imageCache: Map<string, string> = new Map();
   
@@ -56,78 +42,57 @@ export class CreateVentasComponent {
       public modalService: NgbModal,
       private cdr: ChangeDetectorRef,
       //llamamos al servicio
-      public compraService: CompraService
+      public ventaService: VentasService
     ) {}
   
     ngOnInit(): void {
-      this.compraForm = this.fb.group({
-        laboratorio_id: [[], [Validators.required]],
-        proveedor_id: [null, [Validators.required]],
-        proveedor_name: [null, [Validators.required]],
+      this.ventaForm = this.fb.group({
         product_id: [null, [Validators.required]],
-        forma_pago_id: ["", [Validators.required]],
-        type_comprobante_compra_id: ["", [Validators.required]],
-        igv: [false, [Validators.required]],
+        carrito_venta_id: ['', [Validators.required]],
         total:['0.00', [Validators.required]],
         impuesto:['0.00', [Validators.required]],
         sub_total:['0.00', [Validators.required]],
         user: [this.user.getUser()] 
       });
   
-      this.compraForm.valueChanges.subscribe(values => {
-          localStorage.setItem('compra_form', JSON.stringify(values));
+      this.ventaForm.valueChanges.subscribe(values => {
+          localStorage.setItem('venta_form', JSON.stringify(values));
       });
   
-      this.compraService.obtenerRecursosParaCrear().subscribe((resp: any) => {
-        this.PROVEEDORES_LIST = resp.proveedores;
-        this.FORMA_PAGO_LIST = resp.forma_pago;
-        this.TIPO_COMPROBANTE_LIST = resp.tipo_comprobante;
+      this.ventaService.obtenerRecursosIniciales().subscribe((resp: any) => {
         this.codigo = resp.codigo;
+        this.ventaForm.patchValue({carrito_venta_id: resp.carrito_venta_id})
         this.loading = false;
         this.loadingProducts = false;
+        this.callProductos()
   
-        const formGuardado = localStorage.getItem('compra_form');
+        const formGuardado = localStorage.getItem('venta_form');
         if (formGuardado) {
           const valoresRecuperados = JSON.parse(formGuardado);
-          this.compraForm.patchValue(valoresRecuperados);
+          this.ventaForm.patchValue(valoresRecuperados);
   
-          const proveedorId = valoresRecuperados.proveedor_id;
-          const laboratorioId = valoresRecuperados.laboratorio_id;
-          this.tempProveedorId = valoresRecuperados.proveedor_id;
-          this.tempProveedorName = valoresRecuperados.proveedor_name;
+          const carrito_venta_id = valoresRecuperados.carrito_venta_id;
   
-          if(this.compraForm.get('igv')?.value){
-            this.igv = 0
-          }
-  
-          if (proveedorId) {
-            this.onProveedorSeleccionado(proveedorId);
-  
-            setTimeout(() => {
-              this.compraForm.patchValue({ laboratorio_id: laboratorioId });
-              this.callProductos()
-              const compraGuardada = localStorage.getItem('compra_details');
-              if (compraGuardada) {
-                this.COMPRA_DETAILS = JSON.parse(compraGuardada);
-                this.calcularTotales();
-              }
-            }, 100);
+            this.callProductos()
+            const compraGuardada = localStorage.getItem('compra_details');
+            if (compraGuardada) {
+              this.VENTA_PRODUCTS_DETAILS = JSON.parse(compraGuardada);
+              this.calcularTotales();
+            }
+            
           }
         }
-      });
+      );
     }
   
     ngAfterViewInit() {
-      this.proveedorSelect.focus();
+      this.productSelect.focus();
     }
-  
-    onSearchProveedor(event: any) {
-      this.searchTermProveedores = event.term;
-    }
+
   
     onSubmit() {
-      if (this.compraForm.valid) {
-        /* this.compraService.registerProducto(this.compraForm.value).subscribe({
+      if (this.ventaForm.valid) {
+        /* this.ventaService.registerProducto(this.ventaForm.value).subscribe({
           next: (resp: any) => {
             this.OrdenCompraC.emit(resp);
             this.sweet.success(
@@ -140,149 +105,17 @@ export class CreateVentasComponent {
   
     }
   
-    handleDropdownToggle(index: number) {
-      this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
-    }
-  
-    onProveedorChange(proveedorId: number) {
-      this.isManualChange = true;
-      this.onProveedorSeleccionado(proveedorId);
-    }
-  
-    onProveedorSeleccionado(proveedorId: number) {
-      const actualizarLaboratorios = (proveedorId: number) => {
-        const proveedorSeleccionado = this.PROVEEDORES_LIST.find(p => p.id === proveedorId);
-        if (proveedorSeleccionado) {
-          this.LABORATORIOS_LIST = proveedorSeleccionado.laboratorios;
-          this.compraForm.patchValue({
-            laboratorio_id: [],
-            proveedor_name: proveedorSeleccionado.name
-          });
-          this.tempProveedorId = proveedorSeleccionado.id
-          this.tempProveedorName = proveedorSeleccionado.name
-          this.callProductos();
-        }
-      };
-    
-      if (this.COMPRA_DETAILS.length > 0 && this.isManualChange && this.tempProveedorId != null) {
-        this.sweet
-          .confirmar_habilitado_deshabilitado(
-            '¿Estás seguro?',
-            `Si cambias de proveedor se eliminarán todos los productos agregados.`,
-            '/assets/animations/general/alerta.json',
-            'Sí, cambiemos de proveedor'
-          )
-          .then((result: any) => {
-            if (result.isConfirmed) {
-              this.LABORATORIOS_LIST = [];
-              actualizarLaboratorios(proveedorId);
-              this.COMPRA_DETAILS = []
-              localStorage.setItem('compra_details', JSON.stringify([]));
-              this.compraService.actualizarCarritoCompra()
-              this.callProductos()
-            }else{
-              this.compraForm.patchValue({
-                proveedor_id: this.tempProveedorId,
-                proveedor_name: this.tempProveedorName
-              });
-            }
-          });
-      } else {
-        actualizarLaboratorios(proveedorId);
-      }
-    }
-  
     callProductos(){
       this.loadingProducts = true;
       this.PRODUCT_LIST = [];
-      this.compraForm.patchValue({
+      this.ventaForm.patchValue({
         product_id: null
       });
   
-      // Obtener los laboratorios seleccionados
-      const laboratorioSeleccionado = this.compraForm.value.laboratorio_id; 
-  
-      if (!laboratorioSeleccionado || laboratorioSeleccionado.length === 0) {
-        this.loadingProducts = false;
-        return;
-      }
-  
-      const laboratorioIds = laboratorioSeleccionado
-      .map((id:any) => this.LABORATORIOS_LIST.find(lab => lab.id === id)?.laboratorio_id)
-      .filter((labId:any) => labId !== undefined); // Filtrar valores `undefined` por seguridad
-  
-      if (laboratorioIds.length === 0) {
-        this.loadingProducts = false;
-        return;
-      }
-  
-      this.compraService.callProductsByLaboratorio(laboratorioIds).subscribe((resp: any) => {
+      this.ventaService.callProducts().subscribe((resp: any) => {
         this.PRODUCT_LIST = resp.productos;
-        this.actualizarProductosConCarritoInicial();
         this.loadingProducts = false;
         this.cacheImages()
-      });
-    }
-  
-    actualizarProductosConCarritoInicial() {
-      const compraGuardada = localStorage.getItem('compra_details');
-      if (compraGuardada) {
-        this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => {
-          if (this.COMPRA_DETAILS.find(item => item.producto_id === producto.id)) {
-            return { ...producto, in_carrito: true };
-          }
-          return producto;
-        });
-      }
-      this.carritoActualizado = false
-    }
-  
-    createProveedor(){
-      const modalRef = this.modalService.open(CreateProveedorComponent,{centered:true, size: 'md'})
-      modalRef.componentInstance.nombre_externo = this.searchTermProveedores;
-      modalRef.componentInstance.ProveedorC.subscribe((r: any) => {
-        this.PROVEEDORES_LIST = [r, ...this.PROVEEDORES_LIST];
-        this.compraForm.patchValue({ proveedor_id: r.id,proveedor_name: r.name });
-        this.compraForm.patchValue({
-          laboratorio_id: []
-        });
-      });
-    }
-  
-    gestionarLaboratoriosProveedor(idProveedor:any){
-      const modalRef = this.modalService.open(GestionarLaboratorioComponent,{centered:true, size: 'md'})
-      modalRef.componentInstance.PROVEEDOR_ID = idProveedor
-      modalRef.componentInstance.LIST_LABORATORIOS_ACTUALIZADO.subscribe((nuevaLista: any[]) => {
-        if (Array.isArray(nuevaLista)) {
-          // Obtener los laboratorios actualmente seleccionados
-          let selectedIds: number[] = this.compraForm.get('laboratorio_id')?.value || [];
-  
-          // Crear mapas para manejar la lista actual y la nueva lista eficientemente
-          const mapActual = new Map(this.LABORATORIOS_LIST.map(lab => [lab.id, lab]));
-          const mapNuevo = new Map(nuevaLista.map(lab => [lab.id, lab]));
-  
-          // Filtrar laboratorios eliminados
-          selectedIds = selectedIds.filter(id => mapNuevo.has(id));
-  
-          // Agregar los laboratorios nuevos a la lista
-          nuevaLista.forEach(lab => {
-            if (!mapActual.has(lab.id)) {
-              this.LABORATORIOS_LIST.push(lab);
-              selectedIds.push(lab.id);
-            }
-          });
-  
-          // Actualizar la lista de laboratorios con los cambios
-          this.LABORATORIOS_LIST = this.LABORATORIOS_LIST.map(lab => 
-            mapNuevo.has(lab.id) ? { ...mapNuevo.get(lab.id) } : lab
-          );
-  
-          this.LABORATORIOS_LIST = nuevaLista
-  
-          // Aplicar los IDs actualizados al formulario
-          this.compraForm.patchValue({ laboratorio_id: selectedIds });
-          this.callProductos()
-        }
       });
     }
   
@@ -330,39 +163,37 @@ export class CreateVentasComponent {
       if(!producto_id){
         return
       }
-      this.compraForm.patchValue({product_id: null})
-      if(this.COMPRA_DETAILS.find(p => p.producto_id === producto_id)){
+      this.ventaForm.patchValue({product_id: null})
+      if(this.VENTA_PRODUCTS_DETAILS.find(p => p.producto_id === producto_id)){
         this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
         return
       }
       const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
-      const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
+
       const modalRef = this.modalService.open(ProductoSelectedComponent,{centered:true, size: 'md'})
       modalRef.componentInstance.PRODUCTO_ID = producto_id
       modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
-      modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
       modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
-        this.COMPRA_DETAILS.push({
+        this.VENTA_PRODUCTS_DETAILS.push({
           producto_id: producto_id,
           laboratorio: productoSeleccionado.laboratorio,
-          color_laboratorio: laboratorio_id.color,
           nombre: productoSeleccionado.nombre,
           caracteristicas: productoSeleccionado.caracteristicas,
           sku: productoSeleccionado.sku,
           cantidad: Number(producto.cantidad),
           condicion_vencimiento: producto.condicion_vencimiento,
           fecha_vencimiento: producto.fecha_vencimiento,
-          margen_minimo: producto.margen_minimo,
+          margen_ganancia: producto.margen_ganancia,
           meses: producto.meses,
           pcompra: producto.pcompra,
           pventa: producto.pventa,
           total: producto.total,
           ganancia: producto.ganancia,
         })
-        localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+        localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
         this.calcularTotales();
         this.cdr.detectChanges();
-        this.compraService.actualizarCarritoCompra()
+        this.ventaService.actualizarCarritoCompra()
   
         this.sweet.successTimmer(
           '¡Éxito!',
@@ -373,21 +204,14 @@ export class CreateVentasComponent {
     }
   
     calcularTotales() {
-      this.subtotal = this.COMPRA_DETAILS.reduce((acc, item) => acc + item.total, 0);
-      this.impuesto = this.subtotal * this.igv;
+      this.subtotal = this.VENTA_PRODUCTS_DETAILS.reduce((acc, item) => acc + item.total, 0);
     
       this.totalCarrito = this.subtotal + this.impuesto;
-      this.compraForm.patchValue({
+      this.ventaForm.patchValue({
         total: this.totalCarrito,
         impuesto: this.impuesto,
         sub_total: this.subtotal
       }, { emitEvent: false })
-    }
-  
-    setearIgv(){
-      const condicion  = this.compraForm.get('igv')?.value
-      this.igv = condicion ? 0 : 0.18;
-      this.calcularTotales()
     }
   
     eliminarItem(PROD:any){
@@ -400,13 +224,13 @@ export class CreateVentasComponent {
       ).then((result: any) => {
         if (result.isConfirmed) {
           // Si el usuario confirma, eliminamos el producto
-          this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
+          this.VENTA_PRODUCTS_DETAILS = this.VENTA_PRODUCTS_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
           // Actualizamos el localStorage
-          localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+          localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
           const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
           productoSeleccionado.in_carrito = false;
           this.calcularTotales();
-          this.compraService.actualizarCarritoCompra()
+          this.ventaService.actualizarCarritoCompra()
           // Mostrar mensaje de éxito
           this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
         }
@@ -416,33 +240,33 @@ export class CreateVentasComponent {
     //FUNCIONES PARA MODIFICAR LA TABLA
   
     cambiarCantidad(index: number, cambio: number) {
-      if (this.COMPRA_DETAILS[index].cantidad + cambio > 0) {
-        this.COMPRA_DETAILS[index].cantidad += cambio;
+      if (this.VENTA_PRODUCTS_DETAILS[index].cantidad + cambio > 0) {
+        this.VENTA_PRODUCTS_DETAILS[index].cantidad += cambio;
         this.actualizarValores(index);
       }
     }
   
     actualizarFecha(index: number) {
-      let item = this.COMPRA_DETAILS[index];
+      let item = this.VENTA_PRODUCTS_DETAILS[index];
       if (!item) return;
   
-      localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+      localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
     }
   
     actualizarValores(index: number) {
-      let item = this.COMPRA_DETAILS[index];
+      let item = this.VENTA_PRODUCTS_DETAILS[index];
       if (!item) return;
     
-      // Verificar que pcompra y margen_minimo sean números válidos
+      // Verificar que pcompra y margen_ganancia sean números válidos
       let pcompra = parseFloat(item.pcompra);
-      let margen_minimo = parseFloat(item.margen_minimo);
+      let margen_ganancia = parseFloat(item.margen_ganancia);
       
-      if (isNaN(pcompra) || isNaN(margen_minimo)) {
+      if (isNaN(pcompra) || isNaN(margen_ganancia)) {
         return; // Sale si los valores no son válidos
       }
     
       // Realiza los cálculos si son números válidos
-      let nuevoPventa = pcompra + (pcompra * (margen_minimo / 100));
+      let nuevoPventa = pcompra + (pcompra * (margen_ganancia / 100));
       item.pventa = parseFloat(nuevoPventa.toFixed(2));
     
       // Calcular el total
@@ -453,12 +277,12 @@ export class CreateVentasComponent {
       let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
       item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
   
-      localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+      localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
       this.calcularTotales()
     }
   
     actualizarMargenGanancia(index: number){
-      let item = this.COMPRA_DETAILS[index];
+      let item = this.VENTA_PRODUCTS_DETAILS[index];
       if (!item) return;
     
       let pcompra = parseFloat(item.pcompra);
@@ -469,12 +293,12 @@ export class CreateVentasComponent {
       }
     
       let nuevoMargen = ((pventa - pcompra)/pcompra)*100;
-      item.margen_minimo = parseFloat(nuevoMargen.toFixed(2));
+      item.margen_ganancia = parseFloat(nuevoMargen.toFixed(2));
     
       let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
       item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
   
-      localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+      localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
     }
     
   
@@ -506,29 +330,14 @@ export class CreateVentasComponent {
       event.target.value = valor;
   
       if (tipo === 'pcompra') {
-        this.COMPRA_DETAILS[index].pcompra = parseFloat(valor) || 0;
+        this.VENTA_PRODUCTS_DETAILS[index].pcompra = parseFloat(valor) || 0;
         this.actualizarValores(index);
       } else if (tipo === 'pventa') {
-        this.COMPRA_DETAILS[index].pventa = parseFloat(valor) || 0;
+        this.VENTA_PRODUCTS_DETAILS[index].pventa = parseFloat(valor) || 0;
         this.actualizarMargenGanancia(index);
-      } else if (tipo === 'margen_minimo') {
-        this.COMPRA_DETAILS[index].margen_minimo = parseFloat(valor) || 0;
+      } else if (tipo === 'margen_ganancia') {
+        this.VENTA_PRODUCTS_DETAILS[index].margen_ganancia = parseFloat(valor) || 0;
         this.actualizarValores(index);
       }
-    }
-  
-    toggleCondicionVencimiento(index: number) {
-      let item = this.COMPRA_DETAILS[index];
-      if (!item) return;
-    
-      // Alternar el valor de condicion_vencimiento entre 0 y 1
-      item.condicion_vencimiento = item.condicion_vencimiento === 1 ? 0 : 1;
-    
-      // Actualizar COMPRA_DETAILS en localStorage
-      localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
-    }
-  
-    abrirCornograma(){
-      const modalRef = this.modalService.open(CronogramaComponent,{centered:true, size: 'xl'})
     }
 }

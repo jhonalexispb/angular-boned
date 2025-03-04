@@ -67,3 +67,14 @@
   .in-carrito-message i {
     font-size: 12px; /* Tamaño del icono */
   }
+
+
+  .total-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #28a745; /* color de fondo */
+    padding: 1rem;
+    z-index: 100;
+  }

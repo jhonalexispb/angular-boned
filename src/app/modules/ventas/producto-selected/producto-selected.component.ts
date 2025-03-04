@@ -60,7 +60,7 @@ export class ProductoSelectedComponent {
         ],      
         fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
         meses: [{ value: '', disabled: false }, Validators.required],
-        margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required,this.validarMargenMinimo.bind(this)]],
+        margen_ganancia: [30],
         condicion_vencimiento: [0],
         total:[{ value: '0.00', disabled: true }],
         ganancia:[{ value: '0.00', disabled: true }],
@@ -91,7 +91,7 @@ export class ProductoSelectedComponent {
   
     calcularPrecioVenta() {
       const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
-      const margen = Number(this.productoInsertForm.get('margen_minimo')?.value) || 0;
+      const margen = Number(this.productoInsertForm.get('margen_ganancia')?.value) || 0;
     
       if (pcompra <= 0) {
         this.productoInsertForm.patchValue({ pventa: null }, { emitEvent: false });
@@ -114,7 +114,7 @@ export class ProductoSelectedComponent {
       const pventa = Number(this.productoInsertForm.get('pventa')?.value) || 0;
     
       if (pcompra <= 0 || pventa <= 0) {
-        this.productoInsertForm.patchValue({ margen_minimo: null }, { emitEvent: false });
+        this.productoInsertForm.patchValue({ margen_ganancia: null }, { emitEvent: false });
         return;
       }
   
@@ -124,7 +124,7 @@ export class ProductoSelectedComponent {
       this.precioMinimo = precioMinimo.toFixed(2);
       
       this.productoInsertForm.patchValue(
-        { margen_minimo: margen.toFixed(2) },
+        { margen_ganancia: margen.toFixed(2) },
         { emitEvent: false }
       );
     }
@@ -134,7 +134,7 @@ export class ProductoSelectedComponent {
       if (!control.value) return null;
     
       const pcompra = Number(this.productoInsertForm.get('pcompra')?.value);
-      const margen = Number(this.productoInsertForm.get('margen_minimo')?.value) || 0;
+      const margen = Number(this.productoInsertForm.get('margen_ganancia')?.value) || 0;
       const precioMinimo = pcompra + (pcompra * margen / 100);
       const precioMinimoFormateado = precioMinimo.toFixed(2);
       const precioMinimoNumero = parseFloat(precioMinimoFormateado)
@@ -237,7 +237,7 @@ export class ProductoSelectedComponent {
         case 'pventa':
           this.calcularMargenMinimo()
           break
-        case 'margen_minimo':
+        case 'margen_ganancia':
           this.calcularPrecioVenta()
           break
       }

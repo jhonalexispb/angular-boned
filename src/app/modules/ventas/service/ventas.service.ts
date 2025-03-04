@@ -90,10 +90,10 @@ export class VentasService {
     )
   }
 
-  callProductsByLaboratorio(laboratorioIds: number[]){
+  callProducts(){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/recursos_crear/productos"
-    return this.http.post(URL,{ laboratorio_id: laboratorioIds },{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/orden_venta/obtener_productos"
+    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

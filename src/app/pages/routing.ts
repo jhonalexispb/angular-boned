@@ -84,6 +84,11 @@ const Routing: Routes = [
   },
 
   {
+    path: 'zonas_ventas',
+    loadChildren: () => import('../modules/zona-venta/zona-venta.module').then((m) => m.ZonaVentaModule),
+  },
+
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full',

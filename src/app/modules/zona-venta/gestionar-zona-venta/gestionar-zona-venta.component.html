@@ -1,0 +1,38 @@
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <h2>Asignemos zonas de venta para: </h2>
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body scroll-y mx-5 my-3">
+        <div id="map-container">
+            <object type="image/svg+xml" data="assets/maps/peru.svg" id="peru-map"></object>
+
+            <div id="vendor-names-container" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+                <!-- Los nombres de los vendedores se insertarán aquí -->
+            </div>
+            
+            <div id="tooltip" style="display: none; position: absolute;">
+                <div id="tooltip-content" style="padding: 10px; background-color: green; color: white; border-radius: 12px; font-size: 16px;">
+                    <span id="department-name"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Modal body-->
+</div>

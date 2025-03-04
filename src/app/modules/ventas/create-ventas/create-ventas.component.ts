@@ -14,10 +14,11 @@ import { VentasService } from '../service/ventas.service';
 })
 export class CreateVentasComponent {
   @Output() OrdenCompraC:EventEmitter<any> = new EventEmitter();
-    @ViewChild('productSelect') productSelect: NgSelectComponent;
+    @ViewChild('clienteSelect') clienteSelect: NgSelectComponent;
     ventaForm: FormGroup;
   
     PRODUCT_LIST:any[] = [];
+    CLIENTES_LIST:any[] = [];
     VENTA_PRODUCTS_DETAILS:any[] = [];
     codigo:string = "Calculando codigo..."
     product_id:any = null
@@ -86,7 +87,7 @@ export class CreateVentasComponent {
     }
   
     ngAfterViewInit() {
-      this.productSelect.focus();
+      this.clienteSelect.focus();
     }
 
   

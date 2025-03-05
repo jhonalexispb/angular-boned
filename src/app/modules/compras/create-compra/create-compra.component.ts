@@ -544,8 +544,4 @@ export class CreateCompraComponent {
     // Actualizar COMPRA_DETAILS en localStorage
     localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
   }
-
-  abrirCornograma(){
-    const modalRef = this.modalService.open(CronogramaComponent,{centered:true, size: 'xl'})
-  }
 }

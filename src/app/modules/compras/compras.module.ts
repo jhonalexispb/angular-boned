@@ -21,6 +21,8 @@ import { CronogramaComponent } from './cronograma/cronograma.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CreateEventoComponent } from './cronograma/create-evento/create-evento.component';
 import { EditEventoComponent } from './cronograma/edit-evento/edit-evento.component';
+import { CuotasComponent } from './cronograma/cuotas/cuotas.component';
+import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
 
 
 @NgModule({
@@ -32,7 +34,9 @@ import { EditEventoComponent } from './cronograma/edit-evento/edit-evento.compon
     ProductoSeleccionadoComponent,
     CronogramaComponent,
     CreateEventoComponent,
-    EditEventoComponent
+    EditEventoComponent,
+    CuotasComponent,
+    OrdenCompraComponent
   ],
   imports: [
     CommonModule,

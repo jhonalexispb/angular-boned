@@ -1,0 +1,43 @@
+<div class="card-body">
+    <!--begin::Nav-->
+    <ul class="nav row position-relative mx-0 mb-9 d-md-flex gap-2 rounded shadow-sm bg-light p-4" role="tablist">
+        <!--begin::Item-->
+        <li class="col d-flex justify-content-center p-0" (click)="changeTab(0)">
+            <a class="nav-item border-1 d-flex justify-content-center align-items-center gap-2" [ngClass]="{'active': activeTab === 0}">
+                <i class="fas fa-flask fa-lg fs-1"></i>
+                <span class="nav-text fw-bold fs-6 text-center">
+                    Compra
+                </span>
+            </a>
+        </li>
+        <!--end::Item-->
+
+        <!--begin::Item-->
+        <li class="nav-item col d-flex justify-content-center p-0" (click)="changeTab(1)">
+            <a class="nav-item border-1 d-flex justify-content-center align-items-center gap-2" [ngClass]="{'active': activeTab === 1}">
+                <i class="fas fa-capsules fa-lg fs-1"></i>
+                <span class="nav-text fw-bold fs-6 text-center">
+                    Cronograma
+                </span>
+            </a>
+        </li>
+        <!--end::Item-->
+    </ul>
+    <!--end::Nav-->
+
+    <!--begin::Tab Content-->
+    <div class="tab-content">
+        <!--begin::Tab pane Compra-->
+        <div class="tab-pane fade" [ngClass]="{'show active': activeTab === 0}">
+            <app-create-compra></app-create-compra> <!-- Aquí el contenido dinámico para "Compra" -->
+        </div>
+        <!--end::Tab pane-->
+
+        <!--begin::Tab pane Cronograma-->
+        <div class="tab-pane fade" [ngClass]="{'show active': activeTab === 1}">
+            <app-cronograma></app-cronograma> <!-- Aquí el contenido dinámico para "Cronograma" -->
+        </div>
+        <!--end::Tab pane-->
+    </div>
+    <!--end::Tab Content-->
+</div>

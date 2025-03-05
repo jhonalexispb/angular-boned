@@ -1,6 +1,9 @@
-<div class="modal-content">
-  <div class="modal-body mx-5 my-7">
-    <button (click)="toggleWeekends()">toggle weekends</button>
+<div class="modal-body mx-5 my-7 row">
+  <!-- <div class="col-md-4">
+    <app-cuotas></app-cuotas>
+  </div> -->
+  <div class="col-md-8">
+    <!-- <button (click)="toggleWeekends()">toggle weekends</button> -->
     <full-calendar #calendar [options]="calendarOptions">
       <ng-template #eventContent let-arg>
         <b class="mx-1">{{arg.timeText}}</b>

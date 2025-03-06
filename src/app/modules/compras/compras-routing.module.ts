@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ComprasComponent } from './compras.component';
 import { ListCompraComponent } from './list-compra/list-compra.component';
-import { CreateCompraComponent } from './create-compra/create-compra.component';
-import { CronogramaComponent } from './cronograma/cronograma.component';
 import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
 
 const routes: Routes = [
@@ -16,17 +14,9 @@ const routes: Routes = [
         component: ListCompraComponent
       },
       {
-        path:"register",
-        component: OrdenCompraComponent
+        path: 'register',
+        loadChildren: () => import('./orden-compra/orden-compra.module').then((m) => m.OrdenCompraModule),
       },
-      {
-        path:"create",
-        component: CreateCompraComponent
-      },
-      {
-        path:"cronograma",
-        component: CronogramaComponent
-      }
     ]
   }
 ];

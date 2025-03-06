@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction'; // Importar el plugin de interacción
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import { CreateEventoComponent } from './create-evento/create-evento.component';
 
 @Component({
@@ -10,9 +10,7 @@ import { CreateEventoComponent } from './create-evento/create-evento.component';
   templateUrl: './cronograma.component.html',
   styleUrls: ['./cronograma.component.scss']
 })
-export class CronogramaComponent implements AfterViewChecked {
-  @ViewChild('calendar') calendarRef!: ElementRef;
-
+export class CronogramaComponent {
   constructor(
     public modalService: NgbModal,
   ) {}
@@ -46,17 +44,6 @@ export class CronogramaComponent implements AfterViewChecked {
     editable: true,
     droppable: false, // Permite arrastrar y soltar eventos
   };
-
-  ngAfterViewChecked(): void {
-    this.resizeCalendar();  // Llamamos a la función que ajusta el tamaño del calendario
-  }
-
-  resizeCalendar() {
-    if (this.calendarRef && this.calendarRef.nativeElement) {
-      const calendarApi = this.calendarRef.nativeElement.getApi();
-      calendarApi.updateSize();  // Fuerza la actualización del tamaño
-    }
-  }
 
   openAddEventModal(date: string) {
     console.log('Fecha seleccionada:', date);
@@ -94,7 +81,4 @@ export class CronogramaComponent implements AfterViewChecked {
     };
     this.cuotas.push(nuevaCuota);
   }
-
-
-
 }

@@ -1,43 +1,53 @@
-<div class="card-body">
-    <!--begin::Nav-->
-    <ul class="nav row position-relative mx-0 mb-9 d-md-flex gap-2 rounded shadow-sm bg-light p-4" role="tablist">
-        <!--begin::Item-->
-        <li class="col d-flex justify-content-center p-0" (click)="changeTab(0)">
-            <a class="nav-item border-1 d-flex justify-content-center align-items-center gap-2" [ngClass]="{'active': activeTab === 0}">
-                <i class="fas fa-flask fa-lg fs-1"></i>
-                <span class="nav-text fw-bold fs-6 text-center">
-                    Compra
-                </span>
+<div class="card-body">       
+    <!--begin::Nav-->             
+    <ul class="nav nav-pills nav-pills-custom row position-relative mx-0 mb-9" role="tablist">
+        <!--begin::Item--> 
+        <li class="nav-item col-6 mx-0 p-0">
+            <!--begin::Link--> 
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/compras/register/create_compra">                   
+                <!--begin::Subtitle-->
+                <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
+                    Orden de compra
+                </span> 
+                <!--end::Subtitle-->
+                
+                <!--begin::Bullet-->
+                <span class="bullet-custom position-absolute z-index-2 bottom-0 w-100 h-4px bg-primary rounded"></span>
+                <!--end::Bullet-->
             </a>
+            <!--end::Link-->  
         </li>
-        <!--end::Item-->
+        <!--end::Item--> 
 
-        <!--begin::Item-->
-        <li class="nav-item col d-flex justify-content-center p-0" (click)="changeTab(1)">
-            <a class="nav-item border-1 d-flex justify-content-center align-items-center gap-2" [ngClass]="{'active': activeTab === 1}">
-                <i class="fas fa-capsules fa-lg fs-1"></i>
-                <span class="nav-text fw-bold fs-6 text-center">
+        <!--begin::Item--> 
+        <li class="nav-item col-6 mx-0 px-0">
+            <!--begin::Link--> 
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/compras/register/cronograma">                   
+                <!--begin::Subtitle-->
+                <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
                     Cronograma
-                </span>
+                </span> 
+                <!--end::Subtitle-->
+                
+                <!--begin::Bullet-->
+                <span class="bullet-custom position-absolute z-index-2 bottom-0 w-100 h-4px bg-primary rounded"></span>
+                <!--end::Bullet-->
             </a>
+            <!--end::Link-->                
         </li>
-        <!--end::Item-->
-    </ul>
+        <!--end::Item-->    
+    </ul>             
     <!--end::Nav-->
 
     <!--begin::Tab Content-->
     <div class="tab-content">
-        <!--begin::Tab pane Compra-->
-        <div class="tab-pane fade" [ngClass]="{'show active': activeTab === 0}">
-            <app-create-compra></app-create-compra> <!-- Aquí el contenido dinámico para "Compra" -->
-        </div>
-        <!--end::Tab pane-->
-
-        <!--begin::Tab pane Cronograma-->
-        <div class="tab-pane fade" [ngClass]="{'show active': activeTab === 1}">
-            <app-cronograma></app-cronograma> <!-- Aquí el contenido dinámico para "Cronograma" -->
-        </div>
-        <!--end::Tab pane-->
+                        
+            <!--begin::Tap pane-->
+            <div class="tab-pane fade show active">
+                <router-outlet></router-outlet>
+            </div>
+            <!--end::Tap pane-->                                                             
+                     
     </div>
-    <!--end::Tab Content-->
+    <!--end::Tab Content-->        
 </div>

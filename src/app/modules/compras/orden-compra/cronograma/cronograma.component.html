@@ -1,8 +1,16 @@
-<div class="modal-body row">
-    <div class="col-md-4">
-      <app-cuotas></app-cuotas>
+<div class="modal-body">
+    <div class="d-md-flex gap-2">
+      <div class="alert alert-info">
+        <strong>Monto Total: </strong> {{ totalMonto | currency:'S/' }}
+      </div>
+      <div class="alert alert-warning">
+        <strong>Monto Pendiente: </strong> {{ totalMonto | currency:'S/'}}
+      </div>
+      <div class="alert alert-success">
+        <strong>Cuotas: </strong> {{ cuotas }}
+      </div>
     </div>
-    <div class="col-md-8">
+    <div>
       <!-- <button (click)="toggleWeekends()">toggle weekends</button> -->
       <full-calendar #calendar [options]="calendarOptions">
         <ng-template #eventContent let-arg>

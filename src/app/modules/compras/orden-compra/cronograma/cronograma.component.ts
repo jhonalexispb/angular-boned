@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CreateEventoComponent } from './create-evento/create-evento.component';
+import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-cronograma',
@@ -13,19 +14,36 @@ import { CreateEventoComponent } from './create-evento/create-evento.component';
 export class CronogramaComponent {
   constructor(
     public modalService: NgbModal,
+    private cdRef: ChangeDetectorRef
   ) {}
 
-  cuotas: any[] = [];
+  totalMonto: number = 1000;
+  cuotas:number  = 0
+  proveedor:string;
+  sweet:any = new SweetalertService
+
+  @ViewChild('calendar') calendarComponent: any;
+
+  ngOnInit():void {
+    const formGuardado = localStorage.getItem('compra_form');
+    if (formGuardado) {
+      const valoresRecuperados = JSON.parse(formGuardado);
+      this.proveedor = valoresRecuperados.proveedor_name
+    }
+
+    const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+    if (eventoGuardado) {
+      const eventos = JSON.parse(eventoGuardado);
+      this.cuotas = eventos.length;
+      const valoresRecuperados = JSON.parse(eventoGuardado);
+      this.calendarOptions = {...this.calendarOptions,...{events: valoresRecuperados}};
+    }
+  }
+  
   calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, interactionPlugin], // Incluir el plugin de interacción
+    plugins: [dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     weekends: true,
-    events: [
-      { title: 'Meeting', start: new Date(), className: "border-dark bg-dark text-white" },
-      { title: "Meeting", start: "2024-06-12T14:30:00", className: "border-success bg-success text-white" },
-      { title: "Happy Hour", start: "2024-06-12T17:30:00", className: "border-warning bg-warning text-white" },
-      { title: "Dinner", start: "2024-06-12T20:00:00", className: "border-info bg-info text-white" }
-    ],
     eventDrop: (info) => {
       const movedEvent = info.event;  // El evento que fue movido
       console.log('Evento movido:', movedEvent.title);
@@ -43,20 +61,33 @@ export class CronogramaComponent {
     // Si quieres permitir arrastrar y soltar eventos, puedes agregar la opción "editable"
     editable: true,
     droppable: false, // Permite arrastrar y soltar eventos
+    dayMaxEventRows: 3,
   };
 
   openAddEventModal(date: string) {
-    console.log('Fecha seleccionada:', date);
+    if(!this.proveedor){
+      this.sweet.alert('Paremos aqui','No estas trabajando con ningun proveedor')
+    }
     const modalRef = this.modalService.open(CreateEventoComponent,{centered:true, size: 'md'})
     // Pasar la fecha seleccionada al modal
     modalRef.componentInstance.eventDate = date;
+    modalRef.componentInstance.ncuotas = this.cuotas + 1;
+    modalRef.componentInstance.proveedor = this.proveedor;
 
     // Escuchar el evento emitido desde el componente hijo
     modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
-      // Agregar el evento al calendario
-      this.calendarOptions = {...this.calendarOptions,...{events: eventData}};
-      console.log('Evento añadido:', eventData);
+      this.addEventToCalendar(eventData);
     });
+  }
+
+  addEventToCalendar(newEvent: any) {
+    this.calendarOptions.events = [...(Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : []), newEvent];
+    if (this.calendarComponent) {
+      this.calendarComponent.getApi().addEvent(newEvent);
+      this.cuotas++
+      this.cdRef.detectChanges();
+      console.log(this.cuotas)
+    }
   }
 
   openEditEventModal(event:any) {
@@ -72,13 +103,5 @@ export class CronogramaComponent {
     // Aquí podrías hacer lo que necesites, como actualizar el evento en una base de datos
     console.log('Evento actualizado:', event);
     // Ejemplo: enviar el evento actualizado a un servicio o emitir el nuevo valor
-  }
-
-  agregarCuota() {
-    const nuevaCuota = {
-      id: this.cuotas.length + 1,
-      monto: Math.floor(Math.random() * 1000) + 500, // Monto aleatorio
-    };
-    this.cuotas.push(nuevaCuota);
   }
 }

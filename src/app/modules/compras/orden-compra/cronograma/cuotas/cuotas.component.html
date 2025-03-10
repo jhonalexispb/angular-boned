@@ -1,27 +1,9 @@
-<div class="container mt-4">
-  <button class="btn btn-primary mb-3" (click)="addCuota()">Agregar Cuota</button>
-  
-  <div *ngFor="let cuota of cuotas; let i = index" class="cuota mb-4">
-    <div class="form-group">
-      <label>Cuota {{ i + 1 }}</label>
-      <div class="row">
-        <div class="col-md-4">
-          <label for="fecha{{ i }}">Fecha de Pago</label>
-          <input type="date" id="fecha{{ i }}" class="form-control" [(ngModel)]="cuota.fecha" />
-        </div>
-        <div class="col-md-4">
-          <label for="monto{{ i }}">Monto</label>
-          <input type="number" id="monto{{ i }}" class="form-control" [(ngModel)]="cuota.monto" (input)="updateMontos()" />
-        </div>
-        <div class="col-md-4">
-          <label for="observacion{{ i }}">Observación</label>
-          <input type="text" id="observacion{{ i }}" class="form-control" [(ngModel)]="cuota.observacion" />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="alert alert-info">
-    <strong>Monto Total: </strong> {{ totalMonto | currency }}
-  </div>
+<div class="alert alert-info">
+  <strong>Monto Total: </strong> {{ totalMonto | currency:'S/' }}
+</div>
+<div class="alert alert-warning">
+  <strong>Monto Pendiente: </strong> {{ totalMonto | currency:'S/'}}
+</div>
+<div class="alert alert-success">
+  <strong>Cuotas: </strong> {{ cuotas }}
 </div>

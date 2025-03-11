@@ -34,7 +34,11 @@ export class CreateEventoComponent {
 
   submitEvent() {
     if (this.eventoForm.valid) {
+      let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
+      let nuevoId = eventosGuardados.length > 0 ? eventosGuardados[eventosGuardados.length - 1].id + 1 : 1;
+  
       const evento = {
+        id: nuevoId, // ID autoincremental
         title: this.eventoForm.get('name')?.value,
         start: this.eventoForm.get('fecha_pago')?.value,
         allDay: true,
@@ -46,22 +50,11 @@ export class CreateEventoComponent {
         }
       };
   
-      // Obtener los eventos actuales desde el LocalStorage
-      let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
-      
-      // Agregar el nuevo evento a la lista de eventos
       eventosGuardados.push(evento);
-      
-      // Guardar la lista actualizada de eventos en el LocalStorage
       localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
-      
-      // Emitir el evento si es necesario
-      this.eventCreated.emit(evento);
   
-      // Cerrar el modal
+      this.eventCreated.emit(evento);
       this.modal.close();
-    } else {
-      return
     }
   }
 

@@ -75,7 +75,7 @@
             <button type="reset" id="kt_modal_add_event_cancel" class="btn btn-light me-3" (click)="modal.dismiss()">
                 Cancelar
             </button>
-            <button type="button" id="kt_modal_add_event_submit" class="btn btn-primary" (click)="submitEvent()" [disabled]="!eventoForm.valid">
+            <button type="submit" id="kt_modal_add_event_submit" class="btn btn-primary" [disabled]="!eventoForm.valid">
                 <span class="indicator-label">
                     Guardar
                 </span>

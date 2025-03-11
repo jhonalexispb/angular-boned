@@ -1,1 +1,88 @@
-<p>edit-evento works!</p>
+<div class="modal-content">
+    
+    <form [formGroup]="eventoForm" (ngSubmit)="submitEvent()">
+        <div class="modal-header">
+            <h2 class="fw-bold" data-kt-calendar="title">Agregar Evento de Pago</h2>
+            <div class="btn btn-icon btn-sm btn-active-icon-primary" id="kt_modal_add_event_close" (click)="modal.dismiss()">
+                <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+        </div>
+
+        <div class="modal-body py-10 px-lg-17">
+            <div class="fv-row mb-9 fv-plugins-icon-container">
+                <label class="fs-6 fw-semibold required mb-2">Nombre del Evento</label>
+                <input type="text" class="form-control form-control-solid" placeholder="Ej. Pago de Letra #001" formControlName="name">
+                <div *ngIf="eventoForm.get('name')?.touched && eventoForm.get('name')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('name')?.errors?.['required']">
+                      El nombre es obligatorio
+                    </span>
+                </div>
+            </div>
+            <div class="fv-row mb-9">
+                <label class="fs-6 fw-semibold mb-2 required">Monto de la Letra</label>
+                <input type="number" class="form-control form-control-solid required" placeholder="Monto de la letra" formControlName="monto">
+                <div *ngIf="eventoForm.get('monto')?.touched && eventoForm.get('monto')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('monto')?.errors?.['required']">
+                      El monto es obligatorio
+                    </span>
+                  </div>
+            </div>
+
+            <div class="fv-row mb-9">
+                <label class="fs-6 fw-semibold mb-2">Comentario Adicional</label>
+                <textarea class="form-control form-control-solid" placeholder="Detalles adicionales sobre el pago" formControlName="comentario"></textarea>
+            </div>
+
+            <div class="fv-row mb-9">
+                <label class="fs-6 fw-semibold mb-2 required">Fecha de Pago</label>
+                <input type="date" class="form-control form-control-solid" formControlName="fecha_pago">
+                <div *ngIf="eventoForm.get('fecha_pago')?.touched && eventoForm.get('fecha_pago')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('fecha_pago')?.errors?.['required']">
+                      El fecha de pago es obligatoria
+                    </span>
+                  </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2 ">
+                  Recordatorio
+                </label>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="position-relative d-flex align-items-center">
+                            <!--begin::Icon-->
+                            <i class="ki-duotone ki-discount fs-2 position-absolute mx-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            </i>
+                            <input type="number" class="form-control form-control-solid ps-12 flatpickr-input" formControlName="dias_despues" (input)="calcularRecordatorios()" min="1">
+                        </div>
+                    </div>
+                  <div class="col-8">
+                    <input type="date" class="form-control form-control-solid" readonly formControlName="fecha_recordatorio">
+                  </div>
+                </div>
+                <div *ngIf="eventoForm.get('dias_despues')?.dirty && eventoForm.get('dias_despues')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('dias_despues')?.errors?.['required']">
+                      La fecha de recordatorio es obligatoria
+                    </span>
+                </div>
+                <div class="fs-7 fw-semibold text-muted">Tambien se enviara un recordatorio un dia antes y el mismo dia</div>
+            </div>
+        </div>
+
+        <div class="modal-footer flex-center">
+            <button type="reset" id="kt_modal_add_event_cancel" class="btn btn-light me-3" (click)="modal.dismiss()">
+                Cancelar
+            </button>
+            <button type="button" id="kt_modal_add_event_submit" class="btn btn-primary" (click)="submitEvent()" [disabled]="!eventoForm.valid">
+                <span class="indicator-label">
+                    Guardar
+                </span>
+                <span class="indicator-progress">
+                    Por favor espere... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    </form>
+</div>

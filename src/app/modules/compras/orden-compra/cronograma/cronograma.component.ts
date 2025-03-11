@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CreateEventoComponent } from './create-evento/create-evento.component';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
+import { EditEventoComponent } from './edit-evento/edit-evento.component';
 
 @Component({
   selector: 'app-cronograma',
@@ -17,7 +18,8 @@ export class CronogramaComponent {
     private cdRef: ChangeDetectorRef
   ) {}
 
-  totalMonto: number = 1000;
+  totalMonto: number = 0;
+  totalPendiente: number = 0;
   cuotas:number  = 0
   proveedor:string;
   sweet:any = new SweetalertService
@@ -29,14 +31,17 @@ export class CronogramaComponent {
     if (formGuardado) {
       const valoresRecuperados = JSON.parse(formGuardado);
       this.proveedor = valoresRecuperados.proveedor_name
-    }
+      this.totalMonto = valoresRecuperados.total
 
-    const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
-    if (eventoGuardado) {
-      const eventos = JSON.parse(eventoGuardado);
-      this.cuotas = eventos.length;
-      const valoresRecuperados = JSON.parse(eventoGuardado);
-      this.calendarOptions = {...this.calendarOptions,...{events: valoresRecuperados}};
+      const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+      if (eventoGuardado) {
+        const eventos = JSON.parse(eventoGuardado);
+        this.cuotas = eventos.length;
+        const total = eventos.reduce((acc:any, evento:any) => acc + (evento.extendedProps?.amount || 0), 0);
+        this.totalPendiente = this.totalMonto - total;
+        const valoresRecuperados = JSON.parse(eventoGuardado);
+        this.calendarOptions = {...this.calendarOptions,...{events: valoresRecuperados}};
+      }
     }
   }
   
@@ -61,7 +66,13 @@ export class CronogramaComponent {
     // Si quieres permitir arrastrar y soltar eventos, puedes agregar la opción "editable"
     editable: true,
     droppable: false, // Permite arrastrar y soltar eventos
-    dayMaxEventRows: 3,
+    dayMaxEventRows: 2,
+    eventDidMount: (info) => {
+      info.el.style.whiteSpace = 'wrap';
+      info.el.style.fontSize = '10px';
+      info.el.style.overflow = 'hidden';
+      info.el.style.textOverflow = 'ellipsis';
+    }
   };
 
   openAddEventModal(date: string) {
@@ -83,16 +94,23 @@ export class CronogramaComponent {
   addEventToCalendar(newEvent: any) {
     this.calendarOptions.events = [...(Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : []), newEvent];
     if (this.calendarComponent) {
-      this.calendarComponent.getApi().addEvent(newEvent);
       this.cuotas++
+      this.totalMonto = this.totalMonto - newEvent.extendedProps.amount
       this.cdRef.detectChanges();
-      console.log(this.cuotas)
+      this.sweet.success('Bien','la cuota se genero de manera satisfactoria')
     }
   }
 
   openEditEventModal(event:any) {
-    console.log('Evento seleccionado:', event);
-    // Aquí abrirías el modal para editar el evento
+    const modalRef = this.modalService.open(EditEventoComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.EVENTO_SELECTED = event
+    // Pasar la fecha seleccionada al modal
+
+    // Escuchar el evento emitido desde el componente hijo
+    modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
+      this.addEventToCalendar(eventData);
+      this.sweet.success('Bien','la cuota se actualizada de manera satisfactoria')
+    });
   }
 
   toggleWeekends() {

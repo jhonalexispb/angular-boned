@@ -32,6 +32,7 @@ export class CronogramaComponent {
       const valoresRecuperados = JSON.parse(formGuardado);
       this.proveedor = valoresRecuperados.proveedor_name
       this.totalMonto = valoresRecuperados.total
+      this.totalPendiente = valoresRecuperados.total
 
       const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
       if (eventoGuardado) {
@@ -88,6 +89,7 @@ export class CronogramaComponent {
     // Escuchar el evento emitido desde el componente hijo
     modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
       this.addEventToCalendar(eventData);
+      this.sweet.success('Bien','la cuota se genero de manera satisfactoria')
     });
   }
 
@@ -95,9 +97,14 @@ export class CronogramaComponent {
     this.calendarOptions.events = [...(Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : []), newEvent];
     if (this.calendarComponent) {
       this.cuotas++
-      this.totalMonto = this.totalMonto - newEvent.extendedProps.amount
+      const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+      if (eventoGuardado) {
+        const eventos = JSON.parse(eventoGuardado);
+        this.cuotas = eventos.length;
+        const total = eventos.reduce((acc:any, evento:any) => acc + (evento.extendedProps?.amount || 0), 0);
+        this.totalPendiente = this.totalMonto - total;
+      }
       this.cdRef.detectChanges();
-      this.sweet.success('Bien','la cuota se genero de manera satisfactoria')
     }
   }
 
@@ -107,9 +114,9 @@ export class CronogramaComponent {
     // Pasar la fecha seleccionada al modal
 
     // Escuchar el evento emitido desde el componente hijo
-    modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
+    modalRef.componentInstance.eventEdit.subscribe((eventData:any) => {
       this.addEventToCalendar(eventData);
-      this.sweet.success('Bien','la cuota se actualizada de manera satisfactoria')
+      this.sweet.success('Bien','la cuota se actualizo de manera satisfactoria')
     });
   }
 
@@ -117,9 +124,19 @@ export class CronogramaComponent {
     this.calendarOptions.weekends = !this.calendarOptions.weekends // toggle the boolean!
   }
 
-  updateEvent(event:any) {
-    // Aquí podrías hacer lo que necesites, como actualizar el evento en una base de datos
-    console.log('Evento actualizado:', event);
-    // Ejemplo: enviar el evento actualizado a un servicio o emitir el nuevo valor
+  updateEvent(event: any) {
+    let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
+    const index = eventosGuardados.findIndex((eventoGuardado: any) => Number(eventoGuardado.id) === Number(event.id));
+
+    if (index !== -1) {
+      // Actualizamos las propiedades del evento, como la fecha de inicio
+      eventosGuardados[index].start = event.start.toISOString();
+    }
+  
+    // Guardar los eventos actualizados en localStorage
+    localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
+  
+    // También puedes emitir el evento actualizado si es necesario
+    console.log('Evento actualizado en LocalStorage:', event);
   }
 }

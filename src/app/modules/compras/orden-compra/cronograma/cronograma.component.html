@@ -15,7 +15,7 @@
       <full-calendar #calendar [options]="calendarOptions">
         <ng-template #eventContent let-arg>
           <b class="mx-1">{{arg.timeText}}</b>
-          <i>{{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
+          <i>{{arg.event.extendedProps.amount}} {{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
         </ng-template>
       </full-calendar>
     </div>

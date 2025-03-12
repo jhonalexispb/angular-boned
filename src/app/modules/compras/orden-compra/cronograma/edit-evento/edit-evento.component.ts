@@ -12,7 +12,6 @@ export class EditEventoComponent {
     
   @Output() eventEdit = new EventEmitter<any>();
   @Input() EVENTO_SELECTED:any
-  @Input() proveedor:any
 
   constructor(
     public modal: NgbActiveModal,
@@ -35,6 +34,7 @@ export class EditEventoComponent {
   submitEvent() {
     if (this.eventoForm.valid) {
       const evento = {
+        id: Number(this.EVENTO_SELECTED.id),
         title: this.eventoForm.get('name')?.value,
         start: this.eventoForm.get('fecha_pago')?.value,
         allDay: true,
@@ -46,22 +46,16 @@ export class EditEventoComponent {
         }
       };
   
-      // Obtener los eventos actuales desde el LocalStorage
       let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
-      
-      // Agregar el nuevo evento a la lista de eventos
-      eventosGuardados.push(evento);
-      
-      // Guardar la lista actualizada de eventos en el LocalStorage
+      const index = eventosGuardados.findIndex((eventoGuardado: any) => Number(eventoGuardado.id) === Number(evento.id));
+      if (index !== -1) {
+        eventosGuardados[index] = evento;
+      }
       localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
-      
-      // Emitir el evento si es necesario
       this.eventEdit.emit(evento);
-  
-      // Cerrar el modal
       this.modal.close();
     } else {
-      return
+      return;
     }
   }
 

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-edit-evento',
@@ -12,6 +13,8 @@ export class EditEventoComponent {
     
   @Output() eventEdit = new EventEmitter<any>();
   @Input() EVENTO_SELECTED:any
+  @Input() MONTO_PENDIENTE:any
+  sweet:any = new SweetalertService
 
   constructor(
     public modal: NgbActiveModal,
@@ -24,14 +27,20 @@ export class EditEventoComponent {
       monto: [this.EVENTO_SELECTED.extendedProps?.amount, [Validators.required]],
       comentario: [this.EVENTO_SELECTED.extendedProps?.notes],
       fecha_pago: [this.formatDate(this.EVENTO_SELECTED.start), [Validators.required]],
-      dias_despues: [null, [Validators.required]],
+      dias_despues: [this.EVENTO_SELECTED.extendedProps?.dias_reminder, [Validators.required]],
       fecha_recordatorio: [this.EVENTO_SELECTED.extendedProps?.reminder, [Validators.required]],
     });
+    this.MONTO_PENDIENTE = this.MONTO_PENDIENTE + this.eventoForm.get('monto')?.value
+    this.MONTO_PENDIENTE = parseFloat(this.MONTO_PENDIENTE.toFixed(2));
     this.calcularRecordatorios()
     console.log(this.EVENTO_SELECTED.start)
   }
 
   submitEvent() {
+    if(this.eventoForm.get('monto')?.value > this.MONTO_PENDIENTE){
+      this.sweet.alerta('Alto ahi','el monto ingresado supera al monto pendiente')
+      return
+    }
     if (this.eventoForm.valid) {
       const evento = {
         id: Number(this.EVENTO_SELECTED.id),
@@ -61,22 +70,20 @@ export class EditEventoComponent {
 
   calcularRecordatorios() {
     const fechaPago = this.eventoForm.get('fecha_pago')?.value;
-    let diasDespues = this.eventoForm.get('dias_despues')?.value;
-    const fechaRecordatorio = this.eventoForm.get('fecha_recordatorio')?.value;
-  
-    if (fechaPago && fechaRecordatorio && (diasDespues === null || diasDespues === '')) {
-      const fechaPagoDate = new Date(fechaPago);
-      const fechaRecordatorioDate = new Date(fechaRecordatorio);
-      const diferenciaDias = Math.round((fechaRecordatorioDate.getTime() - fechaPagoDate.getTime()) / (1000 * 60 * 60 * 24));
-      this.eventoForm.patchValue({ dias_despues: diferenciaDias });
-    } else if (fechaPago && diasDespues) {
-      const fechaPagoDate = new Date(fechaPago);
-      const despuesDate = new Date(fechaPagoDate);
-      despuesDate.setDate(despuesDate.getDate() + parseInt(diasDespues, 10));
+    const diasDespues = this.eventoForm.get('dias_despues')?.value;
 
-      this.eventoForm.patchValue({ fecha_recordatorio: this.formatDate(despuesDate) });
-    } else {
-      this.eventoForm.patchValue({ fecha_recordatorio: null });
+    if(!diasDespues){
+      this.eventoForm.patchValue({fecha_recordatorio : null})
+      return
+    }
+
+    if (fechaPago) {
+        const fechaPagoDate = new Date(fechaPago);
+
+        const despuesDate = new Date(fechaPagoDate);
+        despuesDate.setDate(despuesDate.getDate() + parseInt(diasDespues, 10));
+        const dia_formateado = this.formatDate(despuesDate)
+        this.eventoForm.patchValue({fecha_recordatorio : dia_formateado})
     }
   }
 

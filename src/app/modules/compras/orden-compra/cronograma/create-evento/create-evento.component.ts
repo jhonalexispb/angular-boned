@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 
 @Component({
   selector: 'app-create-evento',
@@ -13,7 +14,8 @@ export class CreateEventoComponent {
   @Output() eventCreated = new EventEmitter<any>(); // Definir el @Output
   @Input() eventDate:any
   @Input() proveedor:any
-  @Input() ncuotas:number = 0
+  @Input() MONTO_PENDIENTE:any
+  sweet:any = new SweetalertService
 
   constructor(
     public modal: NgbActiveModal,
@@ -22,17 +24,22 @@ export class CreateEventoComponent {
 
   ngOnInit(): void {
     this.eventoForm = this.fb.group({
-      name: [`CUOTA #${this.ncuotas} PARA ${this.proveedor}`,[Validators.required]],
+      name: [`${this.proveedor}`,[Validators.required]],
       monto: ['', [Validators.required]],
       comentario: [''],
       fecha_pago: [this.eventDate, [Validators.required]],
       dias_despues: [8, [Validators.required]],
       fecha_recordatorio: ['', [Validators.required]],
     });
+    this.MONTO_PENDIENTE = parseFloat(this.MONTO_PENDIENTE.toFixed(2));
     this.calcularRecordatorios()
   }
 
   submitEvent() {
+    if(this.eventoForm.get('monto')?.value > this.MONTO_PENDIENTE){
+      this.sweet.alerta('Alto ahi','el monto ingresado supera al monto pendiente')
+      return
+    }
     if (this.eventoForm.valid) {
       let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
       let nuevoId = eventosGuardados.length > 0 ? eventosGuardados[eventosGuardados.length - 1].id + 1 : 1;
@@ -46,6 +53,7 @@ export class CreateEventoComponent {
         extendedProps: {
           amount: this.eventoForm.get('monto')?.value,
           notes: this.eventoForm.get('comentario')?.value,
+          dias_reminder: this.eventoForm.get('dias_despues')?.value,
           reminder: this.eventoForm.get('fecha_recordatorio')?.value
         }
       };

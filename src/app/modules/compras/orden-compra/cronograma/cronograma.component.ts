@@ -23,6 +23,7 @@ export class CronogramaComponent {
   cuotas:number  = 0
   proveedor:string;
   sweet:any = new SweetalertService
+  eventosPendientes:any[] = [];
 
   @ViewChild('calendar') calendarComponent: any;
 
@@ -36,6 +37,10 @@ export class CronogramaComponent {
 
       const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
       if (eventoGuardado) {
+        this.eventosPendientes = JSON.parse(eventoGuardado);
+        this.eventosPendientes.sort((a, b) => {
+          return new Date(a.start).getTime() - new Date(b.start).getTime();
+        });
         const eventos = JSON.parse(eventoGuardado);
         this.cuotas = eventos.length;
         const total = eventos.reduce((acc:any, evento:any) => acc + (evento.extendedProps?.amount || 0), 0);
@@ -79,12 +84,17 @@ export class CronogramaComponent {
   openAddEventModal(date: string) {
     if(!this.proveedor){
       this.sweet.alert('Paremos aqui','No estas trabajando con ningun proveedor')
+      return
+    }
+    if(this.totalPendiente<=0){
+      this.sweet.alerta('Alto ahi','ya no hay montos pendientes por programar')
+      return
     }
     const modalRef = this.modalService.open(CreateEventoComponent,{centered:true, size: 'md'})
     // Pasar la fecha seleccionada al modal
     modalRef.componentInstance.eventDate = date;
-    modalRef.componentInstance.ncuotas = this.cuotas + 1;
     modalRef.componentInstance.proveedor = this.proveedor;
+    modalRef.componentInstance.MONTO_PENDIENTE = this.totalPendiente
 
     // Escuchar el evento emitido desde el componente hijo
     modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
@@ -97,7 +107,11 @@ export class CronogramaComponent {
     this.calendarOptions.events = [...(Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : []), newEvent];
     if (this.calendarComponent) {
       this.cuotas++
-      const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+      const eventoGuardado:any = localStorage.getItem('eventos_compra_cuotas');
+      this.eventosPendientes = JSON.parse(eventoGuardado);
+      this.eventosPendientes.sort((a, b) => {
+        return new Date(a.start).getTime() - new Date(b.start).getTime();
+      });
       if (eventoGuardado) {
         const eventos = JSON.parse(eventoGuardado);
         this.cuotas = eventos.length;
@@ -111,6 +125,7 @@ export class CronogramaComponent {
   openEditEventModal(event:any) {
     const modalRef = this.modalService.open(EditEventoComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.EVENTO_SELECTED = event
+    modalRef.componentInstance.MONTO_PENDIENTE = this.totalPendiente
     // Pasar la fecha seleccionada al modal
 
     // Escuchar el evento emitido desde el componente hijo
@@ -129,14 +144,22 @@ export class CronogramaComponent {
     const index = eventosGuardados.findIndex((eventoGuardado: any) => Number(eventoGuardado.id) === Number(event.id));
 
     if (index !== -1) {
-      // Actualizamos las propiedades del evento, como la fecha de inicio
-      eventosGuardados[index].start = event.start.toISOString();
+      eventosGuardados[index].start = event.start.toISOString().split('T')[0];
+      const diasReminder = eventosGuardados[index].extendedProps.dias_reminder || 0;
+
+      let nuevaFechaReminder = new Date(event.start);
+      nuevaFechaReminder.setDate(nuevaFechaReminder.getDate() + diasReminder);
+
+      let reminderDateString = nuevaFechaReminder.toISOString().split('T')[0];
+      eventosGuardados[index].extendedProps.reminder = reminderDateString;
+
+      localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
+      const eventoGuardado:any = localStorage.getItem('eventos_compra_cuotas');
+      this.eventosPendientes = JSON.parse(eventoGuardado);
+      this.eventosPendientes.sort((a, b) => {
+        return new Date(a.start).getTime() - new Date(b.start).getTime();
+      });
+      this.cdRef.detectChanges();
     }
-  
-    // Guardar los eventos actualizados en localStorage
-    localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
-  
-    // También puedes emitir el evento actualizado si es necesario
-    console.log('Evento actualizado en LocalStorage:', event);
   }
 }

@@ -26,7 +26,7 @@ export class EditEventoComponent {
       name: [this.EVENTO_SELECTED.title,[Validators.required]],
       monto: [this.EVENTO_SELECTED.extendedProps?.amount, [Validators.required]],
       comentario: [this.EVENTO_SELECTED.extendedProps?.notes],
-      fecha_pago: [this.formatDate(this.EVENTO_SELECTED.start), [Validators.required]],
+      fecha_pago: [{ value: this.formatDate(this.EVENTO_SELECTED.start), disabled: true }, [Validators.required]],
       dias_despues: [this.EVENTO_SELECTED.extendedProps?.dias_reminder, [Validators.required]],
       fecha_recordatorio: [this.EVENTO_SELECTED.extendedProps?.reminder, [Validators.required]],
     });

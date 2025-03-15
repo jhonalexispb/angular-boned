@@ -1,5 +1,5 @@
 
-  <div class="card-body" routerLink="/compras/register" class="cursor-pointer">
+  <div class="card-body" routerLink="/compras/register/create_compra" class="cursor-pointer">
     <h4 *ngIf="productos.length > 0; else noItem" class="fw-bold text-center text-primary mb-4">{{user_name}} tienes una orden de compra pendiente</h4>
     <ng-template #noItem>
       <h4 class="text-success mb-4 text-center">

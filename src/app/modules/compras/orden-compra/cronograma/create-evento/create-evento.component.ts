@@ -27,7 +27,7 @@ export class CreateEventoComponent {
       name: [`${this.proveedor}`,[Validators.required]],
       monto: ['', [Validators.required]],
       comentario: [''],
-      fecha_pago: [this.eventDate, [Validators.required]],
+      fecha_pago: [{ value: this.eventDate, disabled: true }, [Validators.required]],
       dias_despues: [8, [Validators.required]],
       fecha_recordatorio: ['', [Validators.required]],
     });

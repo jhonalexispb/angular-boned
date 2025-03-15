@@ -162,4 +162,31 @@ export class CronogramaComponent {
       this.cdRef.detectChanges();
     }
   }
+
+  borrar_evento(cuota:any){
+    console.log(cuota)
+    this.sweet.confirmar_borrado('Ups',`Esta seguro de borrar la cuota de S/ ${cuota.extendedProps.amount}`).then((result:any) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
+        const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+        if (eventoGuardado) {
+          let eventos = JSON.parse(eventoGuardado);
+
+          // Filtrar eventos para eliminar el seleccionado
+          eventos = eventos.filter((evento: any) => evento.id !== cuota.id);
+
+          // Guardar el array actualizado en localStorage
+          localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventos));
+
+          this.sweet.success('Bien','la cuota fue eliminada correctamente')
+          const evento_list:any = localStorage.getItem('eventos_compra_cuotas');
+          this.eventosPendientes = JSON.parse(evento_list);
+          this.eventosPendientes.sort((a, b) => {
+          return new Date(a.start).getTime() - new Date(b.start).getTime();
+          });
+          this.cdRef.detectChanges();
+        }
+      }
+    });
+  }
 }

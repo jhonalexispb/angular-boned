@@ -1,6 +1,6 @@
 
       
-  <form [formGroup]="compraForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="compraForm">
     <div class="card card-flush py-4 mb-3">
       <!--begin::Card header-->
       <div class="card-header">
@@ -421,7 +421,7 @@
                     <!--end::Content--> 
                   </div>
                   <div *ngIf="COMPRA_DETAILS.length > 0" class="text-end">
-                    <button class="mt-10 btn bg-primary" routerLink="/compras/register/cronograma">
+                    <button class="mt-10 btn bg-primary text-white" routerLink="/compras/register/cronograma">
                       Siguiente
                     </button>
                   </div>

@@ -51,6 +51,7 @@ export class EditEventoComponent {
         extendedProps: {
           amount: this.eventoForm.get('monto')?.value,
           notes: this.eventoForm.get('comentario')?.value,
+          dias_reminder: this.eventoForm.get('dias_despues')?.value,
           reminder: this.eventoForm.get('fecha_recordatorio')?.value
         }
       };

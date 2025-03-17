@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -6,6 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { CreateEventoComponent } from './create-evento/create-evento.component';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { EditEventoComponent } from './edit-evento/edit-evento.component';
+import { CompraService } from '../../service/compra.service';
 
 @Component({
   selector: 'app-cronograma',
@@ -13,9 +14,11 @@ import { EditEventoComponent } from './edit-evento/edit-evento.component';
   styleUrls: ['./cronograma.component.scss']
 })
 export class CronogramaComponent {
+  @Output() OrdenCompraC:EventEmitter<any> = new EventEmitter();
   constructor(
     public modalService: NgbModal,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    public compraService: CompraService
   ) {}
 
   totalMonto: number = 0;
@@ -24,6 +27,8 @@ export class CronogramaComponent {
   proveedor:string;
   sweet:any = new SweetalertService
   eventosPendientes:any[] = [];
+
+  mostrandoCarga = false;
 
   @ViewChild('calendar') calendarComponent: any;
 
@@ -56,11 +61,7 @@ export class CronogramaComponent {
     initialView: 'dayGridMonth',
     weekends: true,
     eventDrop: (info) => {
-      const movedEvent = info.event;  // El evento que fue movido
-      console.log('Evento movido:', movedEvent.title);
-      console.log('Nueva fecha de inicio:', movedEvent.start);
-      
-      // Aquí puedes emitir el nuevo valor del evento
+      const movedEvent = info.event;
       this.updateEvent(movedEvent);
     },
     dateClick: (info) => {
@@ -69,21 +70,50 @@ export class CronogramaComponent {
     eventClick: (info) => {
       this.openEditEventModal(info.event);
     },
-    // Si quieres permitir arrastrar y soltar eventos, puedes agregar la opción "editable"
     editable: true,
-    droppable: false, // Permite arrastrar y soltar eventos
+    droppable: false,
     dayMaxEventRows: 2,
     eventDidMount: (info) => {
+      this.updateDailyTotal(info.el, info.event);
       info.el.style.whiteSpace = 'wrap';
-      info.el.style.fontSize = '10px';
+      info.el.style.fontSize = '12px';
       info.el.style.overflow = 'hidden';
       info.el.style.textOverflow = 'ellipsis';
     }
   };
 
+  private updateDailyTotal(el: HTMLElement, event: any) {
+    const date = event.startStr; 
+    const cell = document.querySelector(`[data-date="${date}"]`);
+    
+    if (cell) {
+      let totalContainer = cell.querySelector('.daily-total');
+      
+      if (!totalContainer) {
+        totalContainer = document.createElement('div');
+        totalContainer.classList.add('daily-total');
+        cell.prepend(totalContainer);
+      }
+
+      let currentTotal = Number(totalContainer.getAttribute('data-total')) || 0;
+      currentTotal += event.extendedProps.amount || 0;
+      totalContainer.setAttribute('data-total', currentTotal.toString());
+      totalContainer.innerHTML = `<b class="bg-warning text-white p-2 rounded">S/${currentTotal}</b>`;
+    }
+  }
+
+  cambiarVista(vista: string) {
+    this.calendarOptions = { ...this.calendarOptions, initialView: vista };
+    this.reiniciarCalendario()
+  }
+
   openAddEventModal(date: string) {
     if(!this.proveedor){
       this.sweet.alert('Paremos aqui','No estas trabajando con ningun proveedor')
+      return
+    }
+    if(this.totalMonto<=0){
+      this.sweet.alerta('Alto ahi','tu carrito de compra esta vacio')
       return
     }
     if(this.totalPendiente<=0){
@@ -131,6 +161,7 @@ export class CronogramaComponent {
     // Escuchar el evento emitido desde el componente hijo
     modalRef.componentInstance.eventEdit.subscribe((eventData:any) => {
       this.addEventToCalendar(eventData);
+      this.reiniciarCalendario(eventData.start)
       this.sweet.success('Bien','la cuota se actualizo de manera satisfactoria')
     });
   }
@@ -159,12 +190,11 @@ export class CronogramaComponent {
       this.eventosPendientes.sort((a, b) => {
         return new Date(a.start).getTime() - new Date(b.start).getTime();
       });
-      this.cdRef.detectChanges();
+      this.reiniciarCalendario(event.start)
     }
   }
 
   borrar_evento(cuota:any){
-    console.log(cuota)
     this.sweet.confirmar_borrado('Ups',`Esta seguro de borrar la cuota de S/ ${cuota.extendedProps.amount}`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
@@ -184,9 +214,108 @@ export class CronogramaComponent {
           this.eventosPendientes.sort((a, b) => {
           return new Date(a.start).getTime() - new Date(b.start).getTime();
           });
-          this.cdRef.detectChanges();
+
+          this.cuotas = JSON.parse(eventoGuardado).length;
+          const total = eventos.reduce((acc:any, evento:any) => acc + (evento.extendedProps?.amount || 0), 0);
+          this.totalPendiente = this.totalMonto - total;
+          /* this.cdRef.detectChanges(); */
+          this.reiniciarCalendario()
         }
       }
     });
+  }
+
+  reiniciarCalendario(fechaInicio?: string) {
+    // 1. Mostrar "Cargando..." antes de actualizar el calendario
+    this.mostrandoCarga = true;
+    this.cdRef.detectChanges();
+    
+    // 2. Vaciar los eventos temporalmente
+    this.calendarOptions = { ...this.calendarOptions, events: [] ,initialDate: fechaInicio || this.calendarOptions.initialDate};
+
+    // 3. Recargar los eventos desde localStorage después de un pequeño delay
+    setTimeout(() => {
+        const eventoGuardado = localStorage.getItem('eventos_compra_cuotas');
+        if (eventoGuardado) {
+            let eventos = JSON.parse(eventoGuardado);
+            
+            // Actualizar las cuotas y el total pendiente
+            this.eventosPendientes = eventos;
+            this.eventosPendientes.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+            this.cuotas = eventos.length;
+            const total = eventos.reduce((acc:any, evento:any) => acc + (evento.extendedProps?.amount || 0), 0);
+            this.totalPendiente = this.totalMonto - total;
+
+            // 4. Restaurar los eventos en el calendario
+            this.calendarOptions = { ...this.calendarOptions, events: eventos };
+        }
+
+        // 5. Ocultar el mensaje de carga
+        this.mostrandoCarga = false;
+        this.cdRef.detectChanges();
+    }, 100);  // Pequeña pausa para simular carga
+  }
+
+  onSubmit() {
+    if(this.totalMonto <= 0){
+      this.sweet.alerta('Alerta','tu carrito esta vacio')
+      return
+    }
+    if (this.totalPendiente != 0) {
+      if(this.totalPendiente > 0){
+        this.sweet.alerta('Alerta','hay un monto pendiente por gestionar')
+      }else{
+        this.sweet.alerta('Alerta','el monto pendiente no puede ser negativo, gestiona tus cuotas por favor')
+      }
+      return
+    }
+
+    const compraForm = JSON.parse(localStorage.getItem("compra_form") || "{}");
+    const compraDetails = JSON.parse(localStorage.getItem("compra_details") || "[]");
+    const eventosCompraCuotas = JSON.parse(localStorage.getItem("eventos_compra_cuotas") || "[]");
+
+    const data = {
+      compra_form: {
+        laboratorio_id: compraForm.laboratorio_id || [],
+        type_comprobante_compra_id: compraForm.type_comprobante_compra_id || '',
+        forma_pago_id: compraForm.forma_pago_id || '',
+        igv: compraForm.igv || false,
+        total: compraForm.total || 0,
+        impuesto: compraForm.impuesto || 0,
+        sub_total: compraForm.sub_total || 0
+      },
+      compra_details: compraDetails.map((item: any) => ({
+        producto_id: item.producto_id,
+        cantidad: item.cantidad,
+        fecha_vencimiento: item.fecha_vencimiento,
+        pcompra: item.pcompra,
+        pventa: item.pventa,
+        total: item.total
+      })),
+      eventos_compra_cuotas: eventosCompraCuotas.map((cuota: any) => ({
+        start: cuota.start,
+        amount: cuota.extendedProps.amount,
+        notes: cuota.extendedProps.notes,
+        reminder: cuota.extendedProps.reminder
+      }))
+    };
+
+    console.log(data)
+
+    /* this.compraService.registerOrdenCompra(data).subscribe({
+      next: (resp: any) => {
+        this.OrdenCompraC.emit(resp);
+        this.sweet.success(
+          '¡Éxito!',
+          'la orden de compra se registró correctamente'
+        );
+
+        console.log(data)
+
+        localStorage.removeItem("compra_form");
+        localStorage.removeItem("compra_detail");
+        localStorage.removeItem("eventos_compra_cuotas");
+      },
+    }) */
   }
 }

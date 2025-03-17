@@ -19,6 +19,15 @@
                 </div>
             </div>
             <div class="fv-row mb-9">
+                <label class="fs-6 fw-semibold mb-2 required">Fecha de Pago</label>
+                <input type="date" class="form-control form-control-solid" formControlName="fecha_pago">
+                <div *ngIf="eventoForm.get('fecha_pago')?.touched && eventoForm.get('fecha_pago')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('fecha_pago')?.errors?.['required']">
+                      El fecha de pago es obligatoria
+                    </span>
+                  </div>
+            </div>
+            <div class="fv-row mb-9">
                 <label class="fs-6 fw-semibold mb-2 required">Monto de la Letra</label>
                 <input type="number" class="form-control form-control-solid required" placeholder="Monto de la letra" formControlName="monto">
                 <div *ngIf="eventoForm.get('monto')?.touched && eventoForm.get('monto')?.invalid" class="text-danger">
@@ -31,16 +40,6 @@
             <div class="fv-row mb-9">
                 <label class="fs-6 fw-semibold mb-2">Comentario Adicional</label>
                 <textarea class="form-control form-control-solid" placeholder="Detalles adicionales sobre el pago" formControlName="comentario"></textarea>
-            </div>
-
-            <div class="fv-row mb-9">
-                <label class="fs-6 fw-semibold mb-2 required">Fecha de Pago</label>
-                <input type="date" class="form-control form-control-solid" formControlName="fecha_pago">
-                <div *ngIf="eventoForm.get('fecha_pago')?.touched && eventoForm.get('fecha_pago')?.invalid" class="text-danger">
-                    <span *ngIf="eventoForm.get('fecha_pago')?.errors?.['required']">
-                      El fecha de pago es obligatoria
-                    </span>
-                  </div>
             </div>
 
             <div class="fv-row mb-7">

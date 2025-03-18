@@ -12,14 +12,14 @@
             <div class="alert alert-warning">
                 <strong>Monto pendiente S/{{MONTO_PENDIENTE }}</strong>
             </div>
-            <div class="fv-row mb-9 fv-plugins-icon-container">
-                <label class="fs-6 fw-semibold required mb-2">Nombre del Evento</label>
-                <input type="text" class="form-control form-control-solid" placeholder="Ej. Pago de Letra #001" formControlName="name">
-                <div *ngIf="eventoForm.get('name')?.touched && eventoForm.get('name')?.invalid" class="text-danger">
-                    <span *ngIf="eventoForm.get('name')?.errors?.['required']">
-                      El nombre es obligatorio
+            <div class="fv-row mb-9">
+                <label class="fs-6 fw-semibold mb-2 required">Monto de la Letra</label>
+                <input type="number" class="form-control form-control-solid required" placeholder="Monto de la letra" formControlName="monto">
+                <div *ngIf="eventoForm.get('monto')?.touched && eventoForm.get('monto')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('monto')?.errors?.['required']">
+                      El monto es obligatorio
                     </span>
-                </div>
+                  </div>
             </div>
             <div class="fv-row mb-9">
                 <label class="fs-6 fw-semibold mb-2 required">Fecha de Pago</label>
@@ -30,14 +30,15 @@
                     </span>
                   </div>
             </div>
-            <div class="fv-row mb-9">
-                <label class="fs-6 fw-semibold mb-2 required">Monto de la Letra</label>
-                <input type="number" class="form-control form-control-solid required" placeholder="Monto de la letra" formControlName="monto">
-                <div *ngIf="eventoForm.get('monto')?.touched && eventoForm.get('monto')?.invalid" class="text-danger">
-                    <span *ngIf="eventoForm.get('monto')?.errors?.['required']">
-                      El monto es obligatorio
+
+            <div class="fv-row mb-9 fv-plugins-icon-container">
+                <label class="fs-6 fw-semibold required mb-2">Nombre del Evento</label>
+                <input type="text" class="form-control form-control-solid" placeholder="Ej. Pago de Letra #001" formControlName="name">
+                <div *ngIf="eventoForm.get('name')?.touched && eventoForm.get('name')?.invalid" class="text-danger">
+                    <span *ngIf="eventoForm.get('name')?.errors?.['required']">
+                      El nombre es obligatorio
                     </span>
-                  </div>
+                </div>
             </div>
 
             <div class="fv-row mb-9">

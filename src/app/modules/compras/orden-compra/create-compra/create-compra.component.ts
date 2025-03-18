@@ -68,7 +68,11 @@ export class CreateCompraComponent {
       total:['0.00', [Validators.required]],
       impuesto:['0.00', [Validators.required]],
       sub_total:['0.00', [Validators.required]],
-      user: [this.user.getUser()] 
+      user: [this.user.getUser()],
+      notificacion:[true, [Validators.required]],
+      mensaje_notificacion:['', [Validators.required]],
+      fecha_ingreso:['', [Validators.required]],
+      descripcion:[''],
     });
 
     this.compraForm.valueChanges.subscribe(values => {

@@ -276,21 +276,27 @@ export class CronogramaComponent {
 
     const data = {
       compra_form: {
-        laboratorio_id: compraForm.laboratorio_id || [],
+        proveedor_id: compraForm.proveedor_id,
         type_comprobante_compra_id: compraForm.type_comprobante_compra_id || '',
         forma_pago_id: compraForm.forma_pago_id || '',
         igv: compraForm.igv || false,
         total: compraForm.total || 0,
         impuesto: compraForm.impuesto || 0,
-        sub_total: compraForm.sub_total || 0
+        sub_total: compraForm.sub_total || 0,
+        notificacion: compraForm.notificacion,
+        mensaje_notificacion: compraForm.mensaje_notificacion || '',
+        fecha_ingreso: compraForm.fecha_ingreso || '',
+        descripcion: compraForm.descripcion || '',
       },
       compra_details: compraDetails.map((item: any) => ({
         producto_id: item.producto_id,
         cantidad: item.cantidad,
+        condicion_vencimiento: item.condicion_vencimiento,
+        margen_ganancia: item.margen_minimo,
         fecha_vencimiento: item.fecha_vencimiento,
         pcompra: item.pcompra,
         pventa: item.pventa,
-        total: item.total
+        total: item.total,
       })),
       eventos_compra_cuotas: eventosCompraCuotas.map((cuota: any) => ({
         start: cuota.start,
@@ -302,7 +308,7 @@ export class CronogramaComponent {
 
     console.log(data)
 
-    /* this.compraService.registerOrdenCompra(data).subscribe({
+    this.compraService.registerOrdenCompra(data).subscribe({
       next: (resp: any) => {
         this.OrdenCompraC.emit(resp);
         this.sweet.success(
@@ -310,12 +316,10 @@ export class CronogramaComponent {
           'la orden de compra se registró correctamente'
         );
 
-        console.log(data)
-
-        localStorage.removeItem("compra_form");
+        /* localStorage.removeItem("compra_form");
         localStorage.removeItem("compra_detail");
-        localStorage.removeItem("eventos_compra_cuotas");
+        localStorage.removeItem("eventos_compra_cuotas"); */
       },
-    }) */
+    })
   }
 }

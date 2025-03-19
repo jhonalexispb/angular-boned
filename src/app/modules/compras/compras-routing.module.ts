@@ -17,6 +17,10 @@ const routes: Routes = [
         path: 'register',
         loadChildren: () => import('./orden-compra/orden-compra.module').then((m) => m.OrdenCompraModule),
       },
+      {
+        path: 'edit',
+        loadChildren: () => import('./edit-compra/edit-compra.module').then((m) => m.EditCompraModule),
+      },
     ]
   }
 ];

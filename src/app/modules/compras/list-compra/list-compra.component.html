@@ -7,7 +7,7 @@
           <div class="d-flex align-items-center position-relative my-1">
               <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                       class="path2"></span></i>
-              <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listRuc()" name="search"
+              <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listOrdenCompra()" name="search"
                   class="form-control form-control-solid w-250px ps-12" placeholder="Buscar por ruc o razon social" />
           </div>
           <!--end::Search-->
@@ -34,32 +34,40 @@
           <div id="" class="table-responsive mb-5">
               <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                   <thead>
-                    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                      <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                        <span class="dt-column-title" role="button">Ruc</span><span class="dt-column-order"></span>
+                    <tr class="text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Codigo
                       </th>
                 
-                      <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                        <span class="dt-column-title" role="button">Razon Social</span><span class="dt-column-order"></span>
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Forma pago
                       </th>
                 
-                      <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
-                        <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Monto
+                      </th>
+
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Pagos
+                      </th>
+
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Estado
                       </th>
                 
-                      <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
-                        <span class="dt-column-title" role="button">Fecha de registro</span><span class="dt-column-order"></span>
+                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        Fecha de registro
                       </th>
                 
                       <!-- Columna Acciones: Visible solo en pantallas grandes -->
-                      <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1">
-                        <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                      <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
+                        Acciones
                       </th>
                     </tr>
                   </thead>
                 
                   <tbody class="fw-semibold text-gray-600">
-                    <tr *ngFor="let R of RUC_LIST; let index = index">
+                    <tr *ngFor="let R of OC_LIST; let index = index">
                       <td>
                           <div class="d-flex justify-content-start align-items-center gap-2">
                               <div class="d-md-none">
@@ -69,14 +77,14 @@
                                   (dropdownToggle)="handleDropdownToggle($event)">
                                       <ul class="pt-3 px-3 d-flex flex-column gap-2">
                                         <li>
-                                          <button (click)="editRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
-                                            <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                          <button (click)="editRuc(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                                            <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                             Editar
                                           </button>
                                         </li>
                                         <li>
-                                          <button (click)="deleteRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
-                                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                          <button (click)="deleteRuc(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
+                                            <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                             Eliminar
                                           </button>
                                         </li>
@@ -86,7 +94,8 @@
                               <!-- Aquí se muestra el RUC -->
                               <div class="d-flex align-items-center">
                                   <div class="d-flex justify-content-start flex-column">
-                                      <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.ruc }}</span>
+                                      <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.codigo }}</span>
+                                      {{R.proveedor}}
                                   </div>
                               </div>
                           </div>
@@ -95,28 +104,58 @@
                       <td>
                         <div class="d-flex align-items-center">
                           <div class="d-flex justify-content-start flex-column">
-                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.razonSocial }}</span>
+                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.type_comprobante }}</span>
+                            {{R.forma_pago}}
                           </div>
+                        </div>
+                      </td>
+
+                      <td>
+                          <div class="d-flex justify-content-center flex-column align-items-center">
+                            <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ R.total }}</span>
+                            <span class="badge badge-light-info fs-7 fw-bold">IGV: S/ {{R.igv}}</span>
+                          </div>
+                      </td>
+
+                      <td>
+                        <div class="text-center">
+                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.cuotas_pendientes == 0">Sin cuotas pendientes</span>
+                          <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.cuotas_pendientes > 0">{{R.cuotas_pendientes}} cuotas pendientes</span>
                         </div>
                       </td>
                 
                       <td>
-                        <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 1">Activo</span>
-                        <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 2">Inactivo</span>
+                        <div class="text-center">
+                          <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state == 0">Solicitado</span>
+                          <span class="badge badge-light-info fs-7 fw-bold" *ngIf="R.state == 1">Recepcionado</span>
+                          <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state == 2">Revisado</span>
+                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 3">Parcial</span>
+                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 4">Ingresado</span>
+                        </div>
                       </td>
                 
                       <td>{{ R.created_at }}</td>
                 
                       <!-- Columna Acciones visible solo en pantallas grandes -->
                       <td class="d-none d-md-table-cell">
-                        <button (click)="editRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                          <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                          Editar
-                        </button>
-                        <button (click)="deleteRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                          <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                          Eliminar
-                        </button>
+                        <ul class="pt-3 px-3 d-flex gap-2">
+                          <li>
+                            <button (click)="editRuc(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                              <div class="d-flex flex-column align-items-center gap-1">
+                                <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                Editar
+                              </div>
+                            </button>
+                          </li>
+                          <li>
+                            <button (click)="deleteRuc(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                              <div class="d-flex flex-column align-items-center gap-1">
+                                <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                Eliminar
+                              </div>
+                            </button>
+                          </li>
+                        </ul>
                       </td>
                     </tr>
                   </tbody>

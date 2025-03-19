@@ -105,7 +105,7 @@
                     </select>
                   </div>
 
-                  <div *ngIf="compraForm.get('laboratorio_id')?.value?.length > 0" class="col-md-6 mb-3">
+                  <div *ngIf="compraForm.get('laboratorio_id')?.value?.length > 0" class="col-md-8 mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label m-0">Producto</label>
                         <button type="button" class="btn btn-primary px-4 py-2" (click)="createProducto()">
@@ -182,7 +182,7 @@
                   </div>
                   <div class="col-md-4 mb-3">
                     <div class="d-flex flex-column align-items-center">
-                      <label class="form-label">¿Notificar?</label>
+                      <label class="form-label mb-6 mt-2">¿Notificar?</label>
                       <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                           <label class="form-check-label">No</label>
                           <input class="form-check-input" type="checkbox" formControlName="notificacion"/>
@@ -190,22 +190,29 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4 mb-3">
-                      <label class="form-label">Fecha de ingreso</label>
-                      <input class="form-control" type="date" formControlName="fecha_ingreso"/>
-                  </div>
-                  <div class="col-md-4 mb-3">
-                      <label class="form-label">Mensaje de notificacion</label>
-                      <textarea  class="form-control" rows="1" formControlName="mensaje_notificacion"></textarea>
-                  </div>
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label">Comentario</label>
-                    <textarea  class="form-control" rows="1" formControlName="descripcion"></textarea>
-                </div>
               </div>
           </div>
       </div>
       <!--end::Card header-->
+    </div>
+
+    <div class="card card-flush py-4 mb-3" *ngIf="this.compraForm.get('notificacion')?.value">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Fecha de ingreso</label>
+            <input class="form-control" type="date" formControlName="fecha_ingreso"/>
+          </div>
+          <div class="col-md-4 mb-3">
+              <label class="form-label">Mensaje de notificacion</label>
+              <textarea  class="form-control" rows="1" formControlName="mensaje_notificacion"></textarea>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Comentario</label>
+            <textarea  class="form-control" rows="1" formControlName="descripcion"></textarea>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
     <div class="card card-flush py-4">
@@ -443,7 +450,7 @@
                     <!--end::Content--> 
                   </div>
                   <div *ngIf="COMPRA_DETAILS.length > 0" class="text-end">
-                    <button class="mt-10 btn bg-primary text-white" routerLink="/compras/register/cronograma">
+                    <button class="mt-10 btn bg-primary text-white" (click)="go_calendar()">
                       Siguiente
                     </button>
                   </div>

@@ -21,11 +21,11 @@ export class CompraService {
     public handleErrorService: HandleErrorService,
   ) {}
 
-  listOrdenCompra(page = 1, data:any = null){
+  listOrdenCompra(page = 1, search:string = ''){
     this.loadingService.showLoading('Listando ordenes de compras')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/index?page="+page;
-    return this.http.post(URL,data,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/orden_compra?page="+page+"&search="+search;
+    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
         setTimeout(() => {
@@ -35,7 +35,7 @@ export class CompraService {
     ) 
   }
 
-  updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
+  /* updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
     this.loadingService.showLoading('Actualizando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/"+ID_ORDEN_COMPRA;
@@ -43,9 +43,9 @@ export class CompraService {
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
-  }
+  } */
 
-  deleteOrdenCompra(ID_ORDEN_COMPRA:string){
+  /* deleteOrdenCompra(ID_ORDEN_COMPRA:string){
     this.loadingService.showLoading('Eliminando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/"+ID_ORDEN_COMPRA;
@@ -53,9 +53,9 @@ export class CompraService {
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
-  }
+  } */
 
-  obtenerRecursos(){
+  /* obtenerRecursos(){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/recursos";
     return this.http.get(URL,{headers: headers}).pipe(
@@ -66,7 +66,7 @@ export class CompraService {
         }, ConfigDelay.LOADING_DELAY);
       })
     ) 
-  }
+  } */
 
   //peticiones para registrar
 
@@ -108,8 +108,18 @@ export class CompraService {
     )
   }
 
+  //Recursos para las cuotas del calendario
+  obtenerCuotas(){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/cuotas_pendientes"
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //ACTUALIZAR EL CARRITO DE COMPRAS
   actualizarCarritoCompra() {
-    this.actualizaCarritoCompraSubject.next(true);  // Emitir la señal de actualización
+    this.actualizaCarritoCompraSubject.next(true);
   }
 }

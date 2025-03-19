@@ -1,6 +1,6 @@
 <div class="modal-body">
   <div class="row">
-    <div class="col-lg-2">
+    <div class="col-lg-3">
       <div class="d-flex flex-column gap-2">
         <div class="alert alert-primary">
           <strong>Monto Total: </strong> {{ totalMonto | currency:'S/' }}
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-10">
+    <div class="col-lg-9">
       <ng-container *ngIf="!mostrandoCarga; else loadingTemplate">
         <full-calendar #calendar [options]="calendarOptions">
           <div class="calendar-controls">
@@ -22,7 +22,7 @@
             <button (click)="cambiarVista('timeGridDay')">Día</button>
           </div>
           <ng-template #eventContent let-arg>
-            <b class="mx-1">{{arg.timeText}}</b>
+            <!-- <b class="mx-1">{{arg.timeText}}</b> -->
             <i>S/{{arg.event.extendedProps.amount}} {{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
           </ng-template>
         </full-calendar>
@@ -54,9 +54,9 @@
             </thead>
             <tbody>
               <tr *ngFor="let cuota of eventosPendientes; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ cuota.title }}</td>
-                <td>
+                <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ i + 1 }}</td>
+                <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ cuota.title }}</td>
+                <td (click)="irFecha(cuota.start)" style="cursor: pointer;">
                   <div class="d-flex justify-content-center flex-column align-items-center gap-2">
                     <div class="position-relative d-flex align-items-center">
                       <!--begin::Icon-->
@@ -69,7 +69,7 @@
                         <span class="path6"></span>
                       </i>
                       <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
-                      [(ngModel)]="cuota.start"
+                      [value]="cuota.start | date:'dd-MM-yyyy'"
                       style="width: 150px;">
                     </div>   
                   
@@ -89,7 +89,7 @@
                     </div>
                   </div>
                 </td>
-                <td>
+                <td (click)="irFecha(cuota.start)" style="cursor: pointer;">
                   <div class="d-flex justify-content-center flex-column align-items-center">
                     <div class="position-relative d-flex align-items-center">
                       <!--begin::Icon-->
@@ -102,12 +102,12 @@
                         <span class="path6"></span>
                       </i>
                       <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
-                      [(ngModel)]="cuota.extendedProps.reminder"
+                      [value]="cuota.extendedProps.reminder | date:'dd-MM-yyyy'"
                       style="width: 150px;">
                     </div>
                   </div>
                 </td>
-                <td>{{ cuota.extendedProps.notes }}</td>
+                <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ cuota.extendedProps.notes }}</td>
                 <td class="d-flex justify-content-center flex-column align-items-center">
                   <ul class="list pt-3 px-3 d-flex gap-2">
                     <li>

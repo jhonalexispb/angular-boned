@@ -32,13 +32,9 @@ export class carritoComprasNotificationComponent implements OnInit {
   obtenerListCompra() {
     const compraDetails = localStorage.getItem('compra_details');
     const compraInfo = localStorage.getItem('compra_form');
-    if (compraDetails) {
-      this.productos = JSON.parse(compraDetails);
-    }
-
-    if (compraInfo) {
-      this.compra = JSON.parse(compraInfo);
-    }
+  
+    this.productos = compraDetails ? JSON.parse(compraDetails) : []; // Si no existe, asigna un array vacío
+    this.compra = compraInfo ? JSON.parse(compraInfo) : {}; // Si no existe, asigna un objeto vacío
   }
 }
 

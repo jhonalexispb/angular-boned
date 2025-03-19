@@ -9,6 +9,7 @@ import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service
 import { UserLocalStorageService } from 'src/app/modules/users/service/userLocalStorage.service';
 import { ProductoSeleccionadoComponent } from '../../producto-seleccionado/producto-seleccionado.component';
 import { CompraService } from '../../service/compra.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-compra',
@@ -53,7 +54,8 @@ export class CreateCompraComponent {
     public modalService: NgbModal,
     private cdr: ChangeDetectorRef,
     //llamamos al servicio
-    public compraService: CompraService
+    public compraService: CompraService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -530,5 +532,19 @@ export class CreateCompraComponent {
   
     // Actualizar COMPRA_DETAILS en localStorage
     localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
+  }
+
+  go_calendar(){
+    if(!this.compraForm.get('forma_pago_id')?.value){
+      this.sweet.formulario_invalido('Ups','selecciona una forma de pago')
+      return
+    }
+
+    if(!this.compraForm.get('type_comprobante_compra_id')?.value){
+      this.sweet.formulario_invalido('Ups','selecciona un tipo de comprobante')
+      return
+    }
+
+    this.router.navigate(['/compras/register/cronograma']);
   }
 }

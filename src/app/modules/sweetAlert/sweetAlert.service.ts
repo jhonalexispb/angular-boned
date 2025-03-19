@@ -85,8 +85,9 @@ export class SweetalertService {
     title: string, 
     text: string, 
     image: string, 
+    time: number = 1000,
     showCancelButton: boolean = false, 
-    cancelButtonText: string = 'Cancelar'
+    cancelButtonText: string = 'Cancelar',
   ) {
     return Swal.fire({
       title: title,
@@ -104,7 +105,7 @@ export class SweetalertService {
       willOpen: () => {
         this.updateAlertStyles();
       },
-      timer: 1000, // Cierra el modal después de 3 segundos (3000 ms)
+      timer: time, // Cierra el modal después de 3 segundos (3000 ms)
       timerProgressBar: true, // Muestra una barra de progreso
       willClose: () => {
         // Puedes agregar alguna acción adicional aquí cuando se cierre el modal
@@ -117,8 +118,8 @@ export class SweetalertService {
     this.createAlert(title, text, image);
   }
 
-  successTimmer(title: string, text: string, image: string = '/assets/animations/general/confetti.json') {
-    this.createAlertTimmer(title, text, image);
+  successTimmer(title: string, text: string, image: string = '/assets/animations/general/confetti.json', time:number = 1000) {
+    this.createAlertTimmer(title, text, image, time);
   }
 
   // Mostrar una alerta de error

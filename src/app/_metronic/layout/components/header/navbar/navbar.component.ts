@@ -38,6 +38,8 @@ export class NavbarComponent implements OnInit {
     const compraGuardada = localStorage.getItem('compra_details');
     if (compraGuardada) {
       this.cantidadProductos = JSON.parse(compraGuardada).length;
+    }else{
+      this.cantidadProductos = 0
     }
   }
 }

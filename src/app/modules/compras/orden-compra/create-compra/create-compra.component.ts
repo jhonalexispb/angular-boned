@@ -27,7 +27,6 @@ export class CreateCompraComponent {
   codigo:string = "Calculando codigo..."
   FORMA_PAGO_LIST:any[] = [];
   TIPO_COMPROBANTE_LIST:any[] = [];
-  product_id:any = null
   activeDropdownIndex: number | null = null;
 
   subtotal: number = 0;

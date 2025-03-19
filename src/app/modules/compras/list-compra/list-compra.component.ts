@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
-import { EditRucComponent } from '../../clientes/ruc/edit-ruc/edit-ruc.component';
 import { CompraService } from '../service/compra.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-compra',
@@ -21,6 +21,7 @@ export class ListCompraComponent {
   constructor(
     public modalService: NgbModal,
     public ocService: CompraService,
+    private router: Router
   ){
 
   }
@@ -41,23 +42,8 @@ export class ListCompraComponent {
     this.listOrdenCompra(page);
   }
 
-  editRuc(R:any){
-    const modalRef = this.modalService.open(EditRucComponent,{centered:true, size: 'md'})
-
-    modalRef.componentInstance.RUC_SELECTED = R;
-
-    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
-    modalRef.componentInstance.RucE.subscribe((r:any)=>{
-      const { ruc, isRestored } = r; 
-      if (isRestored) {
-        this.OC_LIST.unshift(ruc);
-      } else {
-        let INDEX = this.OC_LIST.findIndex((b:any) => b.id == R.id);
-        if(INDEX != -1){
-          this.OC_LIST[INDEX] = ruc
-        }
-      }
-    })
+  editOrderCompra(R:any){
+    this.router.navigate([`/compras/edit/edit_compra/${R.id}`]);
   }
 
   deleteRuc(RUC:any){

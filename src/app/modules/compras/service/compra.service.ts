@@ -35,6 +35,16 @@ export class CompraService {
     ) 
   }
 
+  registerOrdenCompra(data:any){
+    this.loadingService.showLoading('Registrando orden de compra')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   /* updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
     this.loadingService.showLoading('Actualizando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
@@ -69,17 +79,6 @@ export class CompraService {
   } */
 
   //peticiones para registrar
-
-  registerOrdenCompra(data:any){
-    this.loadingService.showLoading('Registrando orden de compra')
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra";
-    return this.http.post(URL,data,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
-
   obtenerRecursosParaCrear(){
     this.loadingService.showLoading('Cargando recursos')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
@@ -121,5 +120,26 @@ export class CompraService {
   //ACTUALIZAR EL CARRITO DE COMPRAS
   actualizarCarritoCompra() {
     this.actualizaCarritoCompraSubject.next(true);
+  }
+
+  //peticiones para editar
+  obtenerRecursosParaEditar(){
+    this.loadingService.showLoading('Cargando recursos')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos_editar"
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  obtenerOrdenParaEditar(ID_COMPRA:any){
+    this.loadingService.showLoading('Cargando orden de compra')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
   }
 }

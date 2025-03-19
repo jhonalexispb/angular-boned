@@ -15,7 +15,7 @@ const routes: Routes = [
         /* loadChildren: () => import('./method/method.module').then(m => m.MethodModule) */
       },
       {
-        path: 'edit_compra',
+        path: 'edit_compra/:id',
         component: EditOrderCompraComponent,
         /* loadChildren: () => import('./bank/bank.module').then(m => m.BankModule) */
       }

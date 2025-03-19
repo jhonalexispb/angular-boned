@@ -114,7 +114,7 @@ export class CronogramaComponent {
             
         }
       });
-      totalContainer.innerHTML = `<b class="bg-danger text-white p-2 responsive-text rounded">S/${totalAmount.toFixed(2)}</b>`;
+      totalContainer.innerHTML = `<b class="bg-info text-white p-2 responsive-text rounded">S/${totalAmount.toFixed(2)}</b>`;
     }
   }
 

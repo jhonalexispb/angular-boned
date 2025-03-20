@@ -10,7 +10,7 @@ const routes: Routes = [
     component: EditCompraComponent,
     children: [
       {
-        path: 'edit_order_compra_cronograma',
+        path: 'edit_order_compra_cronograma/:id',
         component: EditCronogramaOrderCompraComponent,
         /* loadChildren: () => import('./method/method.module').then(m => m.MethodModule) */
       },

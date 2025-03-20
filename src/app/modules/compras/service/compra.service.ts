@@ -142,4 +142,13 @@ export class CompraService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  obtenerCuotasParaEditarOrdenCompra(ID_COMPRA:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos_editar/cuotas/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

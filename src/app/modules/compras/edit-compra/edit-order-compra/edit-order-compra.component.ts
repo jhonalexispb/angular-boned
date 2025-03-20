@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CompraService } from '../../service/compra.service';
@@ -16,7 +16,7 @@ import { forkJoin } from 'rxjs';
   templateUrl: './edit-order-compra.component.html',
   styleUrls: ['./edit-order-compra.component.scss']
 })
-export class EditOrderCompraComponent {
+export class EditOrderCompraComponent implements OnInit {
 
   ID_COMPRA!: string;
   compraForm: FormGroup;
@@ -58,7 +58,8 @@ export class EditOrderCompraComponent {
     public compraService: CompraService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.ID_COMPRA = this.route.snapshot.paramMap.get('id') || '';
@@ -66,6 +67,7 @@ export class EditOrderCompraComponent {
     this.loadingProducts = true;
 
     this.compraForm = this.fb.group({
+      compra_id: [this.ID_COMPRA, [Validators.required]],
       laboratorio_id: [[], [Validators.required]],
       proveedor_id: [null, [Validators.required]],
       proveedor_name: ['', [Validators.required]],
@@ -119,11 +121,27 @@ export class EditOrderCompraComponent {
         this.totalCarrito = orden.order_compra.total
         this.COMPRA_DETAILS = orden.order_compra_detail
 
-        this.setearIgv()
-
         this.onProveedorChange(orden.order_compra.proveedor)
         this.loading = false;
         this.loadingProducts = false;
+
+
+        const storedCompra = localStorage.getItem('compra_edit_selected');
+        let storedCompraData = storedCompra ? JSON.parse(storedCompra) : null;
+
+        // Verificar si storedCompraData tiene un compra_id y si coincide con this.ID_COMPRA
+        if (!storedCompraData || storedCompraData.compra_id !== this.ID_COMPRA) {
+          localStorage.setItem('compra_edit_selected', JSON.stringify([]));
+          localStorage.setItem('compra_edit_detail_selected', JSON.stringify([]));
+        }else{
+          /* this.sweet.alerta('Atencion','La orden de compra estuvo siendo editada con anterioridad') */
+          const compraStoredDetail = localStorage.getItem('compra_edit_detail_selected');
+          let storedCompraDetail = compraStoredDetail ? JSON.parse(compraStoredDetail) : null;
+
+          this.COMPRA_DETAILS = storedCompraDetail
+        }
+
+        this.setearIgv()
       }
     });
   }
@@ -476,7 +494,6 @@ export class EditOrderCompraComponent {
     let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
     item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
   }
-  
 
   validarPrecio(event: any, index: number, tipo: string) {
     let valor = event.target.value;
@@ -520,8 +537,6 @@ export class EditOrderCompraComponent {
   toggleCondicionVencimiento(index: number) {
     let item = this.COMPRA_DETAILS[index];
     if (!item) return;
-  
-    // Alternar el valor de condicion_vencimiento entre 0 y 1
     item.condicion_vencimiento = item.condicion_vencimiento === 1 ? 0 : 1;
   }
 
@@ -536,6 +551,14 @@ export class EditOrderCompraComponent {
       return
     }
 
-    this.router.navigate(['/compras/register/cronograma']);
+    if(this.COMPRA_DETAILS.length < 0){
+      this.sweet.formulario_invalido('Ups','la lista de productos esta vacia')
+      return
+    }
+
+    localStorage.setItem('compra_edit_selected', JSON.stringify(this.compraForm.value));
+    localStorage.setItem('compra_edit_detail_selected', JSON.stringify(this.COMPRA_DETAILS));
+
+    this.router.navigate([`/compras/edit/edit_order_compra_cronograma/${this.ID_COMPRA}`]);
   }
 }

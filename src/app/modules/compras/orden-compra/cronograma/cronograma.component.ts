@@ -125,7 +125,8 @@ export class CronogramaComponent {
         ...evento,
         extendedProps: {
             ...evento.extendedProps,
-            amount: parseFloat(evento.extendedProps?.amount) || 0 // Convertir a float y manejar valores nulos
+            amount: parseFloat(evento.extendedProps?.amount) || 0, // Convertir a float y manejar valores nulos
+            saldo: parseFloat(evento.extendedProps?.saldo) || 0
         },
         editable: false
       }));
@@ -171,6 +172,7 @@ export class CronogramaComponent {
     modalRef.componentInstance.eventDate = date;
     modalRef.componentInstance.proveedor = this.proveedor;
     modalRef.componentInstance.MONTO_PENDIENTE = this.totalPendiente
+    modalRef.componentInstance.LOCAL_STG = 'eventos_compra_cuotas'
 
     // Escuchar el evento emitido desde el componente hijo
     modalRef.componentInstance.eventCreated.subscribe((eventData:any) => {
@@ -204,6 +206,7 @@ export class CronogramaComponent {
     const modalRef = this.modalService.open(EditEventoComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.EVENTO_SELECTED = event
     modalRef.componentInstance.MONTO_PENDIENTE = this.totalPendiente
+    modalRef.componentInstance.LOCAL_STG = 'eventos_compra_cuotas'
     // Pasar la fecha seleccionada al modal
 
     // Escuchar el evento emitido desde el componente hijo
@@ -373,6 +376,7 @@ export class CronogramaComponent {
             amount: cuota.extendedProps.amount,
             notes: cuota.extendedProps.notes,
             reminder: cuota.extendedProps.reminder,
+            dias_reminder: cuota.extendedProps.dias_reminder,
             title: cuota.title
           }))
         };

@@ -27,6 +27,9 @@ export class ListCompraComponent {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('compra_edit_selected');
+    localStorage.removeItem('compra_edit_detail_selected');
+    localStorage.removeItem('eventos_edit_compra_cuotas');
     this.listOrdenCompra();
   }
 

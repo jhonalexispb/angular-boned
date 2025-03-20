@@ -435,7 +435,10 @@
                     </div> 
                     <!--end::Content--> 
                   </div>
-                  <div *ngIf="COMPRA_DETAILS.length > 0" class="text-end">
+                  <div *ngIf="COMPRA_DETAILS.length > 0" class="d-flex justify-content-between">
+                    <button class="mt-10 btn bg-primary text-white" routerLink="/compras/list">
+                      Salir
+                    </button>
                     <button class="mt-10 btn bg-primary text-white" (click)="go_calendar()">
                       Siguiente
                     </button>

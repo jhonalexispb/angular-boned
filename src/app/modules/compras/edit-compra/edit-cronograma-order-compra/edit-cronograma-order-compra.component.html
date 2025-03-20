@@ -1,1 +1,132 @@
-<p>edit-cronograma-order-compra works!</p>
+<div class="modal-body">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="d-flex flex-column gap-2">
+          <div class="alert alert-primary">
+            <strong>Monto Total: </strong> {{ totalMonto | currency:'S/' }}
+          </div>
+          <div class="alert alert-info">
+            <strong>Monto Pendiente: </strong> {{ totalPendiente | currency:'S/'}}
+          </div>
+          <div class="alert alert-success">
+            <strong>Cuotas: </strong> {{ cuotas }}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <ng-container *ngIf="!mostrandoCarga; else loadingTemplate">
+          <full-calendar #calendar [options]="calendarOptions">
+            <ng-template #eventContent let-arg>
+              <!-- <b class="mx-1">{{arg.timeText}}</b> -->
+              <i>S/{{arg.event.extendedProps.saldo}} {{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
+            </ng-template>
+          </full-calendar>
+        </ng-container>
+        <ng-template #loadingTemplate>
+          <div class="calendar-loading">
+            <p>Cargando calendario...</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+      
+      <div *ngIf="totalMonto != totalPendiente" class="card mt-8">
+        <div class="card-header pt-7">
+          <h3>Resumen de Cuotas</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table align-middle table-row-dashed fs-7 gy-5">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center">#</th>
+                  <th class="text-center">Descripcion</th>
+                  <th class="text-center">Fecha de pago</th>
+                  <th class="text-center">Recordatorio</th>
+                  <th class="text-center">Comentario</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cuota of eventosPendientes; let i = index">
+                  <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ i + 1 }}</td>
+                  <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ cuota.title }}</td>
+                  <td (click)="irFecha(cuota.start)" style="cursor: pointer;">
+                    <div class="d-flex justify-content-center flex-column align-items-center gap-2">
+                      <div class="position-relative d-flex align-items-center">
+                        <!--begin::Icon-->
+                        <i class="ki-duotone ki-calendar-tick  fs-2 position-absolute mx-4 text-info">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                          <span class="path3"></span>
+                          <span class="path4"></span>
+                          <span class="path5"></span>
+                          <span class="path6"></span>
+                        </i>
+                        <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
+                        [value]="cuota.start | date:'dd-MM-yyyy'"
+                        style="width: 150px;">
+                      </div>   
+                    
+                      <div class="position-relative d-flex align-items-center">
+                        <!--begin::Icon-->
+                        <i class="ki-duotone ki-bill fs-2 position-absolute mx-4 text-success">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                          <span class="path3"></span>
+                          <span class="path4"></span>
+                          <span class="path5"></span>
+                          <span class="path6"></span>
+                        </i>
+                        <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
+                        [(ngModel)]="cuota.extendedProps.saldo"
+                        style="width: 150px;">
+                      </div>
+                    </div>
+                  </td>
+                  <td (click)="irFecha(cuota.start)" style="cursor: pointer;">
+                    <div class="d-flex justify-content-center flex-column align-items-center">
+                      <div class="position-relative d-flex align-items-center">
+                        <!--begin::Icon-->
+                        <i class="ki-duotone ki-calendar-tick  fs-2 position-absolute mx-4 text-primary">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                          <span class="path3"></span>
+                          <span class="path4"></span>
+                          <span class="path5"></span>
+                          <span class="path6"></span>
+                        </i>
+                        <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
+                        [value]="cuota.extendedProps.reminder | date:'dd-MM-yyyy'"
+                        style="width: 150px;">
+                      </div>
+                    </div>
+                  </td>
+                  <td (click)="irFecha(cuota.start)" style="cursor: pointer;">{{ cuota.extendedProps.notes }}</td>
+                  <td class="d-flex justify-content-center flex-column align-items-center">
+                    <ul class="list pt-3 px-3 d-flex gap-2">
+                      <li>
+                        <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100" (click)="borrar_evento(cuota)">
+                          <div class="d-flex flex-column align-items-center gap-1">
+                            <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                            Eliminar
+                          </div>
+                        </button>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="my-5 d-flex justify-content-between">
+        <button class="btn bg-primary text-white" (click)="regresar_compra()">
+        Regresar a la compra
+        </button>
+        <button class="btn bg-primary text-white" (click)="onSubmit()">
+          Registrar compra
+        </button>
+      </div>
+    </div>

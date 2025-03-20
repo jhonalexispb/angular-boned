@@ -14,6 +14,7 @@ export class EditEventoComponent {
   @Output() eventEdit = new EventEmitter<any>();
   @Input() EVENTO_SELECTED:any
   @Input() MONTO_PENDIENTE:any
+  @Input() LOCAL_STG:any
   sweet:any = new SweetalertService
 
   constructor(
@@ -24,7 +25,7 @@ export class EditEventoComponent {
   ngOnInit(): void {
     this.eventoForm = this.fb.group({
       name: [this.EVENTO_SELECTED.title,[Validators.required]],
-      monto: [this.EVENTO_SELECTED.extendedProps?.amount, [Validators.required]],
+      monto: [this.EVENTO_SELECTED.extendedProps?.saldo, [Validators.required]],
       comentario: [this.EVENTO_SELECTED.extendedProps?.notes],
       fecha_pago: [{ value: this.formatDate(this.EVENTO_SELECTED.start), disabled: true }, [Validators.required]],
       dias_despues: [this.EVENTO_SELECTED.extendedProps?.dias_reminder, [Validators.required]],
@@ -32,8 +33,7 @@ export class EditEventoComponent {
     });
     this.MONTO_PENDIENTE = this.MONTO_PENDIENTE + this.eventoForm.get('monto')?.value
     this.MONTO_PENDIENTE = parseFloat(this.MONTO_PENDIENTE.toFixed(2));
-    this.calcularRecordatorios()
-    console.log(this.EVENTO_SELECTED.start)
+    this.calcularRecordatorioInicial()
   }
 
   submitEvent() {
@@ -50,18 +50,19 @@ export class EditEventoComponent {
         className: 'bg-primary text-white',
         extendedProps: {
           amount: this.eventoForm.get('monto')?.value,
+          saldo: this.eventoForm.get('monto')?.value,
           notes: this.eventoForm.get('comentario')?.value,
           dias_reminder: this.eventoForm.get('dias_despues')?.value,
           reminder: this.eventoForm.get('fecha_recordatorio')?.value
         }
       };
   
-      let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
+      let eventosGuardados = JSON.parse(localStorage.getItem(this.LOCAL_STG) || '[]');
       const index = eventosGuardados.findIndex((eventoGuardado: any) => Number(eventoGuardado.id) === Number(evento.id));
       if (index !== -1) {
         eventosGuardados[index] = evento;
       }
-      localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
+      localStorage.setItem(this.LOCAL_STG, JSON.stringify(eventosGuardados));
       this.eventEdit.emit(evento);
       this.modal.close();
     } else {
@@ -73,11 +74,6 @@ export class EditEventoComponent {
     const fechaPago = this.eventoForm.get('fecha_pago')?.value;
     const diasDespues = this.eventoForm.get('dias_despues')?.value;
 
-    if(!diasDespues){
-      this.eventoForm.patchValue({fecha_recordatorio : null})
-      return
-    }
-
     if (fechaPago) {
         const fechaPagoDate = new Date(fechaPago);
 
@@ -87,6 +83,27 @@ export class EditEventoComponent {
         this.eventoForm.patchValue({fecha_recordatorio : dia_formateado})
     }
   }
+
+  
+  calcularRecordatorioInicial() {
+    const fechaPago = this.eventoForm.get('fecha_pago')?.value;
+    const diasDespues = this.eventoForm.get('dias_despues')?.value;
+    const fechaRecordatorio = this.eventoForm.get('fecha_recordatorio')?.value;
+
+    if(diasDespues){
+      return
+    }
+
+    if (fechaPago) {
+        const fechaPagoDate = new Date(fechaPago);
+        const fechaRecordatorioDate = new Date(fechaRecordatorio);
+        const diferenciaMs = fechaRecordatorioDate.getTime() - fechaPagoDate.getTime();
+        const diasDespues = Math.ceil(diferenciaMs / (1000 * 60 * 60 * 24));
+        this.eventoForm.patchValue({ dias_despues: diasDespues
+      });
+    }
+  }
+  
 
   formatDate(date: Date): string {
       return date.toISOString().split('T')[0];

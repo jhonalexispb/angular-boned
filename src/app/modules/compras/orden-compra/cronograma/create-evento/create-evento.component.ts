@@ -15,6 +15,7 @@ export class CreateEventoComponent {
   @Input() eventDate:any
   @Input() proveedor:any
   @Input() MONTO_PENDIENTE:any
+  @Input() LOCAL_STG:any
   sweet:any = new SweetalertService
 
   constructor(
@@ -41,7 +42,7 @@ export class CreateEventoComponent {
       return
     }
     if (this.eventoForm.valid) {
-      let eventosGuardados = JSON.parse(localStorage.getItem('eventos_compra_cuotas') || '[]');
+      let eventosGuardados = JSON.parse(localStorage.getItem(this.LOCAL_STG) || '[]');
       let nuevoId = eventosGuardados.length > 0 ? eventosGuardados[eventosGuardados.length - 1].id + 1 : 1;
   
       const evento = {
@@ -52,6 +53,7 @@ export class CreateEventoComponent {
         className: 'bg-primary text-white',
         extendedProps: {
           amount: this.eventoForm.get('monto')?.value,
+          saldo: this.eventoForm.get('monto')?.value,
           notes: this.eventoForm.get('comentario')?.value,
           dias_reminder: this.eventoForm.get('dias_despues')?.value,
           reminder: this.eventoForm.get('fecha_recordatorio')?.value
@@ -59,7 +61,7 @@ export class CreateEventoComponent {
       };
   
       eventosGuardados.push(evento);
-      localStorage.setItem('eventos_compra_cuotas', JSON.stringify(eventosGuardados));
+      localStorage.setItem(this.LOCAL_STG, JSON.stringify(eventosGuardados));
   
       this.eventCreated.emit(evento);
       this.modal.close();

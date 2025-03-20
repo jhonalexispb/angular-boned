@@ -23,7 +23,7 @@
           </div>
           <ng-template #eventContent let-arg>
             <!-- <b class="mx-1">{{arg.timeText}}</b> -->
-            <i>S/{{arg.event.extendedProps.amount}} {{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
+            <i>S/{{arg.event.extendedProps.saldo}} {{arg.event.title.length > 25 ? (arg.event.title | slice:0:25) + '...' : arg.event.title}}</i>
           </ng-template>
         </full-calendar>
       </ng-container>
@@ -84,7 +84,7 @@
                         <span class="path6"></span>
                       </i>
                       <input disabled type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
-                      [(ngModel)]="cuota.extendedProps.amount"
+                      [(ngModel)]="cuota.extendedProps.saldo"
                       style="width: 150px;">
                     </div>
                   </div>

@@ -50,10 +50,6 @@
                       <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                         Pagos
                       </th>
-
-                      <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
-                        Estado
-                      </th>
                 
                       <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                         Fecha de registro
@@ -69,41 +65,63 @@
                   <tbody class="fw-semibold text-gray-600">
                     <tr *ngFor="let R of OC_LIST; let index = index">
                       <td>
-                          <div class="d-flex justify-content-start align-items-center gap-2">
-                              <div class="d-md-none">
-                                  <app-buttons-group-list
-                                  [index]="index"
-                                  [activeDropdownIndex]="activeDropdownIndex"
-                                  (dropdownToggle)="handleDropdownToggle($event)">
-                                      <ul class="pt-3 px-3 d-flex flex-column gap-2">
-                                        <li>
-                                          <button (click)="editOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
-                                            <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
-                                            Editar
-                                          </button>
-                                        </li>
-                                        <li>
-                                          <button (click)="deleteRuc(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
-                                            <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                            Eliminar
-                                          </button>
-                                        </li>
-                                      </ul>
-                                  </app-buttons-group-list>
-                              </div>
-                              <!-- Aquí se muestra el RUC -->
-                              <div class="d-flex align-items-center">
-                                  <div class="d-flex justify-content-start flex-column">
-                                      <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.codigo }}</span>
-                                      {{R.proveedor}}
-                                  </div>
-                              </div>
-                          </div>
+                        <div class="text-center mb-2">
+                          <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state == 0">Solicitado</span>
+                          <span class="badge badge-light-info fs-7 fw-bold" *ngIf="R.state == 1">Recepcionado</span>
+                          <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state == 2">Revisado</span>
+                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 3">Parcial</span>
+                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 4">Ingresado</span>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <div class="d-md-none">
+                                <app-buttons-group-list
+                                [index]="index"
+                                [activeDropdownIndex]="activeDropdownIndex"
+                                (dropdownToggle)="handleDropdownToggle($event)">
+                                    <ul class="pt-3 px-3 d-flex flex-column no-wrap gap-2">
+                                      <li>
+                                        <button (click)="verProductosOrderCompra(R)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm">
+                                          <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                            <span class="path6"></span>
+                                            <span class="path7"></span>
+                                            <span class="path8"></span>
+                                          </i>
+                                          Productos
+                                        </button>
+                                      </li>
+                                      <li *ngIf="R.state != 4">
+                                        <button (click)="editOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                                          <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+                                          Editar
+                                        </button>
+                                      </li>
+                                      <li *ngIf="R.state == 0">
+                                        <button (click)="deleteOrdenCompra(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
+                                          <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                          Eliminar
+                                        </button>
+                                      </li>
+                                    </ul>
+                                </app-buttons-group-list>
+                            </div>
+                            <!-- Aquí se muestra el RUC -->
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center flex-column">
+                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.codigo }}</span>
+                                    {{R.proveedor}}
+                                </div>
+                            </div>
+                        </div>
                       </td>
                 
                       <td>
-                        <div class="d-flex align-items-center">
-                          <div class="d-flex justify-content-start flex-column">
+                        <div class="d-flex align-items-center justify-content-center">
+                          <div class="d-flex align-items-center flex-column">
                             <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.type_comprobante }}</span>
                             {{R.forma_pago}}
                           </div>
@@ -126,20 +144,31 @@
                 
                       <td>
                         <div class="text-center">
-                          <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state == 0">Solicitado</span>
-                          <span class="badge badge-light-info fs-7 fw-bold" *ngIf="R.state == 1">Recepcionado</span>
-                          <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state == 2">Revisado</span>
-                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 3">Parcial</span>
-                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 4">Ingresado</span>
+                          {{ R.created_at }}
                         </div>
                       </td>
                 
-                      <td>{{ R.created_at }}</td>
-                
                       <!-- Columna Acciones visible solo en pantallas grandes -->
                       <td class="d-none d-md-table-cell">
-                        <ul class="pt-3 px-3 d-flex gap-2">
+                        <ul class="pt-3 px-3 d-flex gap-2 justify-content-center">
                           <li>
+                            <button (click)="verProductosOrderCompra(R)" class="text-primary btn btn-bg-light btn-active-color-primary btn-sm">
+                              <div class="d-flex flex-column align-items-center gap-1">
+                                <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                  <span class="path4"></span>
+                                  <span class="path5"></span>
+                                  <span class="path6"></span>
+                                  <span class="path7"></span>
+                                  <span class="path8"></span>
+                                </i>
+                                Productos
+                              </div>
+                            </button>
+                          </li>
+                          <li *ngIf="R.state != 4">
                             <button (click)="editOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                               <div class="d-flex flex-column align-items-center gap-1">
                                 <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
@@ -147,8 +176,8 @@
                               </div>
                             </button>
                           </li>
-                          <li>
-                            <button (click)="deleteRuc(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                          <li *ngIf="R.state == 0">
+                            <button (click)="deleteOrdenCompra(R)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                               <div class="d-flex flex-column align-items-center gap-1">
                                 <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
                                 Eliminar

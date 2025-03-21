@@ -55,7 +55,7 @@ export class CompraService {
     )
   }
 
-  /* deleteOrdenCompra(ID_ORDEN_COMPRA:string){
+  deleteOrdenCompra(ID_ORDEN_COMPRA:string){
     this.loadingService.showLoading('Eliminando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/"+ID_ORDEN_COMPRA;
@@ -63,7 +63,7 @@ export class CompraService {
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
-  } */
+  }
 
   /* obtenerRecursos(){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
@@ -146,6 +146,16 @@ export class CompraService {
   obtenerCuotasParaEditarOrdenCompra(ID_COMPRA:any){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/recursos_editar/cuotas/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //recursos extras
+  obtenerProductosOrdenCompra(ID_COMPRA:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos/productos/"+ID_COMPRA
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

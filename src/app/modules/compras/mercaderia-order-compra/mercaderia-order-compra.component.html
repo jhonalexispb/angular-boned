@@ -1,0 +1,117 @@
+
+<div class="card card-flush py-4 flex-row-fluid overflow-hidden">
+    <!--begin::Card header-->
+    <div class="card-header">
+        <div class="card-title">
+            <h2>Orden: {{ORDER_COMPRA.codigo}} <span class="text-primary">{{ORDER_COMPRA.proveedor}}</span> </h2>
+        </div>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <app-div-loading *ngIf="isLoading; else showData">
+        </app-div-loading>
+        <ng-template #showData>
+            <div class="table-responsive">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                    <thead>
+                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-175px">Producto</th>
+                            <th class="min-w-100px text-center">Cantidad</th>
+                            <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                            <th class="min-w-70px text-center">Precio compra</th>
+                            <th class="min-w-100px text-center">Precio de venta</th>
+                            <th class="min-w-100px text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fw-semibold text-gray-600">
+                        <tr *ngFor="let p of PRODUCTS">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <!--begin::Thumbnail-->
+                                    <div class="symbol symbol-50px">
+                                        <span class="symbol-label" [ngStyle]="{'background-image': 'url(' + p.imagen + ')'}"></span>
+                                    </div>
+                                    <!--end::Thumbnail-->
+    
+                                    <!--begin::Title-->
+                                    <div class="ms-5">
+                                        <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
+                                        <div class="fs-7">{{p.caracteristicas}}</div>
+                                        <div class="fs-7">SKU: {{p.sku}}</div>
+                                    </div>
+                                    <!--end::Title-->
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {{p.cantidad}}
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                    <span class="badge badge-light-success fs-5 fw-bold"
+                                        *ngIf="p.condicion_vencimiento == 1">
+                                    Igual a
+                                    </span>
+
+                                    <span class="badge badge-light-primary fs-5 fw-bold"
+                                        *ngIf="p.condicion_vencimiento == 0">
+                                    Mayor o igual a
+                                    </span>
+
+                                    {{p.fecha_vencimiento}}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                S/ {{p.pcompra}}    
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center flex-column align-items-center gap-2">
+                                    <span>S/ {{p.pventa}}</span>
+                                    <span class="badge badge-light-success fs-5 fw-bold">{{p.margen_minimo}} %</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="text-gray-900 fw-bold">S/ {{ p.total | number:'1.2-2' }}</span>
+                                <br>
+                                <span class="badge badge-light-warning fs-7 fw-bold">G: S/ {{ p.ganancia | number:'1.2-2' }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="text-end">
+                                Subtotal
+                            </td>
+                            <td class="text-end">
+                                S/ {{ subtotal | number:'1.2-2' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="text-end">
+                                Impuesto (18%)
+                            </td>
+                            <td class="text-end">
+                                S/ {{ORDER_COMPRA.igv}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="fs-3 text-gray-900 text-end">
+                                Total
+                            </td>
+                            <td class="text-gray-900 fs-3 fw-bolder text-end">
+                                S/ {{ORDER_COMPRA.total}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--end::Table-->
+            </div>
+        </ng-template>
+        <div class="d-flex justify-content-center">
+            <button type="reset" id="kt_modal_add_event_cancel" class="btn btn-light me-3 mt-5" (click)="modal.dismiss()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+    <!--end::Card body-->
+</div>

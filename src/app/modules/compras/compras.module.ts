@@ -18,6 +18,7 @@ import { DropImageModule } from 'src/app/components/drop-image/drop-image.module
 import { ProductoSeleccionadoComponent } from './producto-seleccionado/producto-seleccionado.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
+import { MercaderiaOrderCompraComponent } from './mercaderia-order-compra/mercaderia-order-compra.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
     ListCompraComponent,
     EditCompraComponent,
     ProductoSeleccionadoComponent,
-    OrdenCompraComponent
+    OrdenCompraComponent,
+    MercaderiaOrderCompraComponent
   ],
   imports: [
     CommonModule,

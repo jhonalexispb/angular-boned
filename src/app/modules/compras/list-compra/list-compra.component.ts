@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CompraService } from '../service/compra.service';
 import { Router } from '@angular/router';
+import { MercaderiaOrderCompraComponent } from '../mercaderia-order-compra/mercaderia-order-compra.component';
 
 @Component({
   selector: 'app-list-compra',
@@ -49,17 +50,22 @@ export class ListCompraComponent {
     this.router.navigate([`/compras/edit/edit_compra/${R.id}`]);
   }
 
-  deleteRuc(RUC:any){
-    /* this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el cliente: ${RUC.ruc} ${RUC.razonSocial}?`).then((result:any) => {
+  deleteOrdenCompra(R:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la orden de compra: ${R.codigo} ${R.proveedor}?`).then((result:any) => {
       if (result.isConfirmed) {
-        this.ocService.deleteRuc(RUC.id).subscribe({
+        this.ocService.deleteOrdenCompra(R.id).subscribe({
           next: (resp: any) => {
-            this.OC_LIST = this.OC_LIST.filter((sucurs:any) => sucurs.id !== RUC.id); // Eliminamos el rol de la lista
-            this.sweet.success('Eliminado', 'El cliente ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
+            this.OC_LIST = this.OC_LIST.filter((sucurs:any) => sucurs.id !== R.id); // Eliminamos el rol de la lista
+            this.sweet.success('Eliminado', resp.message,'/assets/animations/general/borrado_exitoso.json');
           },
         })
       }
-    }); */
+    });
+  }
+
+  verProductosOrderCompra(R:any){
+    const modalRef = this.modalService.open(MercaderiaOrderCompraComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.ORDER_COMPRA = R;
   }
 
   // Método que se ejecuta cuando un dropdown es activado o desactivado

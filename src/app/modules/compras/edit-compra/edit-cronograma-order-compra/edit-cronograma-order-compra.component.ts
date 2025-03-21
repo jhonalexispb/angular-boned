@@ -371,6 +371,7 @@ export class EditCronogramaOrderCompraComponent {
 
         const data = {
           compra_form: {
+            compra_id: compraForm.compra_id,
             proveedor_id: compraForm.proveedor_id,
             type_comprobante_compra_id: compraForm.type_comprobante_compra_id || '',
             forma_pago_id: compraForm.forma_pago_id || '',
@@ -399,11 +400,14 @@ export class EditCronogramaOrderCompraComponent {
             saldo: cuota.extendedProps.saldo,
             notes: cuota.extendedProps.notes,
             reminder: cuota.extendedProps.reminder,
+            dias_reminder: cuota.extendedProps.dias_reminder,
             title: cuota.title
           }))
         };
 
-        this.compraService.registerOrdenCompra(data).subscribe({
+        console.log(data)
+
+        this.compraService.updateOrdenCompra(this.ID_COMPRA,data).subscribe({
           next: (resp: any) => {
             localStorage.removeItem("compra_edit_selected");
             localStorage.removeItem("compra_edit_detail_selected");

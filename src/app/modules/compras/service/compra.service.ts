@@ -45,7 +45,7 @@ export class CompraService {
     )
   }
 
-  /* updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
+  updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
     this.loadingService.showLoading('Actualizando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/"+ID_ORDEN_COMPRA;
@@ -53,7 +53,7 @@ export class CompraService {
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
-  } */
+  }
 
   /* deleteOrdenCompra(ID_ORDEN_COMPRA:string){
     this.loadingService.showLoading('Eliminando orden de compra')

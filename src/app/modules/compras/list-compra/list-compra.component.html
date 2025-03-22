@@ -137,8 +137,13 @@
 
                       <td>
                         <div class="text-center">
-                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.cuotas_pendientes == 0">Sin cuotas pendientes</span>
-                          <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.cuotas_pendientes > 0">{{R.cuotas_pendientes}} cuotas pendientes</span>
+                          <ng-container *ngIf="R.cuotas.length > 0; else sinCuotas">
+                            <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.cuotas_pendientes == 0">Sin cuotas pendientes</span>
+                            <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.cuotas_pendientes > 0">{{R.cuotas_pendientes}} cuotas pendientes</span>
+                          </ng-container>
+                          <ng-template #sinCuotas>
+                            <span class="badge badge-light-danger fs-7 fw-bold">Sin cuotas programadas</span>
+                          </ng-template>
                         </div>
                       </td>
                 

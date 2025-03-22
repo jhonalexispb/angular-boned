@@ -546,4 +546,70 @@ export class CreateCompraComponent {
 
     this.router.navigate(['/compras/register/cronograma']);
   }
+
+  onSubmit() {
+    if(!this.compraForm.get('forma_pago_id')?.value){
+      this.sweet.formulario_invalido('Ups','selecciona una forma de pago')
+      return
+    }
+
+    if(!this.compraForm.get('type_comprobante_compra_id')?.value){
+      this.sweet.formulario_invalido('Ups','selecciona un tipo de comprobante')
+      return
+    }
+    
+    if(this.totalCarrito <= 0){
+      this.sweet.alerta('Alerta','tu carrito esta vacio')
+      return
+    }
+
+    this.sweet.confirmar('¿Estas seguro?',`¿Desea registrar la compra?`,'/assets/animations/general/ojitos.json','Si, hagamoslo','Cancelar').then((result:any) => {
+      if (result.isConfirmed) {
+        const compraForm = JSON.parse(localStorage.getItem("compra_form") || "{}");
+        const compraDetails = JSON.parse(localStorage.getItem("compra_details") || "[]");
+
+        const data = {
+          compra_form: {
+            proveedor_id: compraForm.proveedor_id,
+            type_comprobante_compra_id: compraForm.type_comprobante_compra_id || '',
+            forma_pago_id: compraForm.forma_pago_id || '',
+            igv: compraForm.igv || false,
+            total: compraForm.total || 0,
+            impuesto: compraForm.impuesto || 0,
+            sub_total: compraForm.sub_total || 0,
+            notificacion: compraForm.notificacion,
+            mensaje_notificacion: compraForm.mensaje_notificacion || '',
+            fecha_ingreso: compraForm.fecha_ingreso || '',
+            descripcion: compraForm.descripcion || '',
+          },
+          compra_details: compraDetails.map((item: any) => ({
+            producto_id: item.producto_id,
+            cantidad: item.cantidad,
+            condicion_vencimiento: item.condicion_vencimiento,
+            margen_ganancia: item.margen_minimo,
+            fecha_vencimiento: item.fecha_vencimiento,
+            pcompra: item.pcompra,
+            pventa: item.pventa,
+            total: item.total,
+          }))
+        };
+
+        this.compraService.registerOrdenCompra(data).subscribe({
+          next: (resp: any) => {
+            localStorage.removeItem("compra_form");
+            localStorage.removeItem("compra_details");
+            this.compraService.actualizarCarritoCompra();
+            setTimeout(() => {
+              this.router.navigate(['/compras/list']);
+        
+              this.sweet.success(
+                '¡Éxito!',
+                'La orden de compra se registró correctamente'
+              );
+            }, 100);
+          },
+        });
+      }
+    })
+  }
 }

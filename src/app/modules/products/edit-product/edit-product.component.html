@@ -500,10 +500,17 @@
                             class="form-control mb-2"
                             placeholder="Product price"
                           />
-  
-                          <div class="text-muted fs-7">
-                            Recuerda que el precio es en base al laboratorio
-                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="required form-label">Afectación IGV</label>
+                        
+                          <select class="form-select mb-2" formControlName="afectacion_igv_id">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let afectacion of AFECTACION_IGV" [value]="afectacion.id">
+                              {{ afectacion.descripcion }} ({{afectacion.detalle}})
+                            </option>
+                          </select>
                         </div>
     
                         <!-- <div class="col-4">

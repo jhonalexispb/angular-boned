@@ -16,6 +16,7 @@ export class ProductoSeleccionadoComponent {
   @Input() PRODUCTO_ID:any
   @Input() PRODUCT_SELECTED:any
   @Input() LABORATORIO_ID:any
+  @Input() BONIFICACION:boolean = false
   @ViewChild('cantidad') cantidadInput: ElementRef
   DATA_PRODUCT_SELECTED:any = {
     'stock' : 0,
@@ -64,7 +65,15 @@ export class ProductoSeleccionadoComponent {
       condicion_vencimiento: [0],
       total:[{ value: '0.00', disabled: true }],
       ganancia:[{ value: '0.00', disabled: true }],
+      bonificacion: [false]
     });
+
+    if(this.BONIFICACION){
+      this.productoInsertForm.get('pcompra')?.clearValidators();
+      this.productoInsertForm.patchValue({pcompra: 0})
+      this.productoInsertForm.patchValue({pventa: this.DATA_PRODUCT_SELECTED.pventa})
+      this.productoInsertForm.patchValue({bonificacion: true})
+    }
 
     this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {
       this.calcularTotal_Ganancia();
@@ -93,10 +102,12 @@ export class ProductoSeleccionadoComponent {
     const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
     const margen = Number(this.productoInsertForm.get('margen_minimo')?.value) || 0;
   
-    if (pcompra <= 0) {
-      this.productoInsertForm.patchValue({ pventa: null }, { emitEvent: false });
-      this.productoInsertForm.get('pventa')?.disable();
-      return;
+    if(!this.BONIFICACION){
+      if (pcompra <= 0) {
+        this.productoInsertForm.patchValue({ pventa: null }, { emitEvent: false });
+        this.productoInsertForm.get('pventa')?.disable();
+        return;
+      }
     }
   
     this.productoInsertForm.get('pventa')?.enable();
@@ -112,12 +123,12 @@ export class ProductoSeleccionadoComponent {
   calcularMargenMinimo() {
     const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
     const pventa = Number(this.productoInsertForm.get('pventa')?.value) || 0;
-  
+    
     if (pcompra <= 0 || pventa <= 0) {
       this.productoInsertForm.patchValue({ margen_minimo: null }, { emitEvent: false });
       return;
     }
-
+    
     const margen = ((pventa - pcompra) / pcompra) * 100;
 
     const precioMinimo = pcompra + (pcompra * margen / 100);

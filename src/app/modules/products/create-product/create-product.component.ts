@@ -32,6 +32,7 @@ export class CreateProductComponent {
   CONDICIONES_ALMACENAMIENTO:any[] = []
   UNIDADES:any[] = []
   PRESENTACIONES:any[] = []
+  AFECTACION_IGV:any[] = []
 
   loading:boolean
   loading_sku:boolean
@@ -69,6 +70,7 @@ export class CreateProductComponent {
         this.CONDICIONES_ALMACENAMIENTO = resp.condiciones_almacenamiento;
         this.UNIDADES = resp.unidades;
         this.PRESENTACIONES = resp.presentaciones;
+        this.AFECTACION_IGV = resp.afectaciones_igv;
         this.loading = false
     })
 
@@ -87,6 +89,7 @@ export class CreateProductComponent {
       promocionable:[0,[Validators.required]],
 
       laboratorio_id:[null,[Validators.required]],
+      afectacion_igv_id:['',[Validators.required]],
       principio_activo_id:[null],
       presentacion_id:[null],
       linea_farmaceutica_id:[null,[Validators.required]],

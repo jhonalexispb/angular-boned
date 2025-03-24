@@ -82,7 +82,7 @@
             </div>
           </div>
   
-          <div class="fv-row mb-7">
+          <div class="fv-row mb-7" *ngIf="!BONIFICACION">
             <label class="required fw-bold fs-6 mb-2 ">
               Precio de venta ({{ LABORATORIO_ID.margen_minimo }} %)
             </label>
@@ -131,7 +131,7 @@
             </div>
           </div>
   
-          <div class="fv-row mb-7">
+          <div class="fv-row mb-7" *ngIf="!BONIFICACION">
             <div class="row">
               <div class="col-6">
                 <label class="fw-bold fs-6 mb-2 ">
@@ -181,11 +181,10 @@
           <!-- Botones para seleccionar la condición -->
           <div class="fv-row mb-7">
             <label class="required fw-bold fs-6 mb-2">Condición de Vencimiento</label>
-            <div class="d-flex align-items-center gap-2">
-              <!-- Botones -->
+            <div class="d-flex align-items-center justify-content-center w-100 mb-4">
               <button 
                 type="button" 
-                class="btn btn-sm bg-light" 
+                class="btn btn-sm w-50" 
                 [ngClass]="{'btn-primary active': tipoSeleccionado === 'igual', 'btn-outline-primary': tipoSeleccionado !== 'igual'}"
                 (click)="seleccionarTipo('igual')"
               >
@@ -193,23 +192,22 @@
               </button>
               <button 
                 type="button" 
-                class="btn btn-sm bg-light" 
+                class="btn btn-sm w-50" 
                 [ngClass]="{'btn-primary active': tipoSeleccionado === 'menorIgual', 'btn-outline-primary': tipoSeleccionado !== 'menorIgual'}"
                 (click)="seleccionarTipo('menorIgual')"
               >
                 Mayor o igual a
               </button>
-              
-              <input
+            </div>
+            <input
                 type="number"
                 *ngIf="tipoSeleccionado === 'menorIgual'"
-                class="form-control form-control-sm w-100px w-md-150px"
+                class="form-control form-control-sm"
                 min="1"
                 placeholder="Número de meses"
                 formControlName="meses"
                 (input)="calcularFecha()"
               />
-            </div>
           </div>
 
           <!-- Input de fecha (se usa para ambas opciones) -->
@@ -233,7 +231,7 @@
       </div>   
     </div>
    
-    <div class="col-md-7 card-body">
+    <div class="col-md-7 card-body" *ngIf="!BONIFICACION">
       <div class="card">
         <div class="d-flex flex-column gap-2 card-body">
           <span class="m-0 text-white fw-bold fs-2">Datos del producto</span>

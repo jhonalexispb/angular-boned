@@ -31,6 +31,7 @@ export class EditProductComponent {
   CONDICIONES_ALMACENAMIENTO:any[] = []
   UNIDADES:any[] = []
   PRESENTACIONES:any[] = []
+  AFECTACION_IGV:any[] = []
 
   loading:boolean
 
@@ -62,6 +63,7 @@ export class EditProductComponent {
         this.CONDICIONES_ALMACENAMIENTO = resp.condiciones_almacenamiento;
         this.UNIDADES = resp.unidades;
         this.PRESENTACIONES = resp.presentaciones;
+        this.AFECTACION_IGV = resp.afectaciones_igv;
         this.loading = false
     })
 
@@ -80,6 +82,7 @@ export class EditProductComponent {
       promocionable:[this.PRODUCT_SELECTED.promocionable,[Validators.required]],
 
       laboratorio_id:[this.PRODUCT_SELECTED.laboratorio_id,[Validators.required]],
+      afectacion_igv_id:[this.PRODUCT_SELECTED.afectacion_igv_id,[Validators.required]],
       principio_activo_id:[this.PRODUCT_SELECTED.principios_activos],
       linea_farmaceutica_id:[this.PRODUCT_SELECTED.linea_farmaceutica_id,[Validators.required]],
       fabricante_id:[this.PRODUCT_SELECTED.fabricante_id,[Validators.required]],

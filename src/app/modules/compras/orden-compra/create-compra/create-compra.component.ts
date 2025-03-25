@@ -121,6 +121,10 @@ export class CreateCompraComponent {
     });
   }
 
+  get hayBonificaciones(): boolean {
+    return this.COMPRA_DETAILS.some(P => P.bonificacion);
+  }
+
   ngAfterViewInit() {
     this.proveedorSelect.focus();
   }

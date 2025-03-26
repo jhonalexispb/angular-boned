@@ -24,6 +24,7 @@ export class EditOrderCompraComponent implements OnInit {
   LABORATORIOS_LIST:any[] = [];
   PROVEEDORES_LIST:any[] = [];
   PRODUCT_LIST:any[] = [];
+  PRODUCT_LIST_BONIFICACION:any[] = [];
   COMPRA_DETAILS:any[] = [];
   codigo:string = "Buscando codigo..."
   FORMA_PAGO_LIST:any[] = [];
@@ -72,6 +73,7 @@ export class EditOrderCompraComponent implements OnInit {
       proveedor_id: [null, [Validators.required]],
       proveedor_name: ['', [Validators.required]],
       product_id: [null, [Validators.required]],
+      product_id_bonificacion: [null],
       forma_pago_id: [null, [Validators.required]],
       type_comprobante_compra_id: [null, [Validators.required]],
       igv: [0, [Validators.required]],
@@ -150,6 +152,10 @@ export class EditOrderCompraComponent implements OnInit {
     this.searchTermProveedores = event.term;
   }
 
+  get hayBonificaciones(): boolean {
+    return this.COMPRA_DETAILS.some(P => P.bonificacion);
+  }
+
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
@@ -203,8 +209,10 @@ export class EditOrderCompraComponent implements OnInit {
   callProductos(){
     this.loadingProducts = true;
     this.PRODUCT_LIST = [];
+    this.PRODUCT_LIST_BONIFICACION = [];
     this.compraForm.patchValue({
-      product_id: null
+      product_id: null,
+      product_id_bonificacion:null
     });
 
     // Obtener los laboratorios seleccionados
@@ -225,7 +233,8 @@ export class EditOrderCompraComponent implements OnInit {
     }
 
     this.compraService.callProductsByLaboratorio(laboratorioIds).subscribe((resp: any) => {
-      this.PRODUCT_LIST = resp.productos;
+      this.PRODUCT_LIST = resp.productos.map((p: any) => ({ ...p })); // Crear copias independientes
+      this.PRODUCT_LIST_BONIFICACION = resp.productos.map((p: any)=>({...p}));
       this.actualizarProductosConCarritoInicial();
       this.loadingProducts = false;
       this.cacheImages()
@@ -234,12 +243,21 @@ export class EditOrderCompraComponent implements OnInit {
 
   actualizarProductosConCarritoInicial() {
     if (this.COMPRA_DETAILS.length > 0) {
-      this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => {
-        if (this.COMPRA_DETAILS.find(item => item.producto_id === producto.id)) {
-          return { ...producto, in_carrito: true };
-        }
-        return producto;
-      });
+      const productosNormales = this.COMPRA_DETAILS.filter(item => item.bonificacion === false);
+      const productosBonificados = this.COMPRA_DETAILS.filter(item => item.bonificacion === true);
+    
+      const mapNormales = new Map(productosNormales.map(item => [item.producto_id, true]));
+      const mapBonificados = new Map(productosBonificados.map(item => [item.producto_id, true]));
+
+      this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => ({
+          ...producto,
+          in_carrito: mapNormales.has(producto.id)
+      }));
+
+      this.PRODUCT_LIST_BONIFICACION = this.PRODUCT_LIST_BONIFICACION.map(producto => ({
+          ...producto,
+          in_carrito: mapBonificados.has(producto.id)
+      }));
     }
     this.carritoActualizado = false
   }
@@ -311,61 +329,80 @@ export class EditOrderCompraComponent implements OnInit {
     })
   }
 
-  cacheImages() {
-    this.PRODUCT_LIST.forEach(product => {
-      // Verificar si la imagen ya está en el cache
-      if (!this.imageCache.has(product.id)) {
-        // Si la imagen es la predeterminada, no intentamos cargarla
-        if (product.imagen === 'http://127.0.0.1:8000/storage/default/default_boned.webp') {
-          product.cachedImage = product.imagen; // Usar imagen predeterminada directamente
-          this.imageCache.set(product.id, product.imagen); // Cachear imagen predeterminada
-        } else {
-          // Intentar cargar la imagen
-          fetch(product.imagen)
-            .then(response => {
-              if (!response.ok) {
-                // Si la respuesta no es exitosa, establecer imagen predeterminada
-                throw new Error(`Failed to fetch image: ${response.status}`);
-              }
-              return response.blob();
-            })
-            .then(blob => {
-              if (this.imageCache.has(product.id)) {
-                URL.revokeObjectURL(this.imageCache.get(product.id)!);
-              }
+  async cacheImages() {
+    const cacheProductImage = async (productList: any[]) => {
+      await Promise.all(
+        productList.map(async (product) => {
+          if (!this.imageCache.has(product.id)) {
+            if (product.imagen === 'http://127.0.0.1:8000/storage/default/default_boned.webp') {
+              product.cachedImage = product.imagen;
+              this.imageCache.set(product.id, product.imagen);
+            } else {
+              try {
+                const response = await fetch(product.imagen);
+                if (!response.ok) throw new Error(`Failed to fetch image: ${response.status}`);
+                
+                const blob = await response.blob();
+                const objectURL = URL.createObjectURL(blob);
   
-              const objectURL = URL.createObjectURL(blob);
-              this.imageCache.set(product.id, objectURL);
-              product.cachedImage = objectURL; // Asignar la imagen cargada al producto
-            })
-            .catch(error => {
-              // Si hay error al cargar la imagen, usar la imagen por defecto
-              product.cachedImage = 'http://127.0.0.1:8000/storage/default/default_boned.webp';
-              this.imageCache.set(product.id, product.cachedImage); // Cachear la imagen predeterminada
-            });
-        }
-      } else {
-        // Si la imagen ya está en cache, usar la versión cacheada
-        product.cachedImage = this.imageCache.get(product.id)!;
-      }
-    });
+                this.imageCache.set(product.id, objectURL);
+                product.cachedImage = objectURL;
+              } catch (error) {
+                product.cachedImage = 'http://127.0.0.1:8000/storage/default/default_boned.webp';
+                this.imageCache.set(product.id, product.cachedImage);
+              }
+            }
+          } else {
+            product.cachedImage = this.imageCache.get(product.id)!;
+          }
+        })
+      );
+    };
+  
+    await cacheProductImage(this.PRODUCT_LIST);
+    await cacheProductImage(this.PRODUCT_LIST_BONIFICACION);
   }
 
-  callProductDetail(producto_id:any) {
+  callProductDetail(producto_id:any, bonificacion:boolean = false) {
     if(!producto_id){
       return
     }
     this.compraForm.patchValue({product_id: null})
-    if(this.COMPRA_DETAILS.find(p => p.producto_id === producto_id)){
-      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
-      return
+    this.compraForm.patchValue({product_id_bonificacion: null})
+    if(bonificacion){
+      const producto = this.PRODUCT_LIST_BONIFICACION.find(p => p.id === producto_id);
+      if(producto.in_carrito){
+        this.sweet.alerta('Aguanta','ya registraste la bonificacion ese producto en tu orden de compra')
+        return
+      }
+    }else{
+      const producto = this.PRODUCT_LIST.find(p => p.id === producto_id);
+      if(producto.in_carrito){
+        this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
+        return
+      }
     }
-    const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
+
+    let productoSeleccionado:any
+
+    if(bonificacion){
+      productoSeleccionado = this.PRODUCT_LIST_BONIFICACION.find((producto: any) => producto.id === producto_id);
+    }else{
+      productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
+    }
     const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.laboratorio_id === productoSeleccionado.laboratorio_id);
-    const modalRef = this.modalService.open(ProductoSeleccionadoComponent,{centered:true, size: 'xl'})
+
+    let modalRef:any
+    if(bonificacion){
+      modalRef = this.modalService.open(ProductoSeleccionadoComponent,{centered:true, size: 'md'})
+    }else{
+      modalRef = this.modalService.open(ProductoSeleccionadoComponent,{centered:true, size: 'xl'})
+    }
+
     modalRef.componentInstance.PRODUCTO_ID = producto_id
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
     modalRef.componentInstance.LABORATORIO_ID = laboratorio_id
+    modalRef.componentInstance.BONIFICACION = bonificacion
     modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
       this.COMPRA_DETAILS.push({
         producto_id: producto_id,
@@ -383,6 +420,7 @@ export class EditOrderCompraComponent implements OnInit {
         pventa: producto.pventa,
         total: producto.total,
         ganancia: producto.ganancia,
+        bonificacion: producto.bonificacion
       })
       this.calcularTotales();
       this.cdr.detectChanges();
@@ -418,18 +456,27 @@ export class EditOrderCompraComponent implements OnInit {
   }
 
   eliminarItem(PROD:any){
+    let message = "¿Deseas eliminar el producto"
+    if(PROD.bonificacion){
+      message = "¿Deseas eliminar la bonificacion"
+    }
     this.sweet.confirmar_borrado(
       '¿Estás seguro?', 
-      `¿Deseas eliminar el producto: 
+      `${message}: 
         <span class="text-primary">${PROD.laboratorio}</span> 
         <span class="text-success">${PROD.nombre}</span> 
         <span class="text-warning">${PROD.caracteristicas}</span>?`
     ).then((result: any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, eliminamos el producto
-        this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id);
-        const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
-        productoSeleccionado.in_carrito = false;
+        this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => !(producto.producto_id === PROD.producto_id && producto.bonificacion === PROD.bonificacion));
+        if(PROD.bonificacion){
+          const productoSeleccionado = this.PRODUCT_LIST_BONIFICACION.find((producto: any) => producto.id === PROD.producto_id);
+          productoSeleccionado.in_carrito = false;
+        }else{
+          const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
+          productoSeleccionado.in_carrito = false;
+        }
         this.calcularTotales();
         // Mostrar mensaje de éxito
         this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
@@ -600,6 +647,7 @@ export class EditOrderCompraComponent implements OnInit {
             pcompra: item.pcompra,
             pventa: item.pventa,
             total: item.total,
+            bonificacion: item.bonificacion,
           })),
         };
 

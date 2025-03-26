@@ -212,8 +212,8 @@ export class CreateCompraComponent {
     }
 
     this.compraService.callProductsByLaboratorio(laboratorioIds).subscribe((resp: any) => {
-      this.PRODUCT_LIST = resp.productos;
-      this.PRODUCT_LIST_BONIFICACION = resp.productos;
+      this.PRODUCT_LIST = resp.productos.map((p: any) => ({ ...p })); // Crear copias independientes
+      this.PRODUCT_LIST_BONIFICACION = resp.productos.map((p: any)=>({...p}));
       this.actualizarProductosConCarritoInicial();
       this.loadingProducts = false;
       this.cacheImages()
@@ -642,6 +642,7 @@ export class CreateCompraComponent {
             pcompra: item.pcompra,
             pventa: item.pventa,
             total: item.total,
+            bonificacion: item.bonificacion,
           }))
         };
 

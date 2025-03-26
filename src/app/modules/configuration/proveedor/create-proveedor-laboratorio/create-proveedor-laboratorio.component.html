@@ -53,7 +53,8 @@
                             [virtualScroll]="true"  
                             [loading]="loading"  
                             [loadingText]="'Cargando...'" 
-                            [multiple]="false">
+                            [multiple]="false"
+                            (change)="onLaboratorioChange($event)">
                         </ng-select>
                     </div>
     

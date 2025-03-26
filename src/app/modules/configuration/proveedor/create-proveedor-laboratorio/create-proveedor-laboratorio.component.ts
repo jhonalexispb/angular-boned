@@ -47,6 +47,22 @@ export class CreateProveedorLaboratorioComponent {
     });
   }
 
+  onLaboratorioChange(laboratorioId: any) {
+    if(!laboratorioId){
+      this.LaboratorioProveedorForm.patchValue({
+        margen_minimo: ''
+      });
+
+      return
+    }
+    const laboratorio = this.LABORATORIOS_LIST.find(lab => lab.id === laboratorioId.id);
+    if (laboratorio) {
+      this.LaboratorioProveedorForm.patchValue({
+        margen_minimo: laboratorio.margen_minimo
+      });
+    }
+  }
+
   store(){
     this.proveedorService.registrarRelacionLaboratorioProveedor(this.LaboratorioProveedorForm.value).subscribe({
       next: (resp: any) => {
@@ -63,6 +79,7 @@ export class CreateProveedorLaboratorioComponent {
     modalRef.componentInstance.LaboratorioC.subscribe((r: any) => {
       this.LABORATORIOS_LIST = [r, ...this.LABORATORIOS_LIST];
       this.LaboratorioProveedorForm.patchValue({ laboratorio_id: r.id });
+      this.onLaboratorioChange(r)
     });
   }
 }

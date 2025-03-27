@@ -67,7 +67,7 @@ export class CreateCompraComponent {
       product_id: [null, [Validators.required]],
       forma_pago_id: ["", [Validators.required]],
       type_comprobante_compra_id: ["", [Validators.required]],
-      igv: [false, [Validators.required]],
+      igv: [true, [Validators.required]],
       total:['0.00', [Validators.required]],
       impuesto:['0.00', [Validators.required]],
       sub_total:['0.00', [Validators.required]],

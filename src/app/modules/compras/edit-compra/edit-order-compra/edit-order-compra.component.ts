@@ -242,13 +242,15 @@ export class EditOrderCompraComponent implements OnInit {
   }
 
   actualizarProductosConCarritoInicial() {
+    console.log('actualizando')
     if (this.COMPRA_DETAILS.length > 0) {
+      console.log(this.COMPRA_DETAILS)
       const productosNormales = this.COMPRA_DETAILS.filter(item => item.bonificacion === false);
       const productosBonificados = this.COMPRA_DETAILS.filter(item => item.bonificacion === true);
     
       const mapNormales = new Map(productosNormales.map(item => [item.producto_id, true]));
       const mapBonificados = new Map(productosBonificados.map(item => [item.producto_id, true]));
-
+      console.log(mapNormales)
       this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => ({
           ...producto,
           in_carrito: mapNormales.has(producto.id)

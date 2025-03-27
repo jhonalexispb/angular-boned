@@ -70,6 +70,7 @@
                                 <div class="d-flex justify-content-center flex-column align-items-center gap-2">
                                     <span>S/ {{p.pventa}}</span>
                                     <span class="badge badge-light-success fs-5 fw-bold">{{p.margen_minimo}} %</span>
+                                    <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span>
                                 </div>
                             </td>
                             <td class="text-center">

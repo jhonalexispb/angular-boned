@@ -72,4 +72,38 @@ export class ListCompraComponent {
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
+
+  confirmarRecepcion(R:any){
+    this.sweet.confirmar('¿Estás seguro?', `¿Deseas recepcionar la orden de compra: ${R.codigo} de ${R.proveedor}?`,'/assets/animations/general/ojitos.json','Si',true,'Cancelar').then((result:any) => {
+      if (result.isConfirmed) {
+        this.ocService.recepcionar_orden_compra(R.id,{ state: 1 }).subscribe({
+          next: (resp: any) => {
+            let index = this.OC_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+            if (index !== -1) {
+              this.OC_LIST[index] = resp.order_compra;
+            }
+
+            this.sweet.success('Actualizado', resp.message);
+          },
+        })
+      }
+    });
+  }
+
+  confirmarCancelarRecepcion(R:any){
+    this.sweet.confirmar('¿Estás seguro?', `¿Deseas cancelar la recepción de la orden de compra: ${R.codigo} de ${R.proveedor}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
+      if (result.isConfirmed) {
+        this.ocService.recepcionar_orden_compra(R.id,{ state: 0 }).subscribe({
+          next: (resp: any) => {
+            let index = this.OC_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+            if (index !== -1) {
+              this.OC_LIST[index] = resp.order_compra;
+            }
+
+            this.sweet.success('Recepcion cancelada', resp.message);
+          },
+        })
+      }
+    });
+  }
 }

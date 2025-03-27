@@ -161,4 +161,15 @@ export class CompraService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  //manejo de cambios (recepcionar, cancelar recepcion)
+  recepcionar_orden_compra(ID_COMPRA:any,data:any){
+    this.loadingService.showLoading('Actualizando estado')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/estado/"+ID_COMPRA
+    return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

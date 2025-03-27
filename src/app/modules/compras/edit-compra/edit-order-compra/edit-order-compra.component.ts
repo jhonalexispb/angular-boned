@@ -242,15 +242,12 @@ export class EditOrderCompraComponent implements OnInit {
   }
 
   actualizarProductosConCarritoInicial() {
-    console.log('actualizando')
     if (this.COMPRA_DETAILS.length > 0) {
-      console.log(this.COMPRA_DETAILS)
       const productosNormales = this.COMPRA_DETAILS.filter(item => item.bonificacion === false);
       const productosBonificados = this.COMPRA_DETAILS.filter(item => item.bonificacion === true);
     
       const mapNormales = new Map(productosNormales.map(item => [item.producto_id, true]));
       const mapBonificados = new Map(productosBonificados.map(item => [item.producto_id, true]));
-      console.log(mapNormales)
       this.PRODUCT_LIST = this.PRODUCT_LIST.map(producto => ({
           ...producto,
           in_carrito: mapNormales.has(producto.id)
@@ -407,6 +404,7 @@ export class EditOrderCompraComponent implements OnInit {
     modalRef.componentInstance.BONIFICACION = bonificacion
     modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
       this.COMPRA_DETAILS.push({
+        id: null,
         producto_id: producto_id,
         laboratorio: productoSeleccionado.laboratorio,
         color_laboratorio: laboratorio_id.color,
@@ -474,10 +472,14 @@ export class EditOrderCompraComponent implements OnInit {
         this.COMPRA_DETAILS = this.COMPRA_DETAILS.filter((producto: any) => !(producto.producto_id === PROD.producto_id && producto.bonificacion === PROD.bonificacion));
         if(PROD.bonificacion){
           const productoSeleccionado = this.PRODUCT_LIST_BONIFICACION.find((producto: any) => producto.id === PROD.producto_id);
-          productoSeleccionado.in_carrito = false;
+          if(productoSeleccionado){
+            productoSeleccionado.in_carrito = false;
+          }
         }else{
           const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
-          productoSeleccionado.in_carrito = false;
+          if(productoSeleccionado){
+            productoSeleccionado.in_carrito = false;
+          }
         }
         this.calcularTotales();
         // Mostrar mensaje de éxito
@@ -641,6 +643,7 @@ export class EditOrderCompraComponent implements OnInit {
             descripcion: compraForm.descripcion || '',
           },
           compra_details: compraDetails.map((item: any) => ({
+            id:item.id,
             producto_id: item.producto_id,
             cantidad: item.cantidad,
             condicion_vencimiento: item.condicion_vencimiento,

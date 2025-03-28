@@ -1,0 +1,53 @@
+<div class="card-body">       
+    <!--begin::Nav-->             
+    <ul class="nav nav-pills nav-pills-custom row position-relative mx-0 mb-9" role="tablist">
+        <!--begin::Item--> 
+        <li class="nav-item col-6 mx-0 p-0">
+            <!--begin::Link--> 
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" [routerLink]="['/compras/check-mercaderia/ckeck', idCompra]">                 
+                <!--begin::Subtitle-->
+                <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
+                    Mercaderia
+                </span> 
+                <!--end::Subtitle-->
+                
+                <!--begin::Bullet-->
+                <span class="bullet-custom position-absolute z-index-2 bottom-0 w-100 h-4px bg-primary rounded"></span>
+                <!--end::Bullet-->
+            </a>
+            <!--end::Link-->  
+        </li>
+        <!--end::Item--> 
+
+        <!--begin::Item--> 
+        <li class="nav-item col-6 mx-0 px-0">
+            <!--begin::Link--> 
+            <a class="nav-link d-flex justify-content-center w-100 border-0 h-100" routerLinkActive="active" routerLink="/compras/check-mercaderia/facturas-generadas">                   
+                <!--begin::Subtitle-->
+                <span class="nav-text text-gray-800 fw-bold fs-6 mb-3">
+                    Comprobantes
+                </span> 
+                <!--end::Subtitle-->
+                
+                <!--begin::Bullet-->
+                <span class="bullet-custom position-absolute z-index-2 bottom-0 w-100 h-4px bg-primary rounded"></span>
+                <!--end::Bullet-->
+            </a>
+            <!--end::Link-->                
+        </li>
+        <!--end::Item-->    
+    </ul>             
+    <!--end::Nav-->
+
+    <!--begin::Tab Content-->
+    <div class="tab-content">
+                        
+            <!--begin::Tap pane-->
+            <div class="tab-pane fade show active">
+                <router-outlet></router-outlet>
+            </div>
+            <!--end::Tap pane-->                                                             
+                     
+    </div>
+    <!--end::Tab Content-->        
+</div>

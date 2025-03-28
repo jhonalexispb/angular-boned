@@ -73,6 +73,7 @@ export class ProductoSeleccionadoComponent {
       this.productoInsertForm.patchValue({pcompra: 0})
       this.productoInsertForm.patchValue({pventa: this.DATA_PRODUCT_SELECTED.pventa})
       this.productoInsertForm.patchValue({bonificacion: true})
+      this.productoInsertForm.get('pcompra')?.disable();
     }
 
     this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {

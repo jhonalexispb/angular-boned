@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ComprasComponent } from './compras.component';
 import { ListCompraComponent } from './list-compra/list-compra.component';
-import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
 
 const routes: Routes = [
   {
@@ -20,6 +19,10 @@ const routes: Routes = [
       {
         path: 'edit',
         loadChildren: () => import('./edit-compra/edit-compra.module').then((m) => m.EditCompraModule),
+      },
+      {
+        path: 'check-mercaderia',
+        loadChildren: () => import('./revision-mercaderia-order-compra/revision-mercaderia-order-compra.module').then((m) => m.RevisionMercaderiaOrderCompraModule),
       },
     ]
   }

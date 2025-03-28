@@ -106,4 +106,8 @@ export class ListCompraComponent {
       }
     });
   }
+
+  revisarMercaderia(id:any){
+    this.router.navigate([`/compras/check-mercaderia/ckeck/${id}`]);
+  }
 }

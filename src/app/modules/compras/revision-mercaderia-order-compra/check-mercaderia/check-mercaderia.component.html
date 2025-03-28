@@ -1,0 +1,83 @@
+<div class="container mt-4">
+
+    <!-- Info de la orden -->
+    <div class="card mb-3">
+      <div class="card-body">
+        <h3 class="card-title">ORDEN DE COMPRA: {{ ORDER.codigo }}</h3>
+        <h3 class="card-text">PROVEEDOR: {{ ORDER.proveedor }}</h3>
+        <h3 class="card-text">COMPROBANTE: {{ ORDER.comprobante }}</h3>
+      </div>
+    </div>
+  
+    <!-- Productos -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h3>Productos en la orden</h3>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <div class="card-body">
+                <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                    <thead>
+                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-175px">Producto</th>
+                            <th class="min-w-100px text-center">Cantidad</th>
+                            <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                            <th class="min-w-70px text-center">Precio compra</th>
+                            <th class="min-w-100px text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fw-semibold text-gray-600">
+                        <tr *ngFor="let p of ORDER_LIST">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <!--begin::Thumbnail-->
+                                    <div class="symbol symbol-50px">
+                                        <span class="symbol-label" [ngStyle]="{'background-image': 'url(' + p.imagen + ')'}"></span>
+                                    </div>
+                                    <!--end::Thumbnail-->
+    
+                                    <!--begin::Title-->
+                                    <div class="ms-5">
+                                        <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span>
+                                        <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
+                                        <div class="fs-7">{{p.caracteristicas}}</div>
+                                        <div class="fs-7">SKU: {{p.sku}}</div>
+                                    </div>
+                                    <!--end::Title-->
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {{p.cantidad}}
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                    <span class="badge badge-light-success fs-5 fw-bold"
+                                        *ngIf="p.condicion_vencimiento == 1">
+                                    Igual a
+                                    </span>
+    
+                                    <span class="badge badge-light-primary fs-5 fw-bold"
+                                        *ngIf="p.condicion_vencimiento == 0">
+                                    Mayor o igual a
+                                    </span>
+    
+                                    {{p.fecha_vencimiento}}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                S/ {{p.pcompra}}    
+                            </td>
+                            <td class="text-center">
+                                <span class="text-gray-900 fw-bold">S/ {{ p.total | number:'1.2-2' }}</span>
+                                <br>
+                                <span class="badge badge-light-warning fs-7 fw-bold">G: S/ {{ p.ganancia | number:'1.2-2' }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<div>

@@ -19,6 +19,7 @@ import { ProductoSeleccionadoComponent } from './producto-seleccionado/producto-
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { OrdenCompraComponent } from './orden-compra/orden-compra.component';
 import { MercaderiaOrderCompraComponent } from './mercaderia-order-compra/mercaderia-order-compra.component';
+import { RevisionMercaderiaOrderCompraComponent } from './revision-mercaderia-order-compra/revision-mercaderia-order-compra.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { MercaderiaOrderCompraComponent } from './mercaderia-order-compra/mercad
     EditCompraComponent,
     ProductoSeleccionadoComponent,
     OrdenCompraComponent,
-    MercaderiaOrderCompraComponent
+    MercaderiaOrderCompraComponent,
+    RevisionMercaderiaOrderCompraComponent
   ],
   imports: [
     CommonModule,

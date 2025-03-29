@@ -153,7 +153,10 @@ export class CompraService {
   }
 
   //recursos extras
-  obtenerProductosOrdenCompra(ID_COMPRA:any){
+  obtenerProductosOrdenCompra(ID_COMPRA:any, cargando:boolean = false){
+    if(cargando){
+      this.loadingService.showLoading('Consultando mercaderia')
+    }
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/recursos/productos/"+ID_COMPRA
     return this.http.get(URL,{headers: headers}).pipe(

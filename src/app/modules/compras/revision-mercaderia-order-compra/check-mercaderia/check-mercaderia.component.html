@@ -1,11 +1,11 @@
-<div class="container mt-4">
+
 
     <!-- Info de la orden -->
     <div class="card mb-3">
       <div class="card-body">
-        <h3 class="card-title">ORDEN DE COMPRA: {{ ORDER.codigo }}</h3>
-        <h3 class="card-text">PROVEEDOR: {{ ORDER.proveedor }}</h3>
-        <h3 class="card-text">COMPROBANTE: {{ ORDER.comprobante }}</h3>
+        <h3 class="card-title">ORDEN DE COMPRA:<span class="text-warning"> {{ ORDER.codigo }}</span></h3>
+        <h3 class="card-text">PROVEEDOR:<span class="text-warning"> {{ ORDER.proveedor }}</span></h3>
+        <h3 class="card-text">COMPROBANTE:<span class="text-warning"> {{ ORDER.comprobante }}</span></h3>
       </div>
     </div>
   
@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
-                        <tr *ngFor="let p of ORDER_LIST">
+                        <tr *ngFor="let p of ORDER_LIST" (click)="gestionar_producto(p)">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <!--begin::Thumbnail-->
@@ -39,7 +39,7 @@
                                     <!--end::Thumbnail-->
     
                                     <!--begin::Title-->
-                                    <div class="ms-5">
+                                    <div class="ms-5 d-flex flex-column">
                                         <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span>
                                         <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
                                         <div class="fs-7">{{p.caracteristicas}}</div>
@@ -80,4 +80,4 @@
             </div>
         </div>
     </div>
-<div>
+

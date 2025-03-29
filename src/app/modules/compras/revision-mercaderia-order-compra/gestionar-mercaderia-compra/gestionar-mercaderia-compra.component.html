@@ -1,0 +1,135 @@
+<div class="modal-content rounded">
+    <div class="modal-header pb-0 border-0 justify-content-end">
+        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+        </div>
+    </div>
+    <div class="modal-body px-5 px-lg-10 pt-0 pb-10">
+        <form>
+            <div class="mb-5 text-center">
+                <h1 class="mb-3"><span class="text-warning">{{PRODUCTO.laboratorio}}</span> {{PRODUCTO.nombre}}</h1>
+                <div class="fw-semibold fs-2">
+                    {{PRODUCTO.caracteristicas}}
+                </div>
+            </div>
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                <label class="required mb-3">
+                    Cantidad
+                </label>
+                <input type="text" class="form-control form-control-solid" placeholder="Ingresa la cantidad que llegó"
+                    name="target_title" />
+            </div>
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="required form-label m-0">Lotes</label>
+                    <button type="button" class="btn btn-primary px-4 py-2" (click)="createLote(PRODUCTO)">
+                        +
+                    </button>
+                </div>
+                <div class="table-responsive card">
+                    <div class="card-body" *ngIf="LOTES_LIST.lenght > 0; else sinLotes">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                            <thead>
+                                <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-175px">Lote</th>
+                                    <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                                    <th class="min-w-100px text-center">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-semibold text-gray-600">
+                                <tr *ngFor="let p of LOTES_LIST">
+                                    <td class="text-center">
+                                        {{p.lote}}    
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                            <span class="badge badge-light-success fs-5 fw-bold"
+                                                *ngIf="p.condicion_vencimiento == 1">
+                                            Igual a
+                                            </span>
+            
+                                            <span class="badge badge-light-primary fs-5 fw-bold"
+                                                *ngIf="p.condicion_vencimiento == 0">
+                                            Mayor o igual a
+                                            </span>
+            
+                                            {{p.fecha_vencimiento}}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{p.cantidad}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ng-template #sinLotes>
+                        <div class="bg-light-info p-5 text-center">
+                            Sin lotes
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="required form-label m-0">Registro sanitarios</label>
+                    <button type="button" class="btn btn-primary px-4 py-2" (click)="createLote(PRODUCTO)">
+                        +
+                    </button>
+                </div>
+                <div class="table-responsive card">
+                    <div class="card-body" *ngIf="LOTES_LIST.lenght > 0; else sinLotes">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                            <thead>
+                                <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-175px">Registro sanitario</th>
+                                    <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-semibold text-gray-600">
+                                <tr *ngFor="let p of LOTES_LIST">
+                                    <td class="text-center">
+                                        {{p.lote}}    
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                            <span class="badge badge-light-success fs-5 fw-bold"
+                                                *ngIf="p.condicion_vencimiento == 1">
+                                            Igual a
+                                            </span>
+            
+                                            <span class="badge badge-light-primary fs-5 fw-bold"
+                                                *ngIf="p.condicion_vencimiento == 0">
+                                            Mayor o igual a
+                                            </span>
+            
+                                            {{p.fecha_vencimiento}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ng-template #sinLotes>
+                        <div class="bg-light-info p-5 text-center">
+                            Sin regsitros sanitarios
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="reset" id="kt_modal_new_target_cancel" class="btn btn-light me-3">
+                    Cancel
+                </button>
+                <button type="submit" id="kt_modal_new_target_submit" class="btn btn-primary">
+                    <span class="indicator-label"> Submit </span>
+                    <span class="indicator-progress">
+                        Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

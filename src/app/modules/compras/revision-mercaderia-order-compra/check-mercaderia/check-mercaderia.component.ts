@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin } from 'rxjs';
 import { CompraService } from '../../service/compra.service';
+import { GestionarMercaderiaCompraComponent } from '../gestionar-mercaderia-compra/gestionar-mercaderia-compra.component';
 
 @Component({
   selector: 'app-check-mercaderia',
@@ -30,11 +31,9 @@ export class CheckMercaderiaComponent {
   ngOnInit(): void {
       this.ID_COMPRA = this.route.snapshot.paramMap.get('id') || '';
       this.loading = true
-      console.log(this.ID_COMPRA)
-      this.compraService.obtenerProductosOrdenCompra(this.ID_COMPRA).subscribe((resp: any) => {
+      this.compraService.obtenerProductosOrdenCompra(this.ID_COMPRA, true).subscribe((resp: any) => {
         this.ORDER = resp.order_compra
         this.ORDER_LIST = resp.order_compra_detail
-        console.log(resp)
       })
   
       /* this.compraForm = this.fb.group({
@@ -114,4 +113,9 @@ export class CheckMercaderiaComponent {
         }
       }); */
     }
+  
+  gestionar_producto(producto:any){
+    const modalRef = this.modalService.open(GestionarMercaderiaCompraComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.PRODUCTO = producto
+  }
 }

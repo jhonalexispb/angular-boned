@@ -30,7 +30,7 @@ import { RevisionMercaderiaOrderCompraComponent } from './revision-mercaderia-or
     ProductoSeleccionadoComponent,
     OrdenCompraComponent,
     MercaderiaOrderCompraComponent,
-    RevisionMercaderiaOrderCompraComponent
+    RevisionMercaderiaOrderCompraComponent,
   ],
   imports: [
     CommonModule,

@@ -1,11 +1,11 @@
 <div class="modal-content rounded">
     <div class="modal-header pb-0 border-0 justify-content-end">
-        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal" (click)="modal.dismiss()">
             <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
         </div>
     </div>
     <div class="modal-body px-5 px-lg-10 pt-0 pb-10">
-        <form>
+        <form [formGroup]="detalleForm" (ngSubmit)="onSubmit()">
             <div class="mb-5 text-center">
                 <h1 class="mb-3"><span class="text-warning">{{PRODUCTO.laboratorio}}</span> {{PRODUCTO.nombre}}</h1>
                 <div class="fw-semibold fs-2">
@@ -13,66 +13,92 @@
                 </div>
             </div>
             <div class="mb-5">
+                <label class="required form-label">Afectación IGV</label>
+                <select class="form-select mb-2" formControlName="afectacion_igv_id">
+                  <option value="" disabled selected>Seleccione una opción</option>
+                  <option *ngFor="let afectacion of AFECTACION_IGV" [value]="afectacion.id">
+                    {{ afectacion.descripcion }} ({{afectacion.detalle}})
+                  </option>
+                </select>
+            </div>
+            <div class="mb-5">
                 <label class="form-label">¿Hay {{PRODUCTO.cantidad}} en el comprobante?</label>
                 <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                     <label class="form-check-label">No</label>
-                    <input class="form-check-input" type="checkbox"/>
+                    <input class="form-check-input" type="checkbox" formControlName="cantidad_exacta"/>
                     <label class="form-check-label">Sí</label>
                 </div>
             </div>
-            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container" *ngIf="!detalleForm.get('cantidad_exacta')?.value">
                 <label class="required mb-3">
                     Cantidad que llego en el comprobante
                 </label>
-                <input type="text" class="form-control form-control-solid" placeholder="Ingresa la cantidad que llegó"
-                    name="target_title" />
+                <input type="text" class="form-control form-control-solid" placeholder="Ingresa la cantidad que llegó" formControlName="cantidad_reemplazo" (input)="cambiar_cantidad_pendiente()"/>
             </div>
             <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                 <label class="required mb-3">
                     Cantidad
                 </label>
-                <input type="text" class="form-control form-control-solid" placeholder="Ingresa la cantidad que llegó"
-                    name="target_title" />
+                <input type="text" class="form-control form-control-solid" placeholder="Ingresa la cantidad que llegó" formControlName="cantidad"/>
+            </div>
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container" *ngIf="mostrarCantidadPendiente">
+                <label class="required mb-3">
+                    Cantidad pendiente
+                </label>
+                <input type="text" class="form-control form-control-solid" placeholder="Cantidad pendiente" formControlName="cantidad_pendiente"/>
+                <div class="mt-5 d-flex justify-content-end align-items-center">
+                    <label class="form-label">¿Generar guia de devolucion?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="guia_devolucion"/>
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container" *ngIf="!detalleForm.get('cantidad_exacta')?.value && (detalleForm.get('cantidad_reemplazo')?.value == detalleForm.get('cantidad')?.value)">
+                <div class="mt-5 d-flex justify-content-end align-items-center">
+                    <label class="form-label">¿Mantener la cantidad ({{PRODUCTO.cantidad - detalleForm.get('cantidad_reemplazo')?.value}}) restante?</label>
+                    <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                        <label class="form-check-label">No</label>
+                        <input class="form-check-input" type="checkbox" formControlName="guia_devolucion"/>
+                        <label class="form-check-label">Sí</label>
+                    </div>
+                </div>
             </div>
             <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <label class="required form-label m-0">Lotes</label>
-                    <button type="button" class="btn btn-primary px-4 py-2" (click)="createLote(PRODUCTO)">
+                    <button type="button" class="btn btn-primary px-4 py-2" (click)="createLote(PRODUCTO)" [disabled]="!detalleForm.get('cantidad')?.value || detalleForm.get('cantidad')?.value <= 0">
                         +
                     </button>
                 </div>
                 <div class="table-responsive card">
-                    <div class="card-body" *ngIf="LOTES_LIST.lenght > 0; else sinLotes">
+                    <div class="card-body" *ngIf="LOTES_LIST.length > 0; else sinLotes">
                         <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
                             <thead>
                                 <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                                    <th class="min-w-175px">Lote</th>
+                                    <th class="min-w-120px text-center">Lote</th>
                                     <th class="min-w-100px text-center">Fecha de vencimiento</th>
                                     <th class="min-w-100px text-center">Cantidad</th>
+                                    <th class="min-w-100px text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="fw-semibold text-gray-600">
                                 <tr *ngFor="let p of LOTES_LIST">
                                     <td class="text-center">
-                                        {{p.lote}}    
+                                        {{p.lote || 'Sin lote'}}    
                                     </td>
-                                    <td>
-                                        <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
-                                            <span class="badge badge-light-success fs-5 fw-bold"
-                                                *ngIf="p.condicion_vencimiento == 1">
-                                            Igual a
-                                            </span>
-            
-                                            <span class="badge badge-light-primary fs-5 fw-bold"
-                                                *ngIf="p.condicion_vencimiento == 0">
-                                            Mayor o igual a
-                                            </span>
-            
-                                            {{p.fecha_vencimiento}}
-                                        </div>
+                                    <td class="text-center">
+                                        {{p.fecha_vencimiento || 'Sin fecha de vencimiento'}}
                                     </td>
                                     <td class="text-center">
                                         {{p.cantidad}}
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" (click)="deleteLote(p)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
+                                            <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -86,7 +112,7 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+            <!-- <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <label class="required form-label m-0">Registro sanitarios</label>
                     <button type="button" class="btn btn-primary px-4 py-2" (click)="createLote(PRODUCTO)">
@@ -94,7 +120,7 @@
                     </button>
                 </div>
                 <div class="table-responsive card">
-                    <div class="card-body" *ngIf="LOTES_LIST.lenght > 0; else sinLotes">
+                    <div class="card-body" *ngIf="REGISTROS_SANITARIOS_LIST.lenght > 0; else sinRegistros">
                         <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
                             <thead>
                                 <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
@@ -105,34 +131,22 @@
                             <tbody class="fw-semibold text-gray-600">
                                 <tr *ngFor="let p of LOTES_LIST">
                                     <td class="text-center">
-                                        {{p.lote}}    
+                                        {{p.registro}}    
                                     </td>
-                                    <td>
-                                        <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
-                                            <span class="badge badge-light-success fs-5 fw-bold"
-                                                *ngIf="p.condicion_vencimiento == 1">
-                                            Igual a
-                                            </span>
-            
-                                            <span class="badge badge-light-primary fs-5 fw-bold"
-                                                *ngIf="p.condicion_vencimiento == 0">
-                                            Mayor o igual a
-                                            </span>
-            
-                                            {{p.fecha_vencimiento}}
-                                        </div>
+                                    <td class="text-center">
+                                        {{p.fecha_vencimiento}}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <ng-template #sinLotes>
+                    <ng-template #sinRegistros>
                         <div class="bg-light-info p-5 text-center">
-                            Sin regsitros sanitarios
+                            Sin registros sanitarios
                         </div>
                     </ng-template>
                 </div>
-            </div>
+            </div> -->
             <div class="mb-5"> 
                 <div class="mb-3">
                   <label class="form-label">Comentario</label>
@@ -140,20 +154,13 @@
                     class="form-control form-control-solid"
                     rows="3"
                     placeholder="Algun comentario..."
+                    formControlName="comentario"
                   ></textarea>
                 </div>
               </div>
             <div class="text-center">
-                <button type="reset" id="kt_modal_new_target_cancel" class="btn btn-light me-3">
-                    Cancel
-                </button>
-                <button type="submit" id="kt_modal_new_target_submit" class="btn btn-primary">
-                    <span class="indicator-label"> Submit </span>
-                    <span class="indicator-progress">
-                        Please wait...
-                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                    </span>
-                </button>
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="detalleForm.invalid">Registrar</button>
             </div>
         </form>
     </div>

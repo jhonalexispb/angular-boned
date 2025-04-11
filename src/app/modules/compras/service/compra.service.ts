@@ -175,4 +175,13 @@ export class CompraService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+  obtenerLotes(ID_PRODUCTO:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos/obtener_lotes/"+ID_PRODUCTO
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
 }

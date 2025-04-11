@@ -1,0 +1,231 @@
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Añadir comprobante
+        </h2>
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5">
+        <form [formGroup]="comprobanteForm" (ngSubmit)="onSubmit()">
+            <div class="fv-row mb-7">
+              <label class="required fw-bold fs-6 mb-2">Serie de comprobante</label>
+              <div class="input-group">
+                <input
+                type="text"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="serie"
+                />
+              </div>
+              <div *ngIf="comprobanteForm.get('serie')?.touched && comprobanteForm.get('serie')?.invalid" class="text-danger">
+                <span *ngIf="comprobanteForm.get('serie')?.errors?.['required']">La serie es obligatoria.</span>
+              </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2">Numero de comprobante</label>
+                <div class="input-group">
+                  <input
+                  type="text"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="ncomprobante"
+                  />
+                </div>
+                <div *ngIf="comprobanteForm.get('ncomprobante')?.touched && comprobanteForm.get('ncomprobante')?.invalid" class="text-danger">
+                  <span *ngIf="comprobanteForm.get('ncomprobante')?.errors?.['required']">El numero de comprobante es obligatorio.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2">Fecha de emisión</label>
+                <div class="input-group">
+                  <input
+                  type="date"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="fecha_emision"
+                  />
+                </div>
+                <div *ngIf="comprobanteForm.get('fecha_emision')?.touched && comprobanteForm.get('fecha_emision')?.invalid" class="text-danger">
+                  <span *ngIf="comprobanteForm.get('fecha_emision')?.errors?.['required']">La fecha de emision es obligatoria.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required form-label">Modo de pago</label>
+                <select class="form-select mb-2" formControlName="modo_pago">
+                  <option value="" disabled selected>Seleccione una opción</option>
+                  <option value="credito">Credito</option>
+                  <option value="contado">Contado</option>
+                </select>
+                <div *ngIf="comprobanteForm.get('modo_pago')?.touched && comprobanteForm.get('modo_pago')?.invalid" class="text-danger">
+                    <span *ngIf="comprobanteForm.get('modo_pago')?.errors?.['required']">El modo de pago es obligatorio.</span>
+                  </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="fw-bold fs-6 mb-2">Comentario</label>
+                <div class="input-group">
+                  <textarea
+                  type="text"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="comentario"
+                  ></textarea>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <label class="form-label">¿El comprobante incluye igv?</label>
+                <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                    <label class="form-check-label">No</label>
+                    <input class="form-check-input" type="checkbox" formControlName="igv"/>
+                    <label class="form-check-label">Sí</label>
+                </div>
+            </div>
+
+            <div *ngIf="ORDER_GESTIONADA.length > 0">
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3>Productos</h3>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="card-body">
+                            <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                <thead>
+                                    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                        <th class="min-w-175px">Producto</th>
+                                        <th class="min-w-100px text-center">Cantidad</th>
+                                        <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                                        <th class="min-w-70px text-center">Precio compra</th>
+                                        <th class="min-w-150px text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="fw-semibold text-gray-600">
+                                    <tr *ngFor="let p of ORDER_GESTIONADA">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="symbol symbol-50px">
+                                                    <span class="symbol-label" [ngStyle]="{'background-image': 'url(' + p.imagen + ')'}"></span>
+                                                </div>
+                                                <div class="ms-5 d-flex flex-column">
+                                                    <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span>
+                                                    <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
+                                                    <div class="fs-7">{{p.caracteristicas}}</div>
+                                                    <div class="fs-7">SKU: {{p.sku}}</div>
+                                                    <div>{{ getDescripcionAfectacion(p.detalle.afectacion_igv_id) }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column gap-1 align-items-center">
+                                                Ingresaran: {{p.detalle.cantidad}}
+                                                <div *ngIf="p.detalle.cantidad_exacta">
+                                                    <span class="badge badge-light-primary fs-5 fw-bold">Factura: {{ p.cantidad }}</span>
+                                                </div>
+                                                <div *ngIf="!p.detalle.cantidad_exacta">
+                                                    <span class="badge badge-light-primary fs-5 fw-bold">Factura: {{ p.detalle.cantidad_reemplazo }}</span>
+                                                </div>
+                                                <div *ngIf="p.detalle.cantidad_pendiente > 0" class="d-flex flex-column gap-1">
+                                                    <span class="badge badge-light-danger fs-5 fw-bold">
+                                                        Pendiente: {{p.detalle.cantidad_pendiente}}
+                                                    </span>
+                                                    <span class="badge badge-light-success fs-5 fw-bold"
+                                                        *ngIf="p.detalle.guia_devolucion">
+                                                        Generar guia de devolucion
+                                                    </span>
+                                                    <span class="badge badge-light-warning fs-5 fw-bold"
+                                                        *ngIf="!p.detalle.guia_devolucion">
+                                                        Sin guia de devolucion
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column gap-1" *ngIf="p.lotes.length>0">
+                                                <div *ngFor="let l of p.lotes">
+                                                    <span class="badge badge-light-success fs-5 fw-bold d-flex flex-column gap-1">
+                                                        <span *ngIf="p.condicion_vencimiento && l.fecha_vencimiento != p.fecha_vencimiento">
+                                                            <span class="badge badge-light-warning fs-5 fw-bold">
+                                                                No coincide
+                                                            </span>
+                                                        </span>
+                                                        <span *ngIf="!p.condicion_vencimiento && l.fecha_vencimiento < p.fecha_vencimiento">
+                                                            <span class="badge badge-light-warning fs-5 fw-bold">
+                                                                Es menor a lo acordado
+                                                            </span>
+                                                        </span>
+                                                        <span>
+                                                            📦  {{l.cantidad}} ⏳ {{(l.fecha_vencimiento | date:'dd/MM/yyyy') || 'Sin fecha'}} 🏷️ {{l.lote || 'Sin lote'}}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            S/ {{p.pcompra}}    
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="fs-5 fw-bold">S/ {{ p.detalle.cantidad * p.pcompra | number:'1.2-2' }}</span>
+                                            <div *ngIf="p.detalle.cantidad_exacta">
+                                                <span class="badge badge-light-primary fs-5 fw-bold">S/ {{ p.cantidad * p.pcompra | number:'1.2-2' }}</span>
+                                            </div>
+                                            <div *ngIf="!p.detalle.cantidad_exacta">
+                                                <span class="badge badge-light-primary fs-5 fw-bold">S/ {{ p.detalle.cantidad_reemplazo * p.pcompra | number:'1.2-2' }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column bg-success rounded-3 p-6 mb-5">  
+                    <div class="d-flex flex-stack">
+                        <!--begin::Content-->
+                        <div class="fs-6 fw-bold text-white">
+                            <span class="d-block lh-1 mb-2">Subtotal</span>
+                            <span class="d-block lh-1 mb-2">Impuesto (18%)</span>
+                            <span class="d-block lh-1 fs-2qx mb-3">Total</span>
+                        </div> 
+                        <!--end::Content--> 
+                        
+                        <!--begin::Content-->
+                        <div class="fs-6 fw-bold text-white text-end">
+                            <span class="d-block lh-1 mb-2" data-kt-pos-element="total">S/ {{ subtotal | number: '1.2-2' }}</span>
+                            <span class="d-block lh-1 mb-2" data-kt-pos-element="tax">S/ {{ igv | number: '1.2-2' }}</span>
+                            <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ total | number: '1.2-2' }}</span>
+                        </div> 
+                        <!--end::Content--> 
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="comprobanteForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+
+

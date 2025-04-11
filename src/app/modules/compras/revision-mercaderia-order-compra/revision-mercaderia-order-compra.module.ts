@@ -16,13 +16,19 @@ import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.mod
 import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { GestionarMercaderiaCompraComponent } from './gestionar-mercaderia-compra/gestionar-mercaderia-compra.component';
+import { CrearLotesComponent } from './crear-lotes/crear-lotes.component';
+import { CrearRegistroSanitarioComponent } from './crear-registro-sanitario/crear-registro-sanitario.component';
+import { RegistrarComprobanteComponent } from './registrar-comprobante/registrar-comprobante.component';
 
 
 @NgModule({
   declarations: [
     CheckMercaderiaComponent,
     FacturasGeneradasComponent,
-    GestionarMercaderiaCompraComponent
+    GestionarMercaderiaCompraComponent,
+    CrearLotesComponent,
+    CrearRegistroSanitarioComponent,
+    RegistrarComprobanteComponent
   ],
   imports: [
     CommonModule,

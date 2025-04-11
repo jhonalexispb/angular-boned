@@ -1,0 +1,104 @@
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Crear registro sanitario para: <br>
+          <span class="text-success">{{PRODUCT_ID.laboratorio}}</span><br>
+          {{PRODUCT_ID.nombre_completo}}
+        </h2>
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5">
+        <form [formGroup]="loteForm" (ngSubmit)="onSubmit()">
+            <div class="fv-row mb-7" *ngIf="loteForm.get('tiene_lote')?.value">
+              <label class="required fw-bold fs-6 mb-2">Lote</label>
+              <ng-select 
+                name="principios_activos"
+                [items]="LOTES_LIST"
+                bindLabel="lote"
+                bindValue="lote"
+                formControlName="lote"
+                placeholder="Selecciona un lote"
+                [searchable]="true"
+                [clearable]="true" 
+                [virtualScroll]="true"  
+                [loading]="loading"  
+                [multiple]="false"
+                [loadingText]="'Cargando...'"
+                [addTag]="true"
+                (change)="onLoteSelected($event)">
+                <ng-template ng-label-tmp let-item="item">
+                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento | date: 'dd/MM/yyyy' }}</span> 
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento | date: 'dd/MM/yyyy' }}</span> 
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="mb-5">
+                <label class="form-label">¿Tiene fecha?</label>
+                <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
+                    <label class="form-check-label">No</label>
+                    <input class="form-check-input" type="checkbox" formControlName="tiene_fecha"/>
+                    <label class="form-check-label">Sí</label>
+                </div>
+            </div>
+            <div class="fv-row mb-7" *ngIf="loteForm.get('tiene_fecha')?.value">
+              <label class="required fw-bold fs-6 mb-2" for="fecha_vencimiento">Fecha de vencimiento</label>
+              <div class="input-group">
+                <input
+                id="fecha_vencimiento"
+                type="date"
+                class="form-control mb-3 mb-lg-0"
+                formControlName="fecha_vencimiento"
+                placeholder="Ingrese una fecha"
+                />
+              </div>
+              <div *ngIf="loteForm.get('fecha_vencimiento')?.touched && loteForm.get('fecha_vencimiento')?.invalid" class="text-danger">
+                <span *ngIf="loteForm.get('fecha_vencimiento')?.errors?.['required']">La fecha de vencimiento es obligatoria.</span>
+              </div>
+            </div>
+
+            <div class="fv-row mb-7" *ngIf="loteForm.get('tiene_fecha')?.value || loteForm.get('tiene_lote')?.value">
+                <label class="required fw-bold fs-6 mb-2" for="fecha_vencimiento">Cantidad</label>
+                <div class="input-group">
+                  <input
+                  type="number"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="cantidad"
+                  placeholder="Ingrese una cantidad"
+                  />
+                </div>
+                <div *ngIf="loteForm.get('fecha_vencimiento')?.touched && loteForm.get('fecha_vencimiento')?.invalid" class="text-danger">
+                  <span *ngIf="loteForm.get('fecha_vencimiento')?.errors?.['required']">La fecha de vencimiento es obligatoria.</span>
+                </div>
+              </div>
+            
+            <div class="text-center">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="loteForm.invalid">Registrar</button>
+            </div>
+          </form>
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->
+

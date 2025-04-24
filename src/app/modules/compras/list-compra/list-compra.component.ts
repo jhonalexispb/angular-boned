@@ -4,6 +4,8 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { CompraService } from '../service/compra.service';
 import { Router } from '@angular/router';
 import { MercaderiaOrderCompraComponent } from '../mercaderia-order-compra/mercaderia-order-compra.component';
+import { ModalComprobantesComponent } from '../modal-comprobantes/modal-comprobantes.component';
+import { ModalMercaderiaIngresadaComponent } from '../modal-mercaderia-ingresada/modal-mercaderia-ingresada.component';
 
 @Component({
   selector: 'app-list-compra',
@@ -72,7 +74,12 @@ export class ListCompraComponent {
   }
 
   verComprobantesOrderCompra(R:any){
-    const modalRef = this.modalService.open(MercaderiaOrderCompraComponent,{centered:true, size: 'lg'})
+    const modalRef = this.modalService.open(ModalComprobantesComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.ORDER_COMPRA = R;
+  }
+
+  verProductosIngresadosOrderCompra(R:any){
+    const modalRef = this.modalService.open(ModalMercaderiaIngresadaComponent,{centered:true, size: 'lg'})
     modalRef.componentInstance.ORDER_COMPRA = R;
   }
 

@@ -1,0 +1,104 @@
+
+<div class="card card-flush py-4 flex-row-fluid overflow-hidden">
+    <!--begin::Card header-->
+    <div class="card-header">
+        <div class="card-title d-flex flex-column gap-2">
+            <h2>Orden: {{ORDER_COMPRA.codigo}} <span class="text-primary">{{ORDER_COMPRA.proveedor}}</span> </h2>
+            <ng-container *ngIf="COMPROBANTE">
+                <h2>Comprobante: <span class="text-success">{{COMPROBANTE}}</span> </h2>
+            </ng-container>
+        </div>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!-- <app-div-loading *ngIf="isLoading; else showData">
+        </app-div-loading> -->
+        
+        <div class="table-responsive">
+            <!--begin::Table-->
+            <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                <thead>
+                    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                        <th class="min-w-175px">Producto</th>
+                        <th class="min-w-100px text-center">Lote</th>
+                        <th class="min-w-100px text-center">Cantidad</th>
+                        <th class="min-w-70px text-center">Precio compra</th>
+                        <th class="min-w-100px text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="fw-semibold text-gray-600">
+                    <tr *ngFor="let p of PRODUCTS">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <!--begin::Thumbnail-->
+                                <div class="symbol symbol-50px">
+                                    <span class="symbol-label" [ngStyle]="{'background-image': 'url(' + p.imagen + ')'}"></span>
+                                </div>
+                                <!--end::Thumbnail-->
+
+                                <!--begin::Title-->
+                                <div class="ms-5">
+                                    <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span><br>
+                                    <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
+                                    <div class="fs-7">{{p.caracteristicas}}</div>
+                                    <div class="fs-7">SKU: {{p.sku}}</div>
+                                </div>
+                                <!--end::Title-->
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                <span class="badge badge-light-success fs-5 fw-bold">
+                                    {{p.lote || 'Sin lote'}}
+                                </span>
+
+                                <span class="badge badge-light-primary fs-5 fw-bold">
+                                    {{ p.fecha_vencimiento ? (p.fecha_vencimiento | date: 'dd-MM-yyyy') : 'Sin fecha de vencimiento' }}
+                                  </span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            {{p.cantidad}}
+                        </td>
+                        <td class="text-center">
+                            S/ {{p.pcompra}}    
+                        </td>
+                        <td class="text-center">
+                            <span class="text-gray-900 fw-bold">S/ {{ p.total | number:'1.2-2' }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--end::Table-->
+        </div>
+
+        <div *ngIf="COMPROBANTE"  class="card-body py-4 px-0">
+            <div class="d-flex flex-stack bg-primary rounded-3 p-6">  
+              <!--begin::Content-->
+              <div class="fs-6 fw-bold text-white">
+                <span class="d-block lh-1 mb-2">Subtotal</span>
+                <span class="d-block lh-1 mb-2">Impuesto (18%)</span>
+                <span class="d-block lh-1 fs-2qx mb-3">Total</span>
+              </div> 
+              <!--end::Content--> 
+              
+              <!--begin::Content-->
+              <div class="fs-6 fw-bold text-white text-end">
+                <span class="d-block lh-1 mb-2" data-kt-pos-element="total">S/ {{ subtotal | number: '1.2-2' }}</span>
+                <span class="d-block lh-1 mb-2" data-kt-pos-element="tax">S/ {{ impuesto | number: '1.2-2' }}</span>
+                <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ total | number: '1.2-2' }}</span>
+              </div> 
+              <!--end::Content--> 
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button type="reset" id="kt_modal_add_event_cancel" class="btn btn-light me-3 mt-5" (click)="modal.dismiss()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+    <!--end::Card body-->
+</div>

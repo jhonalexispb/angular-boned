@@ -175,6 +175,24 @@ export class CompraService {
     )
   }
 
+  obtenerComprobantesOrdenCompra(ID_COMPRA:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos/ver_comprobantes/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  obtenerMercaderiaIngresadaOrdenCompra(ID_COMPRA:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos/ver_productos_ingresado/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //manejo de cambios (recepcionar, cancelar recepcion)
   recepcionar_orden_compra(ID_COMPRA:any,data:any){
     this.loadingService.showLoading('Actualizando estado')

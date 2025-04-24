@@ -44,6 +44,8 @@ export class CheckMercaderiaComponent {
     }else{
       this.ID_COMPRA = this.route.snapshot.paramMap.get('id') || '';
     }
+
+    console.log(this.ID_COMPRA)
     
     this.loading = true
     this.compraService.obtenerProductosOrdenCompra(this.ID_COMPRA, true).subscribe((resp: any) => {

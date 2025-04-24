@@ -16,6 +16,7 @@ export class ModalLotesComponent {
   LOTES_LIST:any = [];
   lotes_activos:any = 0;
   lotes_inactivos:any = 0;
+  stock:any = 'Solicitando stock';
   user:any = ''
   sweet:any = new SweetalertService
   activeDropdownIndex: number | null = null;
@@ -37,6 +38,7 @@ export class ModalLotesComponent {
         this.LOTES_LIST = resp.lotes
         this.lotes_activos = resp.lotes_activos
         this.lotes_inactivos = resp.lotes_inactivos
+        this.stock = resp.stock
         this.isLoading = false;
       },
     })

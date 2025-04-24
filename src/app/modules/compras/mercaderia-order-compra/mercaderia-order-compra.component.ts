@@ -20,7 +20,7 @@ export class MercaderiaOrderCompraComponent {
   ){}
 
   ngOnInit(){
-    this.ocService.obtenerProductosOrdenCompra(this.ORDER_COMPRA.id).subscribe({
+    this.ocService.obtenerProductosOrdenCompraToWatch(this.ORDER_COMPRA.id).subscribe({
       next: (resp: any) => {
         this.isLoading = false
         this.PRODUCTS = resp.order_compra_detail

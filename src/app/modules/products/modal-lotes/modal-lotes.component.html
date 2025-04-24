@@ -4,7 +4,8 @@
     <div class="modal-header">
         <h2 class="fw-bolder">{{ user }} configuremos lotes para: <br>
             <span class="text-success">{{PRODUCT_ID.laboratorio}}</span><br>
-            {{PRODUCT_ID.nombre_completo}}
+            {{PRODUCT_ID.nombre_completo}}<br>
+            Stock: {{stock}}
         </h2>
         <button type="button" class="btn btn-icon btn-sm btn-active-icon-primary" (click)="modal.dismiss()">
             <span class="svg-icon svg-icon-1">
@@ -115,11 +116,12 @@
                                 </td>
                                 <td class="text-center">
                                     <span class="text-gray-900 fw-bold fs-6">
-                                      {{ e.fecha_vencimiento | date:'dd/MM/yyyy' }}
+                                      {{ e.fecha_vencimiento }}
                                     </span><br>
                                     <span *ngIf="e.dias_faltantes > 0" class="badge badge-light-primary fs-7 fw-bold">
                                         A {{ e.dias_faltantes }} días de vencer
                                     </span>
+                                    <span *ngIf="e.dias_faltantes === null"></span>
                                     <span *ngIf="e.dias_faltantes == 0" class="badge badge-light-warning fs-7 fw-bold">
                                         Vence hoy
                                     </span>

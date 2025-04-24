@@ -32,6 +32,8 @@ export class GestionarMercaderiaCompraComponent {
     this.detalleForm = this.fb.group({
       cantidad_exacta: [true],
       cantidad_reemplazo: [''],
+      mantener_cantidad: [false],
+      cantidad_mantener: [''],
       cantidad: [null, [Validators.required]],
       cantidad_pendiente: [{ value: '', disabled: true }],
       guia_devolucion:[false],
@@ -76,6 +78,12 @@ export class GestionarMercaderiaCompraComponent {
         cantidad_reemplazo: '',
         guia_devolucion: false
       });
+    });
+
+    this.detalleForm.get('mantener_cantidad')?.valueChanges.subscribe((mantener) => {
+      if(mantener){
+        this.detalleForm.get('cantidad_mantener')?.patchValue(this.PRODUCTO.cantidad - this.detalleForm.get('cantidad_reemplazo')?.value);
+      }
     });
   }
 

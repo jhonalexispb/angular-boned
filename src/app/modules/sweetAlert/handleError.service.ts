@@ -10,30 +10,27 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class HandleErrorService {
-    private router: Router
-    sweet:any = new SweetalertService
+    /* private router: Router */
    
     private restaurarSubject = new Subject<string>();
     
     constructor(
         private modalService: NgbModal,
         public authservice: AuthService,
-        private loadingService:LoadingService
+        private loadingService:LoadingService,
+        private sweet: SweetalertService
       ) {}
 
     handleError(error: any) {
         switch (error.status) {
             case 0:
-              this.modalService.dismissAll();
-              this.loadingService.hideLoading();
+              this.limpiarUI();
               this.sweet.alerta('Ups', 'El servidor no responde, por favor intenta más tarde.','/assets/animations/general/error_default.json');
               break;
 
             case 401:
-              this.modalService.dismissAll();
-              this.loadingService.hideLoading();
+              this.limpiarUI();
               this.authservice.logout();
-              this.router.navigate(['/login']);
               break;
             
             case 403:
@@ -85,8 +82,7 @@ export class HandleErrorService {
               break;
           
             default:
-                this.modalService.dismissAll();
-                this.loadingService.hideLoading();
+                this.limpiarUI();
                 this.sweet.alerta('Ups', 'Error interno del servidor. Intenta nuevamente más tarde.','/assets/animations/general/error_400.json');
               break;
         }
@@ -96,5 +92,10 @@ export class HandleErrorService {
 
     getRestauracionObservable() {
         return this.restaurarSubject.asObservable();
+    }
+
+    private limpiarUI() {
+      this.modalService.dismissAll();
+      this.loadingService.hideLoading();
     }
 }

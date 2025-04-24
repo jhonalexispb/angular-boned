@@ -5,13 +5,11 @@ import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 import { LoadingService } from '../../loadingScreen/loading-screen/service/loading-service.service';
 import { HandleErrorService } from '../../sweetAlert/handleError.service';
-import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompraService {
-  sweet:any = new SweetalertService  
   private actualizaCarritoCompraSubject = new BehaviorSubject<boolean>(false); 
   actualizaCarritoCompra$ = this.actualizaCarritoCompraSubject.asObservable();
   constructor(
@@ -155,10 +153,22 @@ export class CompraService {
   //recursos extras
   obtenerProductosOrdenCompra(ID_COMPRA:any, cargando:boolean = false){
     if(cargando){
-      this.loadingService.showLoading('Consultando mercaderia')
+      this.loadingService.showLoading('Obteniendo mercaderia')
     }
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/recursos/productos/"+ID_COMPRA
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  obtenerProductosOrdenCompraToWatch(ID_COMPRA:any, cargando:boolean = false){
+    if(cargando){
+      this.loadingService.showLoading('Consultando mercaderia')
+    }
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_compra/recursos/ver_productos/"+ID_COMPRA
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
@@ -180,6 +190,16 @@ export class CompraService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_compra/recursos/obtener_lotes/"+ID_PRODUCTO
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  registrarComprobantesOrdenCompra(data: any, id:any){
+    this.loadingService.showLoading('Ingresando mercaderia')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+`/orden_compra/registrar_comprobantes/${id}`
+    return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

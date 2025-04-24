@@ -100,7 +100,7 @@
                                           Cancelar recepcion
                                         </button>
                                       </li>
-                                      <li *ngIf="R.state == 1">
+                                      <li *ngIf="R.state == 1 || R.state == 3">
                                         <button (click)="revisarMercaderia(R)" class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
                                           <i class="ki-duotone ki-courier fs-2 text-success">
                                             <span class="path1"></span>
@@ -125,7 +125,7 @@
                                           Productos
                                         </button>
                                       </li>
-                                      <li *ngIf="R.state != 4">
+                                      <li *ngIf="R.state == 0">
                                         <button (click)="editOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
                                           <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
                                           Editar
@@ -212,7 +212,7 @@
                               </div>
                             </button>
                           </li>
-                          <li *ngIf="R.state == 1">
+                          <li *ngIf="R.state == 1 || R.state == 3">
                             <button (click)="revisarMercaderia(R.id)" class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
                               <div class="d-flex flex-column align-items-center gap-1">
                                 <i class="ki-duotone ki-courier fs-2 text-success">
@@ -241,7 +241,36 @@
                               </div>
                             </button>
                           </li>
-                          <li *ngIf="R.state != 4">
+                          <li *ngIf="R.state >= 2">
+                            <button (click)="verProductosOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                              <div class="d-flex flex-column align-items-center gap-1">
+                                <i class="ki-duotone ki-tablet-book fs-2 text-info">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                </i>
+                                Comprobantes
+                              </div>
+                            </button>
+                          </li>
+                          <li *ngIf="R.state >= 2">
+                            <button (click)="verProductosOrderCompra(R)" class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
+                              <div class="d-flex flex-column align-items-center gap-1">
+                                <i class="ki-duotone ki-delivery-2 fs-2 text-success">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                  <span class="path4"></span>
+                                  <span class="path5"></span>
+                                  <span class="path6"></span>
+                                  <span class="path7"></span>
+                                  <span class="path8"></span>
+                                  <span class="path9"></span>
+                                </i>
+                                Mercaderia ingresada
+                              </div>
+                            </button>
+                          </li>
+                          <li *ngIf="R.state == 0">
                             <button (click)="editOrderCompra(R)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
                               <div class="d-flex flex-column align-items-center gap-1">
                                 <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>

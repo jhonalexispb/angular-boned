@@ -19,16 +19,22 @@ import { GestionarMercaderiaCompraComponent } from './gestionar-mercaderia-compr
 import { CrearLotesComponent } from './crear-lotes/crear-lotes.component';
 import { CrearRegistroSanitarioComponent } from './crear-registro-sanitario/crear-registro-sanitario.component';
 import { RegistrarComprobanteComponent } from './registrar-comprobante/registrar-comprobante.component';
+import { FilterByNombrePipe } from './check-mercaderia/filter-by-nombre.pipe';
+import { VerProductoComprobanteComponent } from './ver-producto-comprobante/ver-producto-comprobante.component';
+import { SeleccionarComprobanteRegistradoComponent } from './seleccionar-comprobante-registrado/seleccionar-comprobante-registrado.component';
 
 
 @NgModule({
   declarations: [
     CheckMercaderiaComponent,
+    FilterByNombrePipe, 
     FacturasGeneradasComponent,
     GestionarMercaderiaCompraComponent,
     CrearLotesComponent,
     CrearRegistroSanitarioComponent,
-    RegistrarComprobanteComponent
+    RegistrarComprobanteComponent,
+    VerProductoComprobanteComponent,
+    SeleccionarComprobanteRegistradoComponent,
   ],
   imports: [
     CommonModule,

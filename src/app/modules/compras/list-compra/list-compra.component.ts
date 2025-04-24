@@ -31,6 +31,9 @@ export class ListCompraComponent {
     localStorage.removeItem('compra_edit_selected');
     localStorage.removeItem('compra_edit_detail_selected');
     localStorage.removeItem('eventos_edit_compra_cuotas');
+    localStorage.removeItem("comprobante_creado_by_orden_compra");
+    localStorage.removeItem("afectacion_igv");
+    localStorage.removeItem("orden_compra_cheking");
     this.listOrdenCompra();
   }
 
@@ -68,7 +71,11 @@ export class ListCompraComponent {
     modalRef.componentInstance.ORDER_COMPRA = R;
   }
 
-  // Método que se ejecuta cuando un dropdown es activado o desactivado
+  verComprobantesOrderCompra(R:any){
+    const modalRef = this.modalService.open(MercaderiaOrderCompraComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.ORDER_COMPRA = R;
+  }
+
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }

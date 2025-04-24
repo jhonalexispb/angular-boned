@@ -5,6 +5,7 @@ import { CompraService } from '../../service/compra.service';
 import { GestionarMercaderiaCompraComponent } from '../gestionar-mercaderia-compra/gestionar-mercaderia-compra.component';
 import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
 import { RegistrarComprobanteComponent } from '../registrar-comprobante/registrar-comprobante.component';
+import { SeleccionarComprobanteRegistradoComponent } from '../seleccionar-comprobante-registrado/seleccionar-comprobante-registrado.component';
 
 @Component({
   selector: 'app-check-mercaderia',
@@ -17,12 +18,14 @@ export class CheckMercaderiaComponent {
   ORDER_LIST:any = []
   ORDER_GESTIONADA:any = []
   AFECTACION_IGV:any = []
+  COMPROBANTES_LIST:any = []
   loading:boolean = true
   sweet:any = new SweetalertService
   subtotal = 0;
   igv = 0;
   total = 0;
   comprobantes = 0;
+  busquedaProducto: string = '';
 
   constructor(
       public modalService: NgbModal,
@@ -47,8 +50,10 @@ export class CheckMercaderiaComponent {
       this.ORDER = resp.order_compra
       this.ORDER_LIST = resp.order_compra_detail
       this.AFECTACION_IGV = resp.afectacion_igv
+      this.COMPROBANTES_LIST = resp.comprobantes
 
       localStorage.setItem('orden_compra_cheking', JSON.stringify(this.ORDER));
+      localStorage.setItem('afectacion_igv', JSON.stringify(this.AFECTACION_IGV));
 
       const storedComprobante = localStorage.getItem('comprobante_creado_by_orden_compra');
       let storedComprobanteData = storedComprobante ? JSON.parse(storedComprobante) : null;
@@ -63,15 +68,38 @@ export class CheckMercaderiaComponent {
               const productoEnOrden = this.ORDER_LIST.find((p: any) =>
                 p.producto_id === productoId && p.bonificacion === bonificacion
               );
-      
+
               if (productoEnOrden) {
-                productoEnOrden.gestionado = true;
+                const cantidadOrden = productoEnOrden.cantidad;
+                const cantidadRegistrada = prod.detalle.cantidad; 
+                productoEnOrden.gestionado = false;
+                productoEnOrden.gestion_parcial = false;
+
+                if (cantidadOrden === cantidadRegistrada) {
+                  productoEnOrden.gestionado = true;
+                } else {
+                  if(prod.detalle.guia_devolucion){
+                    productoEnOrden.gestionado = true;
+                  }else{
+                    productoEnOrden.gestion_parcial = true;
+                    productoEnOrden.cantidad = cantidadOrden - cantidadRegistrada;
+                    if(productoEnOrden.cantidad == 0){
+                      productoEnOrden.gestionado = true;
+                    } 
+                  }
+                }
               }
             });
           }
         });
         this.comprobantes = storedComprobanteData.length
       }
+
+      this.ORDER_LIST.forEach((p:any) => {
+        if(p.state == 1){
+          p.gestionado = true;
+        }
+      })
     })
   }
   
@@ -80,6 +108,16 @@ export class CheckMercaderiaComponent {
       this.sweet.alerta('Atencion','el producto ya fue gestionado')
       return
     }
+
+    const productoEnOrderGestionada = this.ORDER_GESTIONADA.find((item: any) => 
+      item.producto_id === producto.producto_id && item.bonificacion === producto.bonificacion
+    );
+
+    if(productoEnOrderGestionada){
+      this.sweet.alerta('Ups','el producto ya fue gestionado')
+      return
+    }
+
     const modalRef = this.modalService.open(GestionarMercaderiaCompraComponent,{centered:true, size: 'md'})
     modalRef.componentInstance.PRODUCTO = producto
     modalRef.componentInstance.AFECTACION_IGV = this.AFECTACION_IGV
@@ -89,7 +127,15 @@ export class CheckMercaderiaComponent {
       );
 
       if (productoEncontrado) {
-        productoEncontrado.gestionado = true;
+        productoEncontrado.gestion_parcial = false;
+        if (p.detalle.mantener_cantidad) {
+          const cantidadMantener = p.detalle.cantidad_mantener;
+          productoEncontrado.gestion_parcial = true; // Agregar gestion_parcial
+          productoEncontrado.cantidad = cantidadMantener; // Actualizar cantidad del producto
+        } else {
+          productoEncontrado.gestionado = true;
+        }
+
         this.ORDER_LIST = [...this.ORDER_LIST];
         p = { ...p, ...productoEncontrado };
       }
@@ -129,8 +175,15 @@ export class CheckMercaderiaComponent {
     return item ? item.descripcion : 'Sin descripción';
   }
 
-  registrar_comprobante(){
-    const modalRef = this.modalService.open(RegistrarComprobanteComponent, { centered: true, size: 'md'})
+  registrar_comprobante(seleccionar = false){
+    let modalRef
+    if(seleccionar){
+      modalRef = this.modalService.open(SeleccionarComprobanteRegistradoComponent, { centered: true, size: 'md'})
+      modalRef.componentInstance.COMPROBANTES_LIST = this.COMPROBANTES_LIST
+    }else{
+      modalRef = this.modalService.open(RegistrarComprobanteComponent, { centered: true, size: 'md'})
+    }
+
     modalRef.componentInstance.ORDER_GESTIONADA = this.ORDER_GESTIONADA
     modalRef.componentInstance.AFECTACION_IGV = this.AFECTACION_IGV
     modalRef.componentInstance.ID_COMPRA = this.ID_COMPRA

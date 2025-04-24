@@ -3,7 +3,7 @@
     <!--begin::Modal header-->
     <div class="modal-header" id="kt_modal_add_user_header">
         <!--begin::Modal title-->
-        <h2 class="fw-bolder">Añadir comprobante
+        <h2 class="fw-bolder">Seleccionar comprobante
         </h2>
         <!--end::Modal title-->
         <!--begin::Close-->
@@ -27,57 +27,16 @@
     <div class="modal-body mx-5">
         <form [formGroup]="comprobanteForm" (ngSubmit)="onSubmit()">
             <div class="fv-row mb-7">
-              <label class="required fw-bold fs-6 mb-2">Serie de comprobante</label>
+              <label class="required fw-bold fs-6 mb-2">Selecciona un comprobante</label>
               <div class="input-group">
-                <input
-                type="text"
-                class="form-control mb-3 mb-lg-0"
-                formControlName="serie"
-                />
+                <select class="form-control" formControlName="comprobante_id">
+                    <option value="">Seleccione un comprobante</option>
+                    <option *ngFor="let item of COMPROBANTES_LIST" value="{{item.id}}">{{item.serie}}-{{item.n_documento}}</option>
+                </select>
               </div>
               <div *ngIf="comprobanteForm.get('serie')?.touched && comprobanteForm.get('serie')?.invalid" class="text-danger">
                 <span *ngIf="comprobanteForm.get('serie')?.errors?.['required']">La serie es obligatoria.</span>
               </div>
-            </div>
-
-            <div class="fv-row mb-7">
-                <label class="required fw-bold fs-6 mb-2">Numero de comprobante</label>
-                <div class="input-group">
-                  <input
-                  type="text"
-                  class="form-control mb-3 mb-lg-0"
-                  formControlName="ncomprobante"
-                  />
-                </div>
-                <div *ngIf="comprobanteForm.get('ncomprobante')?.touched && comprobanteForm.get('ncomprobante')?.invalid" class="text-danger">
-                  <span *ngIf="comprobanteForm.get('ncomprobante')?.errors?.['required']">El numero de comprobante es obligatorio.</span>
-                </div>
-            </div>
-
-            <div class="fv-row mb-7">
-                <label class="required fw-bold fs-6 mb-2">Fecha de emisión</label>
-                <div class="input-group">
-                  <input
-                  type="date"
-                  class="form-control mb-3 mb-lg-0"
-                  formControlName="fecha_emision"
-                  />
-                </div>
-                <div *ngIf="comprobanteForm.get('fecha_emision')?.touched && comprobanteForm.get('fecha_emision')?.invalid" class="text-danger">
-                  <span *ngIf="comprobanteForm.get('fecha_emision')?.errors?.['required']">La fecha de emision es obligatoria.</span>
-                </div>
-            </div>
-
-            <div class="fv-row mb-7">
-                <label class="required form-label">Modo de pago</label>
-                <select class="form-select mb-2" formControlName="modo_pago">
-                  <option value="" disabled selected>Seleccione una opción</option>
-                  <option value="0">Credito</option>
-                  <option value="1">Contado</option>
-                </select>
-                <div *ngIf="comprobanteForm.get('modo_pago')?.touched && comprobanteForm.get('modo_pago')?.invalid" class="text-danger">
-                    <span *ngIf="comprobanteForm.get('modo_pago')?.errors?.['required']">El modo de pago es obligatorio.</span>
-                  </div>
             </div>
 
             <div class="fv-row mb-7">
@@ -91,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="mb-5">
+            <div class="mb-5" *ngIf="comprobanteForm.get('comprobante_id')?.value">
                 <label class="form-label">¿El comprobante incluye igv?</label>
                 <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                     <label class="form-check-label">No</label>
@@ -227,5 +186,3 @@
     </div>
     <!--end::Modal body-->
 </div>
-
-

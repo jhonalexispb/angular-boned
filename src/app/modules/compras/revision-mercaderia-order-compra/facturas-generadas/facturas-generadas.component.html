@@ -23,6 +23,7 @@
                         <th class="min-w-70px text-center">Modo de pago</th>
                         <th class="min-w-100px text-center">Comentario</th>
                         <th class="min-w-100px text-center">Monto</th>
+                        <th class="min-w-100px text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="fw-semibold text-gray-600">
@@ -43,7 +44,12 @@
                             {{p.fecha_emision | date:'dd/MM/yyyy'}}
                         </td>
                         <td class="text-center">
-                            {{p.modo_pago}}    
+                            <span *ngIf="p.modo_pago == 1">
+                                CONTADO
+                            </span>
+                            <span *ngIf="p.modo_pago == 0">
+                                CREDITO
+                            </span>
                         </td>
                         <td class="text-center">
                             {{p.comentario}} 
@@ -55,9 +61,41 @@
                                 IGV: {{p.igv_costo}}
                             </span>
                         </td>
+                        <td class="text-center">
+                            <ul class="pt-3 px-3 d-flex gap-2 justify-content-center">
+                                <li>
+                                  <button (click)="ver_productos(p)" class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <i class="ki-duotone ki-lots-shopping fs-2 text-info">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                            <span class="path6"></span>
+                                            <span class="path7"></span>
+                                            <span class="path8"></span>
+                                        </i>
+                                      Productos
+                                    </div>
+                                  </button>
+                                </li>
+                                <li>
+                                    <button (click)="borrar_comprobante(p)" class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100">
+                                        <div class="d-flex flex-column align-items-center gap-1">
+                                          <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                          Eliminar
+                                        </div>
+                                    </button>
+                                </li>
+                              </ul>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-4">
+                <button class="btn btn-primary" (click)="registrar_compra()">Registrar compra</button>
+            </div>
         </div>
     </div>
 </div>

@@ -78,6 +78,8 @@ export class CreateCompraComponent {
       descripcion:[''],
     });
 
+    this.setearIgv()
+
     this.compraForm.valueChanges.subscribe(values => {
         localStorage.setItem('compra_form', JSON.stringify(values));
     });
@@ -304,6 +306,7 @@ export class CreateCompraComponent {
       }))
     modalRef.componentInstance.LABORATORIOS_SELECCIONADOS_POR_COMPRA = labs_selec
     modalRef.componentInstance.isButtonVisible = false;
+    modalRef.componentInstance.isFabricanteRequired = false;
     modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
       this.PRODUCT_LIST = [{ ...r.data }, ...this.PRODUCT_LIST];
       this.PRODUCT_LIST_BONIFICACION = [{ ...r.data }, ...this.PRODUCT_LIST_BONIFICACION];

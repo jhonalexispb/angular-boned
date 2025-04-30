@@ -34,7 +34,15 @@
                             {{p.modo_pago}}
                         </td>
                         <td class="text-center">
-                            S/ {{p.modo_pago}}    
+                            <div class="d-flex flex-column align-items-center gap-2">
+                                <span>S/ {{p.monto_real}}</span>
+                                <span *ngIf="p.monto_real != p.total" class="badge badge-light-primary fs-5 fw-bold">
+                                    S/ {{p.total}}
+                                </span>
+                                <span *ngIf="p.monto_real != p.total" class="badge badge-light-warning fs-5 fw-bold">
+                                    Diferencia S/ {{ (p.monto_real - p.total) | number: '1.2-2' }}
+                                </span>
+                            </div>  
                         </td>
                         <td>
                             <ul class="pt-3 px-3 d-flex gap-2 justify-content-center">

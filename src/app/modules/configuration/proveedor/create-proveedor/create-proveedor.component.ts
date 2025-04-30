@@ -50,6 +50,11 @@ export class CreateProveedorComponent{
       return false;
     }
 
+    if(!this.ruc){
+      this.sweet.formulario_invalido("Validacion","el ruc del proveedor es requerido");
+      return false;
+    }
+
     if(!this.razonSocial){
       this.sweet.formulario_invalido("Validacion","la razon social del proveedor es requerida");
       return false;
@@ -58,6 +63,7 @@ export class CreateProveedorComponent{
     const data = {
       'name': this.name,
       'razonSocial': this.razonSocial,
+      'ruc': this.ruc,
       'email':this.correo,
       'address':this.address,
       'iddistrito':this.distrito,

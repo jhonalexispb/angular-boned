@@ -36,7 +36,7 @@ export class GestionarMercaderiaCompraComponent {
       cantidad_mantener: [''],
       cantidad: [null, [Validators.required]],
       cantidad_pendiente: [{ value: '', disabled: true }],
-      guia_devolucion:[false],
+      /* guia_devolucion:[false], */
       comentario:[''],
       afectacion_igv_id:[this.PRODUCTO.afectacion_producto_id || '']
     });
@@ -76,7 +76,7 @@ export class GestionarMercaderiaCompraComponent {
         cantidad: null,
         cantidad_pendiente: null,
         cantidad_reemplazo: '',
-        guia_devolucion: false
+        /* guia_devolucion: false */
       });
     });
 

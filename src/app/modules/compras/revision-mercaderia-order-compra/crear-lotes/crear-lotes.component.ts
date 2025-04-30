@@ -82,11 +82,20 @@ export class CrearLotesComponent {
   }
 
   onLoteSelected(event: any) {
+    this.loteForm.patchValue({
+      tiene_fecha: true
+    }) 
     const loteSeleccionado = this.LOTES_LIST.find(lote => lote.id === event.id);
     if (loteSeleccionado) {
-      this.loteForm.patchValue({
-        fecha_vencimiento: loteSeleccionado.fecha_vencimiento
-      }) 
+      if(loteSeleccionado.fecha_vencimiento){
+        this.loteForm.patchValue({
+          fecha_vencimiento: loteSeleccionado.fecha_vencimiento
+        }) 
+      }else{
+        this.loteForm.patchValue({
+          tiene_fecha: false
+        }) 
+      }
     }
   }
 }

@@ -84,7 +84,9 @@ export class FacturasGeneradasComponent {
             igv: compraForm.igv_costo,
             modo_pago: compraForm.modo_pago,
             total: compraForm.total,
+            monto_real: compraForm.monto_real,
             fecha_emision: compraForm.fecha_emision,
+            fecha_vencimiento: compraForm.fecha_vencimiento,
             comentario: compraForm.comentario,
             productos: compraForm.productos.map((item: any) => ({
               afectacion_id: item.detalle.afectacion_igv_id,
@@ -101,7 +103,7 @@ export class FacturasGeneradasComponent {
               comentario: item.detalle.comentario,
               pcompra: item.pcompra,
               pventa: item.pventa,
-              guia_devolucion: item.detalle.guia_devolucion,
+              /* guia_devolucion: item.detalle.guia_devolucion, */
               cantidad_pendiente: item.detalle.cantidad_pendiente || 0,
               cantidad_reemplazo: item.detalle.cantidad_reemplazo || 0,
               lotes: item.lotes.map((lote: any) => ({

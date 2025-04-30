@@ -79,8 +79,10 @@ export class ListCompraComponent {
   }
 
   verProductosIngresadosOrderCompra(R:any){
-    const modalRef = this.modalService.open(ModalMercaderiaIngresadaComponent,{centered:true, size: 'lg'})
+    const modalRef = this.modalService.open(ModalMercaderiaIngresadaComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.ORDER_COMPRA = R;
+    modalRef.componentInstance.DETALLADO = true;
+    modalRef.componentInstance.MERCADERIA_DIRECTA = R.mercaderia;
   }
 
   handleDropdownToggle(index: number) {

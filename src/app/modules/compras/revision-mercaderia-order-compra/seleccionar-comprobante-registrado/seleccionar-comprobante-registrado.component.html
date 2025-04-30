@@ -75,6 +75,7 @@
                                         <th class="min-w-100px text-center">Cantidad</th>
                                         <th class="min-w-100px text-center">Fecha de vencimiento</th>
                                         <th class="min-w-70px text-center">Precio compra</th>
+                                        <th class="min-w-150px text-center">Comentario</th>
                                         <th class="min-w-150px text-center">Total</th>
                                     </tr>
                                 </thead>
@@ -141,6 +142,9 @@
                                         </td>
                                         <td class="text-center">
                                             S/ {{p.pcompra}}    
+                                        </td>
+                                        <td class="text-center">
+                                            {{p.detalle.comentario}}    
                                         </td>
                                         <td class="text-center">
                                             <span class="fs-5 fw-bold">S/ {{ p.detalle.cantidad * p.pcompra | number:'1.2-2' }}</span>

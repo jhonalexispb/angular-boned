@@ -57,10 +57,10 @@
                 [addTag]="true"
                 (change)="onLoteSelected($event)">
                 <ng-template ng-label-tmp let-item="item">
-                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento | date: 'dd/MM/yyyy' }}</span> 
+                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento ? (item.fecha_vencimiento | date: 'dd/MM/yyyy') : 'Sin fecha de vencimiento' }}</span> 
                 </ng-template>
                 <ng-template ng-option-tmp let-item="item">
-                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento | date: 'dd/MM/yyyy' }}</span> 
+                    {{ item.lote }} <span class="text-success">{{ item.fecha_vencimiento ? (item.fecha_vencimiento | date: 'dd/MM/yyyy') : 'Sin fecha de vencimiento' }}</span> 
                 </ng-template>
               </ng-select>
             </div>
@@ -89,7 +89,7 @@
             </div>
 
             <div class="fv-row mb-7">
-                <label class="required fw-bold fs-6 mb-2" for="fecha_vencimiento">Cantidad</label>
+                <label class="required fw-bold fs-6 mb-2">Cantidad</label>
                 <div class="input-group">
                   <input
                   type="number"
@@ -98,8 +98,8 @@
                   placeholder="Ingrese una cantidad"
                   />
                 </div>
-                <div *ngIf="loteForm.get('fecha_vencimiento')?.touched && loteForm.get('fecha_vencimiento')?.invalid" class="text-danger">
-                  <span *ngIf="loteForm.get('fecha_vencimiento')?.errors?.['required']">La fecha de vencimiento es obligatoria.</span>
+                <div *ngIf="loteForm.get('cantidad')?.touched && loteForm.get('cantidad')?.invalid" class="text-danger">
+                  <span *ngIf="loteForm.get('cantidad')?.errors?.['required']">La cantidad es obligatoria.</span>
                 </div>
               </div>
             

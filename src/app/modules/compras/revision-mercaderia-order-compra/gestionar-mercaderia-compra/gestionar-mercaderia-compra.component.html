@@ -46,14 +46,14 @@
                     Cantidad pendiente
                 </label>
                 <input type="text" class="form-control form-control-solid" placeholder="Cantidad pendiente" formControlName="cantidad_pendiente"/>
-                <div class="mt-5 d-flex justify-content-end align-items-center">
+                <!-- <div class="mt-5 d-flex justify-content-end align-items-center">
                     <label class="form-label">¿Generar guia de devolucion?</label>
                     <div class="form-check form-switch form-check-custom form-check-solid mb-3 d-flex gap-2">
                         <label class="form-check-label">No</label>
                         <input class="form-check-input" type="checkbox" formControlName="guia_devolucion"/>
                         <label class="form-check-label">Sí</label>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container" *ngIf="!detalleForm.get('cantidad_exacta')?.value && (detalleForm.get('cantidad_reemplazo')?.value == detalleForm.get('cantidad')?.value)">
                 <div class="mt-5 d-flex justify-content-end align-items-center">

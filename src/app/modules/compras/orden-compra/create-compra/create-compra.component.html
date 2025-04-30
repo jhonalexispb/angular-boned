@@ -46,7 +46,7 @@
                         <ng-select 
                           #proveedorSelect
                           [items]="PROVEEDORES_LIST"
-                          bindLabel="name"
+                          bindLabel="name_complete"
                           bindValue="id"
                           formControlName="proveedor_id"
                           placeholder="Seleccione proveedor"
@@ -612,10 +612,10 @@
                       <div class="position-relative">
                         <img 
                         *ngIf="P.bonificacion" 
-                        class="img-bonificacion position-absolute top-0 end-0 m-1" 
+                        class="img-bonificacion position-absolute bottom-0 end-0 m-1" 
                         src="./assets/images/bonificacion.png" 
                         alt="bonificacion" 
-                        width="50px">
+                        width="40px">
 
                         <div class="d-flex align-items-center gap-2">
                           <div class="d-flex flex-column gap-2 w-100">

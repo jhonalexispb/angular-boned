@@ -109,11 +109,12 @@
                             <th class="min-w-100px text-center">Cantidad</th>
                             <th class="min-w-100px text-center">Fecha de vencimiento</th>
                             <th class="min-w-70px text-center">Precio compra</th>
+                            <th class="min-w-150px text-center">Comentario</th>
                             <th class="min-w-150px text-center">Total</th>
                         </tr>
                     </thead>
                     <tbody class="fw-semibold text-gray-600">
-                        <tr *ngFor="let p of ORDER_GESTIONADA">
+                        <tr *ngFor="let p of ORDER_GESTIONADA; let index = index">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="symbol symbol-50px">
@@ -144,14 +145,14 @@
                                         <span class="badge badge-light-danger fs-5 fw-bold">
                                             Pendiente: {{p.detalle.cantidad_pendiente}}
                                         </span>
-                                        <span class="badge badge-light-success fs-5 fw-bold"
+                                        <!-- <span class="badge badge-light-success fs-5 fw-bold"
                                             *ngIf="p.detalle.guia_devolucion">
                                             Generar guia de devolucion
-                                        </span>
-                                        <span class="badge badge-light-warning fs-5 fw-bold"
+                                        </span> -->
+                                        <!-- <span class="badge badge-light-warning fs-5 fw-bold"
                                             *ngIf="!p.detalle.guia_devolucion">
                                             Sin guia de devolucion
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
                             </td>
@@ -177,7 +178,25 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                S/ {{p.pcompra}}    
+                                <div class="d-flex justify-content-center">
+                                    <div class="position-relative d-flex align-items-center">
+                                      <!--begin::Icon-->
+                                      <i class="ki-duotone ki-bill fs-2 position-absolute mx-4 text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                      </i>
+                                      <input type="text" class="form-control form-control-solid ps-12 py-1 flatpickr-input"
+                                      [(ngModel)]="p.pcompra" (input)="validarPrecio($event,index,'pcompra')"
+                                      style="width: 100px;">
+                                    </div>
+                                </div> 
+                            </td>
+                            <td class="text-center">
+                                {{p.detalle.comentario}}    
                             </td>
                             <td class="text-center">
                                 <span class="fs-5 fw-bold">S/ {{ p.detalle.cantidad * p.pcompra | number:'1.2-2' }}</span>

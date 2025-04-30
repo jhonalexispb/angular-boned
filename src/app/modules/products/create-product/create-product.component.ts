@@ -22,6 +22,7 @@ export class CreateProductComponent {
   @Output() ProductoC:EventEmitter<any> = new EventEmitter();
   @Input() LABORATORIOS_SELECCIONADOS_POR_COMPRA:any = []
   @Input() isButtonVisible: boolean = true;
+  @Input() isFabricanteRequired: boolean = true;
   productForm: FormGroup;
 
   LABORATORIOS:any[] = [];
@@ -97,6 +98,14 @@ export class CreateProductComponent {
       cond_almac_id:[null],
       unidad_id:[1]
     });
+
+    if (!this.isFabricanteRequired) {
+      const fabricanteControl = this.productForm.get('fabricante_id');
+      if (fabricanteControl) {
+        fabricanteControl.clearValidators(); // Quita todos los validadores
+        fabricanteControl.updateValueAndValidity(); // Refresca el estado del control
+      }
+    }
   }
 
   onSearchLineaFarmaceutica(event: any) {

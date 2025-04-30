@@ -69,6 +69,20 @@
             </div>
 
             <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2">Fecha de vencimiento</label>
+                <div class="input-group">
+                  <input
+                  type="date"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="fecha_vencimiento"
+                  />
+                </div>
+                <div *ngIf="comprobanteForm.get('fecha_vencimiento')?.touched && comprobanteForm.get('fecha_vencimiento')?.invalid" class="text-danger">
+                  <span *ngIf="comprobanteForm.get('fecha_vencimiento')?.errors?.['required']">La fecha de vencimiento es obligatoria.</span>
+                </div>
+            </div>
+
+            <div class="fv-row mb-7">
                 <label class="required form-label">Modo de pago</label>
                 <select class="form-select mb-2" formControlName="modo_pago">
                   <option value="" disabled selected>Seleccione una opción</option>
@@ -78,6 +92,20 @@
                 <div *ngIf="comprobanteForm.get('modo_pago')?.touched && comprobanteForm.get('modo_pago')?.invalid" class="text-danger">
                     <span *ngIf="comprobanteForm.get('modo_pago')?.errors?.['required']">El modo de pago es obligatorio.</span>
                   </div>
+            </div>
+
+            <div class="fv-row mb-7">
+                <label class="required fw-bold fs-6 mb-2">Monto</label>
+                <div class="input-group">
+                  <input
+                  type="number"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="monto_real"
+                  />
+                </div>
+                <div *ngIf="comprobanteForm.get('monto_real')?.touched && comprobanteForm.get('monto_real')?.invalid" class="text-danger">
+                  <span *ngIf="comprobanteForm.get('monto_real')?.errors?.['required']">El monto es obligatorio.</span>
+                </div>
             </div>
 
             <div class="fv-row mb-7">
@@ -116,6 +144,7 @@
                                         <th class="min-w-100px text-center">Cantidad</th>
                                         <th class="min-w-100px text-center">Fecha de vencimiento</th>
                                         <th class="min-w-70px text-center">Precio compra</th>
+                                        <th class="min-w-150px text-center">Comentario</th>
                                         <th class="min-w-150px text-center">Total</th>
                                     </tr>
                                 </thead>
@@ -182,6 +211,9 @@
                                         </td>
                                         <td class="text-center">
                                             S/ {{p.pcompra}}    
+                                        </td>
+                                        <td class="text-center">
+                                            {{p.detalle.comentario}}    
                                         </td>
                                         <td class="text-center">
                                             <span class="fs-5 fw-bold">S/ {{ p.detalle.cantidad * p.pcompra | number:'1.2-2' }}</span>

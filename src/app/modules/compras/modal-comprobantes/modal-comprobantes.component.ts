@@ -23,7 +23,6 @@ export class ModalComprobantesComponent {
   }
   verMercaderia(R: any) {
     const agrupado = this.consolidarIngresos(R.mercaderia);
-    console.log(R.mercaderia)
     const modalRef = this.modalService.open(ModalMercaderiaIngresadaComponent, { centered: true, size: 'lg' });
     modalRef.componentInstance.ORDER_COMPRA = this.ORDER_COMPRA;
     modalRef.componentInstance.MERCADERIA = agrupado;

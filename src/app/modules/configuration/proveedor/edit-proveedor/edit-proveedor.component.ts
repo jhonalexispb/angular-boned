@@ -19,6 +19,7 @@ export class EditProveedorComponent {
   address:string = '';
   correo:string = '';
   state:string;
+  ruc:string;
   distrito:null;
   representante:null;
 
@@ -41,6 +42,7 @@ export class EditProveedorComponent {
     this.razonSocial = this.PROVEEDOR_SELECTED.razonSocial,
     this.address = this.PROVEEDOR_SELECTED.address,
     this.correo = this.PROVEEDOR_SELECTED.email,
+    this.ruc = this.PROVEEDOR_SELECTED.ruc,
     this.state = this.PROVEEDOR_SELECTED.state,
     this.distrito = this.PROVEEDOR_SELECTED.iddistrito,
     this.representante = this.PROVEEDOR_SELECTED.idrepresentante,
@@ -69,6 +71,11 @@ export class EditProveedorComponent {
       return false;
     }
 
+    if(!this.ruc){
+      this.sweet.formulario_invalido("Validacion","el ruc del proveedor es requerido");
+      return false;
+    }
+
     if(!this.razonSocial){
       this.sweet.formulario_invalido("Validacion","la razon social del proveedor es requerida");
       return false;
@@ -78,6 +85,7 @@ export class EditProveedorComponent {
       'name': this.name,
       'razonSocial': this.razonSocial,
       'email':this.correo,
+      'ruc':this.ruc,
       'address':this.address,
       'iddistrito':this.distrito,
       'idrepresentante':this.representante,
@@ -108,6 +116,18 @@ export class EditProveedorComponent {
     modalRef.componentInstance.RepresentanteProveedorC.subscribe((r:any)=>{
       this.REPRESENTANTES = [r, ...this.REPRESENTANTES];
       this.representante = r.id
+    })
+  }
+
+  buscarRazonSocial() {
+    this.razonSocial = '';
+    this.address = '';
+    this.ProveedorService.obtenerRazonSocial(this.ruc).subscribe({
+      next: (resp: any) => {
+        this.sweet.success('¡Bien!',`dale un saludo a ${resp.razonSocial}`);
+        this.razonSocial = resp.razonSocial;
+        this.address = resp.response.direccion;
+      },
     })
   }
 

@@ -14,6 +14,7 @@
                             <th class="min-w-100px text-center">Cantidad</th>
                             <th class="min-w-100px text-center">Fecha de vencimiento</th>
                             <th class="min-w-70px text-center">Precio compra</th>
+                            <th class="min-w-150px text-center">Comentario</th>
                             <th class="min-w-150px text-center">Total</th>
                         </tr>
                     </thead>
@@ -46,14 +47,14 @@
                                         <span class="badge badge-light-danger fs-5 fw-bold">
                                             Pendiente: {{p.detalle.cantidad_pendiente}}
                                         </span>
-                                        <span class="badge badge-light-success fs-5 fw-bold"
+                                        <!-- <span class="badge badge-light-success fs-5 fw-bold"
                                             *ngIf="p.detalle.guia_devolucion">
                                             Generar guia de devolucion
                                         </span>
                                         <span class="badge badge-light-warning fs-5 fw-bold"
                                             *ngIf="!p.detalle.guia_devolucion">
                                             Sin guia de devolucion
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
                             </td>
@@ -80,6 +81,9 @@
                             </td>
                             <td class="text-center">
                                 S/ {{p.pcompra}}    
+                            </td>
+                            <td class="text-center">
+                                {{p.detalle.comentario}}    
                             </td>
                             <td class="text-center">
                                 <span class="fs-5 fw-bold">S/ {{ p.detalle.cantidad * p.pcompra | number:'1.2-2' }}</span>

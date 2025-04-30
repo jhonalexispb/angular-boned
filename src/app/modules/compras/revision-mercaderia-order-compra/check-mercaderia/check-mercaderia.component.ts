@@ -44,8 +44,6 @@ export class CheckMercaderiaComponent {
     }else{
       this.ID_COMPRA = this.route.snapshot.paramMap.get('id') || '';
     }
-
-    console.log(this.ID_COMPRA)
     
     this.loading = true
     this.compraService.obtenerProductosOrdenCompra(this.ID_COMPRA, true).subscribe((resp: any) => {
@@ -80,14 +78,14 @@ export class CheckMercaderiaComponent {
                 if (cantidadOrden === cantidadRegistrada) {
                   productoEnOrden.gestionado = true;
                 } else {
-                  if(prod.detalle.guia_devolucion){
-                    productoEnOrden.gestionado = true;
-                  }else{
+                  if(prod.detalle.cantidad_mantener){
                     productoEnOrden.gestion_parcial = true;
                     productoEnOrden.cantidad = cantidadOrden - cantidadRegistrada;
                     if(productoEnOrden.cantidad == 0){
                       productoEnOrden.gestionado = true;
                     } 
+                  }else{
+                    productoEnOrden.gestionado = true;
                   }
                 }
               }
@@ -220,5 +218,56 @@ export class CheckMercaderiaComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  validarPrecio(event: any, index: number, tipo: string) {
+    let valor = event.target.value;
+  
+    // Reemplazar todo lo que no sea número o punto decimal
+    valor = valor.replace(/[^0-9.]/g, '');
+  
+    let partes = valor.split('.');
+  
+    // Si hay más de un punto decimal, conservar solo el primero
+    if (partes.length > 2) {
+      valor = partes[0] + '.' + partes.slice(1).join('');
+    }
+  
+    // Si empieza con un punto, agregar un '0' al inicio
+    if (valor.startsWith('.')) {
+      valor = '0' + valor;
+    }
+  
+    // Limitar a 2 decimales si hay una parte decimal
+    if (partes.length === 2) {
+      partes[1] = partes[1].substring(0, 2);
+      valor = partes.join('.');
+    }
+  
+    // **Asignar el valor corregido al input**
+    event.target.value = valor;
+
+    if (tipo === 'pcompra') {
+      this.ORDER_GESTIONADA[index].pcompra = parseFloat(valor) || 0;
+      this.actualizarValores(index);
+    }
+  }
+
+  actualizarValores(index: number) {
+    let item = this.ORDER_GESTIONADA[index];
+    if (!item) return;
+  
+    // Verificar que pcompra y margen_minimo sean números válidos
+    let pcompra = parseFloat(item.pcompra);
+    
+    if (isNaN(pcompra)) {
+      return; // Sale si los valores no son válidos
+    }
+  
+    // Calcular el total
+    let nuevoTotal = item.cantidad * pcompra;
+    item.total = parseFloat(nuevoTotal.toFixed(2));
+
+    this.calcularTotales()
   }
 }

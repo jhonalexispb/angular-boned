@@ -46,8 +46,13 @@
                                     <!--end::Title-->
                                 </div>
                             </td>
-                            <td class="text-center">
-                                {{p.cantidad}}
+                            <td>
+                                <div class="d-flex flex-column align-items-center gap-2">
+                                    <span>{{p.cantidad}}</span>
+                                    <span *ngIf="p.cantidad_reemplazo && p.cantidad_reemplazo != p.cantidad" class="badge badge-light-primary fs-5 fw-bold">Llegaron: {{p.cantidad_reemplazo}}</span>
+                                    <span *ngIf="p.state" class="badge badge-light-success fs-5 fw-bold">Gestionado</span>
+                                    <span *ngIf="!p.state && p.cantidad_pendiente > 0" class="badge badge-light-danger fs-5 fw-bold">Pendiente: {{p.cantidad_pendiente}}</span>
+                                </div>
                             </td>
                             <td>
                                 <div class="d-flex flex-column align-items-center gap-2 justify-content-center">

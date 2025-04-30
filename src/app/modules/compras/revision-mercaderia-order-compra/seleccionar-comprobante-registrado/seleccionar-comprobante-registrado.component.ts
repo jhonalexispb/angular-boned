@@ -48,13 +48,15 @@ export class SeleccionarComprobanteRegistradoComponent {
 
     this.comprobanteForm.get('comprobante_id')?.valueChanges.subscribe((igv) => {
       const comp_id = this.COMPROBANTES_LIST.find((p: any) =>
-        p.id === igv
+        p.id == igv
       );
-
       if(comp_id){
         this.comprobanteForm.patchValue({
-          igv: comp_id.igv_state
+          igv: comp_id.igv_state,
+          comentario: comp_id.comentario
         })
+
+        this.comprobanteForm.get('igv')?.disable();
       }
     });
   }
@@ -72,7 +74,9 @@ export class SeleccionarComprobanteRegistradoComponent {
         ncomprobante:comp_id.n_documento,
         comentario:this.comprobanteForm.get('comentario')?.value,
         modo_pago:comp_id.modo_pago,
-        fecha_emision:comp_id.fecha_emision
+        fecha_emision:comp_id.fecha_emision,
+        fecha_vencimiento:comp_id.fecha_vencimiento,
+        monto_real:comp_id.monto_real
       }
 
       const orden = this.ORDER_GESTIONADA;
@@ -84,8 +88,8 @@ export class SeleccionarComprobanteRegistradoComponent {
         igv_costo: this.igv,
       };
 
-      const nuevaSerie = this.comprobanteForm.value.serie;
-      const nuevoNumero = this.comprobanteForm.value.ncomprobante;
+      const nuevaSerie = formValues.serie;
+      const nuevoNumero = formValues.ncomprobante;
       const facturasGuardadas = JSON.parse(localStorage.getItem('comprobante_creado_by_orden_compra') || '[]');
       const yaExiste = facturasGuardadas.some((f: any) => 
         f.serie == nuevaSerie && f.ncomprobante == nuevoNumero

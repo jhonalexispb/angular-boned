@@ -291,7 +291,10 @@
                         <div class="col-md-4">
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                              <label class="required form-label m-0">Fabricante</label>
+                              <label *ngIf="isFabricanteRequired; else fabricante_no_required" class="required form-label m-0">Fabricante</label>
+                              <ng-template #fabricante_no_required>
+                                <label class="form-label m-0">Fabricante</label>
+                              </ng-template>
                               <button type="button" class="btn btn-primary px-4 py-2" (click)="createFabricante()">
                                   +
                               </button>

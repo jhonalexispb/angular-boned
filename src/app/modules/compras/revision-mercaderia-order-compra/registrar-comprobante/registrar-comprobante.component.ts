@@ -34,7 +34,9 @@ export class RegistrarComprobanteComponent {
       ncomprobante: ['',[Validators.required]],
       fecha_emision: ['', [Validators.required]],
       comentario: [''],
-      modo_pago: ['',[Validators.required]]
+      modo_pago: ['',[Validators.required]],
+      monto_real: ['',[Validators.required]],
+      fecha_vencimiento: ['', [Validators.required]],
     });
 
     this.calcularTotales()

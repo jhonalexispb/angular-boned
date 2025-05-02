@@ -79,6 +79,14 @@ const Routing: Routes = [
   },
 
   {
+    path: 'guias_prestamo',
+    loadChildren: () => import('../modules/guias-prestamo/guias-prestamo.module').then((m) => m.GuiasPrestamoModule),
+  },
+
+
+
+
+  {
     path: 'ventas',
     loadChildren: () => import('../modules/ventas/ventas.module').then((m) => m.VentasModule),
   },

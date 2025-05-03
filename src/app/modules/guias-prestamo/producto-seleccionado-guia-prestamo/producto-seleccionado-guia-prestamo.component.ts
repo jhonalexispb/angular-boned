@@ -10,7 +10,7 @@ import { GuiaPrestamoService } from '../service/guia-prestamo.service';
   styleUrls: ['./producto-seleccionado-guia-prestamo.component.scss']
 })
 export class ProductoSeleccionadoGuiaPrestamoComponent {
-  @Output() ProductoComprado: EventEmitter<any> = new EventEmitter();
+  @Output() ProductoGestionado: EventEmitter<any> = new EventEmitter();
     @Input() PRODUCT_SELECTED:any
     @ViewChild('cantidad') cantidadInput: ElementRef
     DATA_PRODUCT_SELECTED:any = {
@@ -73,7 +73,7 @@ export class ProductoSeleccionadoGuiaPrestamoComponent {
   
     onSubmit(): void {
       if (this.productoInsertForm.valid) {
-        this.ProductoComprado.emit(this.productoInsertForm.getRawValue());
+        this.ProductoGestionado.emit(this.productoInsertForm.getRawValue());
         this.modal.close();
       } else {
         this.sweet.formulario_invalido(

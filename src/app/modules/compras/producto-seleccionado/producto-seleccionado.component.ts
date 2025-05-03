@@ -60,7 +60,7 @@ export class ProductoSeleccionadoComponent {
         [Validators.required, Validators.min(0.01),this.validarPrecioMinimo.bind(this)]
       ],      
       fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
-      meses: [{ value: '', disabled: false }, Validators.required],
+      meses: [{ value: '12', disabled: false }, Validators.required],
       margen_minimo: [this.LABORATORIO_ID.margen_minimo,[Validators.required,this.validarMargenMinimo.bind(this)]],
       condicion_vencimiento: [0],
       total:[{ value: '0.00', disabled: true }],
@@ -79,6 +79,8 @@ export class ProductoSeleccionadoComponent {
     this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {
       this.calcularTotal_Ganancia();
     });
+
+    this.calcularFecha()
   }
 
   ngAfterViewInit(): void {

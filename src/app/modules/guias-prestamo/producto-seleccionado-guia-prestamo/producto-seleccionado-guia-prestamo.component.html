@@ -37,21 +37,23 @@
                   <div class="row">
                     <div *ngFor="let lote of DATA_PRODUCT_SELECTED.lotes">
                       <div class="card border">
-                        <div class="card-body p-1">
+                        <div class="card-body p-2">
                           <h6 class="fw-bold text-primary mb-2">
                             {{ lote.lote }}
                           </h6>
-                          <p class="mb-1">
-                            <span class="fw-semibold">Cantidad:</span> {{ lote.cantidad }}
-                          </p>
-                          
-                          <p class="mb-0" [ngClass]="{
-                            'text-danger fw-bold': lote.dias_faltantes <= 7,
-                            'text-warning fw-bold': lote.dias_faltantes > 7 && lote.dias_faltantes <= 30,
-                            'text-success': lote.dias_faltantes > 30
-                          }">
-                            {{ lote.dias_faltantes <= 0 ? 'Producto vencido' : lote.dias_faltantes + ' días restantes' }}
-                          </p>
+                          <div class="d-flex justify-content-between">
+                            <p class="mb-1">
+                              <span class="fw-semibold">Stock:</span> {{ lote.cantidad }}
+                            </p>
+                            
+                            <p class="mb-0" [ngClass]="{
+                              'text-danger fw-bold': lote.dias_faltantes <= 7,
+                              'text-warning fw-bold': lote.dias_faltantes > 7 && lote.dias_faltantes <= 30,
+                              'text-success': lote.dias_faltantes > 30
+                            }">
+                              {{ lote.dias_faltantes <= 0 ? 'Producto vencido' : lote.dias_faltantes + ' días restantes' }}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>

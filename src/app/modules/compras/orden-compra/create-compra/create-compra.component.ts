@@ -78,8 +78,6 @@ export class CreateCompraComponent {
       descripcion:[''],
     });
 
-    this.setearIgv()
-
     this.compraForm.valueChanges.subscribe(values => {
         localStorage.setItem('compra_form', JSON.stringify(values));
     });
@@ -102,10 +100,6 @@ export class CreateCompraComponent {
         this.tempProveedorId = valoresRecuperados.proveedor_id;
         this.tempProveedorName = valoresRecuperados.proveedor_name;
 
-        if(this.compraForm.get('igv')?.value){
-          this.igv = 0
-        }
-
         if (proveedorId) {
           this.onProveedorSeleccionado(proveedorId);
 
@@ -121,6 +115,8 @@ export class CreateCompraComponent {
         }
       }
     });
+
+    this.sweet.alerta('Atencion','recuerda pedir los precios con igv a tu proveedor')
   }
 
   get hayBonificaciones(): boolean {
@@ -395,7 +391,7 @@ export class CreateCompraComponent {
       this.COMPRA_DETAILS.push({
         producto_id: producto_id,
         laboratorio: productoSeleccionado.laboratorio,
-        color_laboratorio: laboratorio_id.color,
+        color_laboratorio: productoSeleccionado.color_laboratorio,
         nombre: productoSeleccionado.nombre,
         caracteristicas: productoSeleccionado.caracteristicas,
         sku: productoSeleccionado.sku,
@@ -425,21 +421,22 @@ export class CreateCompraComponent {
   }
 
   calcularTotales() {
-    this.subtotal = this.COMPRA_DETAILS.reduce((acc, item) => acc + item.total, 0);
-    this.impuesto = this.subtotal * this.igv;
+    // Calcular el total sumando los subtotales de cada item del carrito
+    this.totalCarrito = this.COMPRA_DETAILS.reduce((acc, item) => acc + item.total, 0);
   
-    this.totalCarrito = this.subtotal + this.impuesto;
+    // Calcular el impuesto a partir del total (IGV incluido)
+    // Fórmula: impuesto = total * (IGV / (1 + IGV))
+    this.impuesto = this.totalCarrito * (this.igv / (1 + this.igv));
+  
+    // Calcular el subtotal (sin IGV)
+    this.subtotal = this.totalCarrito - this.impuesto;
+  
+    // Actualizar el formulario reactivo
     this.compraForm.patchValue({
       total: this.totalCarrito,
       impuesto: this.impuesto,
       sub_total: this.subtotal
-    }, { emitEvent: true })
-  }
-
-  setearIgv(){
-    const condicion  = this.compraForm.get('igv')?.value
-    this.igv = condicion ? 0 : 0.18;
-    this.calcularTotales()
+    }, { emitEvent: true });
   }
 
   eliminarItem(PROD:any){
@@ -585,20 +582,6 @@ export class CreateCompraComponent {
   
     // Actualizar COMPRA_DETAILS en localStorage
     localStorage.setItem('compra_details', JSON.stringify(this.COMPRA_DETAILS));
-  }
-
-  go_calendar(){
-    if(!this.compraForm.get('forma_pago_id')?.value){
-      this.sweet.formulario_invalido('Ups','selecciona una forma de pago')
-      return
-    }
-
-    if(!this.compraForm.get('type_comprobante_compra_id')?.value){
-      this.sweet.formulario_invalido('Ups','selecciona un tipo de comprobante')
-      return
-    }
-
-    this.router.navigate(['/compras/register/cronograma']);
   }
 
   onSubmit() {

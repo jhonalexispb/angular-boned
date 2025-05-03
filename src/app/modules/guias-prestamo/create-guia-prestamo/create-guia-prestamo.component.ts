@@ -161,23 +161,19 @@ export class CreateGuiaPrestamoComponent {
     const modalRef = this.modalService.open(ProductoSeleccionadoGuiaPrestamoComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
-    modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
+    modalRef.componentInstance.ProductoGestionado.subscribe((producto:any)=>{
+      console.log(producto)
       this.GUIA_PRESTAMO_DETAILS.push({
-        producto_id: producto_id,
+        producto_id: productoSeleccionado.id,
         laboratorio: productoSeleccionado.laboratorio,
-        color_laboratorio: laboratorio_id.color,
+        color_laboratorio: laboratorio_id.color_laboratorio,
         nombre: productoSeleccionado.nombre,
         caracteristicas: productoSeleccionado.caracteristicas,
         sku: productoSeleccionado.sku,
         cantidad: Number(producto.cantidad),
-        condicion_vencimiento: producto.condicion_vencimiento,
-        fecha_vencimiento: producto.fecha_vencimiento,
-        margen_minimo: producto.margen_minimo,
-        meses: producto.meses,
-        pcompra: producto.pcompra,
+        lote_id: producto.lote_id,
         pventa: producto.pventa,
         total: producto.total,
-        ganancia: producto.ganancia,
       })
 
       this.calcularTotales();

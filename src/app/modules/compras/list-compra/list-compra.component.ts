@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MercaderiaOrderCompraComponent } from '../mercaderia-order-compra/mercaderia-order-compra.component';
 import { ModalComprobantesComponent } from '../modal-comprobantes/modal-comprobantes.component';
 import { ModalMercaderiaIngresadaComponent } from '../modal-mercaderia-ingresada/modal-mercaderia-ingresada.component';
+import { URL_SERVICIO } from 'src/app/config/config';
 
 @Component({
   selector: 'app-list-compra',
@@ -125,5 +126,9 @@ export class ListCompraComponent {
 
   revisarMercaderia(id:any){
     this.router.navigate([`/compras/check-mercaderia/ckeck/${id}`]);
+  }
+
+  orden_compra_pdf(id:any){
+    window.open(URL_SERVICIO+"/orden_compra/pdf/"+id,"_blank")
   }
 }

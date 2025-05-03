@@ -142,8 +142,6 @@ export class EditOrderCompraComponent implements OnInit {
 
           this.COMPRA_DETAILS = storedCompraDetail
         }
-
-        this.setearIgv()
       }
     });
   }
@@ -407,7 +405,7 @@ export class EditOrderCompraComponent implements OnInit {
         id: null,
         producto_id: producto_id,
         laboratorio: productoSeleccionado.laboratorio,
-        color_laboratorio: laboratorio_id.color,
+        color_laboratorio: productoSeleccionado.color_laboratorio,
         nombre: productoSeleccionado.nombre,
         caracteristicas: productoSeleccionado.caracteristicas,
         sku: productoSeleccionado.sku,
@@ -434,25 +432,21 @@ export class EditOrderCompraComponent implements OnInit {
   }
 
   calcularTotales() {
-    this.subtotal = this.COMPRA_DETAILS.reduce((acc, item) => {
-      const total = parseFloat(item.total) || 0; // Convierte a número y evita NaN
-      return acc + total; 
-    }, 0);
-    this.subtotal = parseFloat(this.subtotal.toFixed(2));
-    this.impuesto = parseFloat((this.subtotal * this.igv).toFixed(2));
+    // Calcular el total sumando los subtotales de cada item del carrito
+    this.totalCarrito = this.COMPRA_DETAILS.reduce((acc, item) => acc + parseFloat(item.total), 0);
+    // Calcular el impuesto a partir del total (IGV incluido)
+    // Fórmula: impuesto = total * (IGV / (1 + IGV))
+    this.impuesto = this.totalCarrito * (this.igv / (1 + this.igv));
   
-    this.totalCarrito = this.subtotal + this.impuesto;
+    // Calcular el subtotal (sin IGV)
+    this.subtotal = this.totalCarrito - this.impuesto;
+  
+    // Actualizar el formulario reactivo
     this.compraForm.patchValue({
       total: this.totalCarrito,
       impuesto: this.impuesto,
       sub_total: this.subtotal
-    }, { emitEvent: true })
-  }
-
-  setearIgv(){
-    const condicion  = this.compraForm.get('igv')?.value
-    this.igv = condicion ? 0 : 0.18;
-    this.calcularTotales()
+    }, { emitEvent: true });
   }
 
   eliminarItem(PROD:any){

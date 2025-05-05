@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MercaderiaOrderCompraComponent } from '../../compras/mercaderia-order-compra/mercaderia-order-compra.component';
-import { ModalComprobantesComponent } from '../../compras/modal-comprobantes/modal-comprobantes.component';
-import { ModalMercaderiaIngresadaComponent } from '../../compras/modal-mercaderia-ingresada/modal-mercaderia-ingresada.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { GuiaPrestamoService } from '../service/guia-prestamo.service';
 

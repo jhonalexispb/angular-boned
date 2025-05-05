@@ -32,21 +32,39 @@ export class GuiaPrestamoService {
     ) 
   }
 
-  registerGuiaPrestamo(data:any){
-    this.loadingService.showLoading('Registrando orden de compra')
+  crear_guia_prestamo(){
+    this.loadingService.showLoading('Creando guia de prestamo')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/guia_prestamo";
+    let URL = URL_SERVICIO+"/guia_prestamo"
+    return this.http.post(URL,{},{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //SERVICIO PARA LOS MOVIMIENTOS
+  registerMovimientoGuiaPrestamo(data:any){
+    this.loadingService.showLoading('Registrando movimiento')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo";
     return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
 
-  obtenerRecursosParaCrear(){
-    this.loadingService.showLoading('Cargando recursos')
+
+
+
+
+
+
+
+  registerGuiaPrestamo(data:any){
+    this.loadingService.showLoading('Registrando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/guia_prestamo/recursos_crear"
-    return this.http.get(URL,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/guia_prestamo";
+    return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

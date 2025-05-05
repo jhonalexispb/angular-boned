@@ -66,11 +66,12 @@
                       <tr *ngFor="let R of GP_LIST; let index = index">
                         <td>
                           <div class="text-center mb-2">
-                            <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 0">Pendiente</span>
-                            <span class="badge badge-light-info fs-7 fw-bold" *ngIf="R.state == 1">Entregado</span>
-                            <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state == 2">Proceso de venta</span>
-                            <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state == 3">Gestionado</span>
-                            <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 4">Revisado</span>
+                            <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 0">En proceso de creacion</span>
+                            <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 1">Pendiente</span>
+                            <span class="badge badge-light-info fs-7 fw-bold" *ngIf="R.state == 2">Entregado</span>
+                            <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state == 3">Proceso de venta</span>
+                            <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state == 4">Gestionado</span>
+                            <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 5">Revisado</span>
                           </div>
                           <div class="d-flex justify-content-center align-items-center gap-2">
                               <div class="d-md-none">
@@ -189,18 +190,6 @@
                               <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ R.total }}</span>
                               <span class="badge badge-light-info fs-7 fw-bold">IGV: S/ {{R.igv}}</span>
                             </div>
-                        </td>
-  
-                        <td>
-                          <div class="text-center">
-                            <ng-container *ngIf="R.cuotas.length > 0; else sinCuotas">
-                              <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.cuotas_pendientes == 0">Sin cuotas pendientes</span>
-                              <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.cuotas_pendientes > 0">{{R.cuotas_pendientes}} cuotas pendientes</span>
-                            </ng-container>
-                            <ng-template #sinCuotas>
-                              <span class="badge badge-light-danger fs-7 fw-bold">Sin cuotas programadas</span>
-                            </ng-template>
-                          </div>
                         </td>
                   
                         <td>

@@ -46,7 +46,7 @@
                               <span class="fw-semibold">Stock:</span> {{ lote.cantidad }}
                             </p>
                             
-                            <p class="mb-0" [ngClass]="{
+                            <p *ngIf="!lote.fecha_vencimiento_null" class="mb-0" [ngClass]="{
                               'text-danger fw-bold': lote.dias_faltantes <= 7,
                               'text-warning fw-bold': lote.dias_faltantes > 7 && lote.dias_faltantes <= 30,
                               'text-success': lote.dias_faltantes > 30

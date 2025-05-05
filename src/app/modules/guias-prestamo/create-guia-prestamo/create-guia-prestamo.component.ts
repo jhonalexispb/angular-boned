@@ -51,7 +51,7 @@ export class CreateGuiaPrestamoComponent {
       total:['0.00', [Validators.required]],
     });
 
-    this.guia_prestamo_service.obtenerRecursosParaCrear().subscribe((resp: any) => {
+    this.guia_prestamo_service.crear_guia_prestamo().subscribe((resp: any) => {
       this.USUARIOS_LIST = resp.usuarios;
       this.LABORATORIOS_LIST = resp.laboratorios;
       this.PRODUCT_LIST = resp.productos;

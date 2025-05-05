@@ -45,7 +45,7 @@
                           +
                       </button>
                     </div>
-                    <div class="d-flex align-items-center w-100">
+                    <div class="d-flex align-items-center w-100 select-product-container">
                       <ng-select 
                         [items]="PRODUCT_LIST"
                         bindLabel="nombre_completo"
@@ -82,12 +82,12 @@
                           
                                 <!-- Nombre del producto -->
                                 <div class="d-flex flex-column">
-                                  <span class="fw-bold mb-1">{{ item.nombre }}</span>
+                                  <span class="fw-bold mb-1 text-success">{{ item.nombre }}</span>
                                   <span class="fw-bold mb-1">{{ item.caracteristicas }}</span>
                                 </div>
                           
                                 <!-- Precio y Stock en una sola fila -->
-                                <p class="mb-0 text-white">💰 <strong>Precio de venta:</strong> S/ {{ item.pventa }}</p>
+                                <p class="mb-0 text-white">💰 <strong>Precio:</strong> S/ {{ item.pventa }}</p>
                                 <p class="mb-0 text-white">📦 <strong>Stock:</strong> {{ item.stock }}</p>
                           
                                 <!-- SKU -->

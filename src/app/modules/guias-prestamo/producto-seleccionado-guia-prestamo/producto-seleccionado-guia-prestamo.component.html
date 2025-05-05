@@ -2,7 +2,7 @@
     <div class="card-body p-4">
     <div class="px-9 pt-7 card-rounded h-250px w-100 bg-primary">
         <div class="d-flex text-center flex-column text-white ">
-            <span class="fw-bold fs-2x pt-1">{{PRODUCT_SELECTED.nombre}}</span>
+          <span class="fw-bold fs-2x pt-1 text-warning">{{PRODUCT_SELECTED.laboratorio}} <span class="fw-bold fs-2x pt-1 text-white">{{PRODUCT_SELECTED.nombre}}</span></span>
             <span class="fw-semi-bold fs-2">{{PRODUCT_SELECTED.caracteristicas}}</span>
         </div>
         <div class="d-flex text-white pt-4 align-items-center justify-content-between w-90">
@@ -61,7 +61,7 @@
                 
             </div>
             <div class="fv-row mb-7">
-                <label class="required fw-bold fs-6 mb-2">Lote</label>
+                <label class="fw-bold fs-6 mb-2">Lote</label>
                 <ng-select 
                   name="principios_activos"
                   [items]="DATA_PRODUCT_SELECTED.lotes"
@@ -82,7 +82,7 @@
             </div>
 
             <div class="fv-row mb-5">
-                <label class="required fw-bold fs-6 mb-2 ">Precio de venta</label>
+                <label class="fw-bold fs-6 mb-2 ">Precio de venta</label>
                 <input
                 type="text"
                 class="form-control mb-3 mb-lg-0"
@@ -106,6 +106,7 @@
                 placeholder="Ingrese un valor"
                 autocomplete="off"
                 (keypress)="validarNumero($event)"
+                (keydown.enter)="handleEnter($event)"
                 />
                 <!-- Mostrar errores -->
                 <div *ngIf="productoInsertForm.get('cantidad')?.touched && productoInsertForm.get('cantidad')?.invalid" class="text-danger">

@@ -50,6 +50,7 @@
                                 <th class="text-center min-w-60px">Lote</th>
                                 <th class="text-center min-w-60px">Fecha vencimiento</th>
                                 <th class="text-center min-w-60px">Stock</th>
+                                <th class="text-center min-w-100px">Stock Vendedor</th>
                                 <th class="text-center min-w-60px">Estado</th>
                                 <th class="text-center d-none d-md-table-cell">Acciones</th>
                             </tr>
@@ -131,6 +132,9 @@
                                 </td>
                                 <td class="text-center">
                                     <span class="text-gray-900 fw-bold fs-6">{{ e.cantidad }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-gray-900 fw-bold fs-6">{{ e.cantidad_vendedor }}</span>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge badge-light-success fs-7 fw-bold" *ngIf="e.state == 1">Activo</span>

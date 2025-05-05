@@ -75,6 +75,13 @@ export class ListProductComponent {
     })
   }
 
+  customSearchFn(term: string, item: any): boolean {
+    term = term.toLowerCase();
+    return item.nombre?.toLowerCase().includes(term) ||
+           item.caracteristicas?.toLowerCase().includes(term) ||
+           item.sku?.toLowerCase().includes(term);
+  }
+
   selectDisponible(){
     this.state_stock = '1'
     this.listProductos()

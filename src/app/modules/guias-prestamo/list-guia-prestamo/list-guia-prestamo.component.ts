@@ -27,12 +27,7 @@ export class ListGuiaPrestamoComponent {
   }
 
   ngOnInit(): void {
-    localStorage.removeItem('compra_edit_selected');
-    localStorage.removeItem('compra_edit_detail_selected');
-    localStorage.removeItem('eventos_edit_compra_cuotas');
-    localStorage.removeItem("comprobante_creado_by_orden_compra");
-    localStorage.removeItem("afectacion_igv");
-    localStorage.removeItem("orden_compra_cheking");
+    localStorage.removeItem('guia_prestamo_id');
     this.listGuiaPrestamo();
   }
 

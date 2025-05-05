@@ -60,7 +60,7 @@ export class FacturasGeneradasComponent {
     const afectacion_igv_data = localStorage.getItem('afectacion_igv')
     let afectacion_igv = afectacion_igv_data ? JSON.parse(afectacion_igv_data) : null;
 
-    const modalRef = this.modalService.open(VerProductoComprobanteComponent,{centered:true, size: 'lg'})
+    const modalRef = this.modalService.open(VerProductoComprobanteComponent,{centered:true, size: 'xl'})
     modalRef.componentInstance.ORDER_GESTIONADA_PRODUCTS = p.productos
     modalRef.componentInstance.AFECTACION_IGV = afectacion_igv
   }

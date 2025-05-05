@@ -12,6 +12,7 @@ import { GuiaPrestamoService } from '../service/guia-prestamo.service';
 export class ProductoSeleccionadoGuiaPrestamoComponent {
   @Output() ProductoGestionado: EventEmitter<any> = new EventEmitter();
   @Input() PRODUCT_SELECTED:any
+  @Input() GUIA_PRESTAMO_ID:any
   @ViewChild('cantidad') cantidadInput: ElementRef
   DATA_PRODUCT_SELECTED:any = {
     'stock' : 'Consultando stock',
@@ -31,12 +32,8 @@ export class ProductoSeleccionadoGuiaPrestamoComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.PRODUCT_SELECTED)
     this.productoInsertForm = this.fb.group({ 
-      guia_prestamo_id: [
-        '',
-        [Validators.required] // Solo números enteros positivos (>0)
-      ],  
+      guia_prestamo_id: [this.GUIA_PRESTAMO_ID],
       producto_id: [
         this.PRODUCT_SELECTED.id,
         [Validators.required] // Solo números enteros positivos (>0)
@@ -46,10 +43,11 @@ export class ProductoSeleccionadoGuiaPrestamoComponent {
         [Validators.required, Validators.pattern(/^[1-9]\d*$/)] // Solo números enteros positivos (>0)
       ],  
       pventa: [
-        { value: 'Consutando precio de venta', disabled: true },
+        { value: 'Consultando precio de venta', disabled: true },
         [Validators.required, Validators.min(0.01)]
       ],           
       lote_id: [null], 
+      total:['0.00']
     });
 
     this.guia_prestamo_service.obtenerDetalleProducto(this.PRODUCT_SELECTED.id).subscribe((resp: any) => {
@@ -80,14 +78,50 @@ export class ProductoSeleccionadoGuiaPrestamoComponent {
   }
 
   onSubmit(): void {
+    const cantidad = Number(this.productoInsertForm.get('cantidad')?.value);
+    const loteId = this.productoInsertForm.get('lote_id')?.value;
+
+    if (loteId) {
+      const lote = this.DATA_PRODUCT_SELECTED.lotes.find((l: any) => l.id === Number(loteId));
+      const stockLote = lote ? Number(lote.cantidad) : 0;
+
+      if (cantidad > stockLote) {
+        this.sweet.alerta(
+          'Atención',
+          `stock del lote insuficiente, solo hay ${stockLote}`
+        );
+        return;
+      }
+    }
+
+    const stockProducto = Number(this.DATA_PRODUCT_SELECTED.stock);
+
+    if (cantidad > stockProducto) {
+      this.sweet.alerta(
+        'Atención',
+        `stock del producto insuficiente, solo hay ${stockProducto}`
+      );
+      return;
+    }
+
     if (this.productoInsertForm.valid) {
-      this.ProductoGestionado.emit(this.productoInsertForm.getRawValue());
-      this.modal.close();
+      this.guia_prestamo_service.registerMovimientoGuiaPrestamo(this.productoInsertForm.value).subscribe((resp: any) => {
+        this.ProductoGestionado.emit(resp.movimiento);
+        this.modal.close();
+      });
     } else {
       this.sweet.formulario_invalido(
         'Validacion',
         'Existen errores en tu formulario'
       );
+    }
+  }
+
+  handleEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    keyboardEvent.preventDefault(); // Prevenir comportamiento por defecto
+    if (this.productoInsertForm.valid) {
+      this.onSubmit();
     }
   }
 

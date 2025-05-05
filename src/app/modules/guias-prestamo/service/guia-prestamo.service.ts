@@ -32,11 +32,11 @@ export class GuiaPrestamoService {
     ) 
   }
 
-  crear_guia_prestamo(){
+  crear_guia_prestamo(data:any){
     this.loadingService.showLoading('Creando guia de prestamo')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/guia_prestamo"
-    return this.http.post(URL,{},{headers: headers}).pipe(
+    return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
@@ -53,22 +53,22 @@ export class GuiaPrestamoService {
     )
   }
 
-
-
-
-
-
-
-
-  registerGuiaPrestamo(data:any){
-    this.loadingService.showLoading('Registrando orden de compra')
+  deleteMovimientoGuiaPrestamo(ID:string){
+    this.loadingService.showLoading('Eliminando movimiento')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/guia_prestamo";
-    return this.http.post(URL,data,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/"+ID;
+    return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+
+
+
+
+
+
 
   callProductsByLaboratorio(laboratorioIds: number[]){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})

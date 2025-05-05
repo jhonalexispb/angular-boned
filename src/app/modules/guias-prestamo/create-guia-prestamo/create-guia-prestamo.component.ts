@@ -8,6 +8,7 @@ import { CreateProductComponent } from '../../products/create-product/create-pro
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { GuiaPrestamoService } from '../service/guia-prestamo.service';
 import { ProductoSeleccionadoGuiaPrestamoComponent } from '../producto-seleccionado-guia-prestamo/producto-seleccionado-guia-prestamo.component';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 
 @Component({
   selector: 'app-create-guia-prestamo',
@@ -23,6 +24,7 @@ export class CreateGuiaPrestamoComponent {
   PRODUCT_LIST:any[] = [];
   GUIA_PRESTAMO_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
+  guia_prestamo_id:number
   activeDropdownIndex: number | null = null;
 
   totalCarrito: number = 0;
@@ -45,30 +47,63 @@ export class CreateGuiaPrestamoComponent {
 
   ngOnInit(): void {
     this.guia_prestamo_form = this.fb.group({
+      guia_prestamo_id: [],
       laboratorio_id: [[]],
       usuario_id: [null, [Validators.required]],
       product_id: [null],
-      total:['0.00', [Validators.required]],
+      total: ['0.00']
     });
-
-    this.guia_prestamo_service.crear_guia_prestamo().subscribe((resp: any) => {
-      this.USUARIOS_LIST = resp.usuarios;
-      this.LABORATORIOS_LIST = resp.laboratorios;
-      this.PRODUCT_LIST = resp.productos;
-      this.codigo = resp.codigo;
-      this.loading = false;
-      this.loadingProducts = false;
-
-      this.cacheImages()
+  
+    const savedId = localStorage.getItem('guia_prestamo_id');
+    const data: any = savedId
+      ? { crear_guia_prestamo: false, guia_prestamo_id: savedId }
+      : { crear_guia_prestamo: true };
+  
+    this.guia_prestamo_service.crear_guia_prestamo(data).subscribe((resp: any) => {
+      this.handleGuiaPrestamoResponse(resp);
     });
+  }
+  
+  private handleGuiaPrestamoResponse(resp: any) {
+    this.USUARIOS_LIST = resp.usuarios;
+    this.LABORATORIOS_LIST = resp.laboratorios;
+    this.PRODUCT_LIST = resp.productos;
+    this.codigo = resp.codigo;
+    this.guia_prestamo_id = resp.guia_prestamo_id;
+    this.GUIA_PRESTAMO_DETAILS = resp.movimiento
+  
+    localStorage.setItem('guia_prestamo_id', this.guia_prestamo_id.toString());
+    this.evaluarProductosCarrito()
+    this.guia_prestamo_form.patchValue({
+      guia_prestamo_id: this.guia_prestamo_id,
+    });
+  
+    this.loading = false;
+    this.loadingProducts = false;
+    this.cacheImages();
+    this.calcularTotales()
   }
 
   ngAfterViewInit() {
     this.usuarioSelect.focus();
   }
 
+  evaluarProductosCarrito(){
+    const idsEnCarrito = this.GUIA_PRESTAMO_DETAILS.map((p: any) => p.producto_id);
+    this.PRODUCT_LIST.forEach((producto: any) => {
+      producto.in_carrito = idsEnCarrito.includes(producto.id);
+    });
+  }
+
   handleDropdownToggle(index: number) {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
+  }
+
+  customSearchFn(term: string, item: any): boolean {
+    term = term.toLowerCase();
+    return item.nombre?.toLowerCase().includes(term) ||
+           item.caracteristicas?.toLowerCase().includes(term) ||
+           item.sku?.toLowerCase().includes(term);
   }
 
   callProductos(){
@@ -89,26 +124,8 @@ export class CreateGuiaPrestamoComponent {
       this.PRODUCT_LIST = resp.productos.map((p: any) => ({ ...p })); // Crear copias independientes
       this.loadingProducts = false;
       this.cacheImages()
+      this.evaluarProductosCarrito()
     });
-  }
-
-  createProducto(){
-    const modalRef = this.modalService.open(CreateProductComponent,{centered:true, size: 'xl'})
-    const laboratorios_id = this.guia_prestamo_form.get('laboratorio_id')?.value;
-    const labs_selec = this.LABORATORIOS_LIST
-      .filter((lab: any) => laboratorios_id.includes(lab.id))
-      .map((lab:any) => ({
-        id: lab.laboratorio_id,
-        name:lab.name
-      }))
-    modalRef.componentInstance.LABORATORIOS_SELECCIONADOS_POR_COMPRA = labs_selec
-    modalRef.componentInstance.isButtonVisible = false;
-    modalRef.componentInstance.isFabricanteRequired = false;
-    modalRef.componentInstance.ProductoC.subscribe((r:any)=>{
-      this.PRODUCT_LIST = [{ ...r.data }, ...this.PRODUCT_LIST];
-      this.guia_prestamo_form.patchValue({ product_id: r.data.id })
-      this.cacheImages()
-    })
   }
 
   async cacheImages() {
@@ -152,47 +169,63 @@ export class CreateGuiaPrestamoComponent {
     this.guia_prestamo_form.patchValue({product_id: null})
     const producto = this.PRODUCT_LIST.find(p => p.id === producto_id);
     if(producto.in_carrito){
-      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
+      this.sweet.alerta('Aguanta','ya registraste ese producto en tu guia de prestamo')
       return
     }
 
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
-    const laboratorio_id = this.LABORATORIOS_LIST.find((lab: any) => lab.id === productoSeleccionado.laboratorio_id);
     const modalRef = this.modalService.open(ProductoSeleccionadoGuiaPrestamoComponent,{centered:true, size: 'md'})
 
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
-    modalRef.componentInstance.ProductoGestionado.subscribe((producto:any)=>{
-      console.log(producto)
-      this.GUIA_PRESTAMO_DETAILS.push({
-        producto_id: productoSeleccionado.id,
-        laboratorio: productoSeleccionado.laboratorio,
-        color_laboratorio: laboratorio_id.color_laboratorio,
-        nombre: productoSeleccionado.nombre,
-        caracteristicas: productoSeleccionado.caracteristicas,
-        sku: productoSeleccionado.sku,
-        cantidad: Number(producto.cantidad),
-        lote_id: producto.lote_id,
-        pventa: producto.pventa,
-        total: producto.total,
-      })
-
+    modalRef.componentInstance.GUIA_PRESTAMO_ID = this.guia_prestamo_id
+    const sub = modalRef.componentInstance.ProductoGestionado.subscribe((productos: any[]) => {
+      productos.forEach((movimiento: any) => {
+        this.GUIA_PRESTAMO_DETAILS.push({
+          id: movimiento.id,
+          producto_id: movimiento.producto_id,
+          sku: movimiento.sku,
+          laboratorio: movimiento.laboratorio,
+          color_laboratorio: movimiento.color_laboratorio,
+          nombre: movimiento.nombre,
+          caracteristicas: movimiento.caracteristicas,
+          pventa: movimiento.pventa,
+          imagen: movimiento.imagen,
+          lote: movimiento.lote,
+          cantidad: Number(movimiento.cantidad),
+        });
+      });
+    
       this.calcularTotales();
       this.cdr.detectChanges();
 
+      this.callProductos()
+    
       this.sweet.successTimmer(
         '¡Éxito!',
-        'producto agregado'
+        'Producto agregado'
       );
+      
       productoSeleccionado.in_carrito = true;
-    })
+    });
+
+    modalRef.result.finally(() => {
+      sub.unsubscribe();
+    });
+  }
+
+  viewImagen(image:string){
+      const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.IMAGE_SELECTED = image
   }
 
   calcularTotales() {
-    this.totalCarrito = this.GUIA_PRESTAMO_DETAILS.reduce((acc, item) => acc + item.total, 0);
-
+    this.totalCarrito = this.GUIA_PRESTAMO_DETAILS.reduce((acc, item) => {
+      return acc + (Number(item.cantidad) * Number(item.pventa));
+    }, 0);
+  
     this.guia_prestamo_form.patchValue({
-      total: this.totalCarrito,
-    }, { emitEvent: true })
+      total: this.totalCarrito.toFixed(2),
+    }, { emitEvent: true });
   }
 
   eliminarItem(PROD:any){
@@ -206,108 +239,33 @@ export class CreateGuiaPrestamoComponent {
         <span class="text-warning">${PROD.caracteristicas}</span>?`
     ).then((result: any) => {
       if (result.isConfirmed) {
-        this.GUIA_PRESTAMO_DETAILS = this.GUIA_PRESTAMO_DETAILS.filter((producto: any) => !(producto.producto_id === PROD.producto_id));
-        
-        const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
-        productoSeleccionado.in_carrito = false;
-        
-        this.calcularTotales();
-        this.sweet.success('Eliminado', 'el producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
+        this.guia_prestamo_service.deleteMovimientoGuiaPrestamo(PROD.id).subscribe((resp: any) => {
+          this.GUIA_PRESTAMO_DETAILS = this.GUIA_PRESTAMO_DETAILS.filter((movimiento: any) => !(movimiento.id === PROD.id));
+          this.callProductos();
+          this.calcularTotales();
+          this.sweet.success('Eliminado', 'el producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
+        });
       }
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
 
   //FUNCIONES PARA MODIFICAR LA TABLA
 
   cambiarCantidad(index: number, cambio: number) {
     if (this.GUIA_PRESTAMO_DETAILS[index].cantidad + cambio > 0) {
       this.GUIA_PRESTAMO_DETAILS[index].cantidad += cambio;
-      this.actualizarValores(index);
-    }
-  }
-
-  actualizarValores(index: number) {
-    let item = this.GUIA_PRESTAMO_DETAILS[index];
-    if (!item) return;
-  
-    // Verificar que pcompra y margen_minimo sean números válidos
-    let pcompra = parseFloat(item.pcompra);
-    let margen_minimo = parseFloat(item.margen_minimo);
-    
-    if (isNaN(pcompra) || isNaN(margen_minimo)) {
-      return; // Sale si los valores no son válidos
-    }
-  
-    // Realiza los cálculos si son números válidos
-    let nuevoPventa = pcompra + (pcompra * (margen_minimo / 100));
-    item.pventa = parseFloat(nuevoPventa.toFixed(2));
-  
-    // Calcular el total
-    let nuevoTotal = item.cantidad * pcompra;
-    item.total = parseFloat(nuevoTotal.toFixed(2));
-  
-    // Calcular la ganancia
-    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
-    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
-
-    this.calcularTotales()
-  }
-
-  actualizarMargenGanancia(index: number){
-    let item = this.GUIA_PRESTAMO_DETAILS[index];
-    if (!item) return;
-  
-    let pcompra = parseFloat(item.pcompra);
-    let pventa = parseFloat(item.pventa);
-    
-    if (isNaN(pcompra) || isNaN(pventa)) {
-      return;
-    }
-  
-    let nuevoMargen = ((pventa - pcompra)/pcompra)*100;
-    item.margen_minimo = parseFloat(nuevoMargen.toFixed(2));
-  
-    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
-    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
-  }
-  
-
-  validarPrecio(event: any, index: number, tipo: string) {
-    let valor = event.target.value;
-  
-    // Reemplazar todo lo que no sea número o punto decimal
-    valor = valor.replace(/[^0-9.]/g, '');
-  
-    let partes = valor.split('.');
-  
-    // Si hay más de un punto decimal, conservar solo el primero
-    if (partes.length > 2) {
-      valor = partes[0] + '.' + partes.slice(1).join('');
-    }
-  
-    // Si empieza con un punto, agregar un '0' al inicio
-    if (valor.startsWith('.')) {
-      valor = '0' + valor;
-    }
-  
-    // Limitar a 2 decimales si hay una parte decimal
-    if (partes.length === 2) {
-      partes[1] = partes[1].substring(0, 2);
-      valor = partes.join('.');
-    }
-  
-    // **Asignar el valor corregido al input**
-    event.target.value = valor;
-
-    if (tipo === 'pcompra') {
-      this.GUIA_PRESTAMO_DETAILS[index].pcompra = parseFloat(valor) || 0;
-      this.actualizarValores(index);
-    } else if (tipo === 'pventa') {
-      this.GUIA_PRESTAMO_DETAILS[index].pventa = parseFloat(valor) || 0;
-      this.actualizarMargenGanancia(index);
-    } else if (tipo === 'margen_minimo') {
-      this.GUIA_PRESTAMO_DETAILS[index].margen_minimo = parseFloat(valor) || 0;
-      this.actualizarValores(index);
     }
   }
 
@@ -331,7 +289,6 @@ export class CreateGuiaPrestamoComponent {
             producto_id: item.producto_id,
             cantidad: item.cantidad,
             condicion_vencimiento: item.condicion_vencimiento,
-            margen_ganancia: item.margen_minimo,
             fecha_vencimiento: item.fecha_vencimiento,
             pcompra: item.pcompra,
             pventa: item.pventa,
@@ -339,7 +296,7 @@ export class CreateGuiaPrestamoComponent {
           }))
         };
 
-        this.guia_prestamo_service.registerGuiaPrestamo(data).subscribe({
+        /* this.guia_prestamo_service.registerGuiaPrestamo(data).subscribe({
           next: (resp: any) => {
             setTimeout(() => {
               this.router.navigate(['/guias_prestamo/list']);
@@ -350,7 +307,7 @@ export class CreateGuiaPrestamoComponent {
               );
             }, 100);
           },
-        });
+        }); */
       }
     })
   }

@@ -12,7 +12,7 @@
                         [items]="PRODUCT_LIST"
                         bindLabel="nombre_completo"
                         bindValue="id"
-                        placeholder="Buscar por nombre"
+                        placeholder="Buscar por nombre, sku o caracteristicas"
                         [searchable]="true"
                         [clearable]="true" 
                         [virtualScroll]="true"  
@@ -20,6 +20,7 @@
                         [loadingText]="'Cargando...'"
                         [(ngModel)]="producto_id" 
                         [loading]="loading"
+                        [searchFn]="customSearchFn"
                         (change)="onSearchChange()"
                         name="search"
                         class="w-100">
@@ -192,11 +193,11 @@
                           <span class="dt-column-title" role="button">Nombre</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-200px">
+                        <th class="min-w-150px">
                           <span class="dt-column-title" role="button">Laboratorio</span><span class="dt-column-order"></span>
                         </th>
 
-                        <th class="min-w-100px">
+                        <th class="min-w-150px">
                           <span class="dt-column-title" role="button">Precio venta</span><span class="dt-column-order"></span>
                         </th>
 
@@ -346,6 +347,7 @@
                             <div class="d-flex justify-content-start flex-column">
                               <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">S/ {{ P.pventa }}</span>
                               <span class="text-muted fw-semibold text-muted d-block fs-7">Stock: {{ P.stock }}</span>
+                              <span class="text-muted fw-semibold text-muted d-block fs-7">Stock Vendedor: {{ P.stock_vendedor }}</span>
                             </div>
                           </div>
                         </td>

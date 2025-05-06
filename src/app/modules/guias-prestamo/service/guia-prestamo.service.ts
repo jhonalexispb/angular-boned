@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, finalize } from 'rxjs';
+import { catchError, finalize } from 'rxjs';
 import { URL_SERVICIO, ConfigDelay } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 import { LoadingService } from '../../loadingScreen/loading-screen/service/loading-service.service';
@@ -42,12 +42,32 @@ export class GuiaPrestamoService {
     )
   }
 
+  actualizar_guia_prestamo(data:any,id:any){
+    this.loadingService.showLoading('Guardando guia de prestamo')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/guia_prestamo/"+id
+    return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //SERVICIO PARA LOS MOVIMIENTOS
   registerMovimientoGuiaPrestamo(data:any){
     this.loadingService.showLoading('Registrando movimiento')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/atributtes/guias_prestamo";
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/detalle";
     return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  updateMovimientoGuiaPrestamo(id: number, data: any){
+    this.loadingService.showLoading('Actualizando movimiento')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/detalle/"+id;
+    return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
@@ -56,20 +76,14 @@ export class GuiaPrestamoService {
   deleteMovimientoGuiaPrestamo(ID:string){
     this.loadingService.showLoading('Eliminando movimiento')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/"+ID;
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/detalle/"+ID;
     return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
 
-
-
-
-
-
-
-
+  //Recursos
   callProductsByLaboratorio(laboratorioIds: number[]){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/guia_prestamo/recursos_crear/productos"

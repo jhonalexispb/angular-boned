@@ -106,3 +106,13 @@
   img {
     object-fit:contain;
   }
+
+  .mb-custom {
+    margin-bottom: 10rem;
+  }
+
+  @media (min-width: 768px) {
+      .mb-custom {
+          margin-bottom: 0;
+      }
+  }

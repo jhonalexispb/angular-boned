@@ -3,8 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { ProductoSeleccionadoComponent } from '../../compras/producto-seleccionado/producto-seleccionado.component';
-import { CreateProductComponent } from '../../products/create-product/create-product.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { GuiaPrestamoService } from '../service/guia-prestamo.service';
 import { ProductoSeleccionadoGuiaPrestamoComponent } from '../producto-seleccionado-guia-prestamo/producto-seleccionado-guia-prestamo.component';
@@ -24,7 +22,7 @@ export class CreateGuiaPrestamoComponent {
   PRODUCT_LIST:any[] = [];
   GUIA_PRESTAMO_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
-  guia_prestamo_id:number
+  guia_prestamo_id:any
   activeDropdownIndex: number | null = null;
 
   totalCarrito: number = 0;
@@ -51,10 +49,12 @@ export class CreateGuiaPrestamoComponent {
       laboratorio_id: [[]],
       usuario_id: [null, [Validators.required]],
       product_id: [null],
+      comentario: [null],
       total: ['0.00']
     });
   
     const savedId = localStorage.getItem('guia_prestamo_id');
+    this.guia_prestamo_id = savedId
     const data: any = savedId
       ? { crear_guia_prestamo: false, guia_prestamo_id: savedId }
       : { crear_guia_prestamo: true };
@@ -249,23 +249,75 @@ export class CreateGuiaPrestamoComponent {
     });
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
   //FUNCIONES PARA MODIFICAR LA TABLA
 
+  // Se llama al comenzar la edición
+  iniciarEdicion(P: any) {
+    if (!P.editando) {
+      P.editando = true;
+      P.cantidadOriginal = P.cantidad;
+    }
+  }
+
+  // Se llama si el input cambia
+  activarConfirmacion(P: any) {
+    if (P.cantidad !== P.cantidadOriginal) {
+      P.editando = true;
+    }
+  }
+
+  // Cambiar con botones + y -
   cambiarCantidad(index: number, cambio: number) {
-    if (this.GUIA_PRESTAMO_DETAILS[index].cantidad + cambio > 0) {
-      this.GUIA_PRESTAMO_DETAILS[index].cantidad += cambio;
+    const P = this.GUIA_PRESTAMO_DETAILS[index];
+    this.iniciarEdicion(P);
+  
+    const nuevaCantidad = P.cantidad + cambio;
+    if (nuevaCantidad < 1) return;
+  
+    P.cantidad = nuevaCantidad;
+    this.activarConfirmacion(P);
+    this.calcularTotales();
+  }
+
+  // Confirmar el cambio (llama API)
+  confirmarCambio(P: any) {
+    this.guia_prestamo_service.updateMovimientoGuiaPrestamo(P.id, { cantidad: P.cantidad }).subscribe((resp: any) => {
+      P.editando = false;
+      delete P.cantidadOriginal;
+      this.calcularTotales();
+      this.sweet.success('Bien hecho','movimiento actualizado de manera satisfactoria')
+    });
+  }
+
+  // Cancelar y volver al valor anterior
+  cancelarCambio(P: any) {
+    P.cantidad = P.cantidadOriginal;
+    P.editando = false;
+    delete P.cantidadOriginal;
+  }
+
+  validarNumero(event: KeyboardEvent, P: any): void {
+    const key = event.key;
+  
+    // Permitir solo números y algunas teclas de control
+    const esNumero = /^\d$/.test(key);
+    const teclasPermitidas = ["Backspace", "Delete", "ArrowLeft", "ArrowRight"];
+  
+    if (!esNumero && !teclasPermitidas.includes(key)) {
+      event.preventDefault();
+      return;
+    }
+  
+    // Evitar que se escriba 0 como primer dígito
+    if (key === "0" && (!P.cantidad || P.cantidad.toString() === "0")) {
+      event.preventDefault();
+      P.cantidad = 1;
+    }
+  }
+
+  validarVacio(P: any): void {
+    if (!P.cantidad || P.cantidad < 1) {
+      P.cantidad = 1;
     }
   }
 
@@ -275,28 +327,19 @@ export class CreateGuiaPrestamoComponent {
       return
     }
 
-    this.sweet.confirmar('¿Estas seguro?',`¿Desea registrar la compra?`,'/assets/animations/general/ojitos.json','Si, hagamoslo','Cancelar').then((result:any) => {
-      if (result.isConfirmed) {
-        const guia_prestamo_form = JSON.parse(localStorage.getItem("compra_form") || "{}");
-        const compraDetails = JSON.parse(localStorage.getItem("GUIA_PRESTAMO_details") || "[]");
+    if(!this.guia_prestamo_form.get('usuario_id')?.value){
+      this.sweet.alerta('Alerta','selecciona el usuario a quien entregaras la mercaderia')
+      return
+    }
 
+    this.sweet.confirmar('¿Estas seguro?',`¿Desea guardar la guia de prestamo?`,'/assets/animations/general/ojitos.json','Si, hagamoslo','Cancelar').then((result:any) => {
+      if (result.isConfirmed) {
         const data = {
-          compra_form: {
-            usuario_id: guia_prestamo_form.usuario_id,
-            total: guia_prestamo_form.total || 0,
-          },
-          GUIA_PRESTAMO_details: compraDetails.map((item: any) => ({
-            producto_id: item.producto_id,
-            cantidad: item.cantidad,
-            condicion_vencimiento: item.condicion_vencimiento,
-            fecha_vencimiento: item.fecha_vencimiento,
-            pcompra: item.pcompra,
-            pventa: item.pventa,
-            total: item.total,
-          }))
+          user_encargado_id: this.guia_prestamo_form.get('usuario_id')?.value,
+          comentario: this.guia_prestamo_form.get('comentario')?.value
         };
 
-        /* this.guia_prestamo_service.registerGuiaPrestamo(data).subscribe({
+        this.guia_prestamo_service.actualizar_guia_prestamo(data,this.guia_prestamo_id).subscribe({
           next: (resp: any) => {
             setTimeout(() => {
               this.router.navigate(['/guias_prestamo/list']);
@@ -307,7 +350,7 @@ export class CreateGuiaPrestamoComponent {
               );
             }, 100);
           },
-        }); */
+        });
       }
     })
   }

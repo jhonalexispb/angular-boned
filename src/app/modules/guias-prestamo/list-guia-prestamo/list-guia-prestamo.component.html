@@ -111,7 +111,7 @@
                                       Cancelar entrega
                                     </button>
                                   </li>
-                                  <li>
+                                  <li *ngIf="R.state != 0">
                                     <button class="text-primary btn btn-bg-light btn-active-color-primary btn-sm">
                                       <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
                                         <span class="path1"></span>
@@ -187,7 +187,7 @@
                         <!-- Columna Acciones visible solo en pantallas grandes -->
                         <td class="d-none d-md-table-cell">
                           <ul class="pt-3 px-3 d-flex gap-2 justify-content-center">
-                            <li *ngIf="R.state == 0">
+                            <li *ngIf="R.state == 1">
                                 <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
                                     <div class="d-flex flex-column align-items-center gap-1">
                                         <i class="ki-duotone ki-delivery-time fs-2 text-success">
@@ -201,15 +201,20 @@
                                     </div>
                                 </button>
                             </li>
-                            <li *ngIf="R.state == 0">
-                                <button class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
-                                    <div class="d-flex flex-column align-items-center gap-1">
-                                        <i class="ki-duotone ki-pencil fs-2 text-info"><span class="path1"></span><span class="path2"></span></i>
-                                        Editar
-                                    </div>
-                                </button>
+                            <li *ngIf="R.state != 5">
+                              <button
+                                class="text-info btn btn-bg-light btn-active-color-primary btn-sm"
+                                [routerLink]="['/guias_prestamo/create']"
+                                [queryParams]="{ id: R.id }">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-pencil fs-2 text-info">
+                                    <span class="path1"></span><span class="path2"></span>
+                                  </i>
+                                  Editar
+                                </div>
+                              </button>
                             </li>
-                            <li *ngIf="R.state == 0">
+                            <li *ngIf="R.state <= 1">
                                 <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
                                     <div class="d-flex flex-column align-items-center gap-1">
                                         <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
@@ -228,7 +233,7 @@
                                 </div>
                               </button>
                             </li>
-                            <li *ngIf="R.state == 1">
+                            <li *ngIf="R.state == 2">
                               <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                     <i class="ki-duotone ki-courier fs-2 text-success">
@@ -240,7 +245,7 @@
                                 </div>
                               </button>
                             </li>
-                            <li>
+                            <li *ngIf="R.state != 0">
                               <button class="text-primary btn btn-bg-light btn-active-color-primary btn-sm">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                     <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
@@ -257,7 +262,7 @@
                                 </div>
                               </button>
                             </li>
-                            <li *ngIf="R.state >= 2">
+                            <li *ngIf="R.state >= 3">
                               <button class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                     <i class="ki-duotone ki-tablet-book fs-2 text-info">
@@ -268,7 +273,7 @@
                                 </div>
                               </button>
                             </li>
-                            <li *ngIf="R.state >= 2">
+                            <li *ngIf="R.state >= 3">
                               <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
                                 <div class="d-flex flex-column align-items-center gap-1">
                                     <i class="ki-duotone ki-delivery-2 fs-2 text-success">

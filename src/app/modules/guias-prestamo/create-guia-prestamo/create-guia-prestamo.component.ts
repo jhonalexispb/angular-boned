@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
@@ -40,7 +40,8 @@ export class CreateGuiaPrestamoComponent {
     private cdr: ChangeDetectorRef,
     //llamamos al servicio
     public guia_prestamo_service: GuiaPrestamoService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -53,14 +54,21 @@ export class CreateGuiaPrestamoComponent {
       total: ['0.00']
     });
   
-    const savedId = localStorage.getItem('guia_prestamo_id');
-    this.guia_prestamo_id = savedId
-    const data: any = savedId
-      ? { crear_guia_prestamo: false, guia_prestamo_id: savedId }
-      : { crear_guia_prestamo: true };
+    this.route.queryParams.subscribe(params => {
+      const savedId = params['id'];
+      if (savedId) {
+        localStorage.setItem('guia_prestamo_id', savedId); // si aún quieres usarlo así
+      }
   
-    this.guia_prestamo_service.crear_guia_prestamo(data).subscribe((resp: any) => {
-      this.handleGuiaPrestamoResponse(resp);
+      this.guia_prestamo_id = savedId;
+  
+      const data: any = savedId
+        ? { crear_guia_prestamo: false, guia_prestamo_id: savedId }
+        : { crear_guia_prestamo: true };
+  
+      this.guia_prestamo_service.crear_guia_prestamo(data).subscribe((resp: any) => {
+        this.handleGuiaPrestamoResponse(resp);
+      });
     });
   }
   

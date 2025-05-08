@@ -378,10 +378,14 @@
                         <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ totalCarrito | number: '1.2-2' }}</span>
                       </div> 
                     </div>
-
-                    <button class="mt-5 btn bg-primary text-white" (click)="onSubmit()">
-                      Registrar guia de prestamo
-                    </button>
+                    <div class="d-flex justify-content-between">
+                      <button class="mt-5 btn bg-primary text-white" routerLink="/guias_prestamo/list">
+                        Salir
+                      </button>
+                      <button class="mt-5 btn bg-primary text-white" (click)="onSubmit()">
+                        Registrar guia de prestamo
+                      </button>
+                    </div>
                   </div>
               </div>
             </div>
@@ -402,7 +406,10 @@
         </div> 
         <!--end::Content--> 
       </div>
-      <div *ngIf="GUIA_PRESTAMO_DETAILS.length > 0" class="text-end">
+      <div *ngIf="GUIA_PRESTAMO_DETAILS.length > 0" class="d-flex justify-content-between">
+        <button class="mt-5 btn bg-primary text-white" routerLink="/guias_prestamo/list">
+          Salir
+        </button>
         <button class="mt-5 btn bg-primary text-white" (click)="onSubmit()">
           Registrar guia de prestamo
         </button>

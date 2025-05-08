@@ -38,7 +38,9 @@
                         <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                           Codigo
                         </th>
-  
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Monto
+                        </th>
                         <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                           Ventas
                         </th>
@@ -169,8 +171,15 @@
                                   </div>
                               </div>
                           </div>
+                          <div class="text-center mb-2">
+                            <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.encargado">{{R.encargado}}</span>
+                          </div>
                         </td>
-                  
+                        <td>
+                          <div class="text-center">
+                            S/{{R.monto_total}}
+                          </div>
+                        </td>
                         <td>
                         </td>
   

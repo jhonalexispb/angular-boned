@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectComponent } from '@ng-select/ng-select';
 import { CreateProveedorComponent } from 'src/app/modules/configuration/proveedor/create-proveedor/create-proveedor.component';
 import { GestionarLaboratorioComponent } from 'src/app/modules/configuration/proveedor/gestionar-laboratorio/gestionar-laboratorio.component';
 import { CreateProductComponent } from 'src/app/modules/products/create-product/create-product.component';
@@ -17,7 +16,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-compra.component.scss']
 })
 export class CreateCompraComponent {
-  @ViewChild('proveedorSelect') proveedorSelect: NgSelectComponent;
   compraForm: FormGroup;
 
   LABORATORIOS_LIST:any[] = [];
@@ -121,10 +119,6 @@ export class CreateCompraComponent {
 
   get hayBonificaciones(): boolean {
     return this.COMPRA_DETAILS.some(P => P.bonificacion);
-  }
-
-  ngAfterViewInit() {
-    this.proveedorSelect.focus();
   }
 
   onSearchProveedor(event: any) {

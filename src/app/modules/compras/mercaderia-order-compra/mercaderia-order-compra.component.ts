@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CompraService } from '../service/compra.service';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 
 @Component({
   selector: 'app-mercaderia-order-compra',
@@ -16,7 +17,8 @@ export class MercaderiaOrderCompraComponent {
 
   constructor(
     public modal: NgbActiveModal,
-    public ocService: CompraService
+    public ocService: CompraService,
+    public modalService: NgbModal,
   ){}
 
   ngOnInit(){
@@ -27,5 +29,10 @@ export class MercaderiaOrderCompraComponent {
         this.subtotal = this.ORDER_COMPRA.total - this.ORDER_COMPRA.igv
       },
     })
+  }
+
+  viewImagen(image:string){
+    const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+    modalRef.componentInstance.IMAGE_SELECTED = image
   }
 }

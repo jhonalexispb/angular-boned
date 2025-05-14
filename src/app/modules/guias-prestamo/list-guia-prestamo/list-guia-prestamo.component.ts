@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { GuiaPrestamoService } from '../service/guia-prestamo.service';
+import { MercaderiaGuiaPrestamoComponent } from '../mercaderia-guia-prestamo/mercaderia-guia-prestamo.component';
 
 @Component({
   selector: 'app-list-guia-prestamo',
@@ -47,22 +48,50 @@ export class ListGuiaPrestamoComponent {
     this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
   }
 
+  confirmarEntrega(R:any){
+    if(!R.encargado){
+      this.sweet.alerta('Uyyy','la guia de prestamo no tiene un encargado asignado')
+      return
+    }
+    this.sweet.confirmar('¿Estás seguro?', `¿Deseas entregar la guia de prestamo ${R.codigo} a ${R.encargado}?`,'/assets/animations/general/ojitos.json','Si',true,'Cancelar').then((result:any) => {
+      if (result.isConfirmed) {
+        this.gpService.actualizarEstadoGuiaPrestamo(R.id,{ state: 2 }).subscribe({ //STATE 2 ES ENTREGADO
+          next: (resp: any) => {
+            let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+            if (index !== -1) {
+              this.GP_LIST[index] = resp.guia_prestamo_actualizada;
+            }
 
-
-
-
-
-
-  /* editOrderCompra(R:any){
-    this.router.navigate([`/compras/edit/edit_compra/${R.id}`]);
+            this.sweet.success('Actualizado', 'guia de prestamo entregada satisfactoriamente');
+          },
+        })
+      }
+    });
   }
 
-  deleteOrdenCompra(R:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la orden de compra: ${R.codigo} ${R.proveedor}?`).then((result:any) => {
+  confirmarCancelarEntrega(R:any){
+    this.sweet.confirmar('¿Estás seguro?', `¿Deseas cancelar la entrega de la guia de prestamo: ${R.codigo}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
       if (result.isConfirmed) {
-        this.gpService.deleteOrdenCompra(GuiaPrestamoService.id).subscribe({
+        this.gpService.actualizarEstadoGuiaPrestamo(R.id,{ state: 1 }).subscribe({
           next: (resp: any) => {
-            this.GP_LIST = this.GP_LIST.filter((sucurs:any) => sucurs.id !== R.id); // Eliminamos el rol de la lista
+            let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+            if (index !== -1) {
+              this.GP_LIST[index] = resp.guia_prestamo_actualizada;
+            }
+
+            this.sweet.success('Entrega cancelada', 'la entrega de la guia de prestamo fue cancelada satisfacoriamente');
+          },
+        })
+      }
+    });
+  }
+
+  deleteGuiaPrestamo(R:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la guia de prestamo: ${R.codigo}?`).then((result:any) => {
+      if (result.isConfirmed) {
+        this.gpService.deleteGuiaPrestamo(R.id).subscribe({
+          next: (resp: any) => {
+            this.GP_LIST = this.GP_LIST.filter((s:any) => s.id !== R.id); // Eliminamos el rol de la lista
             this.sweet.success('Eliminado', resp.message,'/assets/animations/general/borrado_exitoso.json');
           },
         })
@@ -70,10 +99,35 @@ export class ListGuiaPrestamoComponent {
     });
   }
 
-  verProductosOrderCompra(R:any){
-    const modalRef = this.modalService.open(MercaderiaOrderCompraComponent,{centered:true, size: 'lg'})
-    modalRef.componentInstance.ORDER_COMPRA = R;
+  verProductosGuiaPrestamo(R:any){
+    const modalRef = this.modalService.open(MercaderiaGuiaPrestamoComponent,{centered:true, size: 'lg'})
+    modalRef.componentInstance.GUIA_PRESTAMO = R;
   }
+
+  vaciarGuiaPrestamo(R:any){
+    this.sweet.confirmar('¿Estás seguro?', `¿Deseas quitar todos los productos de la guia de prestamo: ${R.codigo}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
+      if (result.isConfirmed) {
+        this.gpService.vaciarGuiaPrestamo(R.id).subscribe({
+          next: (resp: any) => {
+            let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+            if (index !== -1) {
+              this.GP_LIST[index] = resp.guia_prestamo_actualizada;
+            }
+
+            this.sweet.success('Actualizado', 'los productos de la guia de prestamo fueron eliminados satisfactoriamente');
+          },
+        })
+      }
+    });
+  }
+
+
+
+
+
+
+
+  /* 
 
   verComprobantesOrderCompra(R:any){
     const modalRef = this.modalService.open(ModalComprobantesComponent,{centered:true, size: 'lg'})
@@ -85,43 +139,5 @@ export class ListGuiaPrestamoComponent {
     modalRef.componentInstance.ORDER_COMPRA = R;
     modalRef.componentInstance.DETALLADO = true;
     modalRef.componentInstance.MERCADERIA_DIRECTA = R.mercaderia;
-  }
-
-  handleDropdownToggle(index: number) {
-    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
-  }
-
-  confirmarRecepcion(R:any){
-    this.sweet.confirmar('¿Estás seguro?', `¿Deseas recepcionar la orden de compra: ${R.codigo} de ${R.proveedor}?`,'/assets/animations/general/ojitos.json','Si',true,'Cancelar').then((result:any) => {
-      if (result.isConfirmed) {
-        this.gpService.recepcionar_orden_compra(GuiaPrestamoService.id,{ state: 1 }).subscribe({
-          next: (resp: any) => {
-            let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
-            if (index !== -1) {
-              this.GP_LIST[index] = resp.order_compra;
-            }
-
-            this.sweet.success('Actualizado', resp.message);
-          },
-        })
-      }
-    });
-  }
-
-  confirmarCancelarRecepcion(R:any){
-    this.sweet.confirmar('¿Estás seguro?', `¿Deseas cancelar la recepción de la orden de compra: ${R.codigo} de ${R.proveedor}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
-      if (result.isConfirmed) {
-        this.gpService.recepcionar_orden_compra(GuiaPrestamoService.id,{ state: 0 }).subscribe({
-          next: (resp: any) => {
-            let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
-            if (index !== -1) {
-              this.GP_LIST[index] = resp.order_compra;
-            }
-
-            this.sweet.success('Recepcion cancelada', resp.message);
-          },
-        })
-      }
-    });
-  } */
+  }*/
 }

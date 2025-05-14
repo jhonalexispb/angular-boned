@@ -1,0 +1,87 @@
+
+<div class="card card-flush py-4 flex-row-fluid overflow-hidden">
+    <!--begin::Card header-->
+    <div class="card-header">
+        <div class="card-title">
+            <h2>Orden: {{GUIA_PRESTAMO.codigo}} <span class="text-primary">{{GUIA_PRESTAMO.proveedor}}</span> </h2>
+        </div>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <div class="table-responsive">
+            <!--begin::Table-->
+            <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                <thead>
+                    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                        <th class="min-w-175px">Producto</th>
+                        <th class="min-w-100px text-center">Cantidad</th>
+                        <th class="min-w-100px text-center">Fecha de vencimiento</th>
+                        <th class="min-w-100px text-center">Precio de venta</th>
+                        <th class="min-w-100px text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="fw-semibold text-gray-600">
+                    <tr *ngFor="let p of PRODUCTS">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <!--begin::Thumbnail-->
+                                <div class="symbol symbol-50px">
+                                    <img [src]="p.imagen" class="" alt="img" (click)="viewImagen(p.imagen)">
+                                </div>
+                                <!--end::Thumbnail-->
+
+                                <!--begin::Title-->
+                                <div class="ms-5">
+                                    <span *ngIf="p.bonificacion" class="badge badge-light-warning fs-5 fw-bold">Bonificacion</span>
+                                    <span class="fw-bold text-gray-600 text-hover-primary">{{p.nombre}}</span>
+                                    <div class="fs-7">{{p.caracteristicas}}</div>
+                                    <div class="fs-7">SKU: {{p.sku}}</div>
+                                </div>
+                                <!--end::Title-->
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column align-items-center gap-2">
+                                <span>{{p.cantidad}}</span>
+                                <span *ngIf="p.cantidad != p.stock" class="badge badge-light-success fs-5 fw-bold">Stock: {{p.stock}}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column align-items-center gap-2 justify-content-center">
+                                <span class="badge badge-light-primary fs-5 fw-bold">
+                                    {{ p.lote ? p.lote : 'SIN LOTE' }}
+                                </span>
+                                <span class="badge badge-light-success fs-5 fw-bold">
+                                    {{ p.fecha_vencimiento ? (p.fecha_vencimiento | date: 'dd/MM/yyyy') : 'SIN FV' }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            S/ {{p.pventa}}    
+                        </td>
+                        <td class="text-center">
+                            <span class="text-gray-900 fw-bold">S/ {{ p.cantidad * p.pventa | number:'1.2-2' }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="fs-3 text-gray-900 text-end">
+                            Total
+                        </td>
+                        <td class="text-gray-900 fs-3 fw-bolder text-center">
+                            S/ {{total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--end::Table-->
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="reset" id="kt_modal_add_event_cancel" class="btn btn-light me-3 mt-5" (click)="modal.dismiss()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+    <!--end::Card body-->
+</div>

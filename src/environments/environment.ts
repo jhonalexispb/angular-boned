@@ -163,6 +163,10 @@ export const environment = {
   URL_BACKEND: 'http://127.0.0.1:8000',
   ULR_SERVICIOS: 'http://127.0.0.1:8000/api',
   URL_FRONTED: 'http://localhost:4200'
+
+  /* URL_BACKEND: 'http://192.168.1.6:8000',
+  ULR_SERVICIOS: 'http://192.168.1.6:8000/api',
+  URL_FRONTED: 'http://localhost:4200' */
 };
 
 /*

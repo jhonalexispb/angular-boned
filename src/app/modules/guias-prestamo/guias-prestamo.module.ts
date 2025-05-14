@@ -16,13 +16,15 @@ import { PaginationModule } from 'src/app/components/pagination/pagination.modul
 import { ListGuiaPrestamoComponent } from './list-guia-prestamo/list-guia-prestamo.component';
 import { CreateGuiaPrestamoComponent } from './create-guia-prestamo/create-guia-prestamo.component';
 import { ProductoSeleccionadoGuiaPrestamoComponent } from './producto-seleccionado-guia-prestamo/producto-seleccionado-guia-prestamo.component';
+import { MercaderiaGuiaPrestamoComponent } from './mercaderia-guia-prestamo/mercaderia-guia-prestamo.component';
 
 
 @NgModule({
   declarations: [
     ListGuiaPrestamoComponent,
     CreateGuiaPrestamoComponent,
-    ProductoSeleccionadoGuiaPrestamoComponent
+    ProductoSeleccionadoGuiaPrestamoComponent,
+    MercaderiaGuiaPrestamoComponent
   ],
   imports: [
     CommonModule,

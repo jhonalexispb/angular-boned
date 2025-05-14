@@ -23,6 +23,7 @@ export class CreateGuiaPrestamoComponent {
   GUIA_PRESTAMO_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
   guia_prestamo_id:any
+  encargado_id:any
   activeDropdownIndex: number | null = null;
 
   totalCarrito: number = 0;
@@ -79,11 +80,13 @@ export class CreateGuiaPrestamoComponent {
     this.codigo = resp.codigo;
     this.guia_prestamo_id = resp.guia_prestamo_id;
     this.GUIA_PRESTAMO_DETAILS = resp.movimiento
+    this.encargado_id = resp.encargado_id
   
     localStorage.setItem('guia_prestamo_id', this.guia_prestamo_id.toString());
     this.evaluarProductosCarrito()
     this.guia_prestamo_form.patchValue({
       guia_prestamo_id: this.guia_prestamo_id,
+      usuario_id: this.encargado_id,
     });
   
     this.loading = false;

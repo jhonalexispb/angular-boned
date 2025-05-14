@@ -52,6 +52,16 @@ export class GuiaPrestamoService {
     )
   }
 
+  deleteGuiaPrestamo(ID:string){
+    this.loadingService.showLoading('Eliminando guia de prestamo')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/guia_prestamo/"+ID;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //SERVICIO PARA LOS MOVIMIENTOS
   registerMovimientoGuiaPrestamo(data:any){
     this.loadingService.showLoading('Registrando movimiento')
@@ -83,6 +93,16 @@ export class GuiaPrestamoService {
     )
   }
 
+  vaciarGuiaPrestamo(ID:string){
+    this.loadingService.showLoading('Eliminando productos de la guia de prestamo')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/guias_prestamo/vaciar_guia_prestamo/"+ID;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   //Recursos
   callProductsByLaboratorio(laboratorioIds: number[]){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
@@ -97,6 +117,17 @@ export class GuiaPrestamoService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/guia_prestamo/recursos_crear/productos/"+producto_id
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //actualizar estados
+  actualizarEstadoGuiaPrestamo(id: number, data: any){
+    this.loadingService.showLoading('Actualizando estado de la guia de prestamo')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/guia_prestamo/update_state/"+id;
+    return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

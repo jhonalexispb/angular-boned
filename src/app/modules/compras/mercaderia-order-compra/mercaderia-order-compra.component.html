@@ -32,7 +32,7 @@
                                 <div class="d-flex align-items-center">
                                     <!--begin::Thumbnail-->
                                     <div class="symbol symbol-50px">
-                                        <span class="symbol-label" [ngStyle]="{'background-image': 'url(' + p.imagen + ')'}"></span>
+                                        <img [src]="p.imagen" class="" alt="img" (click)="viewImagen(p.imagen)">
                                     </div>
                                     <!--end::Thumbnail-->
     

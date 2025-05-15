@@ -6,6 +6,7 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { UserLocalStorageService } from '../../users/service/userLocalStorage.service';
 import { ProductoSelectedComponent } from '../producto-selected/producto-selected.component';
 import { VentasService } from '../service/ventas.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-create-ventas',
@@ -26,7 +27,9 @@ export class CreateVentasComponent {
   impuesto: number = 0;
   totalCarrito: number = 0;
 
-  margen_ganancia: number = 30
+  margen_ganancia: number = 30;
+
+  order_venta_id:any
 
   loading:boolean = true
   loadingProducts:boolean = true
@@ -42,47 +45,61 @@ export class CreateVentasComponent {
     public modalService: NgbModal,
     private cdr: ChangeDetectorRef,
     //llamamos al servicio
-    public ventaService: VentasService
+    public ventaService: VentasService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.ventaForm = this.fb.group({
       product_id: [null, [Validators.required]],
-      carrito_venta_id: ['', [Validators.required]],
+      orden_venta_id: ['', [Validators.required]],
       total:['0.00', [Validators.required]],
       impuesto:['0.00', [Validators.required]],
       sub_total:['0.00', [Validators.required]],
       user: [this.user.getUser()] 
     });
 
-    this.ventaForm.valueChanges.subscribe(values => {
+    this.route.queryParams.subscribe(params => {
+      const savedId = params['id'];
+      if (savedId) {
+        localStorage.setItem('order_venta_id', savedId); // si aún quieres usarlo así
+      }
+  
+      this.order_venta_id = savedId;
+  
+      const data: any = savedId
+        ? { crear_orden_venta: false, orden_venta_id: savedId }
+        : { crear_orden_venta: true };
+  
+      this.ventaService.registerOrdenVenta(data).subscribe((resp: any) => {
+        this.codigo = resp.codigo;
+        this.ventaForm.patchValue({orden_venta_id: resp.orden_venta_id})
+        this.loading = false;
+        this.loadingProducts = false;
+        this.callProductos()
+
+        const formGuardado = localStorage.getItem('venta_form');
+        if (formGuardado) {
+          const valoresRecuperados = JSON.parse(formGuardado);
+          this.ventaForm.patchValue(valoresRecuperados);
+
+          const orden_venta_id = valoresRecuperados.orden_venta_id;
+
+            this.callProductos()
+            const compraGuardada = localStorage.getItem('compra_details');
+            if (compraGuardada) {
+              this.VENTA_PRODUCTS_DETAILS = JSON.parse(compraGuardada);
+              this.calcularTotales();
+            }
+            
+          }
+        }
+      );
+
+      this.ventaForm.valueChanges.subscribe(values => {
         localStorage.setItem('venta_form', JSON.stringify(values));
     });
-
-    this.ventaService.obtenerRecursosIniciales().subscribe((resp: any) => {
-      this.codigo = resp.codigo;
-      this.ventaForm.patchValue({carrito_venta_id: resp.carrito_venta_id})
-      this.loading = false;
-      this.loadingProducts = false;
-      this.callProductos()
-
-      const formGuardado = localStorage.getItem('venta_form');
-      if (formGuardado) {
-        const valoresRecuperados = JSON.parse(formGuardado);
-        this.ventaForm.patchValue(valoresRecuperados);
-
-        const carrito_venta_id = valoresRecuperados.carrito_venta_id;
-
-          this.callProductos()
-          const compraGuardada = localStorage.getItem('compra_details');
-          if (compraGuardada) {
-            this.VENTA_PRODUCTS_DETAILS = JSON.parse(compraGuardada);
-            this.calcularTotales();
-          }
-          
-        }
-      }
-    );
+    });
   }
 
   ngAfterViewInit() {
@@ -96,7 +113,7 @@ export class CreateVentasComponent {
       product_id: null
     });
 
-    this.ventaService.callProducts().subscribe((resp: any) => {
+    this.ventaService.callProducts({}).subscribe((resp: any) => {
       this.PRODUCT_LIST = resp.productos;
       this.loadingProducts = false;
       this.cacheImages()

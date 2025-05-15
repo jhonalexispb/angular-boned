@@ -35,6 +35,16 @@ export class VentasService {
     ) 
   }
 
+  registerOrdenVenta(data:any){
+    this.loadingService.showLoading('Registrando orden de compra')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
     this.loadingService.showLoading('Actualizando orden de compra')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
@@ -70,30 +80,10 @@ export class VentasService {
 
   //peticiones para registrar
 
-  registerOrdenCompra(data:any){
-    this.loadingService.showLoading('Registrando orden de compra')
+  callProducts(data:any){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra";
+    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/obtener_productos"
     return this.http.post(URL,data,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
-
-  obtenerRecursosIniciales(){
-    this.loadingService.showLoading('Cargando recursos')
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_venta/recursos_iniciales"
-    return this.http.get(URL,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
-
-  callProducts(){
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_venta/obtener_productos"
-    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
@@ -101,7 +91,7 @@ export class VentasService {
 
   obtenerDetalleProducto(producto_id:any){
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/recursos_crear/productos/"+producto_id
+    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/productos/"+producto_id
     return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

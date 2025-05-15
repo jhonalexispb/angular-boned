@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateRucComponent } from '../../clientes/ruc/create-ruc/create-ruc.component';
 import { EditRucComponent } from '../../clientes/ruc/edit-ruc/edit-ruc.component';
-import { RucService } from '../../clientes/ruc/service/ruc.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
+import { VentasService } from '../service/ventas.service';
 
 @Component({
   selector: 'app-list-ventas',
@@ -21,7 +21,7 @@ export class ListVentasComponent {
 
   constructor(
     public modalService: NgbModal,
-    public rucService: RucService,
+    public ventaService: VentasService,
   ){
 
   }
@@ -31,7 +31,7 @@ export class ListVentasComponent {
   }
 
   listRuc(page = 1){
-    this.rucService.listRuc(page,this.search).subscribe((resp: any) => {
+    this.ventaService.listOrdenVenta(page,this.search).subscribe((resp: any) => {
       this.RUC_LIST = resp.clientes;
       this.totalPages = resp.total;
       this.currentPage = page;
@@ -69,17 +69,17 @@ export class ListVentasComponent {
   }
 
   deleteRuc(RUC:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el cliente: ${RUC.ruc} ${RUC.razonSocial}?`).then((result:any) => {
+    /* this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el cliente: ${RUC.ruc} ${RUC.razonSocial}?`).then((result:any) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, hacer la llamada al servicio para eliminar el rol
-        this.rucService.deleteRuc(RUC.id).subscribe({
+        this.ventaService.deleteRuc(RUC.id).subscribe({
           next: (resp: any) => {
             this.RUC_LIST = this.RUC_LIST.filter((sucurs:any) => sucurs.id !== RUC.id); // Eliminamos el rol de la lista
             this.sweet.success('Eliminado', 'El cliente ha sido eliminado correctamente','/assets/animations/general/borrado_exitoso.json');
           },
         })
       }
-    });
+    }); */
   }
 
   // Método que se ejecuta cuando un dropdown es activado o desactivado

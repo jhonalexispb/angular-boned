@@ -54,22 +54,44 @@ export class CreateGuiaPrestamoComponent {
       comentario: [null],
       total: ['0.00']
     });
-  
+
     this.route.queryParams.subscribe(params => {
-      const savedId = params['id'];
-      if (savedId) {
-        localStorage.setItem('guia_prestamo_id', savedId); // si aún quieres usarlo así
+      const idFromUrl = params['id'];
+      const idFromStorage = localStorage.getItem('guia_prestamo_id');
+
+      if (idFromUrl) {
+        // 🛠️ Modo edición con ID en URL
+        this.guia_prestamo_id = idFromUrl;
+        localStorage.setItem('guia_prestamo_id', idFromUrl);
+
+        this.guia_prestamo_service.crear_guia_prestamo({
+          crear_guia_prestamo: false,
+          guia_prestamo_id: idFromUrl
+        }).subscribe((resp: any) => {
+          this.handleGuiaPrestamoResponse(resp);
+        });
+
+      } else if (idFromStorage) {
+        // ⏳ Reanudar guía pendiente
+        this.guia_prestamo_id = idFromStorage;
+
+        this.guia_prestamo_service.crear_guia_prestamo({
+          crear_guia_prestamo: false,
+          guia_prestamo_id: idFromStorage
+        }).subscribe((resp: any) => {
+          this.handleGuiaPrestamoResponse(resp);
+        });
+
+      } else {
+        // 🆕 Crear nueva guía
+        this.guia_prestamo_service.crear_guia_prestamo({
+          crear_guia_prestamo: true
+        }).subscribe((resp: any) => {
+          this.guia_prestamo_id = resp.guia_prestamo_id;
+          localStorage.setItem('guia_prestamo_id', this.guia_prestamo_id);
+          this.handleGuiaPrestamoResponse(resp);
+        });
       }
-  
-      this.guia_prestamo_id = savedId;
-  
-      const data: any = savedId
-        ? { crear_guia_prestamo: false, guia_prestamo_id: savedId }
-        : { crear_guia_prestamo: true };
-  
-      this.guia_prestamo_service.crear_guia_prestamo(data).subscribe((resp: any) => {
-        this.handleGuiaPrestamoResponse(resp);
-      });
     });
   }
   

@@ -30,6 +30,7 @@ export class CreateVentasComponent {
   margen_ganancia: number = 30;
 
   order_venta_id:any
+  cliente_id:any
 
   loading:boolean = true
   loadingProducts:boolean = true
@@ -53,52 +54,78 @@ export class CreateVentasComponent {
     this.ventaForm = this.fb.group({
       product_id: [null, [Validators.required]],
       orden_venta_id: ['', [Validators.required]],
-      total:['0.00', [Validators.required]],
-      impuesto:['0.00', [Validators.required]],
-      sub_total:['0.00', [Validators.required]],
-      user: [this.user.getUser()] 
+      cliente_id: ['', [Validators.required]],
+      total: ['0.00', [Validators.required]],
+      impuesto: ['0.00', [Validators.required]],
+      sub_total: ['0.00', [Validators.required]],
+      user: [this.user.getUser()]
     });
 
     this.route.queryParams.subscribe(params => {
-      const savedId = params['id'];
-      if (savedId) {
-        localStorage.setItem('order_venta_id', savedId); // si aún quieres usarlo así
+      const idFromUrl = params['id'];
+      const idFromStorage = localStorage.getItem('orden_venta_id');
+
+      if (idFromUrl) {
+        // 🛠️ Modo edición con ID en URL
+        this.order_venta_id = idFromUrl;
+        localStorage.setItem('orden_venta_id', idFromUrl);
+
+        this.ventaService.registerOrdenVenta({
+          crear_orden_venta: false,
+          orden_venta_id: idFromUrl
+        }).subscribe((resp: any) => {
+          this.handleGuiaPrestamoResponse(resp);
+        });
+
+      } else if (idFromStorage) {
+        // ⏳ Reanudar guía pendiente
+        this.order_venta_id = idFromStorage;
+
+        this.ventaService.registerOrdenVenta({
+          crear_orden_venta: false,
+          orden_venta_id: idFromStorage
+        }).subscribe((resp: any) => {
+          this.handleGuiaPrestamoResponse(resp);
+        });
+
+      } else {
+        // 🆕 Crear nueva guía
+        this.ventaService.registerOrdenVenta({
+          crear_orden_venta: true
+        }).subscribe((resp: any) => {
+          this.order_venta_id = resp.orden_venta_id;
+          localStorage.setItem('orden_venta_id', this.order_venta_id);
+          this.handleGuiaPrestamoResponse(resp);
+        });
       }
-  
-      this.order_venta_id = savedId;
-  
-      const data: any = savedId
-        ? { crear_orden_venta: false, orden_venta_id: savedId }
-        : { crear_orden_venta: true };
-  
-      this.ventaService.registerOrdenVenta(data).subscribe((resp: any) => {
-        this.codigo = resp.codigo;
-        this.ventaForm.patchValue({orden_venta_id: resp.orden_venta_id})
-        this.loading = false;
-        this.loadingProducts = false;
-        this.callProductos()
-
-        const formGuardado = localStorage.getItem('venta_form');
-        if (formGuardado) {
-          const valoresRecuperados = JSON.parse(formGuardado);
-          this.ventaForm.patchValue(valoresRecuperados);
-
-          const orden_venta_id = valoresRecuperados.orden_venta_id;
-
-            this.callProductos()
-            const compraGuardada = localStorage.getItem('compra_details');
-            if (compraGuardada) {
-              this.VENTA_PRODUCTS_DETAILS = JSON.parse(compraGuardada);
-              this.calcularTotales();
-            }
-            
-          }
-        }
-      );
-
-      this.ventaForm.valueChanges.subscribe(values => {
-        localStorage.setItem('venta_form', JSON.stringify(values));
     });
+  }
+
+  private handleGuiaPrestamoResponse(resp: any) {
+    this.CLIENTES_LIST = resp.clientes;
+    this.PRODUCT_LIST = resp.productos;
+    this.codigo = resp.codigo;
+    this.order_venta_id = resp.orden_venta_id;
+    this.VENTA_PRODUCTS_DETAILS = resp.movimiento
+    this.cliente_id = resp.cliente_id
+  
+    localStorage.setItem('orden_venta_id', this.order_venta_id.toString());
+    this.evaluarProductosCarrito()
+    this.ventaForm.patchValue({
+      orden_venta_id: this.order_venta_id,
+      cliente_id: this.cliente_id,
+    });
+  
+    this.loading = false;
+    this.loadingProducts = false;
+    this.cacheImages();
+    this.calcularTotales()
+  }
+
+  evaluarProductosCarrito(){
+    const idsEnCarrito = this.VENTA_PRODUCTS_DETAILS.map((p: any) => p.producto_id);
+    this.PRODUCT_LIST.forEach((producto: any) => {
+      producto.in_carrito = idsEnCarrito.includes(producto.id);
     });
   }
 
@@ -114,9 +141,10 @@ export class CreateVentasComponent {
     });
 
     this.ventaService.callProducts({}).subscribe((resp: any) => {
-      this.PRODUCT_LIST = resp.productos;
+      this.PRODUCT_LIST = resp.productos.map((p: any) => ({ ...p })); // Crear copias independientes
       this.loadingProducts = false;
       this.cacheImages()
+      this.evaluarProductosCarrito()
     });
   }
 

@@ -21,11 +21,11 @@ export class VentasService {
     public handleErrorService: HandleErrorService,
   ) {}
 
-  listOrdenVenta(page = 1, data:any = null){
+  listOrdenVenta(page = 1, search:string = ''){
     this.loadingService.showLoading('Listando ordenes de ventas')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/index?page="+page;
-    return this.http.post(URL,data,{headers: headers}).pipe(
+    let URL = URL_SERVICIO+"/orden_venta?page="+page+"&search="+search;
+    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>{
         setTimeout(() => {
@@ -44,6 +44,23 @@ export class VentasService {
       finalize(()=>this.loadingService.hideLoading())
     )
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
     this.loadingService.showLoading('Actualizando orden de compra')

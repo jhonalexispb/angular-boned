@@ -46,6 +46,53 @@ export class VentasService {
   }
 
 
+  obtenerDetalleProducto(producto_id:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/productos/"+producto_id
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+
+  //SERVICIO PARA LOS MOVIMIENTOS
+  registerMovimientoOrdenVenta(data:any){
+    this.loadingService.showLoading('Registrando movimiento')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/orden_venta/detalle";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  editarCantidadProducto(data: any){
+    this.loadingService.showLoading('Actualizando movimiento')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/atributtes/orden_venta/detalle/editar_cantidad";
+    return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  eliminarMovimientosProducto(producto_id:string,orden_venta_id: number){
+    this.loadingService.showLoading('Eliminando movimiento')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+`/atributtes/orden-venta/eliminar-producto/${producto_id}/${orden_venta_id}`;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+
+
+
+
+
+
 
 
 
@@ -101,15 +148,6 @@ export class VentasService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_venta/recursos_crear/obtener_productos"
     return this.http.post(URL,data,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
-
-  obtenerDetalleProducto(producto_id:any){
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/productos/"+producto_id
-    return this.http.get(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )

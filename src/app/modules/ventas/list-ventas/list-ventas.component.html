@@ -7,8 +7,8 @@
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5"><span class="path1"></span><span
                         class="path2"></span></i>
-                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listRuc()" name="search"
-                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar por ruc o razon social" />
+                <input type="text" data-kt-customer-table-filter="search" [(ngModel)]="search" (keyup.enter)="listGuiaPrestamo()" name="search"
+                    class="form-control form-control-solid w-250px ps-12" placeholder="Buscar por codigo" />
             </div>
             <!--end::Search-->
         </div>
@@ -18,7 +18,7 @@
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
                 <button type="button" routerLink="/ventas/register" class="btn btn-primary">
-                    Crear venta
+                    Crear orden de venta
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -34,89 +34,299 @@
             <div id="" class="table-responsive mb-5">
                 <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
-                      <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                          <span class="dt-column-title" role="button">Ruc</span><span class="dt-column-order"></span>
+                      <tr class="text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Codigo
+                        </th>
+                         <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Fecha
+                        </th>
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Cliente
+                        </th>
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Total
+                        </th>
+
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Comentario
                         </th>
                   
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="1" rowspan="1" colspan="1">
-                          <span class="dt-column-title" role="button">Razon Social</span><span class="dt-column-order"></span>
-                        </th>
-                  
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="2" rowspan="1" colspan="1">
-                          <span class="dt-column-title" role="button">Estado</span><span class="dt-column-order"></span>
-                        </th>
-                  
-                        <th class="min-w-125px dt-orderable-asc dt-orderable-desc" data-dt-column="5" rowspan="1" colspan="1">
-                          <span class="dt-column-title" role="button">Fecha de registro</span><span class="dt-column-order"></span>
+                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                          Documento
                         </th>
                   
                         <!-- Columna Acciones: Visible solo en pantallas grandes -->
-                        <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell" data-dt-column="6" rowspan="1" colspan="1">
-                          <span class="dt-column-title">Acciones</span><span class="dt-column-order"></span>
+                        <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
+                          Acciones
                         </th>
                       </tr>
                     </thead>
                   
                     <tbody class="fw-semibold text-gray-600">
-                      <tr *ngFor="let R of RUC_LIST; let index = index">
+                      <tr *ngFor="let R of GP_LIST; let index = index">
                         <td>
-                            <div class="d-flex justify-content-start align-items-center gap-2">
-                                <div class="d-md-none">
-                                    <app-buttons-group-list
-                                    [index]="index"
-                                    [activeDropdownIndex]="activeDropdownIndex"
-                                    (dropdownToggle)="handleDropdownToggle($event)">
-                                        <ul class="pt-3 px-3 d-flex flex-column gap-2">
-                                          <li>
-                                            <button (click)="editRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
-                                              <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                                              Editar
-                                            </button>
-                                          </li>
-                                          <li>
-                                            <button (click)="deleteRuc(R)" class="btn btn-bg-light btn-active-color-primary btn-sm">
-                                              <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                                              Eliminar
-                                            </button>
-                                          </li>
-                                        </ul>
-                                    </app-buttons-group-list>
-                                </div>
-                                <!-- Aquí se muestra el RUC -->
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.ruc }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                  
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="d-flex justify-content-start flex-column">
-                              <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.razonSocial }}</span>
-                            </div>
+                          <div class="d-md-none">
+                            <app-buttons-group-list
+                            class="mt-5"
+                            [index]="index"
+                            [activeDropdownIndex]="activeDropdownIndex"
+                            (dropdownToggle)="handleDropdownToggle($event)">
+                                <ul class="pt-3 px-3 d-flex flex-column no-wrap gap-2">
+                                  <li *ngIf="R.state != 0">
+                                    <button class="text-primary btn btn-bg-light btn-active-color-primary btn-sm" (click)="verProductosOrdenVenta(R)">
+                                      <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                        <span class="path7"></span>
+                                        <span class="path8"></span>
+                                      </i>
+                                      Productos
+                                    </button>
+                                  </li>
+                                  <li *ngIf="R.state == 1">
+                                      <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
+                                        <i class="ki-duotone ki-delivery-time fs-2 text-success">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                          </i>
+                                        Entregar
+                                      </button>
+                                  </li>
+                                  <li *ngIf="R.state == 2">
+                                    <button class="text-warning btn btn-bg-light btn-active-color-primary btn-sm">
+                                      <i class="ki-duotone ki-technology-2 fs-2 text-warning">
+                                          <span class="path1"></span>
+                                          <span class="path2"></span>
+                                        </i>
+                                        Cancelar entrega
+                                    </button>
+                                  </li>
+                                  <li *ngIf="R.state != 5">
+                                    <button
+                                      class="text-info btn btn-bg-light btn-active-color-primary btn-sm"
+                                      [routerLink]="['/ventas/register']"
+                                      [queryParams]="{ id: R.id }">
+                                      <i class="ki-duotone ki-pencil fs-2 text-info">
+                                        <span class="path1"></span><span class="path2"></span>
+                                      </i>
+                                      Editar
+                                    </button>
+                                  </li>
+                                  <li *ngIf="R.state == 1 || R.state == 2">
+                                    <button class="text-warning btn btn-bg-light btn-active-color-primary btn-sm">
+                                      <i class="ki-duotone ki-courier-express text-warning fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                        <span class="path7"></span>
+                                      </i>
+                                        Vaciar mercaderia
+                                    </button>
+                                  </li>
+                                  <li *ngIf="R.state <= 1">
+                                      <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
+                                        <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                        Eliminar
+                                      </button>
+                                  </li>
+
+
+                                  
+                                  <li *ngIf="R.state >= 3">
+                                    <button class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                                      <i class="ki-duotone ki-tablet-book fs-2 text-info">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                      </i>
+                                      Ventas
+                                    </button>
+                                  </li>
+                                  <li *ngIf="R.state >= 3">
+                                    <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
+                                      <i class="ki-duotone ki-delivery-2 fs-2 text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                        <span class="path7"></span>
+                                        <span class="path8"></span>
+                                        <span class="path9"></span>
+                                      </i>
+                                      Historial de venta
+                                    </button>
+                                  </li>
+                                </ul>
+                            </app-buttons-group-list>
+                        </div>
+                          <div class="d-flex justify-content-center align-items-center gap-2">
+                              <div class="d-flex align-items-center">
+                                  <div class="d-flex align-items-center flex-column gap-2">
+                                    <span class="badge badge-light-warning fs-7 fw-bold" *ngIf="R.state_orden == 0">Cotizacion</span>
+                                    <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state_orden == 1">Enviado</span>
+                                    <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state_orden == 2">Facturado</span>
+                                    <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state_orden == 3">Anulado</span>
+                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.codigo }}</span>
+                                    <span *ngIf="R.comprobante_id" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.comprobante_id.name }}</span>
+                                    <span *ngIf="R.forma_pago" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.forma_pago }}</span>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="text-center mb-2">
+                            <span class="badge badge-light-warning fs-7 fw-bold">{{R.created_by}}</span>
                           </div>
                         </td>
-                  
                         <td>
-                          <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state == 1">Activo</span>
-                          <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state == 2">Inactivo</span>
+                          <span class="badge badge-light-warning fs-7 fw-bold">Creacion: {{ R.trasabilidad.created_at }}</span>
+                          <span *ngIf="R.trasabilidad.fecha_envio" class="badge badge-light-warning fs-7 fw-bold">Envio: {{ R.trasabilidad.fecha_envio }}</span>
+                        </td>
+                        <td>
+                          <span *ngIf="R.cliente">{{ R.cliente.ruc }} {{ R.cliente.razon_social }}</span>
+                          <span *ngIf="R.cliente">{{ R.cliente.nombre_comercial }}</span>
+                        </td>
+                        <td>
+                          <div class="text-center">
+                            S/{{R.total}}
+                          </div>
+                        </td>
+  
+                        <td>
+                            {{R.comentario}}
                         </td>
                   
-                        <td>{{ R.created_at }}</td>
+                        <td>
+                          
+                        </td>
                   
                         <!-- Columna Acciones visible solo en pantallas grandes -->
                         <td class="d-none d-md-table-cell">
-                          <button (click)="editRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                            <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                            Editar
-                          </button>
-                          <button (click)="deleteRuc(R)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                            Eliminar
-                          </button>
+                          <ul class="pt-3 px-3 d-flex gap-2 justify-content-center">
+                            <li *ngIf="R.state != 0">
+                              <button class="text-primary btn btn-bg-light btn-active-color-primary btn-sm" (click)="verProductosOrdenVenta(R)">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <i class="ki-duotone ki-lots-shopping fs-2 text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                        <span class="path7"></span>
+                                        <span class="path8"></span>
+                                      </i>
+                                      Productos
+                                </div>
+                              </button>
+                            </li>
+                            <li *ngIf="R.state == 1">
+                                <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <i class="ki-duotone ki-delivery-time fs-2 text-success">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                          </i>
+                                        Entregar
+                                    </div>
+                                </button>
+                            </li>
+                            <li *ngIf="R.state == 2">
+                              <button class="text-warning btn btn-bg-light btn-active-color-primary btn-sm">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <i class="ki-duotone ki-technology-2 fs-2 text-warning">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                      </i>
+                                      Cancelar entrega
+                                </div>
+                              </button>
+                            </li>
+                            <li *ngIf="R.state != 5">
+                              <button
+                                class="text-info btn btn-bg-light btn-active-color-primary btn-sm"
+                                [routerLink]="['/ventas/register']"
+                                [queryParams]="{ id: R.id }">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                  <i class="ki-duotone ki-pencil fs-2 text-info">
+                                    <span class="path1"></span><span class="path2"></span>
+                                  </i>
+                                  Editar
+                                </div>
+                              </button>
+                            </li>
+                            <li *ngIf="R.state == 1 || R.state == 2">
+                              <button class="text-warning btn btn-bg-light btn-active-color-primary btn-sm">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <i class="ki-duotone ki-courier-express text-warning fs-2">
+                                      <span class="path1"></span>
+                                      <span class="path2"></span>
+                                      <span class="path3"></span>
+                                      <span class="path4"></span>
+                                      <span class="path5"></span>
+                                      <span class="path6"></span>
+                                      <span class="path7"></span>
+                                    </i>
+                                      Vaciar mercaderia
+                                </div>
+                              </button>
+                            </li>
+                            <li *ngIf="R.state <= 1">
+                                <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                    Eliminar
+                                    </div>
+                                </button>
+                            </li>
+
+
+
+
+                            
+                            <li *ngIf="R.state >= 3">
+                              <button class="text-info btn btn-bg-light btn-active-color-primary btn-sm">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <i class="ki-duotone ki-tablet-book fs-2 text-info">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                      </i>
+                                      Ventas
+                                </div>
+                              </button>
+                            </li>
+                            <li *ngIf="R.state >= 3">
+                              <button class="text-success btn btn-bg-light btn-active-color-primary btn-sm">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <i class="ki-duotone ki-delivery-2 fs-2 text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                        <span class="path6"></span>
+                                        <span class="path7"></span>
+                                        <span class="path8"></span>
+                                        <span class="path9"></span>
+                                      </i>
+                                      Historial de venta
+                                </div>
+                              </button>
+                            </li>
+                          </ul>
                         </td>
                       </tr>
                     </tbody>

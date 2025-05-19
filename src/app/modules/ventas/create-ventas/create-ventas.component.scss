@@ -23,7 +23,7 @@
   /* Estilo cuando el ratón pasa sobre una opción */
   .mi-custom-option:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra al pasar el ratón */
-    background-color: #3288ff;  /* Fondo suave al hacer hover */
+    background-color: #6ca9ff;  /* Fondo suave al hacer hover */
   }
   
   
@@ -36,7 +36,8 @@
   app-buttons-group-list {
     position: absolute;
     z-index: 10;
-    left: 5px;
+    left: 2px;
+    margin-top: 100px;
   }
   
   button {
@@ -45,6 +46,29 @@
   
   .product-option {
     position: relative; /* Necesario para posicionar el mensaje en la esquina */
+  }
+
+  //estilos para la lista de opcioes del select de productos
+  ::ng-deep .select-product-container ng-dropdown-panel {
+    max-height: 600px !important;
+    min-height: 400px;
+    overflow-y: auto;
+  }
+  
+  ::ng-deep .select-product-container .ng-dropdown-panel .scroll-host {
+    position: static !important;
+  }
+  
+  ::ng-deep .select-product-container .product-option {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+  
+  ::ng-deep .select-product-container .product-option span,
+  ::ng-deep .select-product-container .product-option p {
+    white-space: normal;
+    word-break: break-word;
   }
   
   /* Mensaje "En el carrito" */
@@ -77,4 +101,18 @@
     background-color: #28a745; /* color de fondo */
     padding: 1rem;
     z-index: 100;
+  }
+
+  img {
+    object-fit:contain;
+  }
+
+  .mb-custom {
+    margin-bottom: 10rem;
+  }
+
+  @media (min-width: 768px) {
+      .mb-custom {
+          margin-bottom: 0;
+      }
   }

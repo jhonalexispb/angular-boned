@@ -1,10 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CompraService } from '../../compras/service/compra.service';
-import { ModalEscalasComponent } from '../../products/modal-escalas/modal-escalas.component';
-import { ModalLotesComponent } from '../../products/modal-lotes/modal-lotes.component';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
+import { VentasService } from '../service/ventas.service';
 
 @Component({
   selector: 'app-producto-selected',
@@ -12,246 +10,174 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
   styleUrls: ['./producto-selected.component.scss']
 })
 export class ProductoSelectedComponent {
-  @Output() ProductoComprado: EventEmitter<any> = new EventEmitter();
-    @Input() PRODUCTO_ID:any
-    @Input() PRODUCT_SELECTED:any
-    @Input() LABORATORIO_ID:any
-    @ViewChild('cantidad') cantidadInput: ElementRef
-    DATA_PRODUCT_SELECTED:any = {
-      'stock' : 0,
-      'pventa' : 0.0,
-      'pcompra' : 0.0,
-      'lotes' : [],
-      'escalas' :[]
-    }
-  
-    isLoading:boolean = true
-  
-    tipoSeleccionado:any = 'menorIgual';
-    precioMinimo: string;
-    productoInsertForm: FormGroup;
-    sweet:any = new SweetalertService
-    errorMargen:boolean = false
-  
-    constructor(
-      private fb: FormBuilder,
-      public modal: NgbActiveModal,
-      public modalService: NgbModal,
-      public compraService: CompraService
-    ) {}
-  
-    ngOnInit(): void {
-      this.compraService.obtenerDetalleProducto(this.PRODUCTO_ID).subscribe((resp: any) => {
-        this.DATA_PRODUCT_SELECTED = resp
-        this.isLoading = false
-      });
-      this.productoInsertForm = this.fb.group({
-        cantidad: [
-          '',
-          [Validators.required, Validators.pattern(/^[1-9]\d*$/)] // Solo números enteros positivos (>0)
-        ],      
-        pcompra: [
-          '',
-          [Validators.required, Validators.min(0.01)]
-        ],      
-        pventa: [
-          { value: '', disabled: true },
-          [Validators.required, Validators.min(0.01),this.validarPrecioMinimo.bind(this)]
-        ],      
-        fecha_vencimiento: [{ value: '', disabled: true }, Validators.required], 
-        meses: [{ value: '', disabled: false }, Validators.required],
-        margen_ganancia: [30],
-        condicion_vencimiento: [0],
-        total:[{ value: '0.00', disabled: true }],
-        ganancia:[{ value: '0.00', disabled: true }],
-      });
-  
-      this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {
-        this.calcularTotal_Ganancia();
-      });
-    }
-  
-    ngAfterViewInit(): void {
-      this.cantidadInput.nativeElement.focus();
-    }
-  
-    calcularTotal_Ganancia(){
-      const pcompra = this.productoInsertForm.get('pcompra')?.value;
-      const cantidad = this.productoInsertForm.get('cantidad')?.value;
-      const pventa = this.productoInsertForm.get('pventa')?.value;
-  
-      const total = parseFloat((pcompra * cantidad).toFixed(2));  // Convertir a número
-      this.productoInsertForm.get('total')?.setValue(total, { emitEvent: false });
-  
-      const totalVenta = parseFloat((pventa * cantidad).toFixed(2));  // Convertir a número
-  
-      const ganancia = parseFloat((totalVenta - total).toFixed(2));  // Asegurar que sigue siendo número
-      this.productoInsertForm.get('ganancia')?.setValue(ganancia, { emitEvent: false });
-    }
-  
-    calcularPrecioVenta() {
-      const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
-      const margen = Number(this.productoInsertForm.get('margen_ganancia')?.value) || 0;
-    
-      if (pcompra <= 0) {
-        this.productoInsertForm.patchValue({ pventa: null }, { emitEvent: false });
-        this.productoInsertForm.get('pventa')?.disable();
-        return;
-      }
-    
-      this.productoInsertForm.get('pventa')?.enable();
-      const precioMinimo = pcompra + (pcompra * margen / 100);
-  
-      this.precioMinimo = precioMinimo.toFixed(2);
-      this.productoInsertForm.patchValue(
-        { pventa: precioMinimo.toFixed(2) },
-        { emitEvent: false }
-      );
-    }
-  
-    calcularMargenMinimo() {
-      const pcompra = Number(this.productoInsertForm.get('pcompra')?.value) || 0;
-      const pventa = Number(this.productoInsertForm.get('pventa')?.value) || 0;
-    
-      if (pcompra <= 0 || pventa <= 0) {
-        this.productoInsertForm.patchValue({ margen_ganancia: null }, { emitEvent: false });
-        return;
-      }
-  
-      const margen = ((pventa - pcompra) / pcompra) * 100;
-  
-      const precioMinimo = pcompra + (pcompra * margen / 100);
-      this.precioMinimo = precioMinimo.toFixed(2);
-      
-      this.productoInsertForm.patchValue(
-        { margen_ganancia: margen.toFixed(2) },
-        { emitEvent: false }
-      );
-    }
-  
-    validarPrecioMinimo(control: any) {
-      /* if (!this.productoInsertForm) return null;
-      if (!control.value) return null;
-    
-      const pcompra = Number(this.productoInsertForm.get('pcompra')?.value);
-      const margen = Number(this.productoInsertForm.get('margen_ganancia')?.value) || 0;
-      const precioMinimo = pcompra + (pcompra * margen / 100);
-      const precioMinimoFormateado = precioMinimo.toFixed(2);
-      const precioMinimoNumero = parseFloat(precioMinimoFormateado)
-    
-      return control.value < precioMinimoNumero ? { precioInvalido: true } : null; */
-    }
-  
-    validarMargenMinimo(control: any) {
-      this.errorMargen = false
-      if (!control.value) return null; 
-      if(control.value < 0){
-        this.errorMargen = true
-      }
-    }
-  
-    onSubmit(): void {
-      if(this.errorMargen){
-        this.sweet.formulario_invalido('Algo no cuadra','el margen no puede ser negativo')
-        return
-      }
-      if (this.productoInsertForm.valid) {
-        this.ProductoComprado.emit(this.productoInsertForm.getRawValue());
-        this.modal.close();
-      } else {
-        this.sweet.formulario_invalido(
-          'Validacion',
-          'Existen errores en tu formulario'
-        );
-      }
-    }
-  
-    seleccionarTipo(tipo: string) {
-      this.tipoSeleccionado = tipo;
+  @Output() ProductoGestionado: EventEmitter<any> = new EventEmitter();
+  @Input() PRODUCT_SELECTED:any
+  @Input() ORDER_VENTA_ID:any
+  @ViewChild('cantidad') cantidadInput: ElementRef
+  DATA_PRODUCT_SELECTED:any = {
+    'stock' : 'Consultando stock',
+    'pventa' : '',
+    'lotes' : [],
+    'escalas' :[]
+  }
+
+  isLoading:boolean = true
+  productoInsertForm: FormGroup;
+  sweet:any = new SweetalertService
+  errorMargen:boolean = false
+  escalaAplicada: any = null;
+
+  constructor(
+    private fb: FormBuilder,
+    public modal: NgbActiveModal,
+    public modalService: NgbModal,
+    public orden_venta_service: VentasService
+  ) {}
+
+  ngOnInit(): void {
+    this.productoInsertForm = this.fb.group({ 
+      orden_venta_id: [this.ORDER_VENTA_ID],
+      producto_id: [
+        this.PRODUCT_SELECTED.id,
+        [Validators.required] // Solo números enteros positivos (>0)
+      ],    
+      cantidad: [
+        '',
+        [Validators.required, Validators.pattern(/^[1-9]\d*$/)] // Solo números enteros positivos (>0)
+      ],  
+      pventa: [
+        { value: 'Consultando precio de venta', disabled: true },
+        [Validators.required, Validators.min(0.01)]
+      ],           
+      total:['0.00'],
+      ganancia:[0],
+      margen: [30]
+    });
+
+    this.orden_venta_service.obtenerDetalleProducto(this.PRODUCT_SELECTED.id).subscribe((resp: any) => {
+      this.DATA_PRODUCT_SELECTED = resp;
       this.productoInsertForm.patchValue({
-        fecha_vencimiento: null,
-        condicion_vencimiento: tipo === 'igual' ? 1 : 0 // 1 para 'igual', 0 para 'menorIgual'
+        pventa: this.DATA_PRODUCT_SELECTED.pventa
       });
-  
-      if (tipo === 'menorIgual') {
-        this.productoInsertForm.get('fecha_vencimiento')?.disable();
-        this.productoInsertForm.get('meses')?.enable();
-        this.productoInsertForm.get('meses')?.setValidators([Validators.required]);
+      this.isLoading = false;
+    });
+
+    this.productoInsertForm.get('cantidad')?.valueChanges.subscribe((valor) => {
+      const cantidad = parseInt(valor, 10);
+
+      // Si cantidad no es un número válido, asigna 0
+      const cantidadValida = isNaN(cantidad) ? 0 : cantidad;
+
+      // Obtener precio según la escala
+      const { precio, escala } = this.getPrecioEscala(cantidadValida);
+
+      // Actualizar precio si aplica una escala
+      this.productoInsertForm.patchValue(
+        { pventa: precio.toFixed(2) },
+        { emitEvent: false }
+      );
+
+      // Calcular total
+      const total = (precio * cantidadValida).toFixed(2);
+
+      this.productoInsertForm.patchValue(
+        { total: total },
+        { emitEvent: false }
+      );
+
+      // (Opcional) podrías guardar escala para mostrarla
+      this.escalaAplicada = escala;
+      this.calcularTotal_Ganancia();
+    });
+
+    this.productoInsertForm.get('margen')?.valueChanges.subscribe(() => {
+      this.calcularTotal_Ganancia();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.cantidadInput.nativeElement.focus();
+  }
+
+  onSubmit(): void {
+    const cantidad = Number(this.productoInsertForm.get('cantidad')?.value);
+    const stockProducto = Number(this.DATA_PRODUCT_SELECTED.stock);
+
+    if (cantidad > stockProducto) {
+      this.sweet.alerta(
+        'Atención',
+        `stock del producto insuficiente, solo hay ${stockProducto}`
+      );
+      return;
+    }
+
+    if (this.productoInsertForm.valid) {
+      this.orden_venta_service.registerMovimientoOrdenVenta(this.productoInsertForm.value).subscribe((resp: any) => {
+        this.ProductoGestionado.emit(resp.movimiento);
+        this.modal.close();
+      });
+    } else {
+      this.sweet.formulario_invalido(
+        'Validacion',
+        'Existen errores en tu formulario'
+      );
+    }
+  }
+
+  handleEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    keyboardEvent.preventDefault(); // Prevenir comportamiento por defecto
+    if (this.productoInsertForm.valid) {
+      this.onSubmit();
+    }
+  }
+
+  validarNumero(event: KeyboardEvent): void {
+    const key = event.key;
+    if (!/^\d$/.test(key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight"].includes(key)) {
+      event.preventDefault();
+    }
+  }
+
+  getPrecioEscala(cantidad: number): { precio: number, escala: any | null } {
+    const escalas = this.DATA_PRODUCT_SELECTED.escalas;
+
+    if (!escalas || escalas.length === 0) {
+      return {
+        precio: parseFloat(this.DATA_PRODUCT_SELECTED.pventa) || 0,
+        escala: null
+      };
+    }
+
+    const escalasOrdenadas = escalas.sort((a: any, b: any) => a.cantidad - b.cantidad);
+
+    let precioAplicado = parseFloat(this.DATA_PRODUCT_SELECTED.pventa);
+    let escalaSeleccionada = null;
+
+    for (let escala of escalasOrdenadas) {
+      if (cantidad >= escala.cantidad) {
+        precioAplicado = parseFloat(escala.precio);
+        escalaSeleccionada = escala;
       } else {
-        this.productoInsertForm.get('fecha_vencimiento')?.enable();
-        this.productoInsertForm.get('meses')?.disable();
-        this.productoInsertForm.get('meses')?.clearValidators();
+        break;
       }
     }
-  
-    calcularFecha() {
-      const meses = this.productoInsertForm.get('meses')?.value;
-      if (!meses || meses < 1) {
-        this.productoInsertForm.patchValue({ fecha_vencimiento: null });
-        return;
-      }
-      let fechaActual = new Date();
-      let mesDestino = fechaActual.getMonth() + meses;
-      let añoDestino = fechaActual.getFullYear();
-      if (mesDestino > 11) {
-        añoDestino += Math.floor(mesDestino / 12);
-        mesDestino = mesDestino % 12;
-      }
-      let fechaVencimiento = new Date(añoDestino, mesDestino + 1, 0);
-      const año = fechaVencimiento.getFullYear();
-      const mes = String(fechaVencimiento.getMonth() + 1).padStart(2, '0');
-      const dia = String(fechaVencimiento.getDate()).padStart(2, '0')
-      const fechaFormateada = `${año}-${mes}-${dia}`;
-      this.productoInsertForm.patchValue({ fecha_vencimiento: fechaFormateada });
-    }
-  
-    validarNumero(event: KeyboardEvent): void {
-      const key = event.key;
-      if (!/^\d$/.test(key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight"].includes(key)) {
-        event.preventDefault();
-      }
-    }
-  
-    validarPrecio(event: any, input:any) {
-      let valor = event.target.value;
-      valor = valor.replace(/[^0-9.]/g, '');
-      let partes = valor.split('.');
-      if (partes.length > 2) {
-        valor = partes[0] + '.' + partes.slice(1).join('');
-      }
-      if (valor.startsWith('.')) {
-        valor = '0' + valor;
-      }
-  
-      if (partes.length === 2) {
-        partes[1] = partes[1].substring(0, 2);
-        valor = partes.join('.');
-      }
-      event.target.value = valor;
-      this.productoInsertForm.patchValue({ input: valor });
-  
-      switch(input){
-        case 'pcompra':
-          this.calcularPrecioVenta()
-          break
-        case 'pventa':
-          this.calcularMargenMinimo()
-          break
-        case 'margen_ganancia':
-          this.calcularPrecioVenta()
-          break
-      }
-  
-      this.calcularTotal_Ganancia()
-    }
-    
-    mostrarLotes(){
-      const modalRef = this.modalService.open(ModalLotesComponent,{centered:true, size: 'xl'})
-      modalRef.componentInstance.PRODUCT_ID = this.PRODUCT_SELECTED
-    }
-  
-    mostrarEscalas(){
-      const modalRef = this.modalService.open(ModalEscalasComponent,{centered:true, size: 'md'})
-      modalRef.componentInstance.PRODUCT_ID = this.PRODUCT_SELECTED
-    }
+
+    return { precio: precioAplicado, escala: escalaSeleccionada };
+  }
+
+  calcularTotal_Ganancia() {
+    const cantidad = parseInt(this.productoInsertForm.get('cantidad')?.value, 10) || 0;
+    const pventa = parseFloat(this.productoInsertForm.get('pventa')?.value) || 0;
+    const margen = parseFloat(this.productoInsertForm.get('margen')?.value) || 0;
+
+    const total = cantidad * pventa;
+    this.productoInsertForm.patchValue({ total: total.toFixed(2) }, { emitEvent: false });
+
+    const gananciaCalculada = total * (margen / 100);
+    this.productoInsertForm.patchValue(
+        { ganancia: gananciaCalculada.toFixed(2) },
+        { emitEvent: false }
+      );
+  }
 }

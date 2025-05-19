@@ -16,6 +16,7 @@ import { DivLoadingModule } from 'src/app/components/div-loading/div-loading.mod
 import { DropImageModule } from 'src/app/components/drop-image/drop-image.module';
 import { PaginationModule } from 'src/app/components/pagination/pagination.module';
 import { ProductoSelectedComponent } from './producto-selected/producto-selected.component';
+import { MercaderiaOrdenVentaComponent } from './mercaderia-orden-venta/mercaderia-orden-venta.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { ProductoSelectedComponent } from './producto-selected/producto-selected
     VentasComponent,
     ListVentasComponent,
     CreateVentasComponent,
-    ProductoSelectedComponent
+    ProductoSelectedComponent,
+    MercaderiaOrdenVentaComponent
   ],
   imports: [
     CommonModule,

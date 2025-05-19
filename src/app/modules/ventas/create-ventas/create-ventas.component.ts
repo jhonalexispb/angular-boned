@@ -7,6 +7,7 @@ import { UserLocalStorageService } from '../../users/service/userLocalStorage.se
 import { ProductoSelectedComponent } from '../producto-selected/producto-selected.component';
 import { VentasService } from '../service/ventas.service';
 import { ActivatedRoute } from '@angular/router';
+import { ViewImageComponent } from 'src/app/components/view-image/view-image.component';
 
 @Component({
   selector: 'app-create-ventas',
@@ -19,7 +20,7 @@ export class CreateVentasComponent {
 
   PRODUCT_LIST:any[] = [];
   CLIENTES_LIST:any[] = [];
-  VENTA_PRODUCTS_DETAILS:any[] = [];
+  ORDEN_VENTA_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
   product_id:any = null
 
@@ -37,6 +38,7 @@ export class CreateVentasComponent {
   carritoActualizado:boolean = true
 
   imageCache: Map<string, string> = new Map();
+  activeDropdownIndex: number | null = null;
 
   sweet:any = new SweetalertService
   user:any = new UserLocalStorageService
@@ -74,7 +76,7 @@ export class CreateVentasComponent {
           crear_orden_venta: false,
           orden_venta_id: idFromUrl
         }).subscribe((resp: any) => {
-          this.handleGuiaPrestamoResponse(resp);
+          this.handleOrdenVentaResponse(resp);
         });
 
       } else if (idFromStorage) {
@@ -85,7 +87,7 @@ export class CreateVentasComponent {
           crear_orden_venta: false,
           orden_venta_id: idFromStorage
         }).subscribe((resp: any) => {
-          this.handleGuiaPrestamoResponse(resp);
+          this.handleOrdenVentaResponse(resp);
         });
 
       } else {
@@ -95,18 +97,18 @@ export class CreateVentasComponent {
         }).subscribe((resp: any) => {
           this.order_venta_id = resp.orden_venta_id;
           localStorage.setItem('orden_venta_id', this.order_venta_id);
-          this.handleGuiaPrestamoResponse(resp);
+          this.handleOrdenVentaResponse(resp);
         });
       }
     });
   }
 
-  private handleGuiaPrestamoResponse(resp: any) {
+  private handleOrdenVentaResponse(resp: any) {
     this.CLIENTES_LIST = resp.clientes;
     this.PRODUCT_LIST = resp.productos;
     this.codigo = resp.codigo;
     this.order_venta_id = resp.orden_venta_id;
-    this.VENTA_PRODUCTS_DETAILS = resp.movimiento
+    this.ORDEN_VENTA_DETAILS = this.agruparMovimientosPorProducto(resp.movimiento);
     this.cliente_id = resp.cliente_id
   
     localStorage.setItem('orden_venta_id', this.order_venta_id.toString());
@@ -120,17 +122,14 @@ export class CreateVentasComponent {
     this.loadingProducts = false;
     this.cacheImages();
     this.calcularTotales()
+    console.log(this.ORDEN_VENTA_DETAILS)
   }
 
   evaluarProductosCarrito(){
-    const idsEnCarrito = this.VENTA_PRODUCTS_DETAILS.map((p: any) => p.producto_id);
+    const idsEnCarrito = this.ORDEN_VENTA_DETAILS.map((p: any) => p.producto_id);
     this.PRODUCT_LIST.forEach((producto: any) => {
       producto.in_carrito = idsEnCarrito.includes(producto.id);
     });
-  }
-
-  ngAfterViewInit() {
-    this.clienteSelect.focus();
   }
 
   callProductos(){
@@ -193,33 +192,20 @@ export class CreateVentasComponent {
       return
     }
     this.ventaForm.patchValue({product_id: null})
-    if(this.VENTA_PRODUCTS_DETAILS.find(p => p.producto_id === producto_id)){
-      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de compra')
+    if(this.ORDEN_VENTA_DETAILS.find(p => p.producto_id === producto_id)){
+      this.sweet.alerta('Aguanta','ya registraste ese producto en tu orden de venta')
       return
     }
     const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === producto_id);
 
     const modalRef = this.modalService.open(ProductoSelectedComponent,{centered:true, size: 'md'})
-    modalRef.componentInstance.PRODUCTO_ID = producto_id
+    modalRef.componentInstance.ORDER_VENTA_ID = this.order_venta_id
     modalRef.componentInstance.PRODUCT_SELECTED = productoSeleccionado
-    modalRef.componentInstance.ProductoComprado.subscribe((producto:any)=>{
-      this.VENTA_PRODUCTS_DETAILS.push({
-        producto_id: producto_id,
-        laboratorio: productoSeleccionado.laboratorio,
-        nombre: productoSeleccionado.nombre,
-        caracteristicas: productoSeleccionado.caracteristicas,
-        sku: productoSeleccionado.sku,
-        cantidad: Number(producto.cantidad),
-        condicion_vencimiento: producto.condicion_vencimiento,
-        fecha_vencimiento: producto.fecha_vencimiento,
-        margen_ganancia: producto.margen_ganancia,
-        meses: producto.meses,
-        pcompra: producto.pcompra,
-        pventa: producto.pventa,
-        total: producto.total,
-        ganancia: producto.ganancia,
-      })
-      localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
+    const sub = modalRef.componentInstance.ProductoGestionado.subscribe((productos:any)=>{
+      const productosAgrupados = this.agruparMovimientosPorProducto(productos);
+      productosAgrupados.forEach(productoAgrupado => {
+        this.ORDEN_VENTA_DETAILS.push(productoAgrupado);
+      });
       this.calcularTotales();
       this.cdr.detectChanges();
       this.ventaService.actualizarCarritoCompra()
@@ -230,143 +216,202 @@ export class CreateVentasComponent {
       );
       productoSeleccionado.in_carrito = true;
     })
+
+    modalRef.result.finally(() => {
+      sub.unsubscribe();
+    });
   }
 
   calcularTotales() {
-    this.subtotal = this.VENTA_PRODUCTS_DETAILS.reduce((acc, item) => acc + item.total, 0);
-  
-    this.totalCarrito = this.subtotal + this.impuesto;
+    this.totalCarrito = this.ORDEN_VENTA_DETAILS.reduce((acc, item) => {
+      return acc + (Number(item.cantidad) * Number(item.pventa));
+    }, 0);
     this.ventaForm.patchValue({
-      total: this.totalCarrito,
-      impuesto: this.impuesto,
-      sub_total: this.subtotal
-    }, { emitEvent: false })
+      total: this.totalCarrito.toFixed(2),
+    }, { emitEvent: false });
+    console.log('caluclando')
   }
 
-  eliminarItem(PROD:any){
+  eliminarItem(P: any) {
+    let message = "eliminaras los movimientos del producto"
     this.sweet.confirmar_borrado(
       '¿Estás seguro?', 
-      `¿Deseas eliminar el producto: 
-        <span class="text-primary">${PROD.laboratorio}</span> 
-        <span class="text-success">${PROD.nombre}</span> 
-        <span class="text-warning">${PROD.caracteristicas}</span>?`
-    ).then((result: any) => {
+      `${message}: 
+        <span class="text-primary">${P.laboratorio}</span> 
+        <span class="text-success">${P.nombre}</span> 
+        <span class="text-warning">${P.caracteristicas}</span>?`
+    ).then((result:any) => {
       if (result.isConfirmed) {
-        // Si el usuario confirma, eliminamos el producto
-        this.VENTA_PRODUCTS_DETAILS = this.VENTA_PRODUCTS_DETAILS.filter((producto: any) => producto.producto_id !== PROD.producto_id); // Eliminar el producto de la lista
-        // Actualizamos el localStorage
-        localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
-        const productoSeleccionado = this.PRODUCT_LIST.find((producto: any) => producto.id === PROD.producto_id);
-        productoSeleccionado.in_carrito = false;
-        this.calcularTotales();
-        this.ventaService.actualizarCarritoCompra()
-        // Mostrar mensaje de éxito
-        this.sweet.success('Eliminado', 'El producto ha sido eliminado correctamente', '/assets/animations/general/borrado_exitoso.json');
+        this.ventaService.eliminarMovimientosProducto(P.producto_id, this.order_venta_id).subscribe({
+          next: (resp) => {
+            this.ORDEN_VENTA_DETAILS = this.ORDEN_VENTA_DETAILS.filter(item => item.producto_id !== P.producto_id);
+            this.calcularTotales();
+            this.sweet.success('¡Eliminado!', 'Se eliminaron los movimientos de este producto.','/assets/animations/general/borrado_exitoso.json');
+          },
+          error: (err) => {
+            this.sweet.error('Error', 'No se pudo eliminar el producto');
+          }
+        });
       }
     });
   }
 
+  agruparMovimientosPorProducto(movimientos: any[]): any[] {
+    const agrupadoPorProducto: any = {};
+
+    movimientos.forEach((movimiento: any) => {
+      const productoID = movimiento.producto_id;
+
+      if (!agrupadoPorProducto[productoID]) {
+        agrupadoPorProducto[productoID] = {
+          cantidad: 0,
+          caracteristicas: movimiento.caracteristicas,
+          color_laboratorio: movimiento.color_laboratorio,
+          imagen: movimiento.imagen,
+          laboratorio: movimiento.laboratorio,
+          nombre: movimiento.nombre,
+          producto_id: productoID,
+          pventa: movimiento.pventa,
+          sku: movimiento.sku,
+          total: 0,
+          lotes_detalle: [],
+        };
+      }
+
+      agrupadoPorProducto[productoID].cantidad += Number(movimiento.cantidad);
+      agrupadoPorProducto[productoID].total += Number(movimiento.total);
+
+      agrupadoPorProducto[productoID].lotes_detalle.push({
+        lote: movimiento.lote,
+        fecha_vencimiento: movimiento.fecha_vencimiento,
+        cantidad: movimiento.cantidad,
+      });
+    });
+
+    return Object.values(agrupadoPorProducto);
+  }
+
+
+
+
+
+
+
+  customSearchFn(term: string, item: any): boolean {
+    term = term.toLowerCase();
+    return item.nombre?.toLowerCase().includes(term) ||
+           item.caracteristicas?.toLowerCase().includes(term) ||
+           item.sku?.toLowerCase().includes(term);
+  }
+
+  viewImagen(image:string){
+      const modalRef = this.modalService.open(ViewImageComponent,{centered:true, size: 'md'})
+      modalRef.componentInstance.IMAGE_SELECTED = image
+  }
+
+  handleDropdownToggle(index: number) {
+    this.activeDropdownIndex = this.activeDropdownIndex === index ? null : index;
+  }
+
   //FUNCIONES PARA MODIFICAR LA TABLA
 
+  // Se llama al comenzar la edición
+  iniciarEdicion(P: any) {
+    if (!P.editando) {
+      P.editando = true;
+      P.cantidadOriginal = P.cantidad;
+    }
+  }
+
+  // Se llama si el input cambia
+  activarConfirmacion(P: any) {
+    if (P.cantidad !== P.cantidadOriginal) {
+      P.editando = true;
+    }
+  }
+
+  // Cambiar con botones + y -
   cambiarCantidad(index: number, cambio: number) {
-    if (this.VENTA_PRODUCTS_DETAILS[index].cantidad + cambio > 0) {
-      this.VENTA_PRODUCTS_DETAILS[index].cantidad += cambio;
-      this.actualizarValores(index);
+    const P = this.ORDEN_VENTA_DETAILS[index];
+    this.iniciarEdicion(P);
+  
+    const nuevaCantidad = P.cantidad + cambio;
+    if (nuevaCantidad < 1) return;
+  
+    P.cantidad = nuevaCantidad;
+    this.activarConfirmacion(P);
+    this.calcularTotales();
+  }
+
+  // Confirmar el cambio (llama API)
+  confirmarCambio(P: any) {
+    if (P.cantidad <= 0) {
+      this.sweet.alerta('Cantidad inválida', 'La cantidad debe ser mayor a 0');
+      return;
     }
-  }
 
-  actualizarFecha(index: number) {
-    let item = this.VENTA_PRODUCTS_DETAILS[index];
-    if (!item) return;
-
-    localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
-  }
-
-  actualizarValores(index: number) {
-    let item = this.VENTA_PRODUCTS_DETAILS[index];
-    if (!item) return;
-  
-    // Verificar que pcompra y margen_ganancia sean números válidos
-    let pcompra = parseFloat(item.pcompra);
-    let margen_ganancia = parseFloat(item.margen_ganancia);
-    
-    if (isNaN(pcompra) || isNaN(margen_ganancia)) {
-      return; // Sale si los valores no son válidos
+    if (P.cantidad === P.cantidadOriginal) {
+      this.sweet.alerta('Sin cambios', 'No se ha modificado la cantidad');
+      P.editando = false;
+      return;
     }
-  
-    // Realiza los cálculos si son números válidos
-    let nuevoPventa = pcompra + (pcompra * (margen_ganancia / 100));
-    item.pventa = parseFloat(nuevoPventa.toFixed(2));
-  
-    // Calcular el total
-    let nuevoTotal = item.cantidad * pcompra;
-    item.total = parseFloat(nuevoTotal.toFixed(2));
-  
-    // Calcular la ganancia
-    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
-    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
 
-    localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
-    this.calcularTotales()
+    /* this.spinner.show(); */
+
+    const data = {
+      orden_venta_id: this.order_venta_id,
+      producto_id: P.producto_id,
+      cantidad: P.cantidad
+    };
+
+    this.ventaService.editarCantidadProducto(data).subscribe({
+      next: (response: any) => {
+        // agrupamos los nuevos movimientos devueltos por el backend
+        const agrupados = this.agruparMovimientosPorProducto(response.movimiento);
+
+        // reemplazamos el producto editado en orden_venta_details
+        const index = this.ORDEN_VENTA_DETAILS.findIndex((m: any) => m.producto_id === P.producto_id);
+        if (index !== -1) {
+          this.ORDEN_VENTA_DETAILS.splice(index, 1, ...agrupados);
+        }
+
+        this.sweet.success('Cantidad actualizada', 'El cambio se realizó correctamente.');
+      },
+    });
   }
 
-  actualizarMargenGanancia(index: number){
-    let item = this.VENTA_PRODUCTS_DETAILS[index];
-    if (!item) return;
+  // Cancelar y volver al valor anterior
+  cancelarCambio(P: any) {
+    P.cantidad = P.cantidadOriginal;
+    P.editando = false;
+    delete P.cantidadOriginal;
+    this.calcularTotales();
+  }
+
+  validarNumero(event: KeyboardEvent, P: any): void {
+    const key = event.key;
   
-    let pcompra = parseFloat(item.pcompra);
-    let pventa = parseFloat(item.pventa);
-    
-    if (isNaN(pcompra) || isNaN(pventa)) {
+    // Permitir solo números y algunas teclas de control
+    const esNumero = /^\d$/.test(key);
+    const teclasPermitidas = ["Backspace", "Delete", "ArrowLeft", "ArrowRight"];
+  
+    if (!esNumero && !teclasPermitidas.includes(key)) {
+      event.preventDefault();
       return;
     }
   
-    let nuevoMargen = ((pventa - pcompra)/pcompra)*100;
-    item.margen_ganancia = parseFloat(nuevoMargen.toFixed(2));
-  
-    let nuevaGanancia = (item.pventa - pcompra) * item.cantidad;
-    item.ganancia = parseFloat(nuevaGanancia.toFixed(2));
-
-    localStorage.setItem('compra_details', JSON.stringify(this.VENTA_PRODUCTS_DETAILS));
-  }
-  
-
-  validarPrecio(event: any, index: number, tipo: string) {
-    let valor = event.target.value;
-  
-    // Reemplazar todo lo que no sea número o punto decimal
-    valor = valor.replace(/[^0-9.]/g, '');
-  
-    let partes = valor.split('.');
-  
-    // Si hay más de un punto decimal, conservar solo el primero
-    if (partes.length > 2) {
-      valor = partes[0] + '.' + partes.slice(1).join('');
-    }
-  
-    // Si empieza con un punto, agregar un '0' al inicio
-    if (valor.startsWith('.')) {
-      valor = '0' + valor;
-    }
-  
-    // Limitar a 2 decimales si hay una parte decimal
-    if (partes.length === 2) {
-      partes[1] = partes[1].substring(0, 2);
-      valor = partes.join('.');
-    }
-  
-    // **Asignar el valor corregido al input**
-    event.target.value = valor;
-
-    if (tipo === 'pcompra') {
-      this.VENTA_PRODUCTS_DETAILS[index].pcompra = parseFloat(valor) || 0;
-      this.actualizarValores(index);
-    } else if (tipo === 'pventa') {
-      this.VENTA_PRODUCTS_DETAILS[index].pventa = parseFloat(valor) || 0;
-      this.actualizarMargenGanancia(index);
-    } else if (tipo === 'margen_ganancia') {
-      this.VENTA_PRODUCTS_DETAILS[index].margen_ganancia = parseFloat(valor) || 0;
-      this.actualizarValores(index);
+    // Evitar que se escriba 0 como primer dígito
+    if (key === "0" && (!P.cantidad || P.cantidad.toString() === "0")) {
+      event.preventDefault();
+      P.cantidad = 1;
     }
   }
+
+  validarVacio(P: any): void {
+    if (!P.cantidad || P.cantidad < 1) {
+      P.cantidad = 1;
+    }
+  }
+
+  onSubmit(){}
 }

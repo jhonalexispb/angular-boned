@@ -1,0 +1,430 @@
+
+      
+  <form [formGroup]="ventaForm">
+    <div class="card card-flush py-4 mb-3">
+      <!--begin::Card header-->
+      <div class="card-header">
+          <div class="card-title">
+              <h2>Crear venta</h2>
+          </div>
+      </div>
+      <!--end::Card header-->
+  
+      <!--begin::Card body-->
+      <div class="card-body pt-0 pb-0">
+          <div class="d-flex flex-column gap-5">
+              <!--begin::Input group-->
+              <div class="d-flex justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                  <!--begin::Label-->
+                  <label class="form-label fs-3 mb-0">Este seria tu pedido:</label>
+                  <!--end::Label-->
+  
+                  <!--begin::Auto-generated ID-->
+                  <div class="fw-bold fs-3">{{codigo}}</div>
+                  <!--end::Input-->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                    <button class="btn btn-warning w-100">
+                        Escalas
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-success w-100">
+                        Promociones
+                    </button>
+                </div>
+              </div>
+              <!--end::Input group-->
+              <div class="row">
+                <div class="col-md-6 col-lg-4 mb-3">
+                  <label class="form-label">Clientes</label>
+                    <div class="d-flex align-items-center w-100">
+                      <ng-select 
+                        [items]="CLIENTES_LIST"
+                        bindLabel="nombre_completo"
+                        bindValue="id"
+                        placeholder="Buscar por RUC, razón social, nombre comercial, dirección o distrito"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [multiple]="false"
+                        formControlName="product_id"
+                        [loadingText]="'Cargando...'"
+                        [loading]="loadingProducts"
+                        (search)="onSearch($event)"
+                        class="w-100">
+                        
+                        <ng-template ng-option-tmp let-item="item">
+                          <div 
+                            class="border rounded p-3 mb-2 bg-light" 
+                            style="box-sizing: border-box; width: 100%; overflow-wrap: break-word; word-break: break-word; white-space: normal;">
+                            <div class="row g-0">
+                              <div class="col-12">
+                                <div class="fw-bold text-primary" [innerHTML]="highlightMatch(item.nombre_comercial, searchTerm)"></div>
+                                <div [innerHTML]="highlightMatch(item.razon_social, searchTerm)"></div>
+                                <div>🔖 <span [innerHTML]="highlightMatch(item.ruc, searchTerm)"></span></div>
+                                <div>📍 <span [innerHTML]="highlightMatch(item.direccion, searchTerm)"></span></div>
+                                <div>🌍 <span [innerHTML]="highlightMatch(item.distrito, searchTerm)"></span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-3">
+                  <label class="form-label">Tipo de precio</label>
+                  <select class="form-control">
+                    <option value="">Local</option>
+                    <option value="">Provincia</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label mt-2 mb-4">Producto</label>
+                    
+                    <div class="d-flex align-items-center w-100 select-product-container">
+                      <ng-select 
+                        [items]="PRODUCT_LIST"
+                        bindLabel="nombre_completo"
+                        bindValue="id"
+                        placeholder="Buscar por nombre, sku o caracteristicas"
+                        [searchable]="true"
+                        [clearable]="true" 
+                        [virtualScroll]="true"  
+                        [multiple]="false"
+                        formControlName = "product_id"
+                        [loadingText]="'Cargando...'"
+                        [loading]="loadingProducts"
+                        [searchFn]="customSearchFn"
+                        (ngModelChange)="callProductDetail($event)"
+                        class="w-100">
+                        <ng-template ng-option-tmp let-item="item">
+                          <div class="row align-items-center product-option mi-custom-option" style="position: relative; display: flex;">
+                            <!-- Imagen -->
+                            <div class="col-4 d-flex align-items-stretch justify-content-center">
+                              <!-- Mostrar la imagen solo cuando 'cachedImage' esté disponible -->
+                              <img *ngIf="item.cachedImage" [src]="item.cachedImage" class="img-fluid rounded custom-img" alt="img" loading="lazy">
+                              <!-- Opcional: puedes mostrar un loader mientras la imagen se está cargando -->
+                              <div *ngIf="!item.cachedImage" class="spinner-border text-primary text-center" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                              </div>
+                            </div>
+                          
+                            <!-- Información del producto -->
+                            <div class="col-8">
+                              <div class="d-flex flex-column gap-1">
+                                <!-- Laboratorio (etiqueta) -->
+                                <span class="rounded text-center w-auto" [ngStyle]="{'background-color': item.color_laboratorio}">
+                                  <span class="badge-light-primary rounded text-center fs-7 p-2 fw-bold w-auto">{{ item.laboratorio }}</span>
+                                </span>
+                          
+                                <!-- Nombre del producto -->
+                                <div class="d-flex flex-column">
+                                  <span class="fw-bold mb-1 text-success">{{ item.nombre }}</span>
+                                  <span class="fw-bold mb-1">{{ item.caracteristicas }}</span>
+                                </div>
+                          
+                                <!-- Precio y Stock en una sola fila -->
+                                <p class="mb-0">💰 <strong>Precio:</strong> S/ {{ item.pventa }}</p>
+                                <p class="mb-0">📦 <strong>Stock:</strong> {{ item.stock }}</p>
+                          
+                                <!-- SKU -->
+                                <p class="mb-0">🔖 <strong>SKU:</strong> {{ item.sku }}</p>
+                                <p *ngIf="item.in_carrito" class="in-carrito-message mb-0 text-white d-flex align-items-center">
+                                  <i class="bi bi-check-circle-fill me-2"></i> En el carrito
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--end::Card header-->
+    </div>
+  </form>
+  <div class="card card-flush py-4 mb-custom">
+      <!--begin::Card header-->
+      <div class="card-header">
+          <div class="card-title">
+              <h2>Lista de mercaderia</h2>
+          </div>
+      </div>
+      <!--end::Card header-->
+  
+      <!--begin::Card body-->
+      <div class="card-body py-0">
+          <div class="d-flex flex-column ">
+              <div class="separator"></div>
+              <div class="dt-container">
+                <div class="table-responsive mb-5 d-none d-md-block">
+                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
+                        <thead *ngIf="ORDEN_VENTA_DETAILS.length > 0">
+                          <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-200px text-center">
+                              <span class="dt-column-title" role="button">Producto</span>
+                            </th>
+                      
+                            <th class="min-w-125px text-center">
+                              <span class="dt-column-title" role="button">Cantidad</span>
+                            </th>
+
+                            <th class="min-w-125px text-center">
+                              <span class="dt-column-title" role="button">Lote</span>
+                            </th>
+                      
+                            <th class="min-w-125px text-center">
+                              <span class="dt-column-title" role="button">Precio de venta</span>
+                            </th>
+
+                            <th class="min-w-125px text-center">
+                              <span class="dt-column-title" role="button">Total</span>
+                            </th>
+                      
+                            <!-- Columna Acciones: Visible solo en pantallas grandes -->
+                            <th class="text-center min-w-70px dt-orderable-none d-none d-md-table-cell">
+                              <span class="dt-column-title">Acciones</span>
+                            </th>
+                          </tr>
+                        </thead>
+                      
+                        <tbody *ngIf="ORDEN_VENTA_DETAILS.length > 0" class="fw-semibold text-gray-600">
+                          <tr *ngFor="let P of ORDEN_VENTA_DETAILS; let index = index">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                  <div class="d-flex flex-column gap-2 w-100">
+                                    <span
+                                      class="rounded text-center d-block w-100"
+                                      [ngStyle]="{ 'background-color': P.color_laboratorio }">
+                                      <span class="badge-light-primary rounded text-center fs-7 p-2 fw-bold w-auto">{{ P.laboratorio }}</span>
+                                    </span>
+                                    <div class="d-flex">
+                                      <div class="symbol symbol-60px me-2">
+                                        <img [src]="P.imagen" alt="img" (click)="viewImagen(P.imagen)">
+                                      </div>
+                                      <div>
+                                        <span class="text-gray-900 fw-bold text-hover-primary fs-6">{{ P.nombre }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ P.caracteristicas }}</span>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">SKU: {{ P.sku }}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </td>
+                            <td>
+                              <div class="d-flex flex-column align-items-center gap-2">
+                                <!-- Controles de cantidad -->
+                                <div class="d-flex align-items-center gap-2 justify-content-center">
+                                  <button class="btn btn-sm btn-light" (click)="cambiarCantidad(index, -1)">-</button>
+                                  <input type="number" min="1" class="form-control text-center py-2 px-0"
+                                    [(ngModel)]="P.cantidad"
+                                    (keypress)="validarNumero($event, P)"
+                                    (focus)="iniciarEdicion(P)"
+                                    (input)="activarConfirmacion(P); calcularTotales()"
+                                    (blur)="validarVacio(P)"
+                                    style="width: 80px;">
+                                  <button class="btn btn-sm btn-light" (click)="cambiarCantidad(index, 1)">+</button>
+                                </div>
+                            
+                                <!-- Botones de confirmar / cancelar -->
+                                <div *ngIf="P.editando" class="d-flex gap-2 mt-2">
+                                  <button class="btn btn-sm btn-success" [disabled]="P.cantidad === P.cantidadOriginal" (click)="confirmarCambio(P)">✔</button>
+                                  <button class="btn btn-sm btn-danger" (click)="cancelarCambio(P)">✘</button>
+                                </div>
+                            
+                              </div>
+                            </td>
+                            <td>
+                              <div class="d-flex flex-column align-items-center gap-2">
+                                <div *ngFor="let lote of P.lotes_detalle" class="d-flex gap-2">
+                                  <span class="badge badge-light-success fs-7 fw-bold">
+                                    {{ lote.lote }}
+                                  </span>
+                                  <span class="badge badge-light-primary fs-7 fw-bold">
+                                    {{ lote.fecha_vencimiento }}
+                                  </span>
+                                  <span class="badge badge-light-info fs-7 fw-bold">Cantidad: {{ lote.cantidad }}</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td class="text-center">
+                              <span class="text-gray-900 fw-bold">S/ {{ P.pventa | number:'1.2-2' }}</span>
+                            </td>
+
+                            <td class="text-center">
+                              <span class="text-gray-900 fw-bold">S/ {{ P.total | number:'1.2-2' }}</span>
+                            </td>
+                      
+                            <!-- Columna Acciones visible solo en pantallas grandes -->
+                            <td class="d-none d-md-table-cell acciones-container">
+                              <ul class="list pt-3 px-3 d-flex gap-2">
+                                <li>
+                                  <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100" (click)="eliminarItem(P)">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                      <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                      Eliminar
+                                    </div>
+                                  </button>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                        </tbody>
+                      
+                        <tbody *ngIf="ORDEN_VENTA_DETAILS.length === 0">
+                          <tr>
+                              <td colspan="6" class="text-center py-5">
+                                  <div class="d-flex flex-column align-items-center">
+                                      <img src="./assets/images/carrito-vacio.png" alt="Carrito vacío" width="120">
+                                      <h5 class="mt-3 text-gray-600 fw-bold">Tu carrito está vacío</h5>
+                                      <p class="text-muted">Agrega productos para continuar con tu guia de prestamo.</p>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+
+                <div *ngIf="ORDEN_VENTA_DETAILS.length > 0" class="mt-5 d-md-none">
+                  <div *ngFor="let P of ORDEN_VENTA_DETAILS; let index = index">
+                    <div class="d-flex flex-column mb-5">
+                      <div class="row">
+                        <div class="col-4 d-flex justify-content-center align-items-center position-relative" style="height: 100px;">
+                          <img [src]="P.imagen" alt="img" class="img-fluid rounded custom-img" loading="lazy" (click)="viewImagen(P.imagen)">
+                          <div *ngIf="!P.imagen" class="spinner-border text-primary position-absolute" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                          </div>
+                        </div>
+                        <div class="col-8">
+                          <div class="d-flex flex-column">
+                            <div class="col-12 d-flex align-items-center justify-content-between gap-2">
+                              <span class="rounded text-center w-100 h-20px" [ngStyle]="{'background-color': P.color_laboratorio}">
+                                <span class="badge-light-primary rounded text-center fs-7 p-2 fw-bold w-auto">{{ P.laboratorio }}</span>
+                              </span>
+                            </div>
+                            <div class="d-flex flex-column mt-3">
+                              <span class="fw-bold mb-1">{{ P.nombre }}</span>
+                              <span class="fw-bold mb-1">{{ P.caracteristicas }}</span>
+                              <span class="fw-bold mb-1">SKU: {{ P.sku }}</span>
+                              <div class="d-flex gap-2 flex-column mt-2">
+                                <div class="d-flex justify-content-between">
+                                  <span class="badge badge-light-success d-flex align-items-center gap-2 fs-6">
+                                    S/{{ P.pventa | number:'1.2-2' }}
+                                  </span>
+                                  <span class="text-gray-900 fw-bold fs-5">S/ {{ P.total | number:'1.2-2' }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="d-flex flex-column align-items-center gap-2">
+                          <div *ngFor="let lote of P.lotes_detalle" class="d-flex gap-2">
+                            <span class="badge badge-light-success fs-7 fw-bold">
+                              {{ lote.lote }}
+                            </span>
+                            <span class="badge badge-light-primary fs-7 fw-bold">
+                              {{ lote.fecha_vencimiento }}
+                            </span>
+                            <span class="badge badge-light-info fs-7 fw-bold">Cantidad: {{ lote.cantidad }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between mt-5">
+                        <div class="text-start">
+                          <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1" (click)="eliminarItem(P)">
+                            <div class="d-flex gap-2 flex-column align-items-center">
+                              <i class="ki-duotone ki-trash fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                              Eliminar
+                            </div>
+                          </button>
+                        </div>
+                        <!-- Controles de cantidad -->
+                        <div class="d-flex flex-column gap-2">
+                          <div class="d-flex align-items-center gap-2 justify-content-center">
+                            <button class="btn btn-sm btn-light" (click)="cambiarCantidad(index, -1)">-</button>
+                            <input type="number" min="1" class="form-control text-center py-2 px-0"
+                              [(ngModel)]="P.cantidad"
+                              (keypress)="validarNumero($event, P)"
+                              (focus)="iniciarEdicion(P)"
+                              (input)="activarConfirmacion(P); calcularTotales()"
+                              (blur)="validarVacio(P)"
+                              style="width: 80px;">
+                            <button class="btn btn-sm btn-light" (click)="cambiarCantidad(index, 1)">+</button>
+                          </div>
+                      
+                          <!-- Botones de confirmar / cancelar -->
+                          <div *ngIf="P.editando" class="d-flex justify-content-center gap-2 mt-2">
+                            <button class="btn btn-sm btn-success" [disabled]="P.cantidad === P.cantidadOriginal" (click)="confirmarCambio(P)">✔</button>
+                            <button class="btn btn-sm btn-danger" (click)="cancelarCambio(P)">✘</button>
+                          </div>
+                        </div>
+                      </div>
+                      <hr *ngIf="index < (ORDEN_VENTA_DETAILS.length - 1)">
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="ORDEN_VENTA_DETAILS.length === 0" class="my-10 d-md-none">
+                  <div class="d-flex flex-column align-items-center">
+                    <img src="./assets/images/carrito-vacio.png" alt="Carrito vacío" width="120">
+                    <h5 class="mt-3 text-gray-600 fw-bold">Tu guia está vacía</h5>
+                    <p class="text-muted">Agrega productos para continuar con tu guia de prestamo.</p>
+                  </div>
+                </div>
+
+                <div *ngIf="ORDEN_VENTA_DETAILS.length > 0" class="d-flex flex-column bg-success rounded-top-3 p-6 total-fixed d-md-none">  
+                  <div class="d-flex flex-stack">
+                    <div class="fs-6 fw-bold text-white">
+                      <span class="d-block lh-1 fs-2qx">Total</span>
+                    </div> 
+                    
+                    <div class="fs-6 fw-bold text-white text-end">
+                      <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ totalCarrito | number: '1.2-2' }}</span>
+                    </div> 
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <button class="mt-5 btn bg-primary text-white" routerLink="/ventas/list">
+                      Salir
+                    </button>
+                    <button class="mt-5 btn bg-primary text-white" (click)="siguientePaso()">
+                      Continuar
+                    </button>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+      <!--end::Card header-->
+  </div>
+  <div class="card-body py-4 d-none d-md-block">
+    <div *ngIf="ORDEN_VENTA_DETAILS.length > 0" class="d-flex flex-stack bg-success rounded-3 p-6">  
+      <!--begin::Content-->
+      <div class="fs-6 fw-bold text-white">
+        <span class="d-block lh-1 fs-2qx mb-3">Total</span>
+      </div> 
+      <!--end::Content--> 
+      
+      <!--begin::Content-->
+      <div class="fs-6 fw-bold text-white text-end">
+        <span class="d-block fs-2qx lh-1" data-kt-pos-element="grant-total">S/ {{ totalCarrito | number: '1.2-2' }}</span>
+      </div> 
+      <!--end::Content--> 
+    </div>
+    <div *ngIf="ORDEN_VENTA_DETAILS.length > 0" class="d-flex justify-content-between">
+      <button class="mt-5 btn bg-primary text-white" routerLink="/ventas/list">
+        Salir
+      </button>
+      <button class="mt-5 btn bg-primary text-white" (click)="siguientePaso()">
+        Continuar
+      </button>
+    </div>
+  </div>

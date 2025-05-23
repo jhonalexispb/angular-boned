@@ -17,6 +17,7 @@ import { ListGuiaPrestamoComponent } from './list-guia-prestamo/list-guia-presta
 import { CreateGuiaPrestamoComponent } from './create-guia-prestamo/create-guia-prestamo.component';
 import { ProductoSeleccionadoGuiaPrestamoComponent } from './producto-seleccionado-guia-prestamo/producto-seleccionado-guia-prestamo.component';
 import { MercaderiaGuiaPrestamoComponent } from './mercaderia-guia-prestamo/mercaderia-guia-prestamo.component';
+import { GuiasPrestamoComponent } from './guias-prestamo.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { MercaderiaGuiaPrestamoComponent } from './mercaderia-guia-prestamo/merc
     ListGuiaPrestamoComponent,
     CreateGuiaPrestamoComponent,
     ProductoSeleccionadoGuiaPrestamoComponent,
-    MercaderiaGuiaPrestamoComponent
+    MercaderiaGuiaPrestamoComponent,
+    GuiasPrestamoComponent
   ],
   imports: [
     CommonModule,

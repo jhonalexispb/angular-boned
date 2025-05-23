@@ -1,0 +1,20 @@
+<div class="card mt-4">
+  <div class="card-header bg-danger text-white">Retirar Mercadería</div>
+  <div class="card-body">
+    <form (ngSubmit)="guardar()">
+      <div class="mb-3">
+        <label>Producto</label>
+        <input type="text" class="form-control" [(ngModel)]="form.producto" name="producto" required>
+      </div>
+      <div class="mb-3">
+        <label>Cantidad</label>
+        <input type="number" class="form-control" [(ngModel)]="form.cantidad" name="cantidad" required>
+      </div>
+      <div class="mb-3">
+        <label>Motivo</label>
+        <textarea class="form-control" [(ngModel)]="form.motivo" name="motivo" required></textarea>
+      </div>
+      <button class="btn btn-danger" type="submit">Guardar</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<form #ventaForm="ngForm" (ngSubmit)="registrarVenta()" class="container mt-3">
+
+  <!-- Cliente -->
+  <div class="mb-3">
+    <label class="form-label">Cliente</label>
+    <select class="form-select" required [(ngModel)]="clienteSeleccionado" name="cliente" #cliente="ngModel" (change)="setCliente(clienteSeleccionado.id)">
+      <option [ngValue]="null" disabled selected>Seleccione un cliente</option>
+      <option *ngFor="let c of clientes" [ngValue]="c">{{ c.nombre_comercial }}</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="cliente.invalid && cliente.touched">
+      El cliente es obligatorio.
+    </div>
+  </div>
+
+  <!-- Tipo de Comprobante -->
+  <div class="mb-3">
+    <label class="form-label">Tipo de Comprobante</label>
+    <select class="form-select" required [(ngModel)]="comprobanteSeleccionado" name="comprobante" #comprobante="ngModel" [disabled]="!clienteSeleccionado">
+      <option *ngFor="let doc of clienteSeleccionado?.type_documentos" [value]="doc.codigo">
+        {{ doc.name }}
+      </option>
+    </select>
+    <div class="invalid-feedback" *ngIf="comprobante.invalid && comprobante.touched">
+      Selecciona un comprobante válido.
+    </div>
+  </div>
+
+  <!-- Forma de Pago -->
+  <div class="mb-3">
+    <label class="form-label">Forma de Pago</label>
+    <select class="form-select" required [(ngModel)]="formaPago" name="formaPago" #fp="ngModel">
+      <option value="1">Contado</option>
+      <option value="2">Adelantado (Provincia)</option>
+      <option value="3">Contraentrega (Local)</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="fp.invalid && fp.touched">
+      Selecciona una forma de pago.
+    </div>
+  </div>
+
+  <!-- Destino -->
+  <div class="mb-3">
+    <label class="form-label">Destino del Pedido</label>
+    <select class="form-select" required [(ngModel)]="destino" name="destino" #destinoCtrl="ngModel">
+      <option value="local">Local</option>
+      <option value="provincia">Provincia</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="destinoCtrl.invalid && destinoCtrl.touched">
+      Selecciona el destino del pedido.
+    </div>
+  </div>
+
+  <!-- Transporte -->
+  <div class="mb-3">
+    <label class="form-label">Medio de Transporte</label>
+    <select class="form-select" required [(ngModel)]="transporte" name="transporte" #transporteCtrl="ngModel">
+      <option value="empresa">Transporte de la empresa</option>
+      <option value="cliente">Cliente recogerá</option>
+      <option value="vendedor">El vendedor lo lleva</option>
+      <option value="externo">Transporte externo</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="transporteCtrl.invalid && transporteCtrl.touched">
+      Selecciona el medio de transporte.
+    </div>
+  </div>
+
+  <!-- Dirección de entrega -->
+  <div class="mb-3">
+    <label class="form-label">Dirección de Entrega</label>
+    <input type="text" class="form-control" required [(ngModel)]="direccionEntrega" name="direccion" #direccion="ngModel">
+    <div class="invalid-feedback" *ngIf="direccion.invalid && direccion.touched">
+      Ingrese una dirección de entrega.
+    </div>
+  </div>
+
+  <!-- Coordenadas -->
+  <div class="mb-3">
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="obtenerCoordenadas()">
+      Obtener Coordenadas
+    </button>
+    <div *ngIf="coordenadas" class="mt-2 text-success">
+      Coordenadas: Lat {{ coordenadas.lat }} / Lng {{ coordenadas.lng }}
+    </div>
+  </div>
+
+  <!-- Botón Final -->
+  <div class="text-end">
+    <button class="btn btn-primary" type="submit" [disabled]="!ventaForm.valid">Registrar Venta</button>
+  </div>
+
+</form>
+

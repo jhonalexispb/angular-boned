@@ -83,6 +83,16 @@ const Routing: Routes = [
     loadChildren: () => import('../modules/guias-prestamo/guias-prestamo.module').then((m) => m.GuiasPrestamoModule),
   },
 
+  {
+    path: 'transporte_orden_venta',
+    loadChildren: () => import('../modules/transporte-orden-venta/transporte-orden-venta.module').then((m) => m.TransporteOrdenVentaModule),
+  },
+
+  {
+    path: 'movimientos',
+    loadChildren: () => import('../modules/movimientos/movimientos.module').then((m) => m.MovimientosModule),
+  },
+
 
 
 

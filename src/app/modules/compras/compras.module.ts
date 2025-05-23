@@ -40,10 +40,10 @@ import { ModalMercaderiaIngresadaComponent } from './modal-mercaderia-ingresada/
     CommonModule,
     ComprasRoutingModule,
 
-    HttpClientModule, //peticiones
+    HttpClientModule,
     FormsModule,
     NgbModule,
-    ReactiveFormsModule, //formulario reactivo
+    ReactiveFormsModule,
     InlineSVGModule,
     NgbModalModule,
     NgSelectModule,

@@ -1,0 +1,27 @@
+<table class="table table-bordered table-hover mt-3">
+  <thead class="table-dark">
+    <tr>
+      <th>Fecha</th>
+      <th>Tipo</th>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Motivo</th>
+      <th>Usuario</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let m of movimientos">
+      <td>{{ m.fecha | date:'short' }}</td>
+      <td>
+        <span [ngClass]="{
+          'badge bg-success': m.tipo === 'Ingreso',
+          'badge bg-danger': m.tipo === 'Retiro'
+        }">{{ m.tipo }}</span>
+      </td>
+      <td>{{ m.producto }}</td>
+      <td>{{ m.cantidad }}</td>
+      <td>{{ m.motivo }}</td>
+      <td>{{ m.usuario }}</td>
+    </tr>
+  </tbody>
+</table>

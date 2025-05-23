@@ -1,118 +1,38 @@
-.custom-img {
-    object-fit: contain;
-    height: 130px;
-  }
-  
-  ul {
-    list-style-type: none !important;  /* Remueve los puntos de la lista con mayor prioridad */
-  }
-  
-  .mi-custom-option {
-    border: 1px solid #ddd;          /* Borde suave alrededor de cada opción */
-    border-radius: 5px;              /* Bordes redondeados */
-               /* Separación entre las opciones */
-    padding: 10px;                   /* Espaciado interno para que el contenido no quede pegado al borde */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra difusa para un borde más suave */
-    transition: box-shadow 0.3s ease; /* Transición suave al pasar el ratón */
-    word-wrap: break-word;           /* Ajusta las palabras largas */
-    overflow: hidden;                /* Esconde cualquier contenido desbordado */
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-  
-  /* Estilo cuando el ratón pasa sobre una opción */
-  .mi-custom-option:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra al pasar el ratón */
-    background-color: #6ca9ff;  /* Fondo suave al hacer hover */
-  }
-  
-  
-  /* Si se desea separar los elementos internos dentro del div */
-  .mi-custom-option h6,
-  .mi-custom-option small {
-    display: block;    /* Asegura que cada elemento se muestre en una línea separada */
-  }
-  
-  app-buttons-group-list {
-    position: absolute;
-    z-index: 10;
-    left: 2px;
-    margin-top: 100px;
-  }
-  
-  button {
-    white-space: nowrap; /* Esto evita que el texto se divida en varias líneas */
-  }
-  
-  .product-option {
-    position: relative; /* Necesario para posicionar el mensaje en la esquina */
-  }
+.stepper {
+  position: relative;
+}
 
-  //estilos para la lista de opcioes del select de productos
-  ::ng-deep .select-product-container ng-dropdown-panel {
-    max-height: 600px !important;
-    min-height: 400px;
-    overflow-y: auto;
-  }
-  
-  ::ng-deep .select-product-container .ng-dropdown-panel .scroll-host {
-    position: static !important;
-  }
-  
-  ::ng-deep .select-product-container .product-option {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-  }
-  
-  ::ng-deep .select-product-container .product-option span,
-  ::ng-deep .select-product-container .product-option p {
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  /* Mensaje "En el carrito" */
-  .in-carrito-message {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #28a745; /* Color verde para indicar éxito */
-    border-radius: 20px;
-    padding: 5px 12px;
-    font-size: 10px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    z-index: 999;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .in-carrito-message i {
-    font-size: 12px; /* Tamaño del icono */
-  }
+.step .box {
+  width: 44px;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef; /* gris claro */
+  color: #0d6efd; /* azul Bootstrap */
+  transition: all 0.3s ease;
+}
 
+.step.active .box {
+  background-color: #0d6efd; /* azul */
+  color: white;
+}
 
-  .total-fixed {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #28a745; /* color de fondo */
-    padding: 1rem;
-    z-index: 100;
-  }
+.step.completed .box {
+  background-color: #198754; /* verde */
+  color: white;
+}
 
-  img {
-    object-fit:contain;
-  }
+.step .label {
+  color: inherit;
+}
 
-  .mb-custom {
-    margin-bottom: 10rem;
-  }
-
-  @media (min-width: 768px) {
-      .mb-custom {
-          margin-bottom: 0;
-      }
-  }
+.step-line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #dee2e6; /* gris */
+  min-width: 30px;
+}

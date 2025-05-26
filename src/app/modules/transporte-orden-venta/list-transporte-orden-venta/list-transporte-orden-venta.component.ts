@@ -5,6 +5,7 @@ import { GuiaPrestamoService } from '../../guias-prestamo/service/guia-prestamo.
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { TransporteOrdenVentaService } from '../service/transporte-orden-venta.service';
 import { CreateTransporteOrdenVentaComponent } from '../create-transporte-orden-venta/create-transporte-orden-venta.component';
+import { EditTransporteOrdenVentaComponent } from '../edit-transporte-orden-venta/edit-transporte-orden-venta.component';
 
 @Component({
   selector: 'app-list-transporte-orden-venta',
@@ -22,7 +23,6 @@ export class ListTransporteOrdenVentaComponent {
 
   constructor(
     public modalService: NgbModal,
-    public gpService: GuiaPrestamoService,
     public transporteService: TransporteOrdenVentaService
   ){
 
@@ -56,14 +56,24 @@ export class ListTransporteOrdenVentaComponent {
     })
   }
 
+  editTransporteOrdenVenta(R:any){
+    const modalRef = this.modalService.open(EditTransporteOrdenVentaComponent,{centered:true, size: 'md'})
 
+    modalRef.componentInstance.TRANSPORTE_ORDEN_VENTA_SELECTED = R;
 
+    //OBTENEMOS EL OUTPUT DEL COMPONENTE HIJO EDITAR
+    modalRef.componentInstance.TransporteOrdenVentaE.subscribe((r:any)=>{
+        let INDEX = this.TRANSPORTES_LIST.findIndex((b:any) => b.id == R.id);
+        if(INDEX != -1){
+          this.TRANSPORTES_LIST[INDEX] = r
+        }
+    })
+  }
 
-
-  deleteGuiaPrestamo(R:any){
-    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar la guia de prestamo: ${R.codigo}?`).then((result:any) => {
+  deleteTransporteOrdenVenta(R:any){
+    this.sweet.confirmar_borrado('¿Estás seguro?', `¿Deseas eliminar el transporte: ${R.ruc} ${R.name}?`).then((result:any) => {
       if (result.isConfirmed) {
-        this.gpService.deleteGuiaPrestamo(R.id).subscribe({
+        this.transporteService.delete_transporte_orden_venta(R.id).subscribe({
           next: (resp: any) => {
             this.TRANSPORTES_LIST = this.TRANSPORTES_LIST.filter((s:any) => s.id !== R.id); // Eliminamos el rol de la lista
             this.sweet.success('Eliminado', resp.message,'/assets/animations/general/borrado_exitoso.json');
@@ -71,10 +81,5 @@ export class ListTransporteOrdenVentaComponent {
         })
       }
     });
-  }
-
-  verProductosGuiaPrestamo(R:any){
-    const modalRef = this.modalService.open(MercaderiaGuiaPrestamoComponent,{centered:true, size: 'lg'})
-    modalRef.componentInstance.GUIA_PRESTAMO = R;
   }
 }

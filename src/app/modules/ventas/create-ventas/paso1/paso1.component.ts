@@ -22,6 +22,7 @@ export class Paso1Component {
 
   PRODUCT_LIST:any[] = [];
   CLIENTES_LIST:any[] = [];
+  TRANSPORTES_LIST:any[] = [];
   ORDEN_VENTA_DETAILS:any[] = [];
   codigo:string = "Calculando codigo..."
   product_id:any = null
@@ -124,6 +125,7 @@ export class Paso1Component {
       ...cliente,
       nombre_completo: `${cliente.ruc} - ${cliente.razon_social} - ${cliente.nombre_comercial} - ${cliente.direccion} - ${cliente.distrito}`
     }));
+    this.TRANSPORTES_LIST = resp.transportes;
     this.PRODUCT_LIST = resp.productos;
     this.codigo = resp.codigo;
     this.order_venta_id = resp.orden_venta_id;
@@ -433,10 +435,13 @@ export class Paso1Component {
     }
     
       const clienteId = this.ventaForm.value.cliente_id;
+      const tprecio = this.ventaForm.value.tipo_precio;
       
       this.onPaso1Listo.emit({
         cliente: clienteId,
         clientes: this.CLIENTES_LIST,
+        transportes: this.TRANSPORTES_LIST,
+        t_precio: tprecio
       });
     
   }

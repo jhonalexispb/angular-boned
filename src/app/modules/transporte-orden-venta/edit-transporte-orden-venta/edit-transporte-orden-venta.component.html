@@ -1,1 +1,156 @@
-<p>edit-transporte-orden-venta works!</p>
+<!--begin::Modal content CREATE-->
+<div class="modal-content">
+    <!--begin::Modal header-->
+    <div class="modal-header" id="kt_modal_add_user_header">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Crear transporte:</h2>
+
+        <!--end::Modal title-->
+        <!--begin::Close-->
+        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close"
+            (click)="modal.dismiss()">
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+            <span class="svg-icon svg-icon-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)"
+                        fill="currentColor" />
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                        fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+        </div>
+        <!--end::Close-->
+    </div>
+    <!--end::Modal header-->
+    <!--begin::Modal body-->
+    <div class="modal-body mx-5 my-7">
+        <!--begin::Form-->
+        <form id="kt_modal_add_user_form" class="form" action="#" #form="ngForm">
+            <!--begin::Scroll-->
+            <div class="d-flex flex-column me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true"
+                data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
+                data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2">RUC del transporte</label>
+                    <div class="input-group">
+                        <input
+                        id="ruc"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="ruc"
+                        (ngModelChange)="ruc = ruc.toUpperCase()"
+                        name="ruc"
+                        maxlength="11"
+                        placeholder="Ingrese el RUC"
+                        autocomplete="off"
+                        pattern="\d*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        />
+                        <button class="btn btn-primary" type="button" id="button-addon2" (click)="buscarRazonSocial()" [disabled]="!ruc || ruc.length !== 11">
+                        <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2">Nombre del transporte</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <input type="text" name="name" class="form-control mb-3 mb-lg-0"
+                        [(ngModel)]="name" autocomplete="off" #nameTransporte="ngModel" (ngModelChange)="name = name.toUpperCase()" required
+                        [ngClass]="{'is-invalid': nameTransporte.invalid && nameTransporte.touched}"/>
+                    <div *ngIf="nameTransporte.invalid && nameTransporte.touched" class="invalid-feedback">
+                        El nombre es requerido
+                    </div>
+                    <!--end::Input-->
+                </div>
+
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="fw-bold fs-6 mb-2">Razon Social</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <input type="text" name="razonSocial" class="form-control mb-3 mb-lg-0"
+                        placeholder="" [(ngModel)]="razonSocial" autocomplete="off" #rzTransporte="ngModel"
+                        (ngModelChange)="razonSocial = razonSocial.toUpperCase()"
+                        [ngClass]="{'is-invalid': rzTransporte.invalid && rzTransporte.touched}"/>
+                    <div *ngIf="rzTransporte.invalid && rzTransporte.touched" class="invalid-feedback">
+                        La razon social es requerida
+                    </div>
+                    <!--end::Input-->
+                </div>
+
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="fw-bold fs-6 mb-2">Direccion</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <input type="text" name="direccion" class="form-control mb-3 mb-lg-0"
+                        placeholder="" [(ngModel)]="address" (ngModelChange)="address = address.toUpperCase()" autocomplete="off"/>
+                </div>
+
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="fw-bold fs-6 mb-2">Celular</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <input type="numer" name="celular" class="form-control mb-3 mb-lg-0" [(ngModel)]="celular" autocomplete="off"/>
+                </div>
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2">Solicita guia de remision</label>
+                    <select
+                        class="form-control form-select-solid fw-bolder"
+                        name="state"
+                        [(ngModel)] = "solicita_guia"
+                    >
+                        <option value="">Selecciona un opcion</option>
+                        <option value="1">Si</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="fv-row mb-7">
+                    <!--begin::Label-->
+                    <label class="required fw-bold fs-6 mb-2">Estado</label>
+                    <select
+                        class="form-control form-select-solid fw-bolder"
+                        name="state"
+                        [(ngModel)] = "state"
+                    >
+                        <option value="">Selecciona un opcion</option>
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2">Ubicación en mapa</label>
+                    <button type="button" class="btn btn-primary mb-4" (click)="obtenerUbicacionActual()">
+                    Usar mi ubicación actual
+                    </button>
+                    <div class="fv-row mb-7">
+                        <input type="text" class="form-control" [value]="coordenadas" readonly />
+                    </div>
+                    <div id="map" style="height: 300px;"></div>
+                </div>
+            </div>
+            <!--end::Scroll-->
+
+            <!--begin::Actions-->
+            <div class="text-center pt-15">
+                <button type="reset" class="btn btn-light me-3" (click)="modal.dismiss()">Cerrar</button>
+                <button type="button" (click)="store()" class="btn btn-primary" data-kt-users-modal-action="submit">
+                    <span class="indicator-label">Registar</span>
+                </button>
+            </div>
+            <!--end::Actions-->
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Modal body-->
+</div>
+<!--end::Modal content CREATE-->

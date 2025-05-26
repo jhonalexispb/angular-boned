@@ -139,7 +139,7 @@ export class ListSucursalesComponent {
   }
 
   getFormaPagoTexto(formaPago: string): string {
-    switch (formaPago) {
+    switch (formaPago.toString()) {
       case '1':
         return 'Crédito';
       case '2':
@@ -154,7 +154,7 @@ export class ListSucursalesComponent {
   getFormaPagoClasses(formaPago: string): string {
     let classes = '';
   
-    switch (formaPago) {
+    switch (formaPago.toString()) {
       case '1':
         classes = 'bg-success';  // Verde
         break;
@@ -175,7 +175,7 @@ export class ListSucursalesComponent {
   getFormaPagoClassesText(formaPago: string): string {
     let classes = '';
   
-    switch (formaPago) {
+    switch (formaPago.toString()) {
       case '1':
         classes = 'text-success';  // Verde
         break;

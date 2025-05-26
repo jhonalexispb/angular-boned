@@ -43,7 +43,7 @@ export class TransporteOrdenVentaService {
   }
 
   crear_transporte_orden_venta(data:any){
-    this.loadingService.showLoading('Creando guia de prestamo')
+    this.loadingService.showLoading('Creando transporte')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/transporte_orden_venta"
     return this.http.post(URL,data,{headers: headers}).pipe(
@@ -52,26 +52,20 @@ export class TransporteOrdenVentaService {
     )
   }
 
-
-
-  
-
-
-
-  actualizar_guia_prestamo(data:any,id:any){
-    this.loadingService.showLoading('Guardando guia de prestamo')
+  actualizar_transporte_orden_venta(data:any,id:any){
+    this.loadingService.showLoading('Actualizando transporte')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/guia_prestamo/"+id
+    let URL = URL_SERVICIO+"/transporte_orden_venta/"+id
     return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
   }
 
-  deleteGuiaPrestamo(ID:string){
-    this.loadingService.showLoading('Eliminando guia de prestamo')
+  delete_transporte_orden_venta(ID:string){
+    this.loadingService.showLoading('Eliminando transporte')
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/guia_prestamo/"+ID;
+    let URL = URL_SERVICIO+"/transporte_orden_venta/"+ID;
     return this.http.delete(URL,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())

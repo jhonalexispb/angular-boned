@@ -9,10 +9,12 @@ export class CreateVentasComponent {
   pasoActual = 1;
   clienteSeleccionado: any = null;
   CLIENTES_LIST: any[] = [];
+  TRANSPORTES_LIST: any[] = [];
 
   irAlPaso2(data: any) {
     this.clienteSeleccionado = data.cliente;
     this.CLIENTES_LIST = data.clientes;
+    this.TRANSPORTES_LIST = data.transportes;
     this.pasoActual = 2;
   }
 

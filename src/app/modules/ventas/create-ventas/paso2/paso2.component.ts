@@ -1,7 +1,20 @@
 import { Component, EventEmitter, Input, Output, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
+import { CreateLugarEntregaComponent } from 'src/app/modules/configuration/lugar-entrega/create-lugar-entrega/create-lugar-entrega.component';
+
+L.Marker.prototype.options.icon = L.icon({
+  iconRetinaUrl: 'assets/images/marker-icon-2x.png',
+  iconUrl: 'assets/images/marker-icon.png',
+  shadowUrl: 'assets/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
 
 @Component({
   selector: 'app-paso2',
@@ -16,19 +29,24 @@ export class Paso2Component implements OnInit {
 
   clienteSeleccionado: any = null;
   comprobanteSeleccionado: string | null = null;
-  formaPago: string = '1'; // 1: contado, 2: adelantado, 3: contraentrega
-  destino: string = '';
+  zona_reparto: any = null;
   transporte: any = null;
-  direccionEntrega: string = '';
+  direccionEntrega: any = null;
   latitud: number | null = null;
   longitud: number | null = null;
   coordenadas: string = '';
   fotoReferencia: File | null = null;
   searchTerm: string = '';
+  direccionesEntrega: any[] = [];
 
   private map: any;
   private marker: any;
   private mapaInicializado = false;
+
+
+
+  opcionesPago: { value: string, label: string }[] = [];
+  formaPago: string | null = null;
 
   ngAfterViewChecked(): void {
     // Solo inicializar si hay cliente seleccionado y aún no se ha inicializado el mapa
@@ -43,7 +61,8 @@ export class Paso2Component implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public modalService: NgbModal,
   ) {}
 
   inicializarMapa(): void {
@@ -65,19 +84,135 @@ export class Paso2Component implements OnInit {
         this.marker = L.marker(e.latlng).addTo(this.map);
       }
     });
+
+     setTimeout(() => {
+      this.map.invalidateSize();
+    }, 200);
+  }
+
+  actualizarMapaDireccion() {
+    const dir = this.direccionEntrega;
+    console.log(dir)
+    if (dir?.latitud && dir?.longitud) {
+      this.actualizarMapa(parseFloat(dir.latitud), parseFloat(dir.longitud));
+    }else{
+      this.resetearMapa(); 
+    }
+  }
+
+  actualizarMapa(lat: number, lng: number) {
+    if (!this.map) {
+      console.warn("Mapa no inicializado aún");
+      return;
+    }
+
+    this.latitud = lat;
+    this.longitud = lng;
+
+    const coords: [number, number] = [lat, lng];
+
+    if (this.marker) {
+      this.marker.setLatLng(coords);
+    } else {
+      this.marker = L.marker(coords).addTo(this.map);
+    }
+
+    this.map.setView(coords, 15);
   }
 
   ngOnInit(): void {
+    console.log(this.clientes)
     if (this.cliente) {
       this.setCliente(this.cliente);
     }
   }
 
+  onClienteSeleccionado(cliente: any) {
+    if (!cliente) {
+        this.clienteSeleccionado = null;
+        this.comprobanteSeleccionado = null;
+        this.formaPago = null;
+        this.opcionesPago = [];
+        this.zona_reparto = null;
+        return;
+      }
+
+      this.setCliente(cliente.id);
+    }
+
   setCliente(clienteId: number) {
+    // 🔁 Limpiar campos previos
+    this.clienteSeleccionado = null;
+    this.comprobanteSeleccionado = null;
+    this.formaPago = null;
+    this.opcionesPago = [];
+    this.zona_reparto = null;
+    this.direccionEntrega = null;
+    this.direccionesEntrega = [];
+
+    // 🔍 Buscar el nuevo cliente
     this.clienteSeleccionado = this.clientes.find(c => c.id === +clienteId);
-    if (this.clienteSeleccionado) {
-      this.formaPago = this.clienteSeleccionado.forma_pago || '1';
-      this.comprobanteSeleccionado = '';
+
+    if (!this.clienteSeleccionado) return;
+
+    // ---------- Comprobantes ----------
+    const documentos = this.clienteSeleccionado.type_documentos || [];
+
+    if (documentos.length === 1) {
+      this.comprobanteSeleccionado = documentos[0].codigo;
+    } else {
+      const doc00 = documentos.find((d: any) => d.codigo === '00');
+      this.comprobanteSeleccionado = doc00 ? doc00.codigo : null;
+    }
+
+    // ---------- Zona ----------
+    this.zona_reparto = this.clienteSeleccionado.zona_reparto;
+
+    // ---------- Forma de Pago ----------
+    const forma = this.clienteSeleccionado.forma_pago;
+
+    if (forma == 1) {
+      this.opcionesPago = [{ value: 'credito', label: 'Crédito' }];
+    } else if (forma == 2) {
+      this.opcionesPago = [{ value: 'contado', label: 'Contado' }];
+    } else if (forma == 3) {
+      this.opcionesPago = [
+        { value: 'credito', label: 'Crédito' },
+        { value: 'contado', label: 'Contado' }
+      ];
+    }
+
+    // Selección automática si solo hay una opción
+    this.formaPago = this.opcionesPago.length === 1 ? this.opcionesPago[0].value : null;
+
+    // ---------- Lugares de Entrega ----------
+    const lugares = this.clienteSeleccionado.lugares_entrega || [];
+    this.direccionesEntrega = lugares;
+
+    if (!this.mapaInicializado) {
+      this.inicializarMapa();
+      this.mapaInicializado = true;
+    }
+
+    if (lugares.length === 1) {
+      this.direccionEntrega = lugares[0];
+      if (lugares[0].latitud && lugares[0].longitud) {
+        this.actualizarMapa(parseFloat(lugares[0].latitud), parseFloat(lugares[0].longitud));
+      } else {
+        this.resetearMapa(); 
+      }
+    } else {
+      this.direccionEntrega = null; // usuario debe seleccionar
+    }
+  }
+
+  resetearMapa() {
+    const coordsNeutras: [number, number] = [-12.0464, -77.0428]; // ejemplo Lima centro
+    this.map.setView(coordsNeutras, 13);
+    
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+      this.marker = null; // 👈 Importante
     }
   }
 
@@ -92,10 +227,9 @@ export class Paso2Component implements OnInit {
       cliente_id: this.clienteSeleccionado.id,
       comprobante: this.comprobanteSeleccionado,
       forma_pago: this.formaPago,
-      destino: this.destino,
+      zona_reparto: this.zona_reparto,
       transporte: this.transporte,
       direccion: this.direccionEntrega,
-      coordenadas: this.coordenadas,
       foto: this.fotoReferencia
     };
 
@@ -143,30 +277,6 @@ export class Paso2Component implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlighted);
   }
 
-  onSearch(event: { term: string; items: any[] }): void {
-    this.searchTerm = event.term;
-  }
-
-  get opcionesPago() {
-    if (!this.clienteSeleccionado) return [];
-    switch (this.clienteSeleccionado.forma_pago) {
-      case '1':
-        this.formaPago = '1';
-        return [{ value: '1', label: 'Crédito' }];
-      case '2':
-        this.formaPago = '2';
-        return [{ value: '2', label: 'Contado' }];
-      case '3':
-        this.formaPago = ''; // Espera a que el usuario seleccione
-        return [
-          { value: '1', label: 'Crédito' },
-          { value: '2', label: 'Contado' }
-        ];
-      default:
-        return [];
-    }
-  }
-
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -174,38 +284,20 @@ export class Paso2Component implements OnInit {
     }
   }
 
-  onClienteChange(cliente: any): void {
-    this.clienteSeleccionado = cliente;
+  createLugarEntrega(){
+    const modalRef = this.modalService.open(CreateLugarEntregaComponent,{centered:true, size: 'md'})
+    console.log(this.clienteSeleccionado)
+    modalRef.componentInstance.sucursal = this.clienteSeleccionado.id;
+    modalRef.componentInstance.LugarEntregaC.subscribe((nuevaDireccion: any) => {
+      // Agrega la nueva dirección a la lista
+      this.direccionesEntrega.push(nuevaDireccion);
+      this.direccionEntrega = nuevaDireccion;
 
-    // ✅ Seleccionar automáticamente forma de pago si hay una sola opción
-    const forma = cliente?.forma_pago;
-    if (forma === '1' || forma === '2') {
-      this.formaPago = forma;
-    } else {
-      this.formaPago = ''; // Espera selección
-    }
-
-    // ✅ Calcular destino automáticamente
-    const esLocal = cliente?.distrito?.startsWith('Arequipa / Arequipa');
-    this.destino = esLocal ? 'local' : 'provincia';
-
-    // ✅ Reiniciar comprobante
-    this.comprobanteSeleccionado = null;
-
-    // ✅ (Opcional) Limpiar dirección y coordenadas
-    this.direccionEntrega = '';
-    this.coordenadas = '';
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['clienteSeleccionado'] && this.clienteSeleccionado?.type_documentos) {
-      const docConCodigo00 = this.clienteSeleccionado.type_documentos.find((doc:any) => doc.codigo === '00');
-      if (docConCodigo00) {
-        this.comprobanteSeleccionado = docConCodigo00.codigo;
-      } else {
-        this.comprobanteSeleccionado = ''; // O null, según lo que uses como valor vacío
+      // Si tiene coordenadas, actualiza el mapa
+      if (nuevaDireccion.latitud && nuevaDireccion.longitud) {
+        this.actualizarMapa(nuevaDireccion.latitud, nuevaDireccion.longitud);
       }
-    }
+    });
   }
 }
 

@@ -32,21 +32,23 @@
                 data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                 data-kt-scroll-dependencies="#kt_modal_add_user_header"
                 data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                    <!--begin::Label-->
-                    <label class="required fw-bold fs-6 mb-2">Nombre del lugar de entrega</label>
-                    <!--end::Label-->
-                    <!--begin::Input-->
-                    <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
-                        placeholder="Lugar de entrega" [(ngModel)]="name" />
-                    <!--end::Input-->
-                </div>
-
                 <div class="fv-row mb-7">
                     <!--begin::Label-->
                     <label class="fw-bold fs-6 mb-2">Direccion:</label>
                     <textarea class="form-control form-control-solid" rows="3" name="address" [(ngModel)]="address" placeholder="Direccion del lugar de entrega"></textarea>
+                </div>
+                <div class="fv-row mb-7">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="fw-bold fs-6 mb-2">Ubicación en mapa</label>
+                        <button type="button" class="btn btn-primary mb-4" (click)="obtenerUbicacionActual()">
+                        Usar mi ubicación
+                        </button>
+                    </div>
+                    <div class="fv-row mb-7">
+                        <span *ngIf="distrito" class="mb-3">Distrito: {{distrito}}</span>
+                        <input type="text" class="form-control" [value]="coordenadas" readonly />
+                    </div>
+                    <div id="map_lugar" style="height: 300px;"></div>
                 </div>
             </div>
             <!--end::Scroll-->

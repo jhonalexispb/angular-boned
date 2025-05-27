@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ServiceProveedorService } from '../../configuration/proveedor/service/service-proveedor.service';
 import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import * as L from 'leaflet';
 import { TransporteOrdenVentaService } from '../service/transporte-orden-venta.service';

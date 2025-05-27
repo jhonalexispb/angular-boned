@@ -433,16 +433,14 @@ export class Paso1Component {
       this.sweet.alerta('Ey','tu orden de venta está vacía');
       return
     }
+    const clienteId = this.ventaForm.value.cliente_id;
+    const tprecio = this.ventaForm.value.tipo_precio;
     
-      const clienteId = this.ventaForm.value.cliente_id;
-      const tprecio = this.ventaForm.value.tipo_precio;
-      
-      this.onPaso1Listo.emit({
-        cliente: clienteId,
-        clientes: this.CLIENTES_LIST,
-        transportes: this.TRANSPORTES_LIST,
-        t_precio: tprecio
-      });
-    
+    this.onPaso1Listo.emit({
+      cliente: clienteId,
+      clientes: this.CLIENTES_LIST,
+      transportes: this.TRANSPORTES_LIST,
+      t_precio: tprecio
+    });
   }
 }

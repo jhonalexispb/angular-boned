@@ -17,8 +17,7 @@
       name="clienteSeleccionado"
       [(ngModel)]="clienteSeleccionado"
       [loadingText]="'Cargando...'"
-      (search)="onSearch($event)"
-      (change)="onClienteChange($event)"
+      (change)="onClienteSeleccionado($event)"
       class="w-100">
       <ng-template ng-option-tmp let-item="item">
         <div class="border rounded p-3 mb-2 bg-light" style="box-sizing: border-box;">
@@ -39,8 +38,11 @@
     <!-- Comprobante -->
     <div class="mb-3">
       <label class="form-label">Tipo de Comprobante</label>
-      <select class="form-select" required [(ngModel)]="comprobanteSeleccionado" name="comprobante" #comprobante="ngModel" [disabled]="!clienteSeleccionado">
-        <option *ngFor="let doc of clienteSeleccionado?.type_documentos" [value]="doc.codigo">
+      <select class="form-select" required [(ngModel)]="comprobanteSeleccionado"
+              name="comprobante" #comprobante="ngModel" 
+              [disabled]="!clienteSeleccionado">
+        <option *ngFor="let doc of clienteSeleccionado?.type_documentos" 
+                [value]="doc.codigo">
           {{ doc.name }}
         </option>
       </select>
@@ -62,14 +64,14 @@
 
     <!-- Destino -->
     <div class="mb-3">
-      <label class="form-label">Destino del Pedido</label>
-      <select class="form-select" required [(ngModel)]="destino" name="destino" #destinoCtrl="ngModel">
+      <label class="form-label">Zona de reparto</label>
+      <select class="form-select" required [(ngModel)]="zona_reparto" name="destino" #destinoCtrl="ngModel">
         <option value="" disabled>Seleccione</option>
         <option value="0">Local</option>
         <option value="1">Provincia</option>
       </select>
       <div class="invalid-feedback" *ngIf="destinoCtrl.invalid && destinoCtrl.touched">
-        Selecciona el destino del pedido.
+        Selecciona la zona de reparto
       </div>
     </div>
 
@@ -94,13 +96,17 @@
 
     <!-- Dirección -->
     <div class="mb-3">
-      <label class="form-label">Dirección de Entrega</label>
-      <input type="text" class="form-control" required [(ngModel)]="direccionEntrega" name="direccion" #direccion="ngModel">
-      <div class="invalid-feedback" *ngIf="direccion.invalid && direccion.touched">
-        Ingrese una dirección de entrega.
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label">Dirección de Entrega</label>
+        <button type="button" class="btn btn-primary px-4 py-2" (click)="createLugarEntrega()">+</button>
       </div>
-    </div>
 
+      <select class="form-select" name="direccionEntrega" required [(ngModel)]="direccionEntrega" (change)="actualizarMapaDireccion()">
+        <option *ngFor="let dir of direccionesEntrega" [ngValue]="dir">{{ dir.address }}</option>
+      </select>
+    </div>
+  </div>
+  <div [style.display]="!clienteSeleccionado ? 'none' : ''">
     <!-- Coordenadas -->
     <div class="fv-row mb-7">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -109,9 +115,9 @@
             Usar mi ubicación actual
           </button>
         </div>
-        <div class="fv-row mb-7">
-            <input type="text" class="form-control" [value]="coordenadas" readonly />
-        </div>
+        <!-- <div class="fv-row mb-7">
+            <span>{{ coordenadas | json }}</span>
+        </div> -->
         <div id="map" style="height: 300px;"></div>
     </div>
 
@@ -123,7 +129,12 @@
   </div>
 
   <!-- Botón -->
-  <div class="text-end">
-    <button class="btn btn-primary" type="submit" [disabled]="!ventaForm.valid">Registrar Venta</button>
+   <div class="d-flex justify-content-between">
+    <div>
+      <button class="btn btn-info" type="button">Volver a la venta</button>
+    </div>
+    <div>
+      <button class="btn btn-primary" type="submit" [disabled]="!ventaForm.valid">Registrar Venta</button>
+    </div>
   </div>
 </form>

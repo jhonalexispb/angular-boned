@@ -3,10 +3,11 @@
   <form [formGroup]="ventaForm">
     <div class="card card-flush py-4 mb-3">
       <!--begin::Card header-->
-      <div class="card-header">
-          <div class="card-title">
-              <h2>Crear venta</h2>
-          </div>
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-title">
+          <h2>Crear venta</h2>
+        </div>
+        <a class="btn btn-danger" [routerLink]="['/ventas/list']">Salir</a>
       </div>
       <!--end::Card header-->
   
@@ -17,7 +18,7 @@
               <div class="d-flex justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                   <!--begin::Label-->
-                  <label class="form-label fs-3 mb-0">Este seria tu pedido:</label>
+                  <label class="form-label fs-3 mb-0">Codigo de pedido:</label>
                   <!--end::Label-->
   
                   <!--begin::Auto-generated ID-->
@@ -102,7 +103,9 @@
                         (ngModelChange)="callProductDetail($event)"
                         class="w-100">
                         <ng-template ng-option-tmp let-item="item">
-                          <div class="row align-items-center product-option mi-custom-option" style="position: relative; display: flex;">
+                          <div class="row align-items-center product-option mi-custom-option"
+                            [ngClass]="{ 'escalas-alerta': item.maneja_escalas == 1 }"
+                            style="position: relative; display: flex;">
                             <!-- Imagen -->
                             <div class="col-4 d-flex align-items-stretch justify-content-center">
                               <!-- Mostrar la imagen solo cuando 'cachedImage' esté disponible -->

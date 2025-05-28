@@ -391,6 +391,7 @@ export class Paso1Component {
         }
 
         this.sweet.success('Cantidad actualizada', 'El cambio se realizó correctamente.');
+        this.calcularTotales();
         this.callProductos()
       },
     });

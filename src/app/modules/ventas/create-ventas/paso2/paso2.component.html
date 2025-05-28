@@ -148,9 +148,9 @@
     </div>
 
     <!-- Foto -->
-    <div class="mb-3">
+    <div class="v-row mb-7">
       <label class="form-label">Foto de referencia</label>
-      <img [src]="imagenReferencia" class="img-fluid rounded border" *ngIf="imagenReferencia">
+      <img [src]="imagenReferencia" class="img-fluid rounded border form-control" *ngIf="imagenReferencia">
       <div *ngIf="!imagenReferencia" class="text-muted">No hay imagen de referencia</div>
     </div>
   </div>

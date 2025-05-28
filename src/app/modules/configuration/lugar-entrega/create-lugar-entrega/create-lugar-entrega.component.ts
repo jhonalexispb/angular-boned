@@ -128,7 +128,7 @@ export class CreateLugarEntregaComponent {
     })
     .catch(err => {
       console.error("Error al obtener la dirección:", err);
-      alert("No se pudo obtener la dirección exacta.");
+      /* alert("No se pudo obtener la dirección exacta."); */
     });
   }
 

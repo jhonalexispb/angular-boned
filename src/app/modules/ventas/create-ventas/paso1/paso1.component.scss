@@ -116,3 +116,21 @@
           margin-bottom: 0;
       }
   }
+
+  .escalas-alerta {
+  border: 2px solid #ff9800; /* Naranja vibrante */
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.7);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+  animation: pulsoAlerta 1.5s infinite alternate;
+}
+
+@keyframes pulsoAlerta {
+  from {
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.4);
+  }
+  to {
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
+  }
+}

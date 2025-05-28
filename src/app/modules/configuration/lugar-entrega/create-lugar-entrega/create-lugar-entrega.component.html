@@ -50,6 +50,46 @@
                     </div>
                     <div id="map_lugar" style="height: 300px;"></div>
                 </div>
+                <div class="fv-row mb-7">
+                    <label class="fw-bold fs-6 mb-2">Foto de referencia del establecimiento</label>
+
+                    <!-- Contenedor de botones en fila -->
+                    <div class="d-flex gap-2 mb-3">
+                        <!-- Botón para tomar una foto -->
+                        <input
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        hidden
+                        #cameraInput
+                        (change)="onImagenSeleccionada($event)"
+                        />
+                        <button type="button" class="btn btn-primary" (click)="cameraInput.click()">
+                        Tomar foto
+                        </button>
+
+                        <!-- Botón para seleccionar desde archivos -->
+                        <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        #fileInput
+                        (change)="onImagenSeleccionada($event)"
+                        />
+                        <button type="button" class="btn btn-secondary" (click)="fileInput.click()">
+                        Seleccionar imagen
+                        </button>
+                    </div>
+
+                    <!-- Vista previa de la imagen -->
+                    <img
+                        *ngIf="imagenPreview"
+                        [src]="imagenPreview"
+                        alt="Imagen seleccionada"
+                        class="mt-3 rounded"
+                        style="max-width: 100%;"
+                    />
+                </div>
             </div>
             <!--end::Scroll-->
 

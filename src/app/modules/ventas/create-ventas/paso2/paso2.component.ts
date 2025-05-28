@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
 import { CreateLugarEntregaComponent } from 'src/app/modules/configuration/lugar-entrega/create-lugar-entrega/create-lugar-entrega.component';
+import { VentaProcesoService } from '../../service/venta_proceso_detalle.service';
 
 L.Marker.prototype.options.icon = L.icon({
   iconRetinaUrl: 'assets/images/marker-icon-2x.png',
@@ -26,18 +26,23 @@ export class Paso2Component implements OnInit {
   @Input() clientes: any[] = [];
   @Input() transportes: any[] = [];
   @Output() onVentaCompleta = new EventEmitter<any>();
+  @Output() onRegresarPaso1 = new EventEmitter<void>();
 
   clienteSeleccionado: any = null;
   comprobanteSeleccionado: string | null = null;
   zona_reparto: any = null;
   transporte: any = null;
   direccionEntrega: any = null;
-  latitud: number | null = null;
-  longitud: number | null = null;
+  modo_entrega: any = 1;
+  latitud: any | null = null;
+  longitud: any | null = null;
   coordenadas: string = '';
-  fotoReferencia: File | null = null;
   searchTerm: string = '';
+  comentario: string = '';
   direccionesEntrega: any[] = [];
+  imagenReferencia:any
+
+  ventaSinGuardar = true;
 
   private map: any;
   private marker: any;
@@ -60,9 +65,9 @@ export class Paso2Component implements OnInit {
   }
 
   constructor(
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     public modalService: NgbModal,
+    public venta_proceso_service: VentaProcesoService
   ) {}
 
   inicializarMapa(): void {
@@ -92,7 +97,11 @@ export class Paso2Component implements OnInit {
 
   actualizarMapaDireccion() {
     const dir = this.direccionEntrega;
-    console.log(dir)
+    if(dir.imagen){
+      this.imagenReferencia = dir.imagen
+    }else{
+      this.imagenReferencia = null;
+    }
     if (dir?.latitud && dir?.longitud) {
       this.actualizarMapa(parseFloat(dir.latitud), parseFloat(dir.longitud));
     }else{
@@ -121,9 +130,57 @@ export class Paso2Component implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.clientes)
-    if (this.cliente) {
-      this.setCliente(this.cliente);
+    window.addEventListener('beforeunload', this.beforeUnloadListener);
+
+    const dataGuardada = this.venta_proceso_service.getVentaParcial();
+
+    if (dataGuardada) {
+      // Restaurar datos guardados
+      this.clienteSeleccionado = dataGuardada.clienteSeleccionado;
+      this.comprobanteSeleccionado = dataGuardada.comprobanteSeleccionado;
+      this.zona_reparto = dataGuardada.zona_reparto;
+      this.transporte = dataGuardada.transporte;
+      this.direccionEntrega = dataGuardada.direccionEntrega;
+      this.modo_entrega = dataGuardada.modo_entrega;
+      this.latitud = dataGuardada.latitud;
+      this.longitud = dataGuardada.longitud;
+      this.coordenadas = dataGuardada.coordenadas;
+      this.imagenReferencia = dataGuardada.imagenReferencia;
+      this.formaPago = dataGuardada.formaPago;
+      this.opcionesPago = dataGuardada.opcionesPago;
+      this.comentario = dataGuardada.comentario;
+
+      // Cargar las direcciones del cliente guardado
+      this.direccionesEntrega = this.clienteSeleccionado?.lugares_entrega || [];
+
+      // Inicializa o actualiza el mapa si es necesario
+      if (!this.mapaInicializado) {
+        this.inicializarMapa();
+        this.mapaInicializado = true;
+      }
+      this.resetearMapa();
+
+      // Si hay coordenadas, actualizar mapa
+      if (this.latitud && this.longitud) {
+        this.actualizarMapa(parseFloat(this.latitud), parseFloat(this.longitud));
+      }
+
+    } else {
+      if (this.cliente) {
+        this.setCliente(this.cliente);
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('beforeunload', this.beforeUnloadListener);
+  }
+
+  beforeUnloadListener = (event: BeforeUnloadEvent) => {
+    if (this.ventaSinGuardar) {
+      event.preventDefault();
+      event.returnValue = ''; // Obligatorio para que funcione en algunos navegadores
+      return '';
     }
   }
 
@@ -193,17 +250,18 @@ export class Paso2Component implements OnInit {
       this.inicializarMapa();
       this.mapaInicializado = true;
     }
-
+    this.resetearMapa(); 
     if (lugares.length === 1) {
       this.direccionEntrega = lugares[0];
+      this.imagenReferencia = lugares[0].imagen
       if (lugares[0].latitud && lugares[0].longitud) {
         this.actualizarMapa(parseFloat(lugares[0].latitud), parseFloat(lugares[0].longitud));
-      } else {
-        this.resetearMapa(); 
-      }
+      } 
     } else {
       this.direccionEntrega = null; // usuario debe seleccionar
     }
+
+
   }
 
   resetearMapa() {
@@ -230,7 +288,7 @@ export class Paso2Component implements OnInit {
       zona_reparto: this.zona_reparto,
       transporte: this.transporte,
       direccion: this.direccionEntrega,
-      foto: this.fotoReferencia
+      modo_entrega: this.modo_entrega
     };
 
     this.onVentaCompleta.emit(venta);
@@ -277,16 +335,8 @@ export class Paso2Component implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlighted);
   }
 
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.fotoReferencia = file;
-    }
-  }
-
   createLugarEntrega(){
     const modalRef = this.modalService.open(CreateLugarEntregaComponent,{centered:true, size: 'md'})
-    console.log(this.clienteSeleccionado)
     modalRef.componentInstance.sucursal = this.clienteSeleccionado.id;
     modalRef.componentInstance.LugarEntregaC.subscribe((nuevaDireccion: any) => {
       // Agrega la nueva dirección a la lista
@@ -297,7 +347,29 @@ export class Paso2Component implements OnInit {
       if (nuevaDireccion.latitud && nuevaDireccion.longitud) {
         this.actualizarMapa(nuevaDireccion.latitud, nuevaDireccion.longitud);
       }
+      this.imagenReferencia = nuevaDireccion.imagen;
     });
+  }
+
+  ir_paso_uno(){
+    this.venta_proceso_service.setVentaParcial({
+      clienteSeleccionado: this.clienteSeleccionado,
+      comprobanteSeleccionado: this.comprobanteSeleccionado,
+      zona_reparto: this.zona_reparto,
+      transporte: this.transporte,
+      direccionEntrega: this.direccionEntrega,
+      direccionesEntrega: this.direccionesEntrega,
+      modo_entrega: this.modo_entrega,
+      latitud: this.latitud,
+      longitud: this.longitud,
+      coordenadas: this.coordenadas,
+      imagenReferencia: this.imagenReferencia,
+      formaPago: this.formaPago,
+      opcionesPago:this.opcionesPago,
+      comentario: this.comentario
+    });
+
+    this.onRegresarPaso1.emit();
   }
 }
 

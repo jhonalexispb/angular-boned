@@ -36,7 +36,7 @@ export class VentasService {
   }
 
   registerOrdenVenta(data:any){
-    this.loadingService.showLoading('Registrando orden de compra')
+    this.loadingService.showLoading('Solicitando orden de compra') //en realidad guarda la orden pero para tenerla lista para no confundir al usaurio le pongo el mensaje de solicitando
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_venta";
     return this.http.post(URL,data,{headers: headers}).pipe(

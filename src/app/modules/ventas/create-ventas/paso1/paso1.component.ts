@@ -143,7 +143,6 @@ export class Paso1Component {
     this.loadingProducts = false;
     this.cacheImages();
     this.calcularTotales()
-    console.log(this.ORDEN_VENTA_DETAILS)
   }
 
   evaluarProductosCarrito(){
@@ -235,7 +234,8 @@ export class Paso1Component {
         '¡Éxito!',
         'producto agregado'
       );
-      productoSeleccionado.in_carrito = true;
+      /* productoSeleccionado.in_carrito = true; */
+      this.callProductos()
     })
 
     modalRef.result.finally(() => {
@@ -250,7 +250,6 @@ export class Paso1Component {
     this.ventaForm.patchValue({
       total: this.totalCarrito.toFixed(2),
     }, { emitEvent: false });
-    console.log('caluclando')
   }
 
   eliminarItem(P: any) {
@@ -268,6 +267,7 @@ export class Paso1Component {
             this.ORDEN_VENTA_DETAILS = this.ORDEN_VENTA_DETAILS.filter(item => item.producto_id !== P.producto_id);
             this.calcularTotales();
             this.sweet.success('¡Eliminado!', 'Se eliminaron los movimientos de este producto.','/assets/animations/general/borrado_exitoso.json');
+            this.callProductos()
           },
           error: (err) => {
             this.sweet.error('Error', 'No se pudo eliminar el producto');
@@ -391,6 +391,7 @@ export class Paso1Component {
         }
 
         this.sweet.success('Cantidad actualizada', 'El cambio se realizó correctamente.');
+        this.callProductos()
       },
     });
   }

@@ -18,6 +18,10 @@ export class CreateVentasComponent {
     this.pasoActual = 2;
   }
 
+  irAlPaso1() {
+    this.pasoActual = 1;
+  }
+
   registrarVentaFinal(data: any) {
     const ventaCompleta = {
       

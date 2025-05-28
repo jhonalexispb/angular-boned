@@ -15,6 +15,8 @@ export class ViewImageComponent {
   isZooming: boolean = false;
   zoomPosition: string = '0% 0%';
 
+  zoomActivado: boolean = false;
+
   // Variables para la posición y estilo del área de zoom
   zoomAreaStyle: any = {};
   

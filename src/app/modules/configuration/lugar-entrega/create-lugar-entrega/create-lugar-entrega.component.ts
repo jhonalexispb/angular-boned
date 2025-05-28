@@ -42,6 +42,8 @@ export class CreateLugarEntregaComponent {
   longitud: number | null = null;
   address:string = '';
   distrito:any
+  imagen: File | null = null;
+  imagenPreview: string | ArrayBuffer | null = null;
 
   ngAfterViewInit(): void {
     // Inicializar el mapa
@@ -102,6 +104,20 @@ export class CreateLugarEntregaComponent {
     }
   }
 
+  onImagenSeleccionada(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files[0]) {
+      this.imagen = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result;
+      };
+      reader.readAsDataURL(this.imagen);
+    }
+  }
+
   obtener_distrito(lat:any,lng:any){
     this.distrito = null;
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
@@ -117,29 +133,34 @@ export class CreateLugarEntregaComponent {
   }
 
 
-  store(){
-    if(!this.sucursal){
-      this.sweet.alerta('Eyy', 'no hay una sucursal seleccionada')
-      return
+ store() {
+    if (!this.sucursal) {
+      this.sweet.alerta('Eyy', 'no hay una sucursal seleccionada');
+      return;
     }
 
-    if(!this.address){
-      this.sweet.alerta('Eyy', 'la direccion es obligatoria')
-      return
-    }
-    let data = {
-      sucursal_id: this.sucursal,
-      address: this.address,
-      distrito: this.distrito,
-      latitud: this.latitud,
-      longitud: this.longitud
+    if (!this.address) {
+      this.sweet.alerta('Eyy', 'la direccion es obligatoria');
+      return;
     }
 
-    this.lugarEntregaService.registerLugarEntrega(data).subscribe({
+    const formData = new FormData();
+    formData.append('sucursal_id', this.sucursal.toString());
+    formData.append('address', this.address);
+    formData.append('distrito', this.distrito || '');
+    formData.append('latitud', this.latitud?.toString() || '');
+    formData.append('longitud', this.longitud?.toString() || '');
+
+    // Solo si hay imagen
+    if (this.imagen) {
+      formData.append('imagen_lugar', this.imagen);
+    }
+
+    this.lugarEntregaService.registerLugarEntrega(formData).subscribe({
       next: (resp: any) => {
-          this.LugarEntregaC.emit(resp.lugarEntrega);
-          this.modal.close();
-          this.sweet.success('¡Éxito!', 'el lugar de entrega se registró correctamente');
+        this.LugarEntregaC.emit(resp.lugarEntrega);
+        this.modal.close();
+        this.sweet.success('¡Éxito!', 'El lugar de entrega se registró correctamente');
       },
     });
   }

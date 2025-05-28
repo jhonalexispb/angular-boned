@@ -62,51 +62,77 @@
       </div>
     </div>
 
-    <!-- Destino -->
-    <div class="mb-3">
-      <label class="form-label">Zona de reparto</label>
-      <select class="form-select" required [(ngModel)]="zona_reparto" name="destino" #destinoCtrl="ngModel">
+   <div class="mb-3">
+      <label class="form-label">Modo de entrega</label>
+      <select class="form-select" required [(ngModel)]="modo_entrega" name="modo_entrega" #modoCtrl="ngModel">
         <option value="" disabled>Seleccione</option>
-        <option value="0">Local</option>
-        <option value="1">Provincia</option>
+        <option value="0">Recojo en tienda</option>
+        <option value="1">Envío a domicilio</option>
       </select>
-      <div class="invalid-feedback" *ngIf="destinoCtrl.invalid && destinoCtrl.touched">
-        Selecciona la zona de reparto
+      <div class="invalid-feedback" *ngIf="modoCtrl.invalid && modoCtrl.touched">
+        Selecciona el modo de entrega
       </div>
-    </div>
-
-    <!-- Transporte -->
-    <div class="mb-3">
-      <label class="form-label">Medio de Transporte</label>
-      <ng-select 
-        [items]="transportes"
-        bindLabel="name"
-        bindValue="id"
-        placeholder="Buscar por nombre"
-        [searchable]="true"
-        [clearable]="true"
-        [virtualScroll]="true"
-        [multiple]="false"
-        name="transporte"
-        [(ngModel)]="transporte"
-        [loadingText]="'Cargando...'"
-        class="w-100">
-      </ng-select>
-    </div>
-
-    <!-- Dirección -->
-    <div class="mb-3">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <label class="form-label">Dirección de Entrega</label>
-        <button type="button" class="btn btn-primary px-4 py-2" (click)="createLugarEntrega()">+</button>
+  </div>
+    <div *ngIf="modo_entrega == 1">
+      <!-- Destino -->
+      <div class="mb-3">
+        <label class="form-label">Zona de reparto</label>
+        <select class="form-select" required [(ngModel)]="zona_reparto" name="destino" #destinoCtrl="ngModel">
+          <option value="" disabled>Seleccione</option>
+          <option value="0">Local</option>
+          <option value="1">Provincia</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="destinoCtrl.invalid && destinoCtrl.touched">
+          Selecciona la zona de reparto
+        </div>
       </div>
 
-      <select class="form-select" name="direccionEntrega" required [(ngModel)]="direccionEntrega" (change)="actualizarMapaDireccion()">
-        <option *ngFor="let dir of direccionesEntrega" [ngValue]="dir">{{ dir.address }}</option>
-      </select>
+      <!-- Transporte -->
+      <div class="mb-3">
+        <label class="form-label">Medio de Transporte</label>
+        <ng-select 
+          [items]="transportes"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Buscar por nombre"
+          [searchable]="true"
+          [clearable]="true"
+          [virtualScroll]="true"
+          [multiple]="false"
+          name="transporte"
+          [(ngModel)]="transporte"
+          [loadingText]="'Cargando...'"
+          class="w-100">
+        </ng-select>
+      </div>
+
+      <!-- Dirección -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label class="form-label">Dirección de Entrega</label>
+          <button type="button" class="btn btn-primary px-4 py-2" (click)="createLugarEntrega()">+</button>
+        </div>
+
+        <select class="form-select" name="direccionEntrega" required [(ngModel)]="direccionEntrega" (change)="actualizarMapaDireccion()">
+          <option [ngValue]="null" disabled>Seleccione una dirección</option>
+          <option *ngFor="let dir of direccionesEntrega" [ngValue]="dir">{{ dir.address }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="comentario" class="form-label">Comentario</label>
+        <textarea
+          id="comentario"
+          class="form-control"
+          rows="4"
+          name="comentario"
+          [(ngModel)]="comentario"
+          placeholder="Escribe aquí tu comentario..."
+        ></textarea>
+      </div>
     </div>
   </div>
-  <div [style.display]="!clienteSeleccionado ? 'none' : ''">
+  <div [style.display]="!clienteSeleccionado || (modo_entrega != 1) ? 'none' : ''">
     <!-- Coordenadas -->
     <div class="fv-row mb-7">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -124,14 +150,15 @@
     <!-- Foto -->
     <div class="mb-3">
       <label class="form-label">Foto de referencia</label>
-      <input type="file" accept="image/*" capture="environment" (change)="onFileChange($event)" class="form-control">
+      <img [src]="imagenReferencia" class="img-fluid rounded border" *ngIf="imagenReferencia">
+      <div *ngIf="!imagenReferencia" class="text-muted">No hay imagen de referencia</div>
     </div>
   </div>
 
   <!-- Botón -->
    <div class="d-flex justify-content-between">
     <div>
-      <button class="btn btn-info" type="button">Volver a la venta</button>
+      <button class="btn btn-info" type="button" (click)="ir_paso_uno()">Volver a la venta</button>
     </div>
     <div>
       <button class="btn btn-primary" type="submit" [disabled]="!ventaForm.valid">Registrar Venta</button>

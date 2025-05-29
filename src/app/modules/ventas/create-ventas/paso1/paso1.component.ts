@@ -143,6 +143,7 @@ export class Paso1Component {
     this.loadingProducts = false;
     this.cacheImages();
     this.calcularTotales()
+    this.actualizarEscalasEnOrden();
   }
 
   evaluarProductosCarrito(){
@@ -158,13 +159,34 @@ export class Paso1Component {
     this.ventaForm.patchValue({
       product_id: null
     });
-
-    this.ventaService.callProducts({}).subscribe((resp: any) => {
+    const ordenProductosIds = this.ORDEN_VENTA_DETAILS.map(p => p.producto_id);
+    this.ventaService.callProducts({orden_productos_ids: ordenProductosIds}).subscribe((resp: any) => {
       this.PRODUCT_LIST = resp.productos.map((p: any) => ({ ...p })); // Crear copias independientes
       this.loadingProducts = false;
       this.cacheImages()
       this.evaluarProductosCarrito()
+      this.actualizarEscalasEnOrden();
     });
+  }
+
+  actualizarEscalasEnOrden() {
+    if (!this.ORDEN_VENTA_DETAILS || !Array.isArray(this.ORDEN_VENTA_DETAILS)) return;
+
+    this.ORDEN_VENTA_DETAILS.forEach(detalle => {
+      const productoActualizado = this.PRODUCT_LIST.find(p => p.id === detalle.producto_id);
+
+      if (productoActualizado && productoActualizado.maneja_escalas) {
+        // Actualiza las escalas
+        detalle.escalas = productoActualizado.escalas || [];
+      }
+    });
+  }
+
+  getEscalaActiva(escalas: any[], cantidad: number): any {
+    if (!escalas || escalas.length === 0) return null;
+    return escalas
+      .filter(e => cantidad >= e.cantidad)
+      .sort((a, b) => b.cantidad - a.cantidad)[0] || null;
   }
 
   cacheImages() {
@@ -228,7 +250,6 @@ export class Paso1Component {
       });
       this.calcularTotales();
       this.cdr.detectChanges();
-      this.ventaService.actualizarCarritoCompra()
 
       this.sweet.successTimmer(
         '¡Éxito!',
@@ -343,6 +364,19 @@ export class Paso1Component {
     if (P.cantidad !== P.cantidadOriginal) {
       P.editando = true;
     }
+
+    if (P.escalas && P.escalas.length > 0) {
+      const escala = this.getEscalaActiva(P.escalas, P.cantidad);
+      if (escala) {
+        P.pventa = parseFloat(escala.precio);
+      } else {
+        // Si no hay escala, buscar el precio base en PRODUCT_LIST
+        const productoOriginal = this.PRODUCT_LIST.find(prod => prod.id === P.producto_id);
+        P.pventa = productoOriginal ? parseFloat(productoOriginal.pventa) : parseFloat(P.pventa);
+      }
+    }
+
+    P.total = P.pventa * P.cantidad;
   }
 
   // Cambiar con botones + y -

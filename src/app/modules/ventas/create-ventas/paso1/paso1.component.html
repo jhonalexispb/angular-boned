@@ -103,45 +103,58 @@
                         (ngModelChange)="callProductDetail($event)"
                         class="w-100">
                         <ng-template ng-option-tmp let-item="item">
-                          <div class="row align-items-center product-option mi-custom-option"
-                            [ngClass]="{ 'escalas-alerta': item.maneja_escalas == 1 }"
-                            style="position: relative; display: flex;">
-                            <!-- Imagen -->
-                            <div class="col-4 d-flex align-items-stretch justify-content-center">
-                              <!-- Mostrar la imagen solo cuando 'cachedImage' esté disponible -->
-                              <img *ngIf="item.cachedImage" [src]="item.cachedImage" class="img-fluid rounded custom-img" alt="img" loading="lazy">
-                              <!-- Opcional: puedes mostrar un loader mientras la imagen se está cargando -->
-                              <div *ngIf="!item.cachedImage" class="spinner-border text-primary text-center" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                              </div>
-                            </div>
-                          
-                            <!-- Información del producto -->
-                            <div class="col-8">
-                              <div class="d-flex flex-column gap-1">
-                                <!-- Laboratorio (etiqueta) -->
-                                <span class="rounded text-center w-auto" [ngStyle]="{'background-color': item.color_laboratorio}">
-                                  <span class="badge-light-primary rounded text-center fs-7 p-2 fw-bold w-auto">{{ item.laboratorio }}</span>
-                                </span>
-                          
-                                <!-- Nombre del producto -->
-                                <div class="d-flex flex-column">
-                                  <span class="fw-bold mb-1 text-success">{{ item.nombre }}</span>
-                                  <span class="fw-bold mb-1">{{ item.caracteristicas }}</span>
+                          <ng-container *ngIf="item.stock > 0">
+                            <div class="row align-items-center product-option mi-custom-option"
+                              [ngClass]="{ 'escalas-alerta': item.maneja_escalas == 1 }"
+                              style="position: relative; display: flex;">
+                              <!-- Imagen -->
+                              <div class="col-4 d-flex align-items-stretch justify-content-center">
+                                <!-- Mostrar la imagen solo cuando 'cachedImage' esté disponible -->
+                                <img *ngIf="item.cachedImage" [src]="item.cachedImage" class="img-fluid rounded custom-img" alt="img" loading="lazy">
+                                <!-- Opcional: puedes mostrar un loader mientras la imagen se está cargando -->
+                                <div *ngIf="!item.cachedImage" class="spinner-border text-primary text-center" role="status">
+                                  <span class="visually-hidden">Cargando...</span>
                                 </div>
-                          
-                                <!-- Precio y Stock en una sola fila -->
-                                <p class="mb-0">💰 <strong>Precio:</strong> S/ {{ item.pventa }}</p>
-                                <p class="mb-0">📦 <strong>Stock:</strong> {{ item.stock }}</p>
-                          
-                                <!-- SKU -->
-                                <p class="mb-0">🔖 <strong>SKU:</strong> {{ item.sku }}</p>
-                                <p *ngIf="item.in_carrito" class="in-carrito-message mb-0 text-white d-flex align-items-center">
-                                  <i class="bi bi-check-circle-fill me-2"></i> En el carrito
-                                </p>
+                              </div>
+                            
+                              <!-- Información del producto -->
+                              <div class="col-8">
+                                <div class="d-flex flex-column gap-1">
+                                  <!-- Laboratorio (etiqueta) -->
+                                  <span class="rounded text-center w-auto" [ngStyle]="{'background-color': item.color_laboratorio}">
+                                    <span class="badge-light-primary rounded text-center fs-7 p-2 fw-bold w-auto">{{ item.laboratorio }}</span>
+                                  </span>
+                            
+                                  <!-- Nombre del producto -->
+                                  <div class="d-flex flex-column">
+                                    <span class="fw-bold mb-1 text-success">{{ item.nombre }}</span>
+                                    <span class="fw-bold mb-1">{{ item.caracteristicas }}</span>
+                                  </div>
+                            
+                                  <!-- Precio y Stock en una sola fila -->
+                                  <p class="mb-0">💰 <strong>Precio:</strong> S/ {{ item.pventa }}</p>
+                                  <p class="mb-0">📦 <strong>Stock:</strong> {{ item.stock }}</p>
+                            
+                                  <!-- SKU -->
+                                  <p class="mb-0">🔖 <strong>SKU:</strong> {{ item.sku }}</p>
+
+                                  <!-- Escalas -->
+                                  <div *ngIf="item.maneja_escalas && item.escalas?.length" class="mt-2">
+                                    <p class="mb-1 text-primary fw-bold">📊 Escalas:</p>
+                                    <ul class="mb-0">
+                                      <li *ngFor="let escala of item.escalas">
+                                        {{ escala.cantidad }} a S/ {{ escala.precio }}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <p *ngIf="item.in_carrito" class="in-carrito-message mb-0 text-white d-flex align-items-center">
+                                    <i class="bi bi-check-circle-fill me-2"></i> En el carrito
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          </ng-container>
+                          
                         </ng-template>
                       </ng-select>
                     </div>
@@ -267,7 +280,7 @@
                       
                             <!-- Columna Acciones visible solo en pantallas grandes -->
                             <td class="d-none d-md-table-cell acciones-container">
-                              <ul class="list pt-3 px-3 d-flex gap-2">
+                              <ul class="list pt-3 px-3 d-flex gap-2 acciones">
                                 <li>
                                   <button class="text-danger btn btn-bg-light btn-active-color-primary btn-sm me-1 w-100" (click)="eliminarItem(P)">
                                     <div class="d-flex flex-column align-items-center gap-1">
@@ -299,9 +312,9 @@
                   <div *ngFor="let P of ORDEN_VENTA_DETAILS; let index = index">
                     <div class="d-flex flex-column mb-5">
                       <div class="row">
-                        <div class="col-4 d-flex justify-content-center align-items-center position-relative" style="height: 100px;">
+                        <div class="col-4 d-flex flex-column justify-content-center align-items-center">
                           <img [src]="P.imagen" alt="img" class="img-fluid rounded custom-img" loading="lazy" (click)="viewImagen(P.imagen)">
-                          <div *ngIf="!P.imagen" class="spinner-border text-primary position-absolute" role="status">
+                          <div *ngIf="!P.imagen" class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Cargando...</span>
                           </div>
                         </div>
@@ -324,6 +337,20 @@
                                   <span class="text-gray-900 fw-bold fs-5">S/ {{ P.total | number:'1.2-2' }}</span>
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="P.escalas?.length > 0" class="row mt-2">
+                        <div class="col-12 d-flex justify-content-center">
+                          <div class="d-flex flex-wrap gap-2 justify-content-center">
+                            <div *ngFor="let escala of P.escalas"
+                                [ngClass]="{
+                                  'badge-light-success': escala === getEscalaActiva(P.escalas, P.cantidad),
+                                  'badge-light-primary': escala !== getEscalaActiva(P.escalas, P.cantidad)
+                                }"
+                                class="badge fs-7 fw-bold">
+                              {{ escala.cantidad }}+ → S/ {{ escala.precio }}
                             </div>
                           </div>
                         </div>

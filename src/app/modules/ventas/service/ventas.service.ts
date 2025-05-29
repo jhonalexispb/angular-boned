@@ -12,8 +12,6 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 })
 export class VentasService {
    sweet:any = new SweetalertService  
-  private actualizaCarritoVentaSubject = new BehaviorSubject<boolean>(false); 
-  actualizaCarritoCompra$ = this.actualizaCarritoVentaSubject.asObservable();
   constructor(
     private http: HttpClient,
     public authservice: AuthService,
@@ -50,6 +48,16 @@ export class VentasService {
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_venta/recursos_crear/productos/"+producto_id
     return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  //recursos
+  callProducts(data:any){
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/obtener_productos"
+    return this.http.post(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
@@ -142,19 +150,4 @@ export class VentasService {
     ) 
   }
 
-  //peticiones para registrar
-
-  callProducts(data:any){
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_venta/recursos_crear/obtener_productos"
-    return this.http.post(URL,data,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
-
-  //ACTUALIZAR EL CARRITO DE COMPRAS
-  actualizarCarritoCompra() {
-    this.actualizaCarritoVentaSubject.next(true);  // Emitir la señal de actualización
-  }
 }

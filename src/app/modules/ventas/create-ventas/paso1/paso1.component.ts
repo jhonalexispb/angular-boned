@@ -365,6 +365,10 @@ export class Paso1Component {
       P.editando = true;
     }
 
+    this.aplicar_escala(P)
+  }
+
+  aplicar_escala(P: any){
     if (P.escalas && P.escalas.length > 0) {
       const escala = this.getEscalaActiva(P.escalas, P.cantidad);
       if (escala) {
@@ -436,6 +440,9 @@ export class Paso1Component {
     P.cantidad = P.cantidadOriginal;
     P.editando = false;
     delete P.cantidadOriginal;
+
+    this.aplicar_escala(P)
+
     this.calcularTotales();
   }
 

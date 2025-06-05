@@ -4,7 +4,7 @@
   <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true"
     data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu"
     data-kt-menu-trigger="{default: 'hover'}" data-kt-menu-overflow="false" data-kt-menu-permanent="true"
-    data-kt-menu-placement="bottom-end" data-kt-search="true">
+    data-kt-menu-placement="bottom-end" data-kt-search="true" *ngIf="cantidadProductos > 0">
     <!--begin::Search toggle-->
     <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
       <div [ngClass]="btnClass" class="position-relative">
@@ -37,21 +37,25 @@
     data-kt-menu-trigger="{default: 'hover'}" data-kt-menu-overflow="false" data-kt-menu-permanent="true"
     data-kt-menu-placement="bottom-end" data-kt-search="true">
     <!--begin::Search toggle-->
-    <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
+    <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle" *ngIf="totalProductosGuiaPrestamo > 0">
       <div [ngClass]="btnClass" class="position-relative">
         <i class="ki-duotone ki-handcart fs-2">
         </i>
       
         <!-- Badge de Bootstrap para mostrar la cantidad de productos -->
-        <span *ngIf="cantidadProductos > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white">
-          {{ cantidadProductos }}
+        <span *ngIf="totalProductosGuiaPrestamo > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white">
+          {{ totalProductosGuiaPrestamo }}
         </span>
         <!-- <app-keenicon name="magnifier" [class]="btnIconClass"></app-keenicon> -->
       </div>
     </div>
     <!--end::Search toggle-->
-    <app-carrito-venta-notification data-kt-search-element="content" data-kt-menu="true"
-      class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-420px"></app-carrito-venta-notification>
+    <app-carrito-venta-notification
+      (cantidadProductosGuiaPrestamo)="totalProductosGuiaPrestamo = $event"
+      data-kt-search-element="content" 
+      data-kt-menu="true"
+      class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-420px">
+    </app-carrito-venta-notification>
   </div>
 
 </div>

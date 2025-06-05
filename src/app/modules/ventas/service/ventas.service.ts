@@ -33,11 +33,30 @@ export class VentasService {
     ) 
   }
 
+  verificarGuiaPrestamo() {
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/consultar_guia_prestamo_pendiente";
+    return this.http.get(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
   registerOrdenVenta(data:any){
     this.loadingService.showLoading('Solicitando orden de compra') //en realidad guarda la orden pero para tenerla lista para no confundir al usaurio le pongo el mensaje de solicitando
     let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
     let URL = URL_SERVICIO+"/orden_venta";
     return this.http.post(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  updateOrdenVenta(ID_ORDEN_VENTA:string,data:any){
+    this.loadingService.showLoading('Procesando orden de venta')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/"+ID_ORDEN_VENTA;
+    return this.http.put(URL,data,{headers: headers}).pipe(
       catchError((error) => this.handleErrorService.handleError(error)),
       finalize(()=>this.loadingService.hideLoading())
     )
@@ -117,15 +136,7 @@ export class VentasService {
 
 
 
-  updateOrdenCompra(ID_ORDEN_COMPRA:string,data:any){
-    this.loadingService.showLoading('Actualizando orden de compra')
-    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
-    let URL = URL_SERVICIO+"/orden_compra/"+ID_ORDEN_COMPRA;
-    return this.http.put(URL,data,{headers: headers}).pipe(
-      catchError((error) => this.handleErrorService.handleError(error)),
-      finalize(()=>this.loadingService.hideLoading())
-    )
-  }
+  
 
   deleteOrdenCompra(ID_ORDEN_COMPRA:string){
     this.loadingService.showLoading('Eliminando orden de compra')

@@ -17,8 +17,14 @@
             <!--begin::Toolbar-->
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                 <!--begin::Add customer-->
-                <button type="button" routerLink="/ventas/register" class="btn btn-primary">
-                    Crear orden de venta
+                <button 
+                  type="button" 
+                  class="btn btn-primary" 
+                  [disabled]="isConsultando"
+                  (click)="consultar_guia_prestamo_pendiente()"
+                >
+                  <span *ngIf="isConsultando" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  {{ isConsultando ? 'Consultando...' : 'Crear orden de venta' }}
                 </button>
                 <!--end::Add customer-->
             </div>
@@ -35,14 +41,14 @@
                 <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable" style="width: 100%">
                     <thead>
                       <tr class="text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
+                        <th class="text-center min-w-150px dt-orderable-asc dt-orderable-desc">
                           Codigo
+                        </th>
+                        <th class="text-center min-w-200px dt-orderable-asc dt-orderable-desc">
+                          Cliente
                         </th>
                          <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                           Fecha
-                        </th>
-                        <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
-                          Cliente
                         </th>
                         <th class="text-center min-w-125px dt-orderable-asc dt-orderable-desc">
                           Total
@@ -178,23 +184,30 @@
                                     <span class="badge badge-light-success fs-7 fw-bold" *ngIf="R.state_orden == 1">Enviado</span>
                                     <span class="badge badge-light-primary fs-7 fw-bold" *ngIf="R.state_orden == 2">Facturado</span>
                                     <span class="badge badge-light-danger fs-7 fw-bold" *ngIf="R.state_orden == 3">Anulado</span>
-                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.codigo }}</span>
-                                    <span *ngIf="R.comprobante_id" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.comprobante_id.name }}</span>
-                                    <span *ngIf="R.forma_pago" class="text-gray-900 fw-bold text-hover-primary mb-1 fs-6">{{ R.forma_pago }}</span>
+                                    <span class="text-gray-900 fw-bold text-hover-primary mb-1 fs-7 ">{{ R.codigo }}</span>
+                                    <span *ngIf="R.comprobante_id" class="fs-8">{{ R.comprobante_id.name }}</span>
+                                    <span *ngIf="R.forma_pago" class="fs-8">{{ R.forma_pago }}</span>
                                   </div>
                               </div>
                           </div>
                           <div class="text-center mb-2">
-                            <span class="badge badge-light-warning fs-7 fw-bold">{{R.created_by}}</span>
+                            <span class="badge badge-light-warning fs-7 fw-bold text-hover-primary">{{R.created_by}}</span>
                           </div>
                         </td>
                         <td>
-                          <span class="badge badge-light-warning fs-7 fw-bold">Creacion: {{ R.trasabilidad.created_at }}</span>
-                          <span *ngIf="R.trasabilidad.fecha_envio" class="badge badge-light-warning fs-7 fw-bold">Envio: {{ R.trasabilidad.fecha_envio }}</span>
+                          <div class="d-flex flex-column justify-content-center align-items-center gap-2">
+                            <span *ngIf="R.cliente" class="fs-7">{{ R.cliente.ruc }}</span>
+                            <span *ngIf="R.cliente" class="fs-7">{{ R.cliente.razon_social }}</span>
+                            <span *ngIf="R.cliente" class="fs-7 fw-bold text-gray-900">{{ R.cliente.nombre_comercial }}</span>
+                            <span *ngIf="R.modo_entrega === 0" class="badge badge-light-info fs-7 fw-bold">Recojo en tienda</span>
+                          </div>
                         </td>
                         <td>
-                          <span *ngIf="R.cliente">{{ R.cliente.ruc }} {{ R.cliente.razon_social }}</span>
-                          <span *ngIf="R.cliente">{{ R.cliente.nombre_comercial }}</span>
+                          <div class="d-flex flex-column justify-content-center align-items-center gap-2">
+                            <span class="badge badge-light-warning fs-7 fw-bold">Creacion: {{ R.trasabilidad.created_at }}</span>
+                            <span *ngIf="R.trasabilidad.fecha_envio" class="badge badge-light-success fs-7 fw-bold">Aprobado: {{ R.trasabilidad.fecha_envio }}</span>
+                            <span *ngIf="R.guia_prestamo_codigo" class="badge badge-light-info fs-7 fw-bold">Uso: {{ R.guia_prestamo_codigo }}</span>
+                          </div>
                         </td>
                         <td>
                           <div class="text-center">

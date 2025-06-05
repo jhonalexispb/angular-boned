@@ -3,7 +3,7 @@
     <h4 *ngIf="productos.length > 0; else noItem" class="fw-bold text-center text-primary mb-4">{{user_name}} tienes una orden de compra pendiente</h4>
     <ng-template #noItem>
       <h4 class="text-success mb-4 text-center">
-        {{user_name}} no tienes ordendes de compra pendientes
+        {{user_name}} no tienes ordenes de compra pendientes
       </h4>
     </ng-template>
     <div class="d-flex align-items-center mb-3" *ngIf="productos.length > 0">

@@ -64,7 +64,7 @@
 
    <div class="mb-3">
       <label class="form-label">Modo de entrega</label>
-      <select class="form-select" required [(ngModel)]="modo_entrega" name="modo_entrega" #modoCtrl="ngModel">
+      <select class="form-select" required [(ngModel)]="modo_entrega" name="modo_entrega" #modoCtrl="ngModel" (change)="actualizarMapaDireccion()">
         <option value="" disabled>Seleccione</option>
         <option value="0">Recojo en tienda</option>
         <option value="1">Envío a domicilio</option>
@@ -118,19 +118,18 @@
           <option *ngFor="let dir of direccionesEntrega" [ngValue]="dir">{{ dir.address }}</option>
         </select>
       </div>
-
-      <div class="mb-3">
-        <label for="comentario" class="form-label">Comentario</label>
-        <textarea
-          id="comentario"
-          class="form-control"
-          rows="4"
-          name="comentario"
-          [(ngModel)]="comentario"
-          placeholder="Escribe aquí tu comentario..."
-        ></textarea>
-      </div>
     </div>
+  </div>
+  <div class="mb-3" *ngIf="clienteSeleccionado">
+    <label for="comentario" class="form-label">Comentario</label>
+    <textarea
+      id="comentario"
+      class="form-control"
+      rows="4"
+      name="comentario"
+      [(ngModel)]="comentario"
+      placeholder="Escribe aquí tu comentario..."
+    ></textarea>
   </div>
   <div [style.display]="!clienteSeleccionado || (modo_entrega != 1) ? 'none' : ''">
     <!-- Coordenadas -->
@@ -161,7 +160,7 @@
       <button class="btn btn-info" type="button" (click)="ir_paso_uno()">Volver a la venta</button>
     </div>
     <div>
-      <button class="btn btn-primary" type="submit" [disabled]="!ventaForm.valid">Registrar Venta</button>
+      <button class="btn btn-primary" type="submit">Registrar Venta</button>
     </div>
   </div>
 </form>

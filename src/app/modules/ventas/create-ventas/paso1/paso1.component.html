@@ -38,6 +38,18 @@
                     </button>
                 </div>
               </div>
+              <div class="col-md-6 col-lg-4 mb-3" *ngIf="mostrarSelectOrigen">
+                <label class="form-label">Retiro de mercadería</label>
+                <select class="form-control" formControlName="origen_seleccionado">
+                  <!-- Mostrar si debe estar disponible la opción de guía -->
+                  <option *ngIf="mostrarOpcionGuia" value="1">
+                    Guía préstamo ({{ guia_prestamo || 'código desconocido' }})
+                  </option>
+
+                  <!-- Siempre mostrar Almacén -->
+                  <option value="0">Almacén</option>
+                </select>
+              </div>
               <!--end::Input group-->
               <div class="row">
                 <!-- <div class="col-md-6 col-lg-4 mb-3">
@@ -84,8 +96,7 @@
                   </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label mt-2 mb-4">Producto</label>
-                    
+                    <label class="form-label mt-2 mb-4">Producto</label>      
                     <div class="d-flex align-items-center w-100 select-product-container">
                       <ng-select 
                         [items]="PRODUCT_LIST"
@@ -158,7 +169,7 @@
                         </ng-template>
                       </ng-select>
                     </div>
-                  </div>
+                </div>
               </div>
           </div>
       </div>
@@ -331,9 +342,15 @@
                               <span class="fw-bold mb-1">SKU: {{ P.sku }}</span>
                               <div class="d-flex gap-2 flex-column mt-2">
                                 <div class="d-flex justify-content-between">
-                                  <span class="badge badge-light-success d-flex align-items-center gap-2 fs-6">
-                                    S/{{ P.pventa | number:'1.2-2' }}
-                                  </span>
+                                  <div class="d-flex flex-column gap-2">
+                                    <span class="badge badge-light-success d-flex align-items-center gap-2 fs-6">
+                                      S/{{ P.pventa | number:'1.2-2' }}
+                                      <i *ngIf="P.tipo_promocion == 1" class="fas fa-lightbulb text-warning" title="Precio con promoción"></i>
+                                    </span>
+                                    <span *ngIf="P.pventa != P.pventa_nuevo" class="badge badge-light-primary d-flex align-items-center gap-2 fs-6">
+                                      Nuevo precio:<br>S/{{ P.pventa_nuevo | number:'1.2-2' }}
+                                    </span>
+                                  </div>
                                   <span class="text-gray-900 fw-bold fs-5">S/ {{ P.total | number:'1.2-2' }}</span>
                                 </div>
                               </div>

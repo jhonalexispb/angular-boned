@@ -10,24 +10,17 @@ export class CreateVentasComponent {
   clienteSeleccionado: any = null;
   CLIENTES_LIST: any[] = [];
   TRANSPORTES_LIST: any[] = [];
+  order_venta_data: any[] = [];
 
   irAlPaso2(data: any) {
     this.clienteSeleccionado = data.cliente;
     this.CLIENTES_LIST = data.clientes;
     this.TRANSPORTES_LIST = data.transportes;
+    this.order_venta_data = data.order_venta_data;
     this.pasoActual = 2;
   }
 
   irAlPaso1() {
     this.pasoActual = 1;
-  }
-
-  registrarVentaFinal(data: any) {
-    const ventaCompleta = {
-      
-    };
-
-    // Aquí llamas a tu servicio de registro
-    console.log('Venta completa para registrar:', ventaCompleta);
   }
 }

@@ -25,7 +25,7 @@
     [cliente]="clienteSeleccionado"
     [clientes]="CLIENTES_LIST"
     [transportes]="TRANSPORTES_LIST"
-    (onVentaCompleta)="registrarVentaFinal($event)"
+    [order_venta_data]="order_venta_data"
     (onRegresarPaso1)="irAlPaso1()">
   </app-paso2>
 </div>

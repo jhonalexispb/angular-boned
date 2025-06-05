@@ -4,6 +4,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
 import { CreateLugarEntregaComponent } from 'src/app/modules/configuration/lugar-entrega/create-lugar-entrega/create-lugar-entrega.component';
 import { VentaProcesoService } from '../../service/venta_proceso_detalle.service';
+import { SweetalertService } from 'src/app/modules/sweetAlert/sweetAlert.service';
+import { VentasService } from '../../service/ventas.service';
+import { Router } from '@angular/router';
 
 L.Marker.prototype.options.icon = L.icon({
   iconRetinaUrl: 'assets/images/marker-icon-2x.png',
@@ -24,8 +27,8 @@ L.Marker.prototype.options.icon = L.icon({
 export class Paso2Component implements OnInit {
   @Input() cliente: any;
   @Input() clientes: any[] = [];
+  @Input() order_venta_data: any;
   @Input() transportes: any[] = [];
-  @Output() onVentaCompleta = new EventEmitter<any>();
   @Output() onRegresarPaso1 = new EventEmitter<void>();
 
   clienteSeleccionado: any = null;
@@ -33,7 +36,7 @@ export class Paso2Component implements OnInit {
   zona_reparto: any = null;
   transporte: any = null;
   direccionEntrega: any = null;
-  modo_entrega: any = 1;
+  modo_entrega: any = '1';
   latitud: any | null = null;
   longitud: any | null = null;
   coordenadas: string = '';
@@ -41,6 +44,8 @@ export class Paso2Component implements OnInit {
   comentario: string = '';
   direccionesEntrega: any[] = [];
   imagenReferencia:any
+
+  sweet:any = new SweetalertService
 
   ventaSinGuardar = true;
 
@@ -51,7 +56,7 @@ export class Paso2Component implements OnInit {
 
 
   opcionesPago: { value: string, label: string }[] = [];
-  formaPago: string | null = null;
+  formaPago: any | null = null;
 
   ngAfterViewChecked(): void {
     // Solo inicializar si hay cliente seleccionado y aún no se ha inicializado el mapa
@@ -67,7 +72,9 @@ export class Paso2Component implements OnInit {
   constructor(
     private sanitizer: DomSanitizer,
     public modalService: NgbModal,
-    public venta_proceso_service: VentaProcesoService
+    public venta_proceso_service: VentaProcesoService,
+    public order_venta_service: VentasService,
+    private router: Router,
   ) {}
 
   inicializarMapa(): void {
@@ -97,15 +104,20 @@ export class Paso2Component implements OnInit {
 
   actualizarMapaDireccion() {
     const dir = this.direccionEntrega;
-    if(dir.imagen){
-      this.imagenReferencia = dir.imagen
-    }else{
+    if (!dir) {
       this.imagenReferencia = null;
+      this.resetearMapa();
+      return;
     }
-    if (dir?.latitud && dir?.longitud) {
+
+    this.imagenReferencia = dir.imagen || null;
+
+    if (dir.latitud && dir.longitud) {
+      console.log('estoy revisando2')
       this.actualizarMapa(parseFloat(dir.latitud), parseFloat(dir.longitud));
-    }else{
-      this.resetearMapa(); 
+    } else {
+      console.log('estoy revisando3')
+      this.resetearMapa();
     }
   }
 
@@ -130,8 +142,32 @@ export class Paso2Component implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.order_venta_data)
     window.addEventListener('beforeunload', this.beforeUnloadListener);
+    if (this.order_venta_data) {
+      this.clienteSeleccionado = this.obtenerClientePorId(this.order_venta_data.cliente_id);
+      this.comprobanteSeleccionado = this.obtenerComprobantePorId(this.order_venta_data.comprobante_codigo);
+      this.formaPago = this.obtenerFormaPago(this.order_venta_data.forma_pago);
+      this.comentario = this.order_venta_data.comentario;
+      this.zona_reparto = this.order_venta_data.zona_reparto;
+      this.transporte = this.order_venta_data.transporte_id;
+      this.modo_entrega = this.order_venta_data.modo_entrega ?? 1;
+      this.direccionEntrega = this.obtenerDireccionPorId(this.order_venta_data.lugar_entrega_id);
+      this.imagenReferencia = this.obtenerImagenPorDireccionId(this.order_venta_data.lugar_entrega_id);
 
+      if (this.clienteSeleccionado) {
+        this.direccionesEntrega = this.clienteSeleccionado.lugares_entrega || [];
+      }
+
+      if (!this.mapaInicializado && this.clienteSeleccionado) {
+        this.inicializarMapa();
+        this.mapaInicializado = true;
+      }
+      if(this.clienteSeleccionado){
+        this.actualizarMapaDireccion()
+      }
+      return;
+    }
     const dataGuardada = this.venta_proceso_service.getVentaParcial();
 
     if (dataGuardada) {
@@ -172,6 +208,43 @@ export class Paso2Component implements OnInit {
     }
   }
 
+  obtenerClientePorId(id: number) {
+    return this.clientes.find(c => c.id === id);
+  }
+
+  obtenerComprobantePorId(codigo: any) {
+    const i = this.clienteSeleccionado?.type_documentos?.find((c: any) => c.codigo == codigo) || null;
+    return i ? i.codigo : null;
+  }
+
+  obtenerDireccionPorId(id: number) {
+    return this.clienteSeleccionado?.lugares_entrega?.find((d:any) => d.id === id) || null;
+  }
+
+  obtenerFormaPago(formaPago: any) {
+    const forma = this.clienteSeleccionado?.forma_pago;
+
+    if (forma == 1) {
+      this.opcionesPago = [{ value: '1', label: 'Crédito' }];
+    } else if (forma == 2) {
+      this.opcionesPago = [{ value: '0', label: 'Contado' }];
+    } else if (forma == 3) {
+      this.opcionesPago = [
+        { value: '1', label: 'Crédito' },
+        { value: '0', label: 'Contado' }
+      ];
+    } else {
+      this.opcionesPago = []; // Vacío si no se reconoce la forma de pago
+    }
+
+    return formaPago;
+  }
+
+  obtenerImagenPorDireccionId(id:any){
+    const i = this.clienteSeleccionado?.lugares_entrega?.find((c: any) => c.id == id) || null;
+    return i ? i.imagen : null;
+  }
+
   ngOnDestroy() {
     window.removeEventListener('beforeunload', this.beforeUnloadListener);
   }
@@ -199,6 +272,7 @@ export class Paso2Component implements OnInit {
 
   setCliente(clienteId: number) {
     // 🔁 Limpiar campos previos
+    console.log('eligiendo cliente')
     this.clienteSeleccionado = null;
     this.comprobanteSeleccionado = null;
     this.formaPago = null;
@@ -229,13 +303,13 @@ export class Paso2Component implements OnInit {
     const forma = this.clienteSeleccionado.forma_pago;
 
     if (forma == 1) {
-      this.opcionesPago = [{ value: 'credito', label: 'Crédito' }];
+      this.opcionesPago = [{ value: '1', label: 'Crédito' }];
     } else if (forma == 2) {
-      this.opcionesPago = [{ value: 'contado', label: 'Contado' }];
+      this.opcionesPago = [{ value: '0', label: 'Contado' }];
     } else if (forma == 3) {
       this.opcionesPago = [
-        { value: 'credito', label: 'Crédito' },
-        { value: 'contado', label: 'Contado' }
+        { value: '1', label: 'Crédito' },
+        { value: '0', label: 'Contado' }
       ];
     }
 
@@ -260,17 +334,18 @@ export class Paso2Component implements OnInit {
     } else {
       this.direccionEntrega = null; // usuario debe seleccionar
     }
-
-
   }
 
   resetearMapa() {
-    const coordsNeutras: [number, number] = [-12.0464, -77.0428]; // ejemplo Lima centro
+    console.log('resetenado')
+    const coordsNeutras: [number, number] = [-12.0464, -77.0428];
     this.map.setView(coordsNeutras, 13);
+    this.latitud = null
+    this.longitud = null
     
     if (this.marker) {
       this.map.removeLayer(this.marker);
-      this.marker = null; // 👈 Importante
+      this.marker = null;
     }
   }
 
@@ -279,19 +354,118 @@ export class Paso2Component implements OnInit {
   };
 
   registrarVenta() {
-    if (!this.clienteSeleccionado) return;
+    if (!this.clienteSeleccionado){
+      this.sweet.alerta('Atencion','selecciona un cliente')
+      return;
+    }
 
-    const venta = {
+    if (!this.comprobanteSeleccionado){
+      this.sweet.alerta('Atencion','selecciona un comprobante')
+      return;
+    }
+
+    if (this.formaPago === null || this.formaPago === undefined || this.formaPago === ''){
+      this.sweet.alerta('Atencion','selecciona una forma de pago')
+      return;
+    }
+
+    if ((this.zona_reparto === null || this.zona_reparto === undefined || this.zona_reparto === '') && this.modo_entrega == 1){
+      this.sweet.alerta('Atencion','selecciona una zona de reparto')
+      return;
+    }
+
+    if (!this.transporte && this.modo_entrega == 1){
+      this.sweet.alerta('Atencion','selecciona un transporte')
+      return;
+    }
+
+    if (!this.direccionEntrega && this.modo_entrega == 1){
+      this.sweet.alerta('Atencion','selecciona una direccion de entrega')
+      return;
+    }
+
+    if (!this.modo_entrega){
+      this.sweet.alerta('Atencion','selecciona un modo de entrega')
+      return;
+    }
+
+    const tipoDocumento = this.clienteSeleccionado.type_documentos.find((doc:any) => doc.codigo === this.comprobanteSeleccionado);
+
+    if (!tipoDocumento) {
+      console.error("Tipo de documento no encontrado para el código:", this.comprobanteSeleccionado);
+      return; // o mostrar error al usuario
+    }
+
+    const orden_venta_id = localStorage.getItem('orden_venta_id') || '0';
+    if(orden_venta_id == '0'){
+      this.sweet.alerta('Atencion','no se pudo obtener la orden de venta')
+      return;
+    }
+
+    const venta: any = {
       cliente_id: this.clienteSeleccionado.id,
-      comprobante: this.comprobanteSeleccionado,
-      forma_pago: this.formaPago,
-      zona_reparto: this.zona_reparto,
-      transporte: this.transporte,
-      direccion: this.direccionEntrega,
-      modo_entrega: this.modo_entrega
+      comprobante_id: tipoDocumento.id,
+      forma_pago: parseInt(this.formaPago),
+      comentario: this.comentario,
+      modo_entrega: this.modo_entrega,
     };
 
-    this.onVentaCompleta.emit(venta);
+    // 🚚 Si el modo de entrega es con reparto, agregar campos relacionados
+    if (this.modo_entrega == 1) {
+      venta.zona_reparto = this.zona_reparto;
+      venta.transporte_id = this.transporte;
+      venta.lugar_entrega_id = this.direccionEntrega?.id;
+
+      if (this.latitud && this.longitud) {
+        venta.latitud = this.latitud;
+        venta.longitud = this.longitud;
+      }
+    }
+
+    // ✅ Función para enviar la venta y limpiar
+    const guardarVenta = (ventaData: any) => {
+      this.order_venta_service.updateOrdenVenta(orden_venta_id, ventaData).subscribe({
+        next: (resp: any) => {
+          setTimeout(() => {
+            this.venta_proceso_service.setVentaParcial({
+              clienteSeleccionado: null,
+              comprobanteSeleccionado: null,
+              zona_reparto: null,
+              transporte: null,
+              direccionEntrega: null,
+              direccionesEntrega: [],
+              modo_entrega: null,
+              latitud: null,
+              longitud: null,
+              coordenadas: null,
+              imagenReferencia: null,
+              formaPago: null,
+              opcionesPago: [],
+              comentario: ''
+            });
+            this.router.navigate(['/ventas/list']);
+            this.sweet.success('Venta registrada', 'La orden de venta fue guardada exitosamente');
+          }, 100);
+        },
+      });
+    };
+
+    if (this.order_venta_data.state_orden > 0) {
+      guardarVenta(venta); // ya está aprobada
+    } else {
+      this.sweet.confirmar(
+        'Consulta',
+        'Antes de registrar la venta ¿Deseas aprobar la cotización?',
+        '/assets/animations/general/ojitos.json',
+        'Sí, aprobar',
+        true,
+        'No'
+      ).then((result: any) => {
+        venta.aprobar = result.isConfirmed;
+        guardarVenta(venta); // con resultado de confirmación
+      });
+    }
+
   }
 
   obtenerUbicacionActual(): void {

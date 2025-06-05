@@ -6,6 +6,7 @@ import { SweetalertService } from '../../sweetAlert/sweetAlert.service';
 import { VentasService } from '../service/ventas.service';
 import { Router } from '@angular/router';
 import { MercaderiaOrdenVentaComponent } from '../mercaderia-orden-venta/mercaderia-orden-venta.component';
+import { VentaProcesoService } from '../service/venta_proceso_detalle.service';
 
 @Component({
   selector: 'app-list-ventas',
@@ -18,19 +19,37 @@ export class ListVentasComponent {
     sweet:any = new SweetalertService
     totalPages:number = 0; 
     currentPage:number = 1;
+    isConsultando:boolean = false
   
     activeDropdownIndex: number | null = null; // Índice del dropdown activo
   
     constructor(
       public modalService: NgbModal,
       public orden_venta_service: VentasService,
-      private router: Router
+      private router: Router,
+      public venta_proceso_service: VentaProcesoService,
     ){
   
     }
   
     ngOnInit(): void {
       localStorage.removeItem('orden_venta_id');
+      this.venta_proceso_service.setVentaParcial({
+        clienteSeleccionado: null,
+        comprobanteSeleccionado: null,
+        zona_reparto: null,
+        transporte: null,
+        direccionEntrega: null,
+        direccionesEntrega: [],
+        modo_entrega: null,
+        latitud: null,
+        longitud: null,
+        coordenadas: null,
+        imagenReferencia: null,
+        formaPago: null,
+        opcionesPago: [],
+        comentario: ''
+      });
       this.listGuiaPrestamo();
     }
   
@@ -53,6 +72,27 @@ export class ListVentasComponent {
     verProductosOrdenVenta(R:any){
       const modalRef = this.modalService.open(MercaderiaOrdenVentaComponent,{centered:true, size: 'lg'})
       modalRef.componentInstance.ORDEN_VENTA = R;
+    }
+
+    consultar_guia_prestamo_pendiente(){
+      /* this.isConsultando = true;
+      this.orden_venta_service.verificarGuiaPrestamo().subscribe({
+        next: (resp: any) => {
+          if(resp.tiene_guia_prestamo_pendiente){
+            this.sweet.confirmar('Guia de prestamo pendiente',resp.mensaje,'/assets/animations/general/ojitos.json','Si',true,'No').then((result:any) => {
+              this.isConsultando = false;
+              if (result.isConfirmed) {
+                this.router.navigate(['/ventas/register'], { queryParams: { make_with_guia_prestamo: true } });
+              }else{
+                this.router.navigate(['/ventas/register']);
+              }
+            });
+          }else{
+            this.isConsultando = false; */
+            this.router.navigate(['/ventas/register']);
+          /* }
+        },
+      }) */
     }
   
     /* confirmarEntrega(R:any){

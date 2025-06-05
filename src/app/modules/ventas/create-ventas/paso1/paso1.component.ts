@@ -21,6 +21,7 @@ export class Paso1Component {
   ventaForm: FormGroup;
 
   PRODUCT_LIST:any[] = [];
+  PRODUCT_GUIA_PRESTAMO_LIST:any[] = [];
   CLIENTES_LIST:any[] = [];
   TRANSPORTES_LIST:any[] = [];
   ORDEN_VENTA_DETAILS:any[] = [];
@@ -44,6 +45,12 @@ export class Paso1Component {
   sweet:any = new SweetalertService
   user:any = new UserLocalStorageService
   searchTerm: string = '';
+  guia_prestamo:any = null
+  mostrarSelectOrigen: boolean = false;
+  mostrarOpcionGuia:boolean = false;
+  orden_venta_data:any
+  private tempOrigenSeleccionado: any;
+  private origenSubscription: any;
 
   constructor(
     private fb: FormBuilder,
@@ -62,6 +69,8 @@ export class Paso1Component {
       cliente_id: ['', [Validators.required]],
       total: ['0.00', [Validators.required]],
       tipo_precio: ['', Validators.required],
+      select_origen: [false],
+      origen_seleccionado: ['0'],
       user: [this.user.getUser()]
     });
 
@@ -95,7 +104,8 @@ export class Paso1Component {
       } else {
         // 🆕 Crear nueva guía
         this.ventaService.registerOrdenVenta({
-          crear_orden_venta: true
+          crear_orden_venta: true,
+          usar_guia_prestamo: this.route.snapshot.queryParamMap.get('make_with_guia_prestamo') === 'true'
         }).subscribe((resp: any) => {
           this.order_venta_id = resp.orden_venta_id;
           localStorage.setItem('orden_venta_id', this.order_venta_id);
@@ -103,6 +113,49 @@ export class Paso1Component {
         });
       }
     });
+
+    this.tempOrigenSeleccionado = this.ventaForm.get('origen_seleccionado')?.value;
+
+    this.origenSubscription = this.ventaForm.get('origen_seleccionado')?.valueChanges.subscribe(nuevoValor => {
+      if (nuevoValor !== this.tempOrigenSeleccionado) {
+        // Solo confirmar si hay productos
+        if (this.ORDEN_VENTA_DETAILS && this.ORDEN_VENTA_DETAILS.length > 0) {
+          this.confirmarCambioOrigen(nuevoValor);
+        } else {
+          // Si no hay productos, simplemente cambia
+          this.tempOrigenSeleccionado = nuevoValor;
+          this.aplicarCambioOrigen(nuevoValor);
+        }
+      }
+    });
+  }
+
+  confirmarCambioOrigen(nuevoValor: string) {
+    this.sweet.confirmar_habilitado_deshabilitado(
+      '¿Estás seguro?',
+      'Si cambias de origen se eliminarán todos los productos agregados.',
+      '/assets/animations/general/alerta.json',
+      'Sí, cambiar origen'
+    ).then((result: any) => {
+      if (result.isConfirmed) {
+        this.tempOrigenSeleccionado = nuevoValor;
+        this.ORDEN_VENTA_DETAILS = [];
+        this.aplicarCambioOrigen(nuevoValor);
+      } else {
+        // Revertir visualmente
+        this.ventaForm.patchValue({
+          origen_seleccionado: this.tempOrigenSeleccionado
+        }, { emitEvent: false });
+      }
+    });
+  }
+
+  aplicarCambioOrigen(valor: string) {
+    if (valor === '0') {
+      this.callProductos();
+    } else if (valor === '1') {
+      this.useProductosGuiaPrestamo();
+    }
   }
 
   highlightMatch(text: string, term: string): SafeHtml {
@@ -125,12 +178,31 @@ export class Paso1Component {
       ...cliente,
       nombre_completo: `${cliente.ruc} - ${cliente.razon_social} - ${cliente.nombre_comercial} - ${cliente.direccion} - ${cliente.distrito}`
     }));
+    this.orden_venta_data = resp.orden_venta_data;
     this.TRANSPORTES_LIST = resp.transportes;
     this.PRODUCT_LIST = resp.productos;
     this.codigo = resp.codigo;
     this.order_venta_id = resp.orden_venta_id;
     this.ORDEN_VENTA_DETAILS = this.agruparMovimientosPorProducto(resp.movimiento);
     this.cliente_id = resp.cliente_id
+    this.PRODUCT_GUIA_PRESTAMO_LIST = resp.productos_guia_prestamo
+
+    /* if (resp.guia_prestamo_id) {
+      this.guia_prestamo = resp.guia_prestamo_codigo;
+      this.mostrarOpcionGuia = true;
+      this.ventaForm.patchValue({ origen_seleccionado: '1' });
+      this.useProductosGuiaPrestamo();
+    } else if (resp.productos_guia_prestamo && resp.productos_guia_prestamo.length > 0) {
+      this.guia_prestamo = resp.guia_prestamo_codigo;
+      this.mostrarOpcionGuia = true;
+      this.ventaForm.patchValue({ origen_seleccionado: '0' });
+    } else { */
+      this.mostrarOpcionGuia = false;
+      this.ventaForm.patchValue({ origen_seleccionado: '0' });
+    /* } */
+
+    // Mostrar el select solo cuando ya se obtuvo respuesta
+    this.mostrarSelectOrigen = true;
   
     localStorage.setItem('orden_venta_id', this.order_venta_id.toString());
     this.evaluarProductosCarrito()
@@ -167,6 +239,16 @@ export class Paso1Component {
       this.evaluarProductosCarrito()
       this.actualizarEscalasEnOrden();
     });
+  }
+
+  useProductosGuiaPrestamo(){
+    this.loadingProducts = true;
+    this.PRODUCT_LIST = [];
+    this.PRODUCT_LIST = this.PRODUCT_GUIA_PRESTAMO_LIST;
+    this.ventaForm.patchValue({
+      product_id: null
+    });
+    this.loadingProducts = false;
   }
 
   actualizarEscalasEnOrden() {
@@ -266,7 +348,7 @@ export class Paso1Component {
 
   calcularTotales() {
     this.totalCarrito = this.ORDEN_VENTA_DETAILS.reduce((acc, item) => {
-      return acc + (Number(item.cantidad) * Number(item.pventa));
+      return acc + (Number(item.cantidad) * Number(item.pventa_nuevo));
     }, 0);
     this.ventaForm.patchValue({
       total: this.totalCarrito.toFixed(2),
@@ -314,7 +396,9 @@ export class Paso1Component {
           nombre: movimiento.nombre,
           producto_id: productoID,
           pventa: movimiento.pventa,
+          pventa_nuevo: movimiento.pventa,
           sku: movimiento.sku,
+          tipo_promocion: movimiento.tipo_promocion,
           total: 0,
           lotes_detalle: [],
         };
@@ -372,15 +456,19 @@ export class Paso1Component {
     if (P.escalas && P.escalas.length > 0) {
       const escala = this.getEscalaActiva(P.escalas, P.cantidad);
       if (escala) {
-        P.pventa = parseFloat(escala.precio);
+        P.pventa_nuevo = parseFloat(escala.precio);
       } else {
         // Si no hay escala, buscar el precio base en PRODUCT_LIST
         const productoOriginal = this.PRODUCT_LIST.find(prod => prod.id === P.producto_id);
-        P.pventa = productoOriginal ? parseFloat(productoOriginal.pventa) : parseFloat(P.pventa);
+        P.pventa_nuevo = productoOriginal ? parseFloat(productoOriginal.pventa) : parseFloat(P.pventa);
       }
+    }else{
+      // Si no hay escala, buscar el precio base en PRODUCT_LIST
+        const productoOriginal = this.PRODUCT_LIST.find(prod => prod.id === P.producto_id);
+        P.pventa_nuevo = productoOriginal ? parseFloat(productoOriginal.pventa) : parseFloat(P.pventa);
     }
 
-    P.total = P.pventa * P.cantidad;
+    P.total = P.pventa_nuevo * P.cantidad;
   }
 
   // Cambiar con botones + y -
@@ -441,8 +529,9 @@ export class Paso1Component {
     P.editando = false;
     delete P.cantidadOriginal;
 
-    this.aplicar_escala(P)
-
+    /* this.aplicar_escala(P) */
+    P.pventa_nuevo = P.pventa;
+    P.total = P.pventa * P.cantidad;
     this.calcularTotales();
   }
 
@@ -480,9 +569,11 @@ export class Paso1Component {
     const tprecio = this.ventaForm.value.tipo_precio;
     
     this.onPaso1Listo.emit({
-      cliente: clienteId,
+      /* cliente: clienteId, */
+      cliente: null,
       clientes: this.CLIENTES_LIST,
       transportes: this.TRANSPORTES_LIST,
+      order_venta_data: this.orden_venta_data,
       t_precio: tprecio
     });
   }

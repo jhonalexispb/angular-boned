@@ -19,6 +19,8 @@ export class NavbarComponent implements OnInit {
   user:any;
   cantidadProductos: number = 0;
 
+  totalProductosGuiaPrestamo:any
+
   constructor(
     public authService: AuthService,
     private compraService: CompraService
@@ -32,6 +34,7 @@ export class NavbarComponent implements OnInit {
         this.obtenerCantidadProductos();
       }
     });
+    console.log(this.totalProductosGuiaPrestamo)
   }
 
   obtenerCantidadProductos() {

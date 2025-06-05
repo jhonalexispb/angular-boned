@@ -1,52 +1,47 @@
+<ng-container *ngIf="user$ | async as _user">
+  <div class="card-body">
+    <h4 *ngIf="_user.guia_prestamo?.productos_guia_prestamo.length > 0; else noItem" 
+        class="fw-bold text-center text-primary mb-4">
+      {{ _user.name }}, tienes productos en tu guía de préstamo
+    </h4>
 
-  <div class="card-body" routerLink="/ventas/register" class="cursor-pointer">
-    <h4 *ngIf="productos.length > 0; else noItem" class="fw-bold text-center text-primary mb-4">{{user_name}} tienes una venta pendiente</h4>
     <ng-template #noItem>
       <h4 class="text-success mb-4 text-center">
-        {{user_name}} no tienes mercaderia pendiente
+        {{ _user.name }}, no tienes ninguna guía de préstamo pendiente
       </h4>
     </ng-template>
-    <div class="d-flex align-items-center mb-3" *ngIf="productos.length > 0">
-      <div class="me-3">
-        <i class="bi bi-truck text-primary fs-2"></i>
-      </div>
-      <div>
-        <p class="mb-0 text-muted">PROVEEDOR: {{ venta?.proveedor_name }}</p>
-      </div>
-    </div>
 
-    <div *ngIf="productos.length > 0" class="list-group scroll-y mh-200px mh-lg-325px">
-      <div *ngFor="let producto of productos" class="d-flex flex-column mb-3 p-3 border rounded-3">
+    <div *ngIf="_user.guia_prestamo?.productos_guia_prestamo.length > 0" class="scroll-y mh-200px mh-lg-325px">
+      <div *ngFor="let producto of _user.guia_prestamo.productos_guia_prestamo" 
+           class="d-flex flex-column mb-3 p-3 border rounded-3">
+        
         <div class="d-flex justify-content-between">
-          <h5 class="fw-bold">{{ producto.sku }}</h5>
-          <p class="fw-bold text-muted">{{ producto.nombre }}</p>
+          <h5 class="fw-bold text-primary">{{ producto.nombre_completo }}</h5>
         </div>
-    
-        <div class="mt-2">
-          <div class="d-flex justify-content-between">
-            <span class="fw-semibold">Cantidad:</span>
-            <span class="text-primary">{{ producto.cantidad }}</span>
-          </div>
-    
-          <div class="d-flex justify-content-between mt-1">
-            <span class="fw-semibold">Precio Compra:</span>
-            <span class="badge badge-light-info fs-7 fw-bold">S/ {{ producto.pcompra }}</span>
-          </div>
-    
-          <div class="d-flex justify-content-between mt-1">
-            <span class="fw-semibold">Precio Venta:</span>
-            <span class="badge badge-light-success fs-7 fw-bold">S/ {{ producto.pventa }}</span>
-          </div>
+
+        <div class="small mb-2 d-flex justify-content-between">
+          <span class="me-2">Vencimiento: <strong>{{ producto.fecha_vencimiento }}</strong></span>
+          <span class="badge bg-secondary">{{ producto.lote }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <span>SKU:</span>
+          <span>{{ producto.sku }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between mt-1">
+          <span>Stock:</span>
+          <span>{{ producto.stock }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between mt-1">
+          <span>Precio Venta:</span>
+          <span class="badge badge-light-success fw-bold">S/ {{ producto.pventa }}</span>
         </div>
       </div>
     </div>
-
-    <div *ngIf="productos.length === 0" class="text-center text-muted mt-3">
-      <img src="./assets/images/carrito-vacio.png" alt="Carrito vacío" width="120">
-      <p class="mt-2">No hay productos.</p>
-    </div>
-</div>
-
+  </div>
+</ng-container>
 
 
 

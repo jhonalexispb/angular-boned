@@ -114,6 +114,26 @@ export class VentasService {
     )
   }
 
+  cambiar_estado_orden_venta(ID_VENTA:any,data:any){
+    this.loadingService.showLoading('Actualizando estado')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/estado/"+ID_VENTA
+    return this.http.put(URL,data,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
+  deleteOrdenVenta(ID_ORDEN_VENTA:string){
+    this.loadingService.showLoading('Eliminando orden de venta')
+    let headers = new HttpHeaders({'Authorization':'Bearer'+this.authservice.token})
+    let URL = URL_SERVICIO+"/orden_venta/"+ID_ORDEN_VENTA;
+    return this.http.delete(URL,{headers: headers}).pipe(
+      catchError((error) => this.handleErrorService.handleError(error)),
+      finalize(()=>this.loadingService.hideLoading())
+    )
+  }
+
 
 
 

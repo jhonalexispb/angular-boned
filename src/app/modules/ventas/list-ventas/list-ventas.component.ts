@@ -7,6 +7,7 @@ import { VentasService } from '../service/ventas.service';
 import { Router } from '@angular/router';
 import { MercaderiaOrdenVentaComponent } from '../mercaderia-orden-venta/mercaderia-orden-venta.component';
 import { VentaProcesoService } from '../service/venta_proceso_detalle.service';
+import { URL_SERVICIO } from 'src/app/config/config';
 
 @Component({
   selector: 'app-list-ventas',
@@ -15,7 +16,7 @@ import { VentaProcesoService } from '../service/venta_proceso_detalle.service';
 })
 export class ListVentasComponent {
    search:string = '';
-    GP_LIST:any = [];
+    OV_LIST:any = [];
     sweet:any = new SweetalertService
     totalPages:number = 0; 
     currentPage:number = 1;
@@ -55,7 +56,7 @@ export class ListVentasComponent {
   
     listGuiaPrestamo(page = 1){
       this.orden_venta_service.listOrdenVenta(page,this.search).subscribe((resp: any) => {
-        this.GP_LIST = resp.ordenes_venta;
+        this.OV_LIST = resp.ordenes_venta;
         this.totalPages = resp.total;
         this.currentPage = page;
       })
@@ -95,35 +96,112 @@ export class ListVentasComponent {
       }) */
     }
   
-    /* confirmarEntrega(R:any){
-      if(!R.encargado){
-        this.sweet.alerta('Uyyy','la guia de prestamo no tiene un encargado asignado')
-        return
-      }
-      this.sweet.confirmar('¿Estás seguro?', `¿Deseas entregar la guia de prestamo ${R.codigo} a ${R.encargado}?`,'/assets/animations/general/ojitos.json','Si',true,'Cancelar').then((result:any) => {
-        if (result.isConfirmed) {
-          this.orden_venta_service.actualizarEstadoGuiaPrestamo(R.id,{ state: 2 }).subscribe({ //STATE 2 ES ENTREGADO
-            next: (resp: any) => {
-              let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
-              if (index !== -1) {
-                this.GP_LIST[index] = resp.guia_prestamo_actualizada;
-              }
+    aprobar_orden_venta(R:any){
+      let mensaje = `¿Deseas aprobar la orden de venta: <span class="text-success">${R.codigo}</span>`;
   
-              this.sweet.success('Actualizado', 'guia de prestamo entregada satisfactoriamente');
+      const cliente = R.cliente;
+      if (cliente && (cliente.ruc || cliente.razon_social || cliente.nombre_comercial)) {
+        const ruc = cliente.ruc ? ` <span class="text-success">${cliente.ruc}</span>` : '';
+        const razon = cliente.razon_social ? ` <span class="text-success">${cliente.razon_social}</span>` : '';
+        const nombre = cliente.nombre_comercial ? ` <span class="text-warning">${cliente.nombre_comercial}</span>` : '';
+        mensaje += ` para ${ruc} ${razon} ${nombre}`;
+      }
+
+      mensaje += '?';
+
+      this.sweet.confirmar(
+        '¿Estás seguro?',
+        mensaje,
+        '/assets/animations/general/ojitos.json',
+        'Sí',
+        true,
+        'Cancelar'
+      ).then((result: any) => {
+        if (result.isConfirmed) {
+          this.orden_venta_service.cambiar_estado_orden_venta(R.id,{ state: 1 }).subscribe({
+            next: (resp: any) => {
+              let index = this.OV_LIST.findIndex((ov: any) => ov.id === R.id);
+              if (index !== -1) {
+                this.OV_LIST[index] = resp.order_venta;
+              }
+              this.sweet.success('Actualizado', resp.message);
             },
           })
         }
       });
-    } */
+    }
+
+    desaprobar_orden_venta(R:any){
+      let mensaje = `¿Deseas desaprobar la orden de venta: <span class="text-success">${R.codigo}</span>`;
+  
+      const cliente = R.cliente;
+      if (cliente && (cliente.ruc || cliente.razon_social || cliente.nombre_comercial)) {
+        const ruc = cliente.ruc ? ` <span class="text-success">${cliente.ruc}</span>` : '';
+        const razon = cliente.razon_social ? ` <span class="text-success">${cliente.razon_social}</span>` : '';
+        const nombre = cliente.nombre_comercial ? ` <span class="text-warning">${cliente.nombre_comercial}</span>` : '';
+        mensaje += ` para ${ruc} ${razon} ${nombre}`;
+      }
+
+      mensaje += '?';
+
+      this.sweet.confirmar(
+        '¿Estás seguro?',
+        mensaje,
+        '/assets/animations/general/ojitos.json',
+        'Sí, desaprobar',
+        true,
+        'Cancelar'
+      ).then((result: any) => {
+        if (result.isConfirmed) {
+          this.orden_venta_service.cambiar_estado_orden_venta(R.id,{ state: 0 }).subscribe({
+            next: (resp: any) => {
+              let index = this.OV_LIST.findIndex((ov: any) => ov.id === R.id);
+              if (index !== -1) {
+                this.OV_LIST[index] = resp.order_venta;
+              }
+              this.sweet.success('Actualizado', resp.message);
+            },
+          })
+        }
+      });
+    }
+
+    deleteOrdenVenta(R:any){
+      let mensaje = `¿Deseas eliminar la orden de venta: <span class="text-success">${R.codigo}</span>`;
+  
+      const cliente = R.cliente;
+      if (cliente && (cliente.ruc || cliente.razon_social || cliente.nombre_comercial)) {
+        const ruc = cliente.ruc ? ` <span class="text-success">${cliente.ruc}</span>` : '';
+        const razon = cliente.razon_social ? ` <span class="text-success">${cliente.razon_social}</span>` : '';
+        const nombre = cliente.nombre_comercial ? ` <span class="text-warning">${cliente.nombre_comercial}</span>` : '';
+        mensaje += ` para ${ruc} ${razon} ${nombre}`;
+      }
+
+      mensaje += '?';
+      this.sweet.confirmar_borrado('¿Estás seguro?', mensaje).then((result:any) => {
+        if (result.isConfirmed) {
+          this.orden_venta_service.deleteOrdenVenta(R.id).subscribe({
+            next: (resp: any) => {
+              this.OV_LIST = this.OV_LIST.filter((s:any) => s.id !== R.id)
+              this.sweet.success('Eliminado', resp.message,'/assets/animations/general/borrado_exitoso.json');
+            },
+          })
+        }
+      });
+    }
+
+    orden_venta_pdf(id:any){
+      window.open(URL_SERVICIO+"/orden_venta/pdf/"+id,"_blank")
+    }
   
     /* confirmarCancelarEntrega(R:any){
       this.sweet.confirmar('¿Estás seguro?', `¿Deseas cancelar la entrega de la guia de prestamo: ${R.codigo}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
         if (result.isConfirmed) {
           this.orden_venta_service.actualizarEstadoGuiaPrestamo(R.id,{ state: 1 }).subscribe({
             next: (resp: any) => {
-              let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
+              let index = this.OV_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
               if (index !== -1) {
-                this.GP_LIST[index] = resp.guia_prestamo_actualizada;
+                this.OV_LIST[index] = resp.guia_prestamo_actualizada;
               }
   
               this.sweet.success('Entrega cancelada', 'la entrega de la guia de prestamo fue cancelada satisfacoriamente');
@@ -138,30 +216,12 @@ export class ListVentasComponent {
         if (result.isConfirmed) {
           this.orden_venta_service.deleteGuiaPrestamo(R.id).subscribe({
             next: (resp: any) => {
-              this.GP_LIST = this.GP_LIST.filter((s:any) => s.id !== R.id); // Eliminamos el rol de la lista
+              this.OV_LIST = this.OV_LIST.filter((s:any) => s.id !== R.id); // Eliminamos el rol de la lista
               this.sweet.success('Eliminado', resp.message,'/assets/animations/general/borrado_exitoso.json');
             },
           })
         }
       });
-    }
-
-  
-    vaciarGuiaPrestamo(R:any){
-      this.sweet.confirmar('¿Estás seguro?', `¿Deseas quitar todos los productos de la guia de prestamo: ${R.codigo}?`,'/assets/animations/general/ojitos.json','Si, cancelar',true,'No').then((result:any) => {
-        if (result.isConfirmed) {
-          this.orden_venta_service.vaciarGuiaPrestamo(R.id).subscribe({
-            next: (resp: any) => {
-              let index = this.GP_LIST.findIndex((sucurs: any) => sucurs.id === R.id);
-              if (index !== -1) {
-                this.GP_LIST[index] = resp.guia_prestamo_actualizada;
-              }
-  
-              this.sweet.success('Actualizado', 'los productos de la guia de prestamo fueron eliminados satisfactoriamente');
-            },
-          })
-        }
-      });
-    } */
+    }*/
   
 }
